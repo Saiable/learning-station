@@ -6,6 +6,8 @@ function resolve(dir) {
 console.log(__dirname)
 console.log(path.join(__dirname,'src/assets'))
 module.exports = {
+  // publicPath: './ ',
+  // baseUrl : './',
   lintOnSave: true,
   chainWebpack: (config) => {
     config.resolve.alias
