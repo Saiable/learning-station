@@ -11,7 +11,7 @@
       <goods-list :goods="showGoods"></goods-list>
     </scroll>
 
-<!--    <div class="temp"></div>-->
+    <div class="temp"></div>
   </div>
 </template>
 
