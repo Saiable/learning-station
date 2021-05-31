@@ -10,12 +10,14 @@
     .content{
       height: 300px;
       background-color: red;
+      overflow: hidden;
     }
   </style>
 </head>
 <body>
 <div>
-  <ul class="content">
+<div class="content">
+  <ul>
     <li>列表数据1</li>
     <li>列表数据2</li>
     <li>列表数据3</li>
@@ -118,9 +120,16 @@
     <li>列表数据100</li>
   </ul>
 </div>
-<script src="bscroll.js"></script>
+</div>
+
+  <script src="bscroll.js"></script>
 <script>
-  console.log(BScroll)
+  const bscroll = new BScroll(document.querySelector('.content'),{
+    probeType: 2
+  })
+  bscroll.on('scroll',(position) => {
+    console.log(position)
+  })
 </script>
 </body>
 </html>
