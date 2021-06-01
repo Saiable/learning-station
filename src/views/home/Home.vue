@@ -69,12 +69,14 @@
           // this.$refs.scroll.scrollTo(0,this.saveY,0)
           // this.$refs.scroll.scrollTo(0,this.saveY,0)
           // this.$refs.scroll.refresh()
-          console.log('activated')
+          // console.log('activated')
+          this.$refs.scroll.refresh()
+          this.$refs.scroll.scrollTo(0,this.saveY,0)
         },
         deactivated() {
           // this.saveY = this.$refs.scroll.getScrollY()
-          console.log('deactivated')
-
+          // console.log('deactivated')
+          this.saveY = this.$refs.scroll.getScrollY()
         },
         created() {
           //1. 请求多个数据
