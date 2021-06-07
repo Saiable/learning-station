@@ -1,10 +1,14 @@
 <template>
     <div id="detail">
       <detail-nav-bar class="detail-nav"></detail-nav-bar>
-      <scroll class="content">
+      <scroll class="content" ref="scroll">
         <detail-swiper :top-images="topImages"></detail-swiper>
         <detail-base-info :goods="goods"></detail-base-info>
         <detail-shop-info :shop-info="shop"></detail-shop-info>
+        <detail-goods-info :goods-info="detailInfo" @goodsInfoImgLoad="imageLoad"></detail-goods-info>
+        <detail-goods-params :goodsParams="paramInfo"></detail-goods-params>
+        <detail-comment-info :commentInfo="commentInfo"></detail-comment-info>
+        <goods-list :goods="recommends"></goods-list>
       </scroll>
 
     </div>
@@ -15,7 +19,12 @@
     import DetailSwiper from "@/views/detail/childComponents/DetailSwiper";
     import DetailBaseInfo from "@/views/detail/childComponents/DetailBaseInfo";
     import DetailShopInfo from "@/views/detail/childComponents/DetailShopInfo";
-    import{getDetail,Goods,Shop} from "@/network/detail";
+    import DetailGoodsInfo from "@/views/detail/childComponents/DetailGoodsInfo";
+    import DetailGoodsParams from "@/views/detail/childComponents/DetailGoodsParams";
+    import DetailCommentInfo from "@/views/detail/childComponents/DetailCommentInfo";
+    import GoodsList from "@/components/content/goods/GoodsList";
+
+    import{getDetail,Goods,Shop,GoodsParam,getRecommend} from "@/network/detail";
 
     import Scroll from "@/components/common/scroll/Scroll";
     export default {
@@ -25,7 +34,11 @@
             iid: null,
             topImages:[],
             goods: {},
-            shop: {}
+            shop: {},
+            detailInfo: {},
+            paramInfo: {},
+            commentInfo: {},
+            recommends: {}
           }
         },
         created() {
@@ -45,6 +58,24 @@
 
             //3.创建店铺信息的对象
             this.shop = new Shop(data.shopInfo)
+
+            //4.保存商品详情的数据
+            this.detailInfo = data.detailInfo
+
+            //5.获取参数信息
+            this.paramInfo = new GoodsParam(data.itemParams.info, data.itemParams.rule)
+
+            //6.取出评论信息
+            if(data.rate.cRate !== 0) {
+              this.commentInfo = data.rate.list[0]
+            }
+
+          })
+
+          //3.请求推荐数据
+          getRecommend().then(res => {
+            // console.log(res)
+            this.recommends = res.data.list
           })
         },
         components: {
@@ -52,7 +83,16 @@
           DetailSwiper,
           DetailBaseInfo,
           DetailShopInfo,
-          Scroll
+          Scroll,
+          DetailGoodsInfo,
+          DetailGoodsParams,
+          DetailCommentInfo,
+          GoodsList
+        },
+        methods: {
+          imageLoad() {
+            this.$refs.scroll.refresh()
+          }
         }
     }
 </script>
