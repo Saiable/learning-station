@@ -28,6 +28,10 @@
         methods: {
           imageLoad() {
             this.$bus.$emit('itemImageLoad')
+
+            // if(this.$route.path.indexOf('/home')) {
+            //   this.$bus.$emit('itemImageLoad')
+            // }
           },
           itemClick() {
             // console.log('aa');

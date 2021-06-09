@@ -1,6 +1,6 @@
 <template>
     <div id="detail">
-      <detail-nav-bar class="detail-nav"></detail-nav-bar>
+      <detail-nav-bar class="detail-nav" @titleClick="titleClick"></detail-nav-bar>
       <scroll class="content" ref="scroll">
         <detail-swiper :top-images="topImages"></detail-swiper>
         <detail-base-info :goods="goods"></detail-base-info>
@@ -27,6 +27,7 @@
     import{getDetail,Goods,Shop,GoodsParam,getRecommend} from "@/network/detail";
 
     import Scroll from "@/components/common/scroll/Scroll";
+    import {debounce} from "@/common/utils";
     export default {
         name: "Detail",
         data(){
@@ -38,7 +39,8 @@
             detailInfo: {},
             paramInfo: {},
             commentInfo: {},
-            recommends: {}
+            recommends: [],
+            itemImageListener: null
           }
         },
         created() {
@@ -78,7 +80,17 @@
             this.recommends = res.data.list
           })
         },
-        components: {
+        mounted() {
+          const refresh = debounce(this.$refs.scroll && this.$refs.scroll.refresh, 200)
+          this.itemImageListener = () => {
+            refresh()
+          }
+          this.$bus.$on('itemImageLoad', this.itemImageListener)
+        },
+        destroyed() {
+          this.$bus.$off('itemImageLoad', this.itemImageListener)
+        },
+      components: {
           DetailNavBar,
           DetailSwiper,
           DetailBaseInfo,
@@ -92,6 +104,9 @@
         methods: {
           imageLoad() {
             this.$refs.scroll.refresh()
+          },
+          titleClick(index) {
+            console.log(index);
           }
         }
     }

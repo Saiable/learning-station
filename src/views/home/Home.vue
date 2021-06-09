@@ -54,7 +54,8 @@
             isShowBackTop: false,
             tabOffsetTop: 0,
             isTabFixed: false,
-            saveY: 0
+            saveY: 0,
+            itemImageListener: null
           }
         },
         computed: {
@@ -76,7 +77,11 @@
         deactivated() {
           // this.saveY = this.$refs.scroll.getScrollY()
           // console.log('deactivated')
+          //1.保存Y值
           this.saveY = this.$refs.scroll.getScrollY()
+
+          //2.取消全局事件的监听
+          this.$bus.$off('itemImageLoad', this.itemImageListener)
         },
         created() {
           //1. 请求多个数据
@@ -90,10 +95,12 @@
         mounted() {
           const refresh = debounce(this.$refs.scroll && this.$refs.scroll.refresh, 200)
 
-          //3.监听item中图片加载完成
-          this.$bus.$on('itemImageLoad', () => {
+          //对监听的事件进行保存
+          this.itemImageListener = () => {
             refresh()
-          })
+          }
+          //3.监听item中图片加载完成
+          this.$bus.$on('itemImageLoad', this.itemImageListener)
         },
         methods: {
           /**
