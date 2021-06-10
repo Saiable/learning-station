@@ -1,14 +1,14 @@
 <template>
     <div id="detail">
-      <detail-nav-bar class="detail-nav" @titleClick="titleClick"></detail-nav-bar>
-      <scroll class="content" ref="scroll">
+      <detail-nav-bar class="detail-nav" @titleClick="titleClick" ref="nav"></detail-nav-bar>
+      <scroll class="content" ref="scroll" :probe-type="3" @scroll="contentScroll">
         <detail-swiper :top-images="topImages"></detail-swiper>
         <detail-base-info :goods="goods"></detail-base-info>
         <detail-shop-info :shop-info="shop"></detail-shop-info>
         <detail-goods-info :goods-info="detailInfo" @goodsInfoImgLoad="imageLoad"></detail-goods-info>
-        <detail-goods-params :goodsParams="paramInfo"></detail-goods-params>
-        <detail-comment-info :commentInfo="commentInfo"></detail-comment-info>
-        <goods-list :goods="recommends"></goods-list>
+        <detail-goods-params ref="params" :goodsParams="paramInfo"></detail-goods-params>
+        <detail-comment-info ref="comment" :commentInfo="commentInfo"></detail-comment-info>
+        <goods-list ref="recommend" :goods="recommends"></goods-list>
       </scroll>
 
     </div>
@@ -28,6 +28,7 @@
 
     import Scroll from "@/components/common/scroll/Scroll";
     import {debounce} from "@/common/utils";
+    import {itemListenerMixin} from "@/common/mixin"
     export default {
         name: "Detail",
         data(){
@@ -40,9 +41,12 @@
             paramInfo: {},
             commentInfo: {},
             recommends: [],
-            itemImageListener: null
+            themeTopYs: [],
+            getThemeTopY: null,
+            currentIndex: 0
           }
         },
+        mixins: [itemListenerMixin],
         created() {
           //1. 保存传入的id
           this.iid = this.$route.params.iid
@@ -72,6 +76,9 @@
               this.commentInfo = data.rate.list[0]
             }
 
+            this.$nextTick(() => {
+
+            })
           })
 
           //3.请求推荐数据
@@ -79,15 +86,25 @@
             // console.log(res)
             this.recommends = res.data.list
           })
+
+          //4.给该函数赋值
+          this.getThemeTopY = debounce(() => {
+
+            this.themeTopYs = []
+            this.themeTopYs.push(0)
+            this.themeTopYs.push(this.$refs.params.$el.offsetTop-44)
+            this.themeTopYs.push(this.$refs.comment.$el.offsetTop-44)
+            this.themeTopYs.push(this.$refs.recommend.$el.offsetTop-44)
+            console.log(this.themeTopYs)
+          }, 100)
         },
         mounted() {
-          const refresh = debounce(this.$refs.scroll && this.$refs.scroll.refresh, 200)
-          this.itemImageListener = () => {
-            refresh()
-          }
-          this.$bus.$on('itemImageLoad', this.itemImageListener)
+
         },
-        destroyed() {
+        updated() {
+
+        },
+      destroyed() {
           this.$bus.$off('itemImageLoad', this.itemImageListener)
         },
       components: {
@@ -104,9 +121,30 @@
         methods: {
           imageLoad() {
             this.$refs.scroll.refresh()
+            this.getThemeTopY()
           },
           titleClick(index) {
-            console.log(index);
+            // console.log(index);
+            this.$refs.scroll.scrollTo(0, -this.themeTopYs[index], 100)
+          },
+          contentScroll(position) {
+            // console.log(position);
+            //1.获取y值
+            const positionY = -position.y
+            //2.positionY的值进行对比
+            //  [0, 6738, 8154, 8244]
+            let length = this.themeTopYs.length
+            for(let i = 0; i < length; i++){
+              // console.log(i)
+              // if(positionY > this.themeTopYs[i] && positionY < this.themeTopYs[i+1] ){
+              //   console.log(i);
+              if ((this.currentIndex !== i) && ((i < length -1 && positionY >= this.themeTopYs[i] && positionY < this.themeTopYs[i+1]) || (i === length - 1 && positionY >= this.themeTopYs[i]))){
+                // console.log(i);
+                this.currentIndex = i
+                // console.log(this.currentIndex)
+                this.$refs.nav.currentIndex = this.currentIndex
+              }
+            }
           }
         }
     }
