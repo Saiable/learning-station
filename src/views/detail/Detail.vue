@@ -10,7 +10,9 @@
         <detail-comment-info ref="comment" :commentInfo="commentInfo"></detail-comment-info>
         <goods-list ref="recommend" :goods="recommends"></goods-list>
       </scroll>
+      <detail-bottom-bar></detail-bottom-bar>
 
+      <back-top @click.native="backClick" v-show="isShowBackTop"></back-top>
     </div>
 </template>
 
@@ -22,13 +24,14 @@
     import DetailGoodsInfo from "@/views/detail/childComponents/DetailGoodsInfo";
     import DetailGoodsParams from "@/views/detail/childComponents/DetailGoodsParams";
     import DetailCommentInfo from "@/views/detail/childComponents/DetailCommentInfo";
+    import DetailBottomBar from "@/views/detail/childComponents/DetailBottomBar";
     import GoodsList from "@/components/content/goods/GoodsList";
 
     import{getDetail,Goods,Shop,GoodsParam,getRecommend} from "@/network/detail";
 
     import Scroll from "@/components/common/scroll/Scroll";
     import {debounce} from "@/common/utils";
-    import {itemListenerMixin} from "@/common/mixin"
+    import {itemListenerMixin,backTopMixin} from "@/common/mixin"
     export default {
         name: "Detail",
         data(){
@@ -46,7 +49,7 @@
             currentIndex: 0
           }
         },
-        mixins: [itemListenerMixin],
+        mixins: [itemListenerMixin,backTopMixin],
         created() {
           //1. 保存传入的id
           this.iid = this.$route.params.iid
@@ -95,7 +98,8 @@
             this.themeTopYs.push(this.$refs.params.$el.offsetTop-44)
             this.themeTopYs.push(this.$refs.comment.$el.offsetTop-44)
             this.themeTopYs.push(this.$refs.recommend.$el.offsetTop-44)
-            console.log(this.themeTopYs)
+            this.themeTopYs.push(Number.MAX_VALUE)
+            // console.log(this.themeTopYs)
           }, 100)
         },
         mounted() {
@@ -116,9 +120,11 @@
           DetailGoodsInfo,
           DetailGoodsParams,
           DetailCommentInfo,
-          GoodsList
+          GoodsList,
+          DetailBottomBar
         },
         methods: {
+
           imageLoad() {
             this.$refs.scroll.refresh()
             this.getThemeTopY()
@@ -134,16 +140,26 @@
             //2.positionY的值进行对比
             //  [0, 6738, 8154, 8244]
             let length = this.themeTopYs.length
-            for(let i = 0; i < length; i++){
+            for(let i = 0; i < length-1; i++){
               // console.log(i)
               // if(positionY > this.themeTopYs[i] && positionY < this.themeTopYs[i+1] ){
               //   console.log(i);
-              if ((this.currentIndex !== i) && ((i < length -1 && positionY >= this.themeTopYs[i] && positionY < this.themeTopYs[i+1]) || (i === length - 1 && positionY >= this.themeTopYs[i]))){
-                // console.log(i);
-                this.currentIndex = i
-                // console.log(this.currentIndex)
-                this.$refs.nav.currentIndex = this.currentIndex
+              // if ((this.currentIndex !== i) && ((i < length -1 && positionY >= this.themeTopYs[i] && positionY < this.themeTopYs[i+1]) || (i === length - 1 && positionY >= this.themeTopYs[i]))){
+              //   // console.log(i);
+              //   this.currentIndex = i
+              //   // console.log(this.currentIndex)
+              //   this.$refs.nav.currentIndex = this.currentIndex
+              // }
+
+              if (this.currentIndex != i && (positionY > this.themeTopYs[i]) && positionY < this.themeTopYs[i+1]) {
+                  this.currentIndex = i
+                  // console.log(this.currentIndex)
+                  this.$refs.nav.currentIndex = this.currentIndex
               }
+
+              //显示是否回到顶部
+              this.isShowBackTop = (-position.y) > 1000
+
             }
           }
         }
