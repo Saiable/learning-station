@@ -66,96 +66,96 @@
       <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/3.11.1/less.min.js" ></script>
       ```
 
-- `less`中的注释
+#### `less`中的注释
 
-  - 以`//`开头的注释，不会被编译到`css`中
-  - 以`/* */`包裹的注释会被编译到`css`中
+- 以`//`开头的注释，不会被编译到`css`中
+- 以`/* */`包裹的注释会被编译到`css`中
 
-- `less`中的变量
+#### `less`中的变量
 
-  - 使用`@`来声明一个变量：`@pink: pink`
+- 使用`@`来声明一个变量：`@pink: pink`
 
-  - 作为普通属性值只来使用：直接使用`@pink`
+- 作为普通属性值只来使用：直接使用`@pink`
 
-    ```less
-    // 定义变量
-    @color-white: white;
-    @color-danger: #bd362f;
-    
-    .btn-danger {
-        color: @color-white;
-        background-color: @color-danger; // 使用变量
+  ```less
+  // 定义变量
+  @color-white: white;
+  @color-danger: #bd362f;
+  
+  .btn-danger {
+      color: @color-white;
+      background-color: @color-danger; // 使用变量
+  }
+  ```
+
+- 作为选择器和属性名：`@{变量名}`的形式，一般用的很少，不会把选择器和属性名定义成变量的
+
+  ```less
+  @display: display; // 定义属性名变量
+  @selector: .btn; // 定义选择器变量
+  @{selector} { //使用变量
+      @{display}: inline-block;
+  }
+  ```
+
+- 作为`url`：`@{url}`
+
+
+##### 变量的延迟加载
+
+```less
+@height:300px;
+@font_size:12px;
+.textarea {
+	width:@width;
+	height:@height;
+	font-size:@font_size;
+}
+@width:5000px; // 定义在最后，也可以被读取到
+```
+
+同一变量名称定义多次时，只会使用最后一次在作用域中定义的变量。
+
+```less
+@var: 0;
+.class {
+    @var: 1;
+    .brass {
+        @var: 2;
+        three: @var; // 结果不是2，是3，要等当前作用域全部读取完才会加载
+        @var: 3;
     }
-    ```
+    one: @var; // 1
+}
+```
 
-  - 作为选择器和属性名：`@{变量名}`的形式，一般用的很少，不会把选择器和属性名定义成变量的
+#### `less`中的嵌套规则
 
-    ```less
-    @display: display; // 定义属性名变量
-    @selector: .btn; // 定义选择器变量
-    @{selector} { //使用变量
-        @{display}: inline-block;
-    }
-    ```
+- 基本嵌套使用
 
-  - 作为`url`：`@{url}`
+  ```less
+  .outer {
+      .inner {
+          
+      }
+  }
+  ```
 
-  - 变量的延迟加载
+- `&`的使用（伪类、伪元素）
 
-    ```less
-    @height:300px;
-    @font_size:12px;
-    .textarea {
-    	width:@width;
-    	height:@height;
-    	font-size:@font_size;
-    }
-    @width:5000px; // 定义在最后，也可以被读取到
-    ```
-
-    同一变量名称定义多次时，只会使用最后一次在作用域中定义的变量。
-
-    ```less
-    @var: 0;
-    .class {
-        @var: 1;
-        .brass {
-            @var: 2;
-            three: @var; // 结果不是2，是3，要等当前作用域全部读取完才会加载
-            @var: 3;
-        }
-        one: @var; // 1
-    }
-    ```
-
-    
-
-- `less`中的嵌套规则
-
-  - 基本嵌套使用
-
-    ```less
-    .outer {
-        .inner {
-            
-        }
-    }
-    ```
-
-  - `&`的使用（伪类、伪元素）
-
-    ```less
-        .inner {
-            &:hover {
-                // .inner:hover，如果不加&，编译后会多一个空格
-            } 
-            &:focus {
-                
-            }
-        }
-    ```
-
-    
+  ```less
+      .inner {
+          &:hover {
+              // .inner:hover，如果不加&，编译后会多一个空格
+              // 添加了&表示选取当前元素
+          } 
+          &:focus {
+              
+          }
+      }
+  ```
+  
+  
 
 
 
