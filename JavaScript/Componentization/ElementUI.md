@@ -1,5 +1,6 @@
 ---
 title:ElementUI使用与解析
+
 ---
 # ElementUI
 
@@ -99,6 +100,449 @@ Message({
 
 ## 使用解析
 
+### `layout`布局
+
+通过基础的 24 分栏，迅速简便地创建布局。
+
+#### 基础布局
+
+##### 官方案例
+
+![image-20220709100441698](ElementUI.assets/image-20220709100441698.png)
+
+使用单一分栏创建基础的栅格布局。
+
+通过 row 和 col 组件，并通过 col 组件的 `span` 属性我们就可以自由地组合布局。
+
+```vue
+<el-row>
+  <el-col :span="24"><div class="grid-content bg-purple-dark"></div></el-col>
+</el-row>
+<el-row>
+  <el-col :span="12"><div class="grid-content bg-purple"></div></el-col>
+  <el-col :span="12"><div class="grid-content bg-purple-light"></div></el-col>
+</el-row>
+<el-row>
+  <el-col :span="8"><div class="grid-content bg-purple"></div></el-col>
+  <el-col :span="8"><div class="grid-content bg-purple-light"></div></el-col>
+  <el-col :span="8"><div class="grid-content bg-purple"></div></el-col>
+</el-row>
+<el-row>
+  <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
+  <el-col :span="6"><div class="grid-content bg-purple-light"></div></el-col>
+  <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
+  <el-col :span="6"><div class="grid-content bg-purple-light"></div></el-col>
+</el-row>
+<el-row>
+  <el-col :span="4"><div class="grid-content bg-purple"></div></el-col>
+  <el-col :span="4"><div class="grid-content bg-purple-light"></div></el-col>
+  <el-col :span="4"><div class="grid-content bg-purple"></div></el-col>
+  <el-col :span="4"><div class="grid-content bg-purple-light"></div></el-col>
+  <el-col :span="4"><div class="grid-content bg-purple"></div></el-col>
+  <el-col :span="4"><div class="grid-content bg-purple-light"></div></el-col>
+</el-row>
+
+<style>
+  .el-row {
+    margin-bottom: 20px;
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+  .el-col {
+    border-radius: 4px;
+  }
+  .bg-purple-dark {
+    background: #99a9bf;
+  }
+  .bg-purple {
+    background: #d3dce6;
+  }
+  .bg-purple-light {
+    background: #e5e9f2;
+  }
+  .grid-content {
+    border-radius: 4px;
+    min-height: 36px;
+  }
+  .row-bg {
+    padding: 10px 0;
+    background-color: #f9fafc;
+  }
+</style>
+```
+
+##### 解析
+
+- 使用简洁易懂
+
+#### 分栏间隔
+
+##### 官方案例
+
+![image-20220709100643751](ElementUI.assets/image-20220709100643751.png)
+
+分栏之间存在间隔。
+
+Row 组件 提供 `gutter` 属性来指定每一栏之间的间隔，默认间隔为 0。
+
+```vue
+<el-row :gutter="20">
+  <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
+  <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
+  <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
+  <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
+</el-row>
+
+<style>
+  .el-row {
+    margin-bottom: 20px;
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+  .el-col {
+    border-radius: 4px;
+  }
+  .bg-purple-dark {
+    background: #99a9bf;
+  }
+  .bg-purple {
+    background: #d3dce6;
+  }
+  .bg-purple-light {
+    background: #e5e9f2;
+  }
+  .grid-content {
+    border-radius: 4px;
+    min-height: 36px;
+  }
+  .row-bg {
+    padding: 10px 0;
+    background-color: #f9fafc;
+  }
+</style>
+```
+
+
+
+##### 解析
+
+- `gutter`属性是`row`组件身上的
+
+#### 混合布局
+
+##### 官方案例
+
+![image-20220709100929765](ElementUI.assets/image-20220709100929765.png)
+
+通过基础的 1/24 分栏任意扩展组合形成较为复杂的混合布局。
+
+```vue
+<el-row :gutter="20">
+  <el-col :span="16"><div class="grid-content bg-purple"></div></el-col>
+  <el-col :span="8"><div class="grid-content bg-purple"></div></el-col>
+</el-row>
+<el-row :gutter="20">
+  <el-col :span="8"><div class="grid-content bg-purple"></div></el-col>
+  <el-col :span="8"><div class="grid-content bg-purple"></div></el-col>
+  <el-col :span="4"><div class="grid-content bg-purple"></div></el-col>
+  <el-col :span="4"><div class="grid-content bg-purple"></div></el-col>
+</el-row>
+<el-row :gutter="20">
+  <el-col :span="4"><div class="grid-content bg-purple"></div></el-col>
+  <el-col :span="16"><div class="grid-content bg-purple"></div></el-col>
+  <el-col :span="4"><div class="grid-content bg-purple"></div></el-col>
+</el-row>
+
+<style>
+  .el-row {
+    margin-bottom: 20px;
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+  .el-col {
+    border-radius: 4px;
+  }
+  .bg-purple-dark {
+    background: #99a9bf;
+  }
+  .bg-purple {
+    background: #d3dce6;
+  }
+  .bg-purple-light {
+    background: #e5e9f2;
+  }
+  .grid-content {
+    border-radius: 4px;
+    min-height: 36px;
+  }
+  .row-bg {
+    padding: 10px 0;
+    background-color: #f9fafc;
+  }
+</style>
+```
+
+##### 解析
+
+- 保证每个`row`组件的`col`组件的`span`属性值，加起来是24即可
+
+#### 分栏偏移
+
+##### 官方案例
+
+![image-20220709101537410](ElementUI.assets/image-20220709101537410.png)
+
+支持偏移指定的栏数。
+
+通过制定 col 组件的 `offset` 属性可以指定分栏偏移的栏数。
+
+```vue
+<el-row :gutter="20">
+  <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
+  <el-col :span="6" :offset="6"><div class="grid-content bg-purple"></div></el-col>
+</el-row>
+<el-row :gutter="20">
+  <el-col :span="6" :offset="6"><div class="grid-content bg-purple"></div></el-col>
+  <el-col :span="6" :offset="6"><div class="grid-content bg-purple"></div></el-col>
+</el-row>
+<el-row :gutter="20">
+  <el-col :span="12" :offset="6"><div class="grid-content bg-purple"></div></el-col>
+</el-row>
+
+<style>
+  .el-row {
+    margin-bottom: 20px;
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+  .el-col {
+    border-radius: 4px;
+  }
+  .bg-purple-dark {
+    background: #99a9bf;
+  }
+  .bg-purple {
+    background: #d3dce6;
+  }
+  .bg-purple-light {
+    background: #e5e9f2;
+  }
+  .grid-content {
+    border-radius: 4px;
+    min-height: 36px;
+  }
+  .row-bg {
+    padding: 10px 0;
+    background-color: #f9fafc;
+  }
+</style>
+```
+
+
+
+##### 解析
+
+- `offset`属性是`col`组件身上的
+
+#### 对齐方式（flex布局）
+
+##### 官方案例
+
+![image-20220709102007442](ElementUI.assets/image-20220709102007442.png)
+
+通过 `flex` 布局来对分栏进行灵活的对齐。
+
+将 `type` 属性赋值为 'flex'，可以启用 flex 布局，并可通过 `justify` 属性来指定 start, center, end, space-between, space-around 其中的值来定义子元素的排版方式。
+
+```vue
+<el-row type="flex" class="row-bg">
+  <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
+  <el-col :span="6"><div class="grid-content bg-purple-light"></div></el-col>
+  <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
+</el-row>
+<el-row type="flex" class="row-bg" justify="center">
+  <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
+  <el-col :span="6"><div class="grid-content bg-purple-light"></div></el-col>
+  <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
+</el-row>
+<el-row type="flex" class="row-bg" justify="end">
+  <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
+  <el-col :span="6"><div class="grid-content bg-purple-light"></div></el-col>
+  <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
+</el-row>
+<el-row type="flex" class="row-bg" justify="space-between">
+  <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
+  <el-col :span="6"><div class="grid-content bg-purple-light"></div></el-col>
+  <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
+</el-row>
+<el-row type="flex" class="row-bg" justify="space-around">
+  <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
+  <el-col :span="6"><div class="grid-content bg-purple-light"></div></el-col>
+  <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
+</el-row>
+
+<style>
+  .el-row {
+    margin-bottom: 20px;
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+  .el-col {
+    border-radius: 4px;
+  }
+  .bg-purple-dark {
+    background: #99a9bf;
+  }
+  .bg-purple {
+    background: #d3dce6;
+  }
+  .bg-purple-light {
+    background: #e5e9f2;
+  }
+  .grid-content {
+    border-radius: 4px;
+    min-height: 36px;
+  }
+  .row-bg {
+    padding: 10px 0;
+    background-color: #f9fafc;
+  }
+</style>
+```
+
+
+
+##### 解析
+
+- 官方用了所谓的`对齐方式`一次，来描述`flex`布局
+- 其实只实现了水平的`flex`布局的基本功能
+
+#### 响应式布局
+
+##### 官方案例
+
+参照了 Bootstrap 的 响应式设计，预设了五个响应尺寸：`xs`、`sm`、`md`、`lg` 和 `xl`。
+
+![image-20220709102301949](ElementUI.assets/image-20220709102301949.png)
+
+```vue
+<el-row :gutter="10">
+    <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="1">
+        <div class="grid-content bg-purple">
+            左边侧边栏
+        </div>
+    </el-col>
+    <el-col :xs="4" :sm="6" :md="8" :lg="9" :xl="11">
+        <div class="grid-content bg-purple-light">
+            内容区域1
+        </div>
+    </el-col>
+    <el-col :xs="4" :sm="6" :md="8" :lg="9" :xl="11">
+        <div class="grid-content bg-purple">
+            内容区域2
+        </div>
+    </el-col>
+    <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="1">
+        <div class="grid-content bg-purple-light">
+            右边导航栏
+        </div>
+    </el-col>
+
+</el-row>
+<style>
+  .el-col {
+    border-radius: 4px;
+  }
+  .bg-purple-dark {
+    background: #99a9bf;
+  }
+  .bg-purple {
+    background: #d3dce6;
+  }
+  .bg-purple-light {
+    background: #e5e9f2;
+  }
+  .grid-content {
+    border-radius: 4px;
+    min-height: 36px;
+  }
+</style>
+```
+
+##### 解析
+
+- 基于不同的屏幕尺寸下，同一行的各列的布局分布
+
+  | 参数 | 说明                                 |
+  | ---- | ------------------------------------ |
+  | xs   | <768px 响应式栅格数或者栅格属性对象  |
+  | sm   | ≥768px 响应式栅格数或者栅格属性对象  |
+  | md   | ≥992px 响应式栅格数或者栅格属性对象  |
+  | lg   | ≥1200px 响应式栅格数或者栅格属性对象 |
+  | xl   | ≥1920px 响应式栅格数或者栅格属性对象 |
+
+#### 基于断点的隐藏类
+
+##### 官方说明
+
+Element 额外提供了一系列类名，用于在某些条件下隐藏元素。这些类名可以添加在任何 DOM 元素或自定义组件上。如果需要，请自行引入以下文件：
+
+```js
+import 'element-ui/lib/theme-chalk/display.css';
+```
+
+包含的类名及其含义为：
+
+- `hidden-xs-only` - 当视口在 `xs` 尺寸时隐藏
+- `hidden-sm-only` - 当视口在 `sm` 尺寸时隐藏
+- `hidden-sm-and-down` - 当视口在 `sm` 及以下尺寸时隐藏
+- `hidden-sm-and-up` - 当视口在 `sm` 及以上尺寸时隐藏
+- `hidden-md-only` - 当视口在 `md` 尺寸时隐藏
+- `hidden-md-and-down` - 当视口在 `md` 及以下尺寸时隐藏
+- `hidden-md-and-up` - 当视口在 `md` 及以上尺寸时隐藏
+- `hidden-lg-only` - 当视口在 `lg` 尺寸时隐藏
+- `hidden-lg-and-down` - 当视口在 `lg` 及以下尺寸时隐藏
+- `hidden-lg-and-up` - 当视口在 `lg` 及以上尺寸时隐藏
+- `hidden-xl-only` - 当视口在 `xl` 尺寸时隐藏
+
+##### 解析
+
+- 在上面案例的基础上，可以通过添加类名，隐藏指定尺寸下的任意一个元素
+
+#### 查询手册
+
+Row Attributes
+
+| 参数    | 说明                                  | 类型   | 可选值                                      | 默认值 |
+| ------- | ------------------------------------- | ------ | ------------------------------------------- | ------ |
+| gutter  | 栅格间隔                              | number | —                                           | 0      |
+| type    | 布局模式，可选 flex，现代浏览器下有效 | string | —                                           | —      |
+| justify | flex 布局下的水平排列方式             | string | start/end/center/space-around/space-between | start  |
+| align   | flex 布局下的垂直排列方式             | string | top/middle/bottom                           | —      |
+| tag     | 自定义元素标签                        | string | *                                           | div    |
+
+Col Attributes
+
+| 参数   | 说明                                 | 类型                                        | 可选值 | 默认值 |
+| ------ | ------------------------------------ | ------------------------------------------- | ------ | ------ |
+| span   | 栅格占据的列数                       | number                                      | —      | 24     |
+| offset | 栅格左侧的间隔格数                   | number                                      | —      | 0      |
+| push   | 栅格向右移动格数                     | number                                      | —      | 0      |
+| pull   | 栅格向左移动格数                     | number                                      | —      | 0      |
+| xs     | <768px 响应式栅格数或者栅格属性对象  | number/object (例如： {span: 4, offset: 4}) | —      | —      |
+| sm     | ≥768px 响应式栅格数或者栅格属性对象  | number/object (例如： {span: 4, offset: 4}) | —      | —      |
+| md     | ≥992px 响应式栅格数或者栅格属性对象  | number/object (例如： {span: 4, offset: 4}) | —      | —      |
+| lg     | ≥1200px 响应式栅格数或者栅格属性对象 | number/object (例如： {span: 4, offset: 4}) | —      | —      |
+| xl     | ≥1920px 响应式栅格数或者栅格属性对象 | number/object (例如： {span: 4, offset: 4}) | —      | —      |
+| tag    | 自定义元素标签                       | string                                      | *      | div    |
+
+
+
 ### `Button`按钮
 
 常用的操作按钮。
@@ -162,7 +606,84 @@ Message({
 <el-button disabled>默认按钮</el-button>
 ```
 
+### TimePicker 时间选择器
 
+
+
+### DatePicker 日期选择器
+
+用于选择或输入日期
+
+#### 选择日
+
+##### 官方案例
+
+![image-20220709113411379](ElementUI.assets/image-20220709113411379.png)
+
+基本单位由`type`属性指定。快捷选项需配置`picker-options`对象中的`shortcuts`，禁用日期通过 `disabledDate` 设置，传入函数
+
+```vue
+<template>
+  <div class="block">
+    <span class="demonstration">默认</span>
+    <el-date-picker
+      v-model="value1"
+      type="date"
+      placeholder="选择日期">
+    </el-date-picker>
+  </div>
+  <div class="block">
+    <span class="demonstration">带快捷选项</span>
+    <el-date-picker
+      v-model="value2"
+      align="right"
+      type="date"
+      placeholder="选择日期"
+      :picker-options="pickerOptions">
+    </el-date-picker>
+  </div>
+</template>
+
+<script>
+  export default {
+    data() {
+      return {
+        pickerOptions: {
+          disabledDate(time) {
+            return time.getTime() > Date.now();
+          },
+          shortcuts: [{
+            text: '今天',
+            onClick(picker) {
+              picker.$emit('pick', new Date());
+            }
+          }, {
+            text: '昨天',
+            onClick(picker) {
+              const date = new Date();
+              date.setTime(date.getTime() - 3600 * 1000 * 24);
+              picker.$emit('pick', date);
+            }
+          }, {
+            text: '一周前',
+            onClick(picker) {
+              const date = new Date();
+              date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit('pick', date);
+            }
+          }]
+        },
+        value1: '',
+        value2: '',
+      };
+    }
+  };
+</script>
+```
+
+
+
+##### 解析
 
 ### `Form`表单
 
@@ -258,6 +779,126 @@ Message({
 
 - `el-form`绑定一个对象
 - `el-form-item`表示表单的每一个行，内部可以嵌套其他元素
+- `label-width`属性控制的是表单字段的宽度
+
+#### 行内表单
+
+##### 官方案例
+
+![image-20220709110026351](ElementUI.assets/image-20220709110026351.png)
+
+当垂直方向空间受限且表单较简单时，可以在一行内放置表单。
+
+设置 `inline` 属性可以让表单域变为行内的表单域
+
+```vue
+<el-form :inline="true" :model="formInline" class="demo-form-inline">
+  <el-form-item label="审批人">
+    <el-input v-model="formInline.user" placeholder="审批人"></el-input>
+  </el-form-item>
+  <el-form-item label="活动区域">
+    <el-select v-model="formInline.region" placeholder="活动区域">
+      <el-option label="区域一" value="shanghai"></el-option>
+      <el-option label="区域二" value="beijing"></el-option>
+    </el-select>
+  </el-form-item>
+  <el-form-item>
+    <el-button type="primary" @click="onSubmit">查询</el-button>
+  </el-form-item>
+</el-form>
+<script>
+  export default {
+    data() {
+      return {
+        formInline: {
+          user: '',
+          region: ''
+        }
+      }
+    },
+    methods: {
+      onSubmit() {
+        console.log('submit!');
+      }
+    }
+  }
+</script>
+```
+
+
+
+##### 解析
+
+- 在表单中实现，一行可以配置多字段，不能通过`el-col`的形式实现
+
+#### 查询手册
+
+Form Attributes
+
+| 参数                    | 说明                                                         | 类型    | 可选值                | 默认值 |
+| ----------------------- | ------------------------------------------------------------ | ------- | --------------------- | ------ |
+| model                   | 表单数据对象                                                 | object  | —                     | —      |
+| rules                   | 表单验证规则                                                 | object  | —                     | —      |
+| inline                  | 行内表单模式                                                 | boolean | —                     | false  |
+| label-position          | 表单域标签的位置，如果值为 left 或者 right 时，则需要设置 label-width | string  | right/left/top        | right  |
+| label-width             | 表单域标签的宽度，例如 '50px'。作为 Form 直接子元素的 form-item 会继承该值。支持 auto。 | string  | —                     | —      |
+| label-suffix            | 表单域标签的后缀                                             | string  | —                     | —      |
+| hide-required-asterisk  | 是否隐藏必填字段的标签旁边的红色星号                         | boolean | —                     | false  |
+| show-message            | 是否显示校验错误信息                                         | boolean | —                     | true   |
+| inline-message          | 是否以行内形式展示校验信息                                   | boolean | —                     | false  |
+| status-icon             | 是否在输入框中显示校验结果反馈图标                           | boolean | —                     | false  |
+| validate-on-rule-change | 是否在 rules 属性改变后立即触发一次验证                      | boolean | —                     | true   |
+| size                    | 用于控制该表单内组件的尺寸                                   | string  | medium / small / mini | —      |
+| disabled                | 是否禁用该表单内的所有组件。若设置为 true，则表单内组件上的 disabled 属性不再生效 | boolean | —                     | false  |
+
+Form Methods
+
+| 方法名        | 说明                                                         | 参数                                                         |
+| ------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| validate      | 对整个表单进行校验的方法，参数为一个回调函数。该回调函数会在校验结束后被调用，并传入两个参数：是否校验成功和未通过校验的字段。若不传入回调函数，则会返回一个 promise | Function(callback: Function(boolean, object))                |
+| validateField | 对部分表单字段进行校验的方法                                 | Function(props: array \| string, callback: Function(errorMessage: string)) |
+| resetFields   | 对整个表单进行重置，将所有字段值重置为初始值并移除校验结果   | —                                                            |
+| clearValidate | 移除表单项的校验结果。传入待移除的表单项的 prop 属性或者 prop 组成的数组，如不传则移除整个表单的校验结果 | Function(props: array \| string)                             |
+
+Form Events
+
+| 事件名称 | 说明                   | 回调参数                                                   |
+| -------- | ---------------------- | ---------------------------------------------------------- |
+| validate | 任一表单项被校验后触发 | 被校验的表单项 prop 值，校验是否通过，错误消息（如果存在） |
+
+Form-Item Attributes
+
+| 参数           | 说明                                                         | 类型    | 可选值                          | 默认值 |
+| -------------- | ------------------------------------------------------------ | ------- | ------------------------------- | ------ |
+| prop           | 表单域 model 字段，在使用 validate、resetFields 方法的情况下，该属性是必填的 | string  | 传入 Form 组件的 model 中的字段 | —      |
+| label          | 标签文本                                                     | string  | —                               | —      |
+| label-width    | 表单域标签的的宽度，例如 '50px'。支持 auto。                 | string  | —                               | —      |
+| required       | 是否必填，如不设置，则会根据校验规则自动生成                 | boolean | —                               | false  |
+| rules          | 表单验证规则                                                 | object  | —                               | —      |
+| error          | 表单域验证错误信息, 设置该值会使表单验证状态变为error，并显示该错误信息 | string  | —                               | —      |
+| show-message   | 是否显示校验错误信息                                         | boolean | —                               | true   |
+| inline-message | 以行内形式展示校验信息                                       | boolean | —                               | false  |
+| size           | 用于控制该表单域下组件的尺寸                                 | string  | medium / small / mini           | -      |
+
+Form-Item Slot
+
+| name  | 说明             |
+| ----- | ---------------- |
+| —     | Form Item 的内容 |
+| label | 标签文本的内容   |
+
+Form-Item Scoped Slot
+
+| name  | 说明                                           |
+| ----- | ---------------------------------------------- |
+| error | 自定义表单校验信息的显示方式，参数为 { error } |
+
+Form-Item Methods
+
+| 方法名        | 说明                                                 | 参数 |
+| ------------- | ---------------------------------------------------- | ---- |
+| resetField    | 对该表单项进行重置，将其值重置为初始值并移除校验结果 | -    |
+| clearValidate | 移除该表单项的校验结果                               | -    |
 
 ### `Table`表格
 
