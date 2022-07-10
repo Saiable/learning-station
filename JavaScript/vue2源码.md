@@ -1,4 +1,15 @@
-[toc]
+---
+title: Vue2源码
+date: 2022-7-01 06:40:42
+cover: false
+tags:
+  - Vue2
+  - 源码
+---
+
+
+
+[TOC]
 
 
 
@@ -413,7 +424,7 @@ initMixin(Vue) // 扩展了init方法
 export default Vue
 ```
 
-`initMixin`相当于扩展了`_init`方法，后续再有逻辑，可以再`initXXX(xxx)`，就可以把这些原型方法，扩展成一个个函数，通过函数的形式在原型上扩展功能
+`initMixin`相当于扩展了`_init`方法，后续再有逻辑，可以再`initXXX(xxx)`，就可以原型方法，扩展成一个个函数，通过函数的形式在原型上扩展功能
 
 靠谱！！！
 
@@ -516,8 +527,8 @@ export function initState(vm) {
 }
 
 function initData(vm) {
-    let data = vm.$options.data
-    data = typeof data === 'function' ? data.call(this) : data
+    let data = vm.$options.data // data可能是函数或对象
+    data = typeof data === 'function' ? data.call(vm) : data
     debugger
 }
 ```
@@ -534,9 +545,162 @@ function initData(vm) {
 
 ### `Vue`响应式原理实现
 
+对数据进行劫持
+
+`vue2`中采用了`defineProperty`
+
+我们定义一个方法`obeserve`观测数据，这是一个核心模块，我们单独新建observe文件夹进行处理
+
+`state.js`
+
+```js
+import {observe} from "./observe/index"
+// ...
+function initData(vm) {
+    let data = vm.$options.data
+    data = typeof data === 'function' ? data.call(vm) : data
+    // 对数据进行劫持,vue2中采用了defineProperty
+    // 定义一个方法obeserve观测数据，这是一个核心模块，我们单独新建observe文件夹进行处理
+    observe(data)
+}
+```
+
+新建`src/observe/index.js`
+
+```js
+export function observe(data) {
+    console.log(data)
+    debugger
+}
+```
+
+`observe`中可以拿到`data`数据
+
+![image-20220710111903316](vue2源码.assets/image-20220710111903316.png)
+
 #### 对象属性劫持
 
+在`observe`方法中对对象类型的数据进行劫持
 
+- 先对出入的数据类型进行判断，只对对象进行劫持
+- 如果一个对象被劫持过了，那就不需要再被劫持了
+  - 要判断一个对象是否被劫持过
+    - 可以添加一个实例，用实例来判断是否被劫持过。
+    - 在`observe`函数中新建`Observer`类，这个类是专门用来观测数据的，如果数据被观测过，那么它的实例就是这个类？？
+
+`observe/index.js`
+
+```js
+class Observer {
+    constructor(data) {
+
+    }
+}
+
+export function observe(data) {
+    console.log(data)
+    // 对data类型进行判断
+    if(typeof data !== 'object' || data == null) {
+        return // 只对对象进行劫持
+    }
+
+    // 如要考虑到一个对象已经被劫持的情况
+    // 如果一个对象已经被劫持过了，那么就不需要再被劫持
+    // 可以添加一个实例，用实例来判断是否被劫持过（应该是用实例身上的属性）
+    return new Observer(data)
+}
+```
+
+问题：`Object.defineProperty`只能劫持已经存在的数据，后增的或者删除的属性，是劫持不到的（为此`Vue2`单独写了一些`api`，比如说`$set`、`$delete`）
+
+- `Observer`类型中，要遍历对象
+  - 可以专门写个`walk`方法来干这件事，循环对象，对属性依此劫持
+  - 拿到所有的`key`后遍历，“重新”定义属性（重新定义的话，相当于这也是`Vue2`性能较差的原因）
+    - 定义`defineReactive`方法，实现将某个对象数据定义成响应式
+    - 该方法需要后面可以单独使用，所以写在`Observer`同级，并导出
+
+`observer/index.js`
+
+```js
+class Observer {
+    constructor(data) {
+        this.walk(data)
+    }
+
+    walk(data) { // 循环对象，对属性依此劫持
+        // 重新定义属性
+        Object.keys(data).forEach(key => defineReactive(data, key, data[key]))
+    }
+}
+
+// 向外导出该方法，供单独使用
+export function defineReactive(target, key, value) { // 闭包
+    Object.defineProperty(target, key, {
+        get() { // 取值的时候，会执行get
+            return value
+        },
+        set(newValue) { // 修改值的时候，会执行set
+            if(value == newValue) return
+            value = newValue
+        }
+    })
+}
+// ...
+```
+
+我们在使用的时候，打印下`vm`实例
+
+`index.html`
+
+```html
+  <script src="./vue.js"></script>
+  <script>
+    const vm = new Vue({
+        data() {
+            return {
+                name: 'sai',
+                age: 11
+            }
+        }
+    })
+    console.log(vm)
+  </script>
+```
+
+![image-20220711065304265](vue2源码.assets/image-20220711065304265.png)
+
+`vm`实例上直接是拿不到`data`的
+
+我们可以在`state.js`的`initData`中，在`vm`身上增加`_data`属性，将`data`赋值给`vm._data`（在观测属性之前）
+
+`state.js`
+
+```js
+// ...
+function initData(vm) {
+    let data = vm.$options.data
+    data = typeof data === 'function' ? data.call(vm) : data
+
+    // 观测之前，把data放一份到vm._data身上
+    vm._data = data
+    observe(data)
+}
+```
+
+此时`vm`身上就有了`_data`存着`data`的响应式数据
+
+![image-20220711065849648](vue2源码.assets/image-20220711065849648.png)
+
+思考：`vm._data=data`是在做观测数据之前存的，为啥`_data`也变成了响应式的呢？
+
+- 直接赋值是浅拷贝，`_data`和`data`变量中存的是对象值在堆内存中的引用地址
+- 原对象的值变了，且`_data`中存的引用地址没有变
+- 所以及时是后做的响应式，`vm._data`自然也是响应式的了
+- 观测数据之后，进行赋值也不是不可以
+
+
+
+现在还有个小问题，就是取数的时候，要写成`vm._data.name`，每次都要加个`_data`，有点恶心
 
 #### 实现对数组的方法劫持
 
