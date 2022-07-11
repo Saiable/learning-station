@@ -311,6 +311,10 @@ export default {
 }
 ```
 
+已完成：
+
+- [x] 1.使用`Rollup`搭建开发环境
+
 ### 初始化数据
 
 响应式数据的核心？数据变化了，我可以监控到
@@ -430,6 +434,8 @@ export default Vue
 
 需要把`options`扩展到`vm`实例上，为什么不直接用呢？
 
+- 或许扩展的第二个方法，怎么拿到`options`呢，只有通过实例来传递
+
 看下面的代码：
 
 `init.js`
@@ -440,7 +446,7 @@ export function initMixin(Vue) {
     	this.$options = options // Vue中采取$作为自己的变量，如果传入了形如$name这样的以$开头的变量，是不会被Vue实例管理的（Vue给自己画了个界限，所有以$开头的，都认为是自己的属性）
         debugger
     }
-    // Vue.prototypr.xxx = function() {
+    // Vue.prototype.xxx = function() {
         // 扩展的第二个方法，怎么拿到options呢，只有通过实例来传递
     // }
 }
@@ -474,7 +480,7 @@ export function initMixin(Vue) {
 
 挂载完`options`之后，干嘛呢？
 
-我们不是传入了`data`这些嘛，要进行初始化状态，`Vue`中的状态有很多，如`props/data/computed/watch`等等配置项，这些都是要初始化的
+我们不是传入了`data`这些配置项嘛，要进行初始化状态，`Vue`中的状态有很多，如`props/data/computed/watch`等等配置项，这些都是要初始化的
 
 ```js
 export function initMixin(Vue) {
@@ -545,6 +551,8 @@ function initData(vm) {
 
 ### `Vue`响应式原理实现
 
+#### 对象属性劫持
+
 对数据进行劫持
 
 `vue2`中采用了`defineProperty`
@@ -578,15 +586,18 @@ export function observe(data) {
 
 ![image-20220710111903316](vue2源码.assets/image-20220710111903316.png)
 
-#### 对象属性劫持
+
+
+##### 实现对象属性劫持
 
 在`observe`方法中对对象类型的数据进行劫持
 
-- 先对出入的数据类型进行判断，只对对象进行劫持
+- 先对传入的数据类型进行判断，只对对象进行劫持
 - 如果一个对象被劫持过了，那就不需要再被劫持了
   - 要判断一个对象是否被劫持过
     - 可以添加一个实例，用实例来判断是否被劫持过。
     - 在`observe`函数中新建`Observer`类，这个类是专门用来观测数据的，如果数据被观测过，那么它的实例就是这个类？？
+      - 这里看不明白，可以直接先往下看，到具体代码那儿就清楚了
 
 `observe/index.js`
 
@@ -615,7 +626,7 @@ export function observe(data) {
 
 - `Observer`类型中，要遍历对象
   - 可以专门写个`walk`方法来干这件事，循环对象，对属性依此劫持
-  - 拿到所有的`key`后遍历，“重新”定义属性（重新定义的话，相当于这也是`Vue2`性能较差的原因）
+  - 拿到所有的`key`后遍历，“重新”定义属性（重新定义的话，相当于每个`key`都要遍历，这也是`Vue2`性能较差的原因）
     - 定义`defineReactive`方法，实现将某个对象数据定义成响应式
     - 该方法需要后面可以单独使用，所以写在`Observer`同级，并导出
 
@@ -628,7 +639,7 @@ class Observer {
     }
 
     walk(data) { // 循环对象，对属性依此劫持
-        // 重新定义属性
+        // 重新定义属性 性能差
         Object.keys(data).forEach(key => defineReactive(data, key, data[key]))
     }
 }
@@ -669,7 +680,7 @@ export function defineReactive(target, key, value) { // 闭包
 
 ![image-20220711065304265](vue2源码.assets/image-20220711065304265.png)
 
-`vm`实例上直接是拿不到`data`的
+虽然定义了响应式，但此时`vm`实例上直接是拿不到`data`的
 
 我们可以在`state.js`的`initData`中，在`vm`身上增加`_data`属性，将`data`赋值给`vm._data`（在观测属性之前）
 
@@ -687,24 +698,311 @@ function initData(vm) {
 }
 ```
 
-此时`vm`身上就有了`_data`存着`data`的响应式数据
+此时`vm`身上就有了`_data`，存着`data`的响应式数据
 
 ![image-20220711065849648](vue2源码.assets/image-20220711065849648.png)
 
 思考：`vm._data=data`是在做观测数据之前存的，为啥`_data`也变成了响应式的呢？
 
 - 直接赋值是浅拷贝，`_data`和`data`变量中存的是对象值在堆内存中的引用地址
-- 原对象的值变了，且`_data`中存的引用地址没有变
-- 所以及时是后做的响应式，`vm._data`自然也是响应式的了
+- 原对象的值变了，但`_data`中存的引用地址没有变
+- 所以即使是后做的响应式，`vm._data`自然也是响应式的了
 - 观测数据之后，进行赋值也不是不可以
 
-
+##### 用户用法简化
 
 现在还有个小问题，就是取数的时候，要写成`vm._data.name`，每次都要加个`_data`，有点恶心
 
-#### 实现对数组的方法劫持
+我们能不能直接`vm.name`去取值呢
+
+- 当用户在`vm.name`上取值时，我们就代理到`vm._data.name`上
+- 将`vm._data`用`vm`来代理
+  - 依旧是做一个循环来处理
+  - 自定义`proxy`方法：`proxy(vm, '_data')`，代理`vm`身上的`_data`
+
+`state.js`
+
+```js
+// ...
+function proxy(vm, target, key) {
+    Object.defineProperty(vm, key, { // vm.name
+        get() {
+            return vm[target][key] // vm.name实际上是去vm._data.name上去取值了
+        }
+    })
+}
+
+function initData(vm) {
+    let data = vm.$options.data
+    data = typeof data === 'function' ? data.call(vm) : data
+    
+    vm._data = data
+    
+    observe(data)
 
 
+    // 将vm._data用vm来代理
+    for (let key in data) {
+        proxy(vm, '_data', key)
+    }
+}
+```
+
+![image-20220711144219711](vue2源码.assets/image-20220711144219711.png)
+
+我们先写`get`方法，可以看到`vm`代理了`vm._data`，身上有了`name`和`age`属性
+
+同样，在设置值时也要加个代理
+
+`state.js`
+
+```js
+// ...
+
+function proxy(vm, target, key) {
+    Object.defineProperty(vm, key, { // vm.name
+        get() {
+            return vm[target][key] // vm.name实际上是去vm._data.name上去取值了
+        },
+        set(newValue) {
+            vm[target][key] = newValue // 这性能的确不太好，每一个`key`都加了一层
+        }
+    })
+}
+
+// ...
+```
+
+![image-20220711145232926](vue2源码.assets/image-20220711145232926.png)
+
+此时写法上就可以更便捷的取值及修改值了
+
+##### 嵌套对象属性劫持
+
+还有个问题：上面的写法只会监测到对象的第一层，一旦传入的`data`是嵌套的，里面的属性并没有被监测到
+
+如下所示，`address`内部属性并没有被劫持
+
+`index.html`
+
+```html
+  <script src="./vue.js"></script>
+  <script>
+    const vm = new Vue({
+        data() {
+            return {
+                name: 'sai',
+                age: 11,
+                address: {
+                    street: 'RoadA',
+                    room: 123
+                }
+            }
+        }
+    })
+    console.log(vm.name)
+  </script>
+```
+
+![image-20220711145822997](vue2源码.assets/image-20220711145822997.png)
+
+当初的`defineReactive`函数，入参的`value`可能是个对象
+
+- 再次调用`observe`方法，如果`value`是个对象，会再次创建Observer实例，再次调用walk方法，劫持每个属性
+- 这样就实现了对所有的对象，都进行了属性劫持
+- 是个递归，性能消耗也是可以的
+
+`observe/index.js`
+
+```js
+class Observer {
+    constructor(data) {
+        this.walk(data)
+    }
+
+    walk(data) {
+        Object.keys(data).forEach(key => defineReactive(data, key, data[key]))
+    }
+}
+
+export function defineReactive(target, key, value) { // value可能是个对象
+    observe(value) // observe内部对value进行判断了，是个对象，会再次创建Observer实例，再次调用walk方法，劫持每个属性
+    Object.defineProperty(target, key, {
+        get() {
+            return value
+        },
+        set(newValue) {
+            if(value == newValue) return
+            value = newValue
+        }
+    })
+}
+
+export function observe(data) {
+
+    if(typeof data !== 'object' || data == null) {
+        return
+    }
+
+    return new Observer(data)
+}
+```
+
+此时不管传入的是几层，对象属性都是被劫持过了的
+
+![image-20220711151136480](vue2源码.assets/image-20220711151136480.png)
+
+
+
+至此，对象属性劫持的`define`核心逻辑就完成了
+
+- 循环对象，给对象用`defineReactive`方法，把属性重新定义
+  - 如果值还是对象的话，需要对这个对象进行递归操作
+  - 这个用户在取值和修改值时，就可以监控到
+- 对象被劫持完之后，为了方便用户获取，把`data`放在了`vm._data`上
+  - 再用`vm`代理`vm._data`，这样用户在取值和修改值时，只要写成`vm.name`即可
+
+已完成：
+
+- [x] 1.使用`Rollup`搭建开发环境
+- [x] 2.`Vue`响应式原理实现，对象属性劫持，深度属性劫持
+
+#### 数组的方法劫持
+
+如果`data`里面还有数组呢
+
+`index.html`
+
+```html
+  <script src="./vue.js"></script>
+  <script>
+    const vm = new Vue({
+        data() {
+            return {
+                name: 'sai',
+                age: 11,
+                address: {
+                    street: 'RoadA',
+                    room: 123
+                },
+                hobby: [ // data中含有数组
+                    'eat',
+                    'drink'
+                ]
+            }
+        }
+    })
+    console.log(vm.name)
+  </script>
+```
+
+我们看一下打印结果
+
+![image-20220711161920103](vue2源码.assets/image-20220711161920103.png)
+
+`defineProperty`把数组里的每个属性，都增加了`get`、`set`，虽然通过`vm.hobby[0]`取值时，的确会被监测到，但是一旦数据量大了，就很消耗内存了
+
+并且通过下标的方式来修改值，如修改第888个数组的值，`vm.hobby[888]=123`，一般也不会有这种操作
+
+修改数组，很少用索引来修改数组，并且内部劫持数组，会浪费性能
+
+用户一般都是都过方法来修改数组：`push`、`shift`等等
+
+在`observe/index.js`里的`Observer`类的构造函数中
+
+- 对数组类型进行判断
+  - 如果是数组
+    - 重写数组的方法，7个变异方法（可以修改数组本身的方法）
+    - 如果数组内部，还嵌套有对象，如`hobby:['eat','drink',{a:1}]`也应该对对象属性进行劫持
+      - 定义`observeArray`方法，实现该功能
+        - 循环传入的`data`，递归调用`observe`方法
+  - 如果不是数组
+    - 继续之前的逻辑，添加代理
+
+##### 数组中的对象属性劫持
+
+定义`observeArray`方法，对数组中的对象进行属性劫持
+
+`observe/index.js`
+
+```js
+class Observer {
+    constructor(data) {
+        if(Array.isArray(data)) {
+            // 这里我们可以重写数组的7个变异方法（可以修改数组本身）
+            this.observeArray(data) // 递归处理数组中的对象
+        } else {
+            this.walk(data)
+        }
+    }
+
+    walk(data) {
+        Object.keys(data).forEach(key => defineReactive(data, key, data[key]))
+    }
+    
+    observeArray(data) {
+        data.forEach(item => observe(item)) 
+    }
+}
+
+// ...
+```
+
+打印结果如下：
+
+![image-20220711164236905](vue2源码.assets/image-20220711164236905.png)
+
+我们在`defineReactive`的函数的`get`中添加打印语句：`console.log('key', key)`
+
+然后在样例中取数`vm.hobby[2].a`
+
+打印结果如下：
+
+![image-20220711165311701](vue2源码.assets/image-20220711165311701.png)
+
+表示先取了`hobby`，再取了`a`，说明数组中的对象，是可以被监控到的
+
+##### 数组的方法劫持
+
+如果是`vm.hobby.push['1']`，会打印了`hobby`，说明目前只能监控到`get`，无法监控到修改
+
+所以就需要重写数组的方法
+
+- 在传入的`data`对应的`__proto__`属性中，重写各个数组方法
+
+  - 给当前数组的的原型链，重新指向新的原型（也会覆盖掉`forEach`方法，可以先注释掉`observeArray`方法的调用）
+
+    `observe/index.js`
+
+    ```js
+    class Observer {
+        constructor(data) {
+            if(Array.isArray(data)) {
+                // 这里我们可以重写数组的7个变异方法（可以修改数组本身）
+                data.__proto__ = {
+                    push() {
+                        console.log('重写的push')
+                    }
+                }
+                // this.observeArray(data) // 递归处理数组中的对象
+            } else {
+                this.walk(data)
+            }
+        }
+    
+        walk(data) {
+            Object.keys(data).forEach(key => defineReactive(data, key, data[key]))
+        }
+        observeArray(data) {
+            data.forEach(item => observe(item))
+        }
+    }
+    // ...
+    ```
+
+    打印如下：
+
+    
 
 ### 模板编译原理
 
