@@ -1002,7 +1002,11 @@ class Observer {
 
     打印如下：
 
-    
+    ![image-20220712054236080](vue2源码.assets/image-20220712054236080.png)
+
+当然我们不可能直接这样重写`__proto__`，我们需要保留数组原有的特性，并且可以重写部分方法，`observe`文件夹下新建`array.js`
+
+`observe/array.js`
 
 ### 模板编译原理
 
