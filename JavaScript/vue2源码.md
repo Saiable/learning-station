@@ -5,6 +5,7 @@ cover: false
 tags:
   - Vue2
   - 源码
+typora-root-url: vue2源码
 ---
 
 
@@ -297,7 +298,7 @@ created dist/vue.js in 304ms
 
 全局上多了一个`Vue`的对象，升上的属性就是我们导出的，效果如下：
 
-![image-20220630185136069](vue2源码.assets/image-20220630185136069.png)
+![image-20220630185136069](image-20220630185136069.png)
 
 
 
@@ -455,7 +456,7 @@ export function initMixin(Vue) {
 
 可以看到，此时`Vue`上多了`$options`属性
 
-![image-20220702210913280](vue2源码.assets/image-20220702210913280.png)
+![image-20220702210913280](image-20220702210913280.png)
 
 
 
@@ -474,7 +475,7 @@ export function initMixin(Vue) {
 
 `this`和`vm`都指向`Vue`实例
 
-![image-20220702211212033](vue2源码.assets/image-20220702211212033.png)
+![image-20220702211212033](image-20220702211212033.png)
 
 
 
@@ -518,7 +519,7 @@ function initData(vm) {
 }
 ```
 
-![image-20220704063245372](vue2源码.assets/image-20220704063245372.png)
+![image-20220704063245372](image-20220704063245372.png)
 
 
 
@@ -584,7 +585,7 @@ export function observe(data) {
 
 `observe`中可以拿到`data`数据
 
-![image-20220710111903316](vue2源码.assets/image-20220710111903316.png)
+![image-20220710111903316](image-20220710111903316.png)
 
 
 
@@ -678,7 +679,7 @@ export function defineReactive(target, key, value) { // 闭包
   </script>
 ```
 
-![image-20220711065304265](vue2源码.assets/image-20220711065304265.png)
+![image-20220711065304265](image-20220711065304265.png)
 
 虽然定义了响应式，但此时`vm`实例上直接是拿不到`data`的
 
@@ -700,7 +701,7 @@ function initData(vm) {
 
 此时`vm`身上就有了`_data`，存着`data`的响应式数据
 
-![image-20220711065849648](vue2源码.assets/image-20220711065849648.png)
+![image-20220711065849648](image-20220711065849648.png)
 
 思考：`vm._data=data`是在做观测数据之前存的，为啥`_data`也变成了响应式的呢？
 
@@ -748,7 +749,7 @@ function initData(vm) {
 }
 ```
 
-![image-20220711144219711](vue2源码.assets/image-20220711144219711.png)
+![image-20220711144219711](image-20220711144219711.png)
 
 我们先写`get`方法，可以看到`vm`代理了`vm._data`，身上有了`name`和`age`属性
 
@@ -773,7 +774,7 @@ function proxy(vm, target, key) {
 // ...
 ```
 
-![image-20220711145232926](vue2源码.assets/image-20220711145232926.png)
+![image-20220711145232926](image-20220711145232926.png)
 
 此时写法上就可以更便捷的取值及修改值了
 
@@ -804,7 +805,7 @@ function proxy(vm, target, key) {
   </script>
 ```
 
-![image-20220711145822997](vue2源码.assets/image-20220711145822997.png)
+![image-20220711145822997](image-20220711145822997.png)
 
 当初的`defineReactive`函数，入参的`value`可能是个对象
 
@@ -850,7 +851,7 @@ export function observe(data) {
 
 此时不管传入的是几层，对象属性都是被劫持过了的
 
-![image-20220711151136480](vue2源码.assets/image-20220711151136480.png)
+![image-20220711151136480](image-20220711151136480.png)
 
 
 
@@ -898,7 +899,7 @@ export function observe(data) {
 
 我们看一下打印结果
 
-![image-20220711161920103](vue2源码.assets/image-20220711161920103.png)
+![image-20220711161920103](image-20220711161920103.png)
 
 `defineProperty`把数组里的每个属性，都增加了`get`、`set`，虽然通过`vm.hobby[0]`取值时，的确会被监测到，但是一旦数据量大了，就很消耗内存了
 
@@ -950,7 +951,7 @@ class Observer {
 
 打印结果如下：
 
-![image-20220711164236905](vue2源码.assets/image-20220711164236905.png)
+![image-20220711164236905](image-20220711164236905.png)
 
 我们在`defineReactive`的函数的`get`中添加打印语句：`console.log('key', key)`
 
@@ -958,7 +959,7 @@ class Observer {
 
 打印结果如下：
 
-![image-20220711165311701](vue2源码.assets/image-20220711165311701.png)
+![image-20220711165311701](image-20220711165311701.png)
 
 表示先取了`hobby`，再取了`a`，说明数组中的对象，是可以被监控到的
 
@@ -1002,11 +1003,13 @@ class Observer {
 
     打印如下：
 
-    ![image-20220712054236080](vue2源码.assets/image-20220712054236080.png)
+    ![image-20220712054236080](image-20220712054236080.png)
 
 当然我们不可能直接这样重写`__proto__`，我们需要保留数组原有的特性，并且可以重写部分方法，`observe`文件夹下新建`array.js`
 
 `observe/array.js`
+
+
 
 ### 模板编译原理
 
