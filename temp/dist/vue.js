@@ -39,17 +39,69 @@
     return Constructor;
   }
 
+  // 我们希望重写数组中的部分方法
+  var oldArrayProto = Array.prototype; // newArraryProto.__proto = oldArrayProto
+
+  var newArrayProto = Object.create(oldArrayProto); // 以oldArryarProto对象为原型对象，新建一个newArraryProto
+  // 找到所有的变异方法
+
+  var methods = ['push', 'pop', 'shift', 'unshift', 'reverse', 'sort', 'splice']; // concact slice都不会改变原数组
+
+  methods.forEach(function (method) {
+    // arr.push(1,2,3)
+    newArrayProto[method] = function () {
+      var _oldArrayProto$method;
+
+      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+        args[_key] = arguments[_key];
+      }
+
+      // 这里重写了数组方法
+      var result = (_oldArrayProto$method = oldArrayProto[method]).call.apply(_oldArrayProto$method, [this].concat(args)); // 内部调用原来的方法，一般称为函数的劫持（切片编程(切面编程)：自己写个功能，把以前的功能塞进去，外面可以做一些自己的事，aop）
+      // 我们需要对新增的数据，再次进行劫持
+
+
+      var inserted;
+      var ob = this.__ob__;
+
+      switch (method) {
+        case 'push':
+        case 'unshift':
+          // arr.unshift(1,2,3)
+          inserted = args;
+          break;
+
+        case 'splice':
+          // arr.splice(0, 1, {a:1}, {a:1})
+          inserted = args.slice(2);
+          break;
+      }
+
+      console.log('新增的内容', inserted);
+
+      if (inserted) {
+        // 对新增的内容再次进行观测
+        ob.observeArray(inserted);
+      }
+
+      return result;
+    };
+  });
+
   var Observer = /*#__PURE__*/function () {
     function Observer(data) {
       _classCallCheck(this, Observer);
 
+      // data.__ob__ = this
+      Object.defineProperty(data, '__ob__', {
+        value: this,
+        enumerable: false
+      });
+
       if (Array.isArray(data)) {
         // 这里我们可以重写数组的7个变异方法（可以修改数组本身）
-        data.__proto = {
-          push: function push() {
-            console.log('重写的push');
-          }
-        }; // this.observeArray(data) // 递归处理数组中的对象
+        data.__proto__ = newArrayProto;
+        this.observeArray(data); // 递归处理数组中的对象
       } else {
         this.walk(data);
       }
@@ -103,6 +155,10 @@
     // 如果一个对象已经被劫持过了，那么就不需要再被劫持
     // 可以添加一个实例，用实例来判断是否被劫持过（应该是用实例身上的属性）
 
+
+    if (data.__ob__ instanceof Observer) {
+      return data.__ob__; // 如果被代理过了，直接返回它的实例
+    }
 
     return new Observer(data);
   }

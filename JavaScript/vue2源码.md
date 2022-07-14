@@ -5,6 +5,8 @@ cover: false
 tags:
   - Vue2
   - 源码
+categories:
+  - Vue
 typora-root-url: vue2源码
 ---
 
@@ -1007,7 +1009,425 @@ class Observer {
 
 当然我们不可能直接这样重写`__proto__`，我们需要保留数组原有的特性，并且可以重写部分方法，`observe`文件夹下新建`array.js`
 
+- 存一份原来的`Array.prototype`，该对象上定义着各种方法
+
+  ```js
+  let oldArrayProto = Array.prototype
+  ```
+
+  ![image-20220714110255721](/image-20220714110255721.png)
+
+- 以`oldArrayProto`为原型定义新的变量
+
+  ```js
+  let newArrayProto = Object.create(oldArrayProto)
+  ```
+
+  目前`newArrayProto`是一个空对象，：
+
+  ![image-20220714110927390](/image-20220714110927390.png)
+
+- 定义所有的变异方法：
+
+  ```js
+  let methods = [
+      'push',
+      'pop',
+      'shift',
+      'unshift',
+      'reverse',
+      'sort',
+      'splice'
+  ]
+  ```
+
+- 遍历`methods`数组，给`newArrayProto`循环添加属性，这一步就是在重写
+
+  ```js
+  let oldArrayProto = Array.prototype
+  
+  let newArrayProto = Object.create(oldArrayProto)
+  let methods = [
+      'push',
+      'pop',
+      'shift',
+      'unshift',
+      'reverse',
+      'sort',
+      'splice'
+  ]
+  methods.forEach(method => {
+      newArrayProto[method] = function (...args) { // 这里重写了数组方法
+          return 'a'
+      }
+  })
+  ```
+
+  我们现在调用`newArrayProto`身上的方法，返回的都是自定义的`a`
+
+  ![image-20220714112458922](/image-20220714112458922.png)
+
+- 很明显，在返回之前调用一下原来的方法就可以了
+
+  - 这里要注意要，执行原来方法时的`this`指向问题，谁调的`this`应该就指向谁
+
+  ```js
+  methods.forEach(method => {
+      // arr.push(1,2,3)
+      newArrayProto[method] = function (...args) { // 这里重写了数组方法
+          const result = oldArrayProto[method].call(this, ...args) // 内部调用原来的方法，一般称为函数的劫持（切片编程(切面编程)：自己写个功能，把以前的功能塞进去，外面可以做一些自己的事，aop）
+          return result
+      }
+  })
+  ```
+
+- 最后导出`newArrayProto`对象，在`observe/index.js`中导入，并将`data`的隐式原型属性指向`newArrayProto`对象
+
+完整示例：
+
 `observe/array.js`
+
+```js
+// 我们希望重写数组中的部分方法
+
+let oldArrayProto = Array.prototype
+
+// newArraryProto.__proto = oldArrayProto
+export let newArrayProto = Object.create(oldArrayProto) // 以oldArryarProto对象为原型对象，新建一个newArraryProto
+
+// 找到所有的变异方法
+let methods = [
+    'push',
+    'pop',
+    'shift',
+    'unshift',
+    'reverse',
+    'sort',
+    'splice'
+] // concact slice都不会改变原数组
+
+methods.forEach(method => {
+    // arr.push(1,2,3)
+    newArrayProto[method] = function (...args) { // 这里重写了数组方法
+        const result = oldArrayProto[method].call(this, ...args) // 内部调用原来的方法，一般称为函数的劫持（切片编程(切面编程)：自己写个功能，把以前的功能塞进去，外面可以做一些自己的事，aop）
+        console.log('method', method) // 供使用时打印
+        return result
+    }
+})
+```
+
+`observe.index.js`
+
+```js
+import { newArrayProto } from './array'
+class Observer {
+    constructor(data) {
+        if(Array.isArray(data)) {
+            // 这里我们可以重写数组的7个变异方法（可以修改数组本身）
+            data.__proto__ = newArrayProto
+            // this.observeArray(data) // 递归处理数组中的对象
+        } else {
+            this.walk(data)
+        }
+    }
+
+    walk(data) { // 循环对象，对属性依此劫持
+        // 重新定义属性
+        Object.keys(data).forEach(key => defineReactive(data, key, data[key]))
+    }
+    observeArray(data) {
+        data.forEach(item => observe(item))
+    }
+}
+
+// ...
+```
+
+`index.html`测试
+
+```html
+  <script src="./vue.js"></script>
+  <script>
+    const vm = new Vue({
+        data() {
+            return {
+                name: 'sai',
+                age: 11,
+                address: {
+                    street: 'RoadA',
+                    room: 123
+                },
+                hobby: [
+                    'eat',
+                    'drink',
+                    {
+                        a: 1
+                    }
+                ]
+            }
+        }
+    })
+    vm.hobby.push('1')
+  </script>
+```
+
+测试下，用到的是什么方法，就会打印什么方法
+
+
+
+但是，如果追加的是一个对象，还会有问题
+
+```html
+  <script src="./vue.js"></script>
+  <script>
+	// ...
+      vm.hobby.unshift({a:1})
+  </script>
+```
+
+ps：记得取消之前的注释
+
+```js
+
+// ...
+        if(Array.isArray(data)) {
+            data.__proto__ = newArrayProto
+            this.observeArray(data) // 取消这里的注释
+        } else {
+            this.walk(data)
+        }
+// ...
+```
+
+可以看到，虽然`hobby`里面的对象被劫持了，但是数组中新增的对象，并没有被劫持
+
+因为目前我们只是拦截了变异方法，并没有对新增的属性做处理，即要对`args`做处理
+
+![image-20220714140840410](/image-20220714140840410.png)
+
+我们劫持了函数之后，也要对新增的数据再次进行劫持
+
+- 根据不同的方法，拿到新增的内容
+
+  ```js
+  methods.forEach(method => {
+  	newArrayProto[method] = function (...args) {
+  		// ...
+          // 我们需要对新增的数据，再次进行劫持
+          let inserted
+          switch (method) {
+              case 'push':
+              case 'unshift': // arr.unshift(1,2,3)
+                  inserted = args
+                  break
+              case 'splice': // arr.splice(0, 1, {a:1}, {a:1})
+                  inserted = args.slice(2)
+                  break
+              default:
+                  break
+          }
+          console.log('新增的内容', inserted)
+  		// inserted是一个数组
+          return result
+      }
+  })
+  ```
+
+  
+
+- 对新增的内容，再次进行观测
+
+  - `inserted`是一个数组，要对数组进行观测，需要拿到在`Observer`类中定义的`observeArray`方法，但不好直接拿到该方法
+
+  - 在`forEach`中，我们只能拿到`this`，指向的是上下文（指向的是调用`push`方法的那个对象）
+
+    - 之前在`index.html`中，调用的形式是`vm.hobby.push(1,2,3)`，也就是说，是`data`调用的`push`
+
+    - `Observer`类的构造函数中，在`data`上，自定义`__ob__`属性，指向`this`：`data.__ob__ = this`，这里的`this`指向的是`Observer`类的实例
+
+      ```js
+      class Observer {
+          constructor(data) {
+              data.__ob__ = this // `data`属性上再自定义`__ob__`属性，指向`Ovserver`的实例
+              if(Array.isArray(data)) {
+                  data.__proto__ = newArrayProto
+                  this.observeArray(data)
+              } else {
+                  this.walk(data)
+              }
+          }
+          // ...
+      }
+      ```
+
+    - 那么在`forEach`中，由于`this`指向的就是`data`，可以通过`this.__ob__`拿到`Observer`的实例，然后调用`observeArray`方法
+
+      - 在循环内部，就可以通过`this.__ob__.observeArray`对新增内容进行观测了
+      - 这并不是一种设计上的巧妙，是没办法解决了，只能写成这样
+
+      ```js
+      methods.forEach(method => {
+      	newArrayProto[method] = function (...args) {
+      		// ...
+              let inserted
+              let ob = this.__ob__ // 指向的是Observer类的实例
+              switch (method) {
+                  case 'push':
+                  case 'unshift':
+                      inserted = args
+                      break
+                  case 'splice':
+                      inserted = args.slice(2)
+                      break
+                  default:
+                      break
+              }
+      		// inserted是一个数组
+              if(inserted) {
+                  ob.observeArray(inserted) // 调用监测数组的方法
+              }
+              return result
+          }
+      })
+      ```
+
+    - 同时，另外一个好处是，也给`data`加了一个标识，如果`data`上有`__ob__`，则说明这个属性被观测过，可以借助此完善`observe`函数的判断
+
+      `observe/index.js`
+
+      ```js
+      import { newArrayProto } from './array'
+      class Observer {
+          constructor(data) {
+              data.__ob__ = this
+              if(Array.isArray(data)) {
+                  data.__proto__ = newArrayProto
+                  this.observeArray(data)
+              } else {
+                  this.walk(data)
+              }
+          }
+      
+          walk(data) {
+              Object.keys(data).forEach(key => defineReactive(data, key, data[key]))
+          }
+          observeArray(data) {
+              data.forEach(item => observe(item))
+          }
+      }
+      
+      export function defineReactive(target, key, value) {
+          observe(value) 
+          Object.defineProperty(target, key, {
+              get() {
+                  console.log('key', key)
+                  return value
+              },
+              set(newValue) {
+                  if(value == newValue) return
+                  value = newValue
+              }
+          })
+      }
+      
+      
+      export function observe(data) {
+          // 对data类型进行判断
+          if(typeof data !== 'object' || data == null) {
+              return // 只对对象进行劫持
+          }
+      
+          // 如要考虑到一个对象已经被劫持的情况
+          // 如果一个对象已经被劫持过了，那么就不需要再被劫持
+          // 可以添加一个实例，用实例来判断是否被劫持过（应该是用实例身上的属性）
+          if(data.__ob__ instanceof Observer) {
+              return data.__ob__ // 如果被代理过了，直接返回它的实例
+          }
+          return new Observer(data)
+      }
+      ```
+
+      - 但这样写行不行呢？我们再来测试下，看下页面
+
+        ![image-20220714151621487](/image-20220714151621487.png)
+
+        完犊子了，内存爆了！
+
+        咋回事，我们是为了解决`data`是数组的情况，给`data`添加了`__ob__`自定义属性
+
+        但是，如果`data`是对象，它会在先加一个自定义属性`__ob__`，这是合理的，相当于增加一个标识，这一步没问题，但到了下一步，走`walk`方法，会被`data`身上的`__ob__`属性，也是对象，然后在加一个，再走`walk`，就死循环了
+        
+        在`data.__ob__ = this`之前打个断点，执行到`walk`时，我们进入内部，看下`data`
+        
+        ![image-20220714190149824](/image-20220714190149824.png)
+        
+        再继续往下走到`observe`，添加条件断点：`key === __ob__`，不断点下一步，观察右边的调用栈，一直在增加
+        
+        ![image-20220714191311887](/image-20220714191311887.png)
+        
+        那么怎么处理呢？我们希望在遍历对象的时候，不能遍历到`__ob__`这个属性，让其变成不可枚举的即可。改写原来的写法：
+        
+        ```js
+        class Observer {
+            constructor(data) {
+                // data.__ob__ = this
+                // 在data上添加属性的同时，让其变成不可枚举的
+                // 并且这种写法，也没有影响到data位数组的情况
+                Object.defineProperty(data, '__ob__', {
+                    value: this,
+                    enumerable: false // 将__ob__变成不可枚举（循环的时候无法获取到）
+                })
+                if(Array.isArray(data)) {
+                    data.__proto__ = newArrayProto
+                    this.observeArray(data)
+                } else {
+                    this.walk(data)
+                }
+            }
+        	// ...
+        }
+        
+        ```
+
+- 此时我们再测试一下
+
+  `index.html`
+
+  ```html
+    <script src="./vue.js"></script>
+    <script>
+      const vm = new Vue({
+          data() {
+              return {
+                  name: 'sai',
+                  age: 11,
+                  address: {
+                      street: 'RoadA',
+                      room: 123
+                  },
+                  hobby: [
+                      'eat',
+                      'drink',
+                      {
+                          a: 1
+                      }
+                  ]
+              }
+          }
+      })
+      vm.hobby.unshift({a:1})
+      console.log(vm.hobby)
+    </script>
+  ```
+
+  数组里有四项，通过数组方法新增的对象，也有了`get`和`set`
+
+  ![image-20220714192439428](/image-20220714192439428.png)
+
+至此，数组的劫持，全部搞定
+
+- 数组劫持核心，就是重写数组的方法，并且去观测数组中的每一项
+  - 如果是数组的话，需要对每一项新增的属性，做一下判断，并且把数组的每一项，再进行观测
 
 
 
