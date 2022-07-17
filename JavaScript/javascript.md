@@ -1,207 +1,27 @@
+---
+title: JavaScript基础
+date: 2022-7-16 09:58:44
+cover: false
+tags:
+  - javascript
+categories:
+  - javascript
+typora-root-url: javascript
+---
+
 [TOC]
 
 
-
-# JavaScript基础
-
-## ECMAScript
-
-## BOM
-
-## DOM
-
-# jQuery
-
-## jQuery - AJAX
-
-### jQuery - AJAX 简介
-
-简短地说，在不重载整个网页的情况下，AJAX 通过后台加载数据，并在网页上进行显示。
-
- **如果没有 jQuery，AJAX 编程还是有些难度的。**
-
-编写常规的 AJAX 代码并不容易，因为不同的浏览器对 AJAX 的实现并不相同。这意味着您必须编写额外的代码对浏览器进行测试。不过，jQuery 团队为我们解决了这个难题，我们只需要一行简单的代码，就可以实现 AJAX 功能。
-
- [jQuery AJAX 简介](https://www.runoob.com/jquery/jquery-ajax-intro.html)
-
-[jQuery – AJAX get() 和 post() 方法](https://www.runoob.com/jquery/jquery-ajax-get-post.html) 
-
-### jQuery - AJAX load() 方法
-
-load() 方法从服务器加载数据，并把返回的数据放入被选元素中。
-
-`$(selector).load(URL,data,callback);`
-
-必需的 *URL* 参数规定您希望加载的 URL。
-
-可选的 *data* 参数规定与请求一同发送的查询字符串键/值对集合。
-
-可选的 *callback* 参数是 load() 方法完成后所执行的函数名称。
-
-```javascript
-$(document).ready(function(){
-	$("button").click(function(){
-		$("#div1").load("/try/ajax/demo_test.txt");
-	});
-});
-```
-
-下面的例子把 "demo_test.txt" 文件中 id="p1" 的元素的内容，加载到指定的` <div> `元素中：
-
-```javascript
-$("#div1").load("demo_test.txt #p1");
-```
-
-回调函数可以设置不同的参数：
-
-- *responseTxt* - 包含调用成功时的结果内容
-- *statusTXT* - 包含调用的状态
-- *xhr* - 包含 XMLHttpRequest 对象
-
-```javascript
-$("button").click(function(){
-  $("#div1").load("demo_test.txt",function(responseTxt,statusTxt,xhr){
-    if(statusTxt=="success")
-      alert("外部内容加载成功!");
-    if(statusTxt=="error")
-      alert("Error: "+xhr.status+": "+xhr.statusText);
-  });
-});
-```
-
-为了避免多页面情形下的代码重复，可以利用 load() 方法，将重复的部分（例如导航栏）放入单独的文件，使用下列方法进行导入：
-
-```javascript
-//1.当前文件中要插入的地方使用此结构：
-<div class="include" file="***.html"></div>
-
-//2.***.html中放入内容，用html格式仅仅因为会有编辑器的书写辅助。。
-
-//3.代码：
-$(".include").each(function() {
-    if (!!$(this).attr("file")) {
-        var $includeObj = $(this);
-        $(this).load($(this).attr("file"), function(html) {
-            $includeObj.after(html).remove(); //加载的文件内容写入到当前标签后面并移除当前标签
-        })
-    }
-});
-或者在index文件里只写重复部分，剩下的一股脑放各自单独文件 load() 进来~
-```
-
-### jQuery - AJAX get() 和 post() 方法
-
-两种在客户端和服务器端进行请求-响应的常用方法是：GET 和 POST。
-
-- *GET* - 从指定的资源请求数据
-- *POST* - 向指定的资源提交要处理的数据
-
-GET 基本上用于从服务器获得（取回）数据。注释：GET 方法可能返回缓存数据。
-
-POST 也可用于从服务器获取数据。不过，POST 方法不会缓存数据，并且常用于连同请求一起发送数据。
-
-$.get() 方法通过 HTTP GET 请求从服务器上请求数据。
-
-`$.get(URL,callback);`
-
-```javascript
-$("button").click(function(){
-  $.get("demo_test.php",function(data,status){
-    alert("数据: " + data + "\n状态: " + status);
-  });
-});
-```
-
-$.get() 的第一个参数是我们希望请求的 URL（"demo_test.php"）。
-
-第二个参数是回调函数。第一个回调参数存有被请求页面的内容，第二个回调参数存有请求的状态。
-
-$.post() 方法通过 HTTP POST 请求向服务器提交数据。
-
-`$.post(URL,data,callback);`
-
-```javascript
-$("button").click(function(){
-    $.post("/try/ajax/demo_test_post.php",
-    {
-        name:"菜鸟教程",
-        url:"http://www.runoob.com"
-    },
-    function(data,status){
-        alert("数据: \n" + data + "\n状态: " + status);
-    });
-});
-```
-
-$.post() 的第一个参数是我们希望请求的 URL ("demo_test_post.php")。
-
-然后我们连同请求（name 和 url）一起发送数据。
-
-"demo_test_post.php" 中的 PHP 脚本读取这些参数，对它们进行处理，然后返回结果。
-
-第三个参数是回调函数。第一个回调参数存有被请求页面的内容，而第二个参数存有请求的状态。
-
-**提示：** 这个 PHP 文件 ("demo_test_post.php") 类似这样：
-
-```php
-<?php
-$name = isset($_POST['name']) ? htmlspecialchars($_POST['name']) : '';
-$url = isset($_POST['url']) ? htmlspecialchars($_POST['url']) : '';
-echo '网站名: ' . $name;
-echo "\n";
-echo 'URL 地址: ' .$url;
-?>
-```
-
-### GET 和 POST 方法的区别：
-
-**1、发送的数据数量**
-
-在 GET 中，只能发送有限数量的数据，因为数据是在 URL 中发送的。
-
-在 POST 中，可以发送大量的数据，因为数据是在正文主体中发送的。
-
-**2、安全性**
-
-GET 方法发送的数据不受保护，因为数据在 URL 栏中公开，这增加了漏洞和黑客攻击的风险。
-
-POST 方法发送的数据是安全的，因为数据未在 URL 栏中公开，还可以在其中使用多种编码技术，这使其具有弹性。
-
-**3、加入书签中**
-
-GET 查询的结果可以加入书签中，因为它以 URL 的形式存在；而 POST 查询的结果无法加入书签中。
-
-**4、编码**
-
-在表单中使用 GET 方法时，数据类型中只接受 ASCII 字符。
-
-在表单提交时，POST 方法不绑定表单数据类型，并允许二进制和 ASCII 字符。
-
-**5、可变大小**
-
-GET 方法中的可变大小约为 2000 个字符。
-
-POST 方法最多允许 8 Mb 的可变大小。
-
-**6、缓存**
-
-GET 方法的数据是可缓存的，而 POST 方法的数据是无法缓存的。
-
-**7、主要作用**
-
-GET 方法主要用于获取信息。而 POST 方法主要用于更新数据。
-
-[get方法与post方法对比](
 
 # ES6~11
 
 [GitHub - lukehoban/es6features: Overview of ECMAScript 6 features](https://github.com/lukehoban/es6features)
 
-教程来源：
+教程来源：https://www.bilibili.com/video/BV1uK411H7on
 
 ## 变量及作用域
 
-### let变量声明及其作用域[¶](#let)
+### let变量声明及其作用域
 
 1.变量不能重复声明
 
@@ -211,9 +31,9 @@ GET 方法主要用于获取信息。而 POST 方法主要用于更新数据。
 
 4.不影响作用域链
 
-### let实践练习[¶](#let_1)
+**let实践练习**
 
-```
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -262,20 +82,19 @@ GET 方法主要用于获取信息。而 POST 方法主要用于更新数据。
 
 5.对于数组和对象的元素的修改，不算做对常量的修改，不会报错
 
-### 变量的解构赋值
+## 解构赋值
 
-`ES6`允许按照一定的模式从数组中提取值，对变量进行赋值，这被称为解构赋值
+`ES6`允许按照一定的模式从数组或对象中提取值，对变量进行赋值，这被称为解构赋值
 
-#### 数组的解构
+### 数组的解构
 
 ```js
-// 数组的解构
 const F4 = ['a','b','c','d'];
 let [a1,a2,a3,a4] = F4;
-
+console.log(a1,a2,a3,a4) // a b c d
 ```
 
-#### 对象的解构
+### 对象的解构
 
 ```js
 // 对象的解构
@@ -287,10 +106,10 @@ const person = {
     }
 };
 let {name,age,run} = person;
-run();
+run(); // 我可以跑步
 ```
 
-解构赋值的连续写法
+#### 对象解构赋值的连续写法
 
 ```js
 let obj = {
@@ -334,9 +153,9 @@ console.log('a', a)
 
 
 
-### 模板字符串
+## 模板字符串
 
-ES6引入新的声明字符串的方式
+`ES6`引入新的声明字符串的方式，类似于占位符
 
 ```
 ` `, ' ', " "
@@ -349,16 +168,16 @@ ES6引入新的声明字符串的方式
 3.变量拼接
 
 ```
-//${}
+// ${}
 let name = 'xiaoming'
 let result = `${name} is running`
 ```
 
-### 对象的简化写法[¶](#_3)
+## 对象的简化写法
 
-ES6允许在大括号里面，直接写入变量和函数，作为对象的属性和方法。这样的书写更加简洁。
+`ES6`允许在大括号里面，直接写入变量和函数，作为对象的属性和方法。这样的书写更加简洁。
 
-```
+```js
 let name = 'xiaoming';
 let change = function() {
   console.log('we can change you~');
@@ -374,20 +193,20 @@ const school = {
 
 ## 箭头函数
 
-### 箭头函数以及声明特点[¶](#_4)
+### 箭头函数以及声明特点
 
-ES6允许使用箭头`=>`定义函数
+`ES6`允许使用箭头`=>`定义函数
 
-```
+```js
 let fn = (a,b) => {
     return a + b;
 }
 let result = fn(1,2);
 ```
 
-1.this是静态的，this始终指向函数声明时所在作用域下的this的值
+1.`this`是静态的，`this`始终指向函数声明时所在作用域下的`this`的值
 
-```
+```js
 function getName() {
   console.log(this.name);
 }
@@ -411,7 +230,7 @@ getName2.call(person)//小明  this始终指向函数声明时所在作用域下
 
 call方法补充
 
-```
+```js
 var person = {
     fullName: function() {
         return this.firstName + " " + this.lastName;
@@ -430,7 +249,7 @@ person.fullName.call(person1);  // 将返回 "Bill Gates"
 
 2.不能作为构造函数实例化对象
 
-3.不能使用arguments变量
+3.不能使用`arguments`变量
 
 4.箭头函数的简写
 
@@ -440,25 +259,27 @@ person.fullName.call(person1);  // 将返回 "Bill Gates"
 2.省略花括号，当代码体只有一条语句的时候，此时return必须省略，而且语句的执行结果就是函数的返回值
 ```
 
-### 箭头函数的实践和应用场景[¶](#_5)
+### 箭头函数的实践和应用场景
 
-### 函数参数的默认值[¶](#_6)
+`pass`
 
-ES6允许给函数参数赋值初始值
+### 函数参数的默认值
+
+`ES6`允许给函数参数赋值初始值
 
 1.形参初始值 具有默认值的参数，一般要靠后（潜规则）
 
-```
+```js
 function add(a,b,c=10) {
   return a+b+c;
 }
-let result = add(1,2)
-console.log(result)//13
+let result = add(1, 2)
+console.log(result) //13
 ```
 
 2.与解构赋值相结合
 
-```
+```js
 function connect({host="127.0.0.1",username,password,port}) {
   console.log(host,username,password,port);
 }
@@ -469,37 +290,41 @@ connect({
 })
 ```
 
-## rest参数
+## `rest`参数
 
-ES6引入rest参数，用户获取函数的实参，用来代替arguments
+`ES6`引入`rest`参数，用户获取函数的实参，用来代替arguments
 
-```
+```js
 //ES5获取实参的方式
 function date() {
   console.log(arguments);
 }
-date('a','b','c');//[Arguments] { '0': 'a', '1': 'b', '2': 'c' }
+date('a','b','c'); // Arguments(3) ['a', 'b', 'c', callee: ƒ, Symbol(Symbol.iterator): ƒ]
 
 //rest参数
 function date02(...args) {
-    console.log(args);//结果是数组，可以使用数组的一些api，filer some every map等
+    console.log(args); // 结果是数组，可以使用数组的一些api，filer some every map等
 }
-date02('d','e','f');//[ 'd', 'e', 'f' ]
+date02('d','e','f'); // [ 'd', 'e', 'f' ]
 ```
 
-rest参数必须要放到参数的最后
+`rest`参数必须要放到参数的最后
 
-```
+```js
 function fn(a,b,...args) {
-    console.log(a,b,args)
+    console.log(a, b, args)
 }
-fn(1,2,3,4,5);//1 2 [ 3, 4, 5 ]
+fn(1,2,3,4,5); //1 2 [ 3, 4, 5 ]
 ```
 
 ## 扩展运算符
 
-```
-...`扩展运算符能将`数组`转化为逗号分隔的`参数序列
+`...`
+
+- `扩展运算符能将`数组`转化为逗号分隔的`参数序列
+
+```js
+
 //声明一个数组
 const boys = ['aa','bb','cc'];
 // => 'aa','bb','cc'
@@ -508,7 +333,7 @@ const boys = ['aa','bb','cc'];
 function chunwan(){
     console.log(arguments);
 }
-chunwan(boys);//Arguments [Array(3), callee: ƒ, Symbol(Symbol.iterator): ƒ]
+chunwan(boys);// Arguments [Array(3), callee: ƒ, Symbol(Symbol.iterator): ƒ]
 chunwan(...boys);//Arguments(3) ["aa", "bb", "cc", callee: ƒ, Symbol(Symbol.iterator): ƒ]     chunwan('aa','bb','cc);
 ```
 
@@ -516,7 +341,7 @@ chunwan(...boys);//Arguments(3) ["aa", "bb", "cc", callee: ƒ, Symbol(Symbol.ite
 
 1.数组的合并
 
-```
+```js
 //普通的数组合并
 const array1 = ['aa','bb'];
 const array2 = ['cc','dd'];
@@ -529,7 +354,7 @@ console.log(array4);//(4) ["aa", "bb", "cc", "dd"]
 
 2.数组的克隆
 
-```
+```js
 const testa = ['A','B','C'];
 const testCopy = [...testa];
 
@@ -538,7 +363,7 @@ console.log(testa,testCopy,testa === testCopy); //(3) ["A", "B", "C"] (3) ["A", 
 
 3.将伪数组转为真正的数组
 
-```
+```js
 const divs = document.querySelectorAll("div");
 console.log(divs);/deList(3) [div, div, div]
 
@@ -546,7 +371,7 @@ const divArr = [...divs];
 console.log(divArr);//(3) [div, div, div]
 ```
 
-## Symbol的介绍与 应用[¶](#symbol)
+## Symbol的介绍与 应用
 
 1.Symbol的值是唯一的，用来解决命名冲突的问题
 
@@ -943,7 +768,7 @@ p.then(function (value) {
 })
 ```
 
-### Promise封装读取文件[¶](#promise_1)
+### Promise封装读取文件
 
 普通方法调用
 
@@ -980,7 +805,7 @@ p.then(function (value) {
 //读取失败
 ```
 
-### 使用Promise封装ajax请求[¶](#promiseajax)
+### 使用Promise封装ajax请求
 
 需要放在html里面
 
@@ -1026,7 +851,7 @@ p.then(function (value) {
 </html>
 ```
 
-### Promise.prototype.then方法[¶](#promiseprototypethen)
+### Promise.prototype.then方法
 
 then方法的返回值
 
@@ -1069,7 +894,7 @@ p.then(value => {
 })
 ```
 
-### Promise实践练习[¶](#promise_2)
+### Promise实践练习
 
 ```
 //引入fs模块
@@ -1126,7 +951,7 @@ p.then(value => {
 向来枉费推移力，此日中流自在行。*/
 ```
 
-### Promise对象catch方法[¶](#promisecatch)
+### Promise对象catch方法
 
 ```
 const p = new Promise((resolve,reject) => {
@@ -1624,4 +1449,887 @@ import * as m3 from './m3.js';
 
 
 
-# 
+# API
+
+## `Object`
+
+### `Object.create()`
+
+**`Object.create()`** 方法用于创建一个新对象，使用现有的对象来作为新创建对象的原型（prototype）。
+
+```js
+const person = {
+  isHuman: false,
+  printIntroduction: function() {
+    console.log(`My name is ${this.name}. Am I human? ${this.isHuman}`);
+  }
+};
+
+const me = Object.create(person);
+
+me.name = 'Matthew'; // "name" is a property set on "me", but not on "person"
+me.isHuman = true; // inherited properties can be overwritten
+
+me.printIntroduction();
+// expected output: "My name is Matthew. Am I human? true"
+
+```
+
+我们可以在新建对象后打印`me`对象，看一下：
+
+```js
+const person = {
+  isHuman: false,
+  printIntroduction: function() {
+    console.log(`My name is ${this.name}. Am I human? ${this.isHuman}`);
+  }
+};
+
+const me = Object.create(person);
+console.dir(me)
+```
+
+在没有添加属性之前，`me`对象就是一个以`person`对象为原型的空对象
+
+![image-20220714091058110](/image-20220714091058110.png)
+
+也可以在`me`对象上重写`person`身上的方法，并不会覆盖原型对象上的方法
+
+
+
+### `Object.entries`
+
+遍历对象的，将`key-value`的形式，转换成二维数组
+
+![image-20220629110203985](/image-20220629110203985.png)
+
+### `Object.keys()`
+
+### `Object.values`
+
+
+
+### `Object.assign()`
+
+https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
+
+#### 语法
+
+```js
+Object.assign(target, ...sources) 
+```
+
+- 参数
+
+  - `target`
+
+    目标对象，接收源对象属性的对象，也是修改后的返回值。
+
+  - `sources`
+
+    源对象，包含将被合并的属性。
+
+- 返回值
+
+  - 目标对象，即函数的返回值是合并后的`target`
+
+#### 描述
+
+如果目标对象与源对象具有相同的 [key](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/keys)，则目标对象中的属性将被源对象中的属性覆盖，后面的源对象的属性将类似地覆盖前面的源对象的属性。
+
+`Object.assign` 方法只会拷贝源对象 *可枚举的* 和 *自身的* 属性到目标对象。该方法使用源对象的 `[[Get]]` 和目标对象的 `[[Set]]`，它会调用 [getters](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Functions/get) 和 [setters](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Functions/set)。故它分配属性，而不仅仅是复制或定义新的属性。如果合并源包含 getters，这可能使其不适合将新属性合并到原型中。
+
+为了将属性定义（包括其可枚举性）复制到原型，应使用 [`Object.getOwnPropertyDescriptor()`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/getOwnPropertyDescriptor) 和 [`Object.defineProperty()`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty)，基本类型 [`String`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String) 和 [`Symbol`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Symbol) 的属性会被复制。
+
+如果赋值期间出错，例如如果属性不可写，则会抛出 [`TypeError`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/TypeError)；如果在抛出异常之前添加了任何属性，则会修改 `target` 对象（译者注：换句话说，`Object.assign()` 没有“回滚”之前赋值的概念，它是一个尽力而为、可能只会完成部分复制的方法）。
+
+> **备注：** `Object.assign()` 不会在 `source` 对象值为 [`null`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/null) 或 [`undefined`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/undefined) 时抛出错误。
+
+#### 示例
+
+##### 复制对象
+
+```js
+const obj = { a: 1 };
+const copy = Object.assign({}, obj);
+console.log(copy); // { a: 1 }
+
+```
+
+##### 深拷贝问题
+
+针对[深拷贝 (en-US)](https://developer.mozilla.org/en-US/docs/Glossary/Deep_copy), 需要使用其他办法，因为 `Object.assign()` 只复制属性值。
+
+假如源对象是一个对象的引用，它仅仅会复制其引用值。
+
+```js
+function test() {
+  'use strict';
+
+  let obj1 = { a: 0 , b: { c: 0}};
+  let obj2 = Object.assign({}, obj1);
+  console.log(JSON.stringify(obj2)); // { "a": 0, "b": { "c": 0}}
+
+  obj1.a = 1;
+  console.log(JSON.stringify(obj1)); // { "a": 1, "b": { "c": 0}}
+  console.log(JSON.stringify(obj2)); // { "a": 0, "b": { "c": 0}}
+
+  obj2.a = 2;
+  console.log(JSON.stringify(obj1)); // { "a": 1, "b": { "c": 0}}
+  console.log(JSON.stringify(obj2)); // { "a": 2, "b": { "c": 0}}
+
+  obj2.b.c = 3;
+  console.log(JSON.stringify(obj1)); // { "a": 1, "b": { "c": 3}}
+  console.log(JSON.stringify(obj2)); // { "a": 2, "b": { "c": 3}}
+
+  // Deep Clone
+  obj1 = { a: 0 , b: { c: 0}};
+  let obj3 = JSON.parse(JSON.stringify(obj1));
+  obj1.a = 4;
+  obj1.b.c = 4;
+  console.log(JSON.stringify(obj3)); // { "a": 0, "b": { "c": 0}}
+}
+
+test();
+
+```
+
+##### 合并对象
+
+```js
+const o1 = { a: 1 };
+const o2 = { b: 2 };
+const o3 = { c: 3 };
+
+const obj = Object.assign(o1, o2, o3);
+console.log(obj); // { a: 1, b: 2, c: 3 }
+console.log(o1);  // { a: 1, b: 2, c: 3 }, target object itself is changed.
+console.log(o1 === obj) // true
+```
+
+##### 合并具有相同属性的对象
+
+```js
+const o1 = { a: 1, b: 1, c: 1 };
+const o2 = { b: 2, c: 2 };
+const o3 = { c: 3 };
+
+const obj = Object.assign({}, o1, o2, o3);
+console.log(obj); // { a: 1, b: 2, c: 3 }
+
+```
+
+属性会被后续参数中具有相同属性的其他对象覆盖。
+
+##### 拷贝 `Symbol` 类型属性
+
+```js
+const o1 = { a: 1 };
+const o2 = { [Symbol('foo')]: 2 };
+
+const obj = Object.assign({}, o1, o2);
+console.log(obj); // { a : 1, [Symbol("foo")]: 2 } (cf. bug 1207182 on Firefox)
+Object.getOwnPropertySymbols(obj); // [Symbol(foo)]
+
+```
+
+##### 原型链上的属性和不可枚举属性不能被复制
+
+```js
+const obj = Object.create({ foo: 1 }, { // foo is on obj's prototype chain.
+  bar: {
+    value: 2  // bar is a non-enumerable property.
+  },
+  baz: {
+    value: 3,
+    enumerable: true  // baz is an own enumerable property.
+  }
+});
+
+console.log(obj) // {baz: 3, bar: 2} 另外：{foo: 1}在obj的原型链上
+
+const copy = Object.assign({}, obj);
+console.log(copy); // { baz: 3 }
+```
+
+##### 基本类型会被包装为对象
+
+```js
+const v1 = 'abc';
+const v2 = true;
+const v3 = 10;
+const v4 = Symbol('foo');
+
+const obj = Object.assign({}, v1, null, v2, undefined, v3, v4);
+// Primitives will be wrapped, null and undefined will be ignored.
+// Note, only string wrappers can have own enumerable properties.
+console.log(obj); // { "0": "a", "1": "b", "2": "c" }
+
+```
+
+##### 异常会打断后续拷贝任务
+
+```js
+const target = Object.defineProperty({}, 'foo', {
+  value: 1,
+  writable: false
+}); // target.foo is a read-only property
+
+Object.assign(target, { bar: 2 }, { foo2: 3, foo: 3, foo3: 3 }, { baz: 4 });
+// TypeError: "foo" is read-only
+// The Exception is thrown when assigning target.foo
+
+console.log(target.bar);  // 2, the first source was copied successfully.
+console.log(target.foo2); // 3, the first property of the second source was copied successfully.
+console.log(target.foo);  // 1, exception is thrown here.
+console.log(target.foo3); // undefined, assign method has finished, foo3 will not be copied.
+console.log(target.baz);  // undefined, the third source will not be copied either.
+
+```
+
+![image-20220712160608598](/image-20220712160608598.png)
+
+##### 拷贝访问器
+
+如果源对象里有`getter`，正常情况下会返回`getters`的值
+
+现在希望把`getters`的访问器属性也整到目标对象中，定义了`completeAssign`方法
+
+```js
+const obj = {
+  foo: 1,
+  get bar() {
+    return 2;
+  }
+};
+
+let copy1 = Object.assign({}, obj);
+console.log(copy1);
+// { foo: 1, bar: 2 }
+// The value of copy.bar is obj.bar's getter's return value.
+
+// This is an assign function that copies full descriptors
+function completeAssign(target, ...sources) {
+  sources.forEach(source => {
+    let descriptors = Object.keys(source).reduce((descriptors, key) => {
+      descriptors[key] = Object.getOwnPropertyDescriptor(source, key);
+      return descriptors;
+    }, {});
+
+    // By default, Object.assign copies enumerable Symbols, too
+    Object.getOwnPropertySymbols(source).forEach(sym => {
+      let descriptor = Object.getOwnPropertyDescriptor(source, sym);
+      if (descriptor.enumerable) {
+        descriptors[sym] = descriptor;
+      }
+    });
+    Object.defineProperties(target, descriptors);
+  });
+  return target;
+}
+
+copy2 = completeAssign({}, obj);
+console.log(copy2);
+// { foo:1, get bar() { return 2 } }
+
+```
+
+#### 参见
+
+- [Polyfill of `Object.assign` in `core-js`](https://github.com/zloirock/core-js#ecmascript-object)
+- [`Object.defineProperties()`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperties)
+- [属性的可枚举性和所有权](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Enumerability_and_ownership_of_properties)
+- [构造字面量对象时使用展开语法](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Spread_syntax#构造字面量对象时使用展开语法)
+
+## `Date`
+
+Date对象用于处理日期和时间。
+
+创建Date对象的语法：
+
+```
+var myDate=new Date()
+```
+
+注释：Date 对象会自动把当前日期和时间保存为其初始值。
+
+date对象获取时间日期的方法如下：
+
+```
+// 获取当前日期时间
+var myDate = new Date();
+myDate.toLocaleDateString();                //获取当前日期
+var mytime=myDate.toLocaleTimeString();     //获取当前时间
+myDate.toLocaleString( );                   //获取日期与时间
+ 
+myDate.getYear();                //获取当前年份(2位)
+myDate.getFullYear();            //获取完整的年份(4位,1970-????)
+myDate.getMonth();               //获取当前月份(0-11,0代表1月)
+myDate.getDate();                //获取当前日(1-31)
+myDate.getDay();                 //获取当前星期X(0-6,0代表星期天)
+myDate.getTime();                //获取当前时间(从1970.1.1开始的毫秒数)
+myDate.getHours();               //获取当前小时数(0-23)
+myDate.getMinutes();             //获取当前分钟数(0-59)
+myDate.getSeconds();             //获取当前秒数(0-59)
+myDate.getMilliseconds();        //获取当前毫秒数(0-999)
+
+// 获取当前日期时间
+function getDatetime() {
+    var now = new Date();
+    var year = now.getFullYear();       
+    var month = now.getMonth() + 1;     
+    var day = now.getDate();            
+    var hh = now.getHours();            
+    var mm = now.getMinutes();          
+    var ss = now.getSeconds();          
+    var clock = year + "-";
+    if (month < 10)
+        clock += "0";
+    clock += month + "-";
+    if (day < 10)
+        clock += "0";
+    clock += day + " ";
+    if (hh < 10)
+        clock += "0";
+    clock += hh + ":";
+    if (mm < 10) clock += '0';
+    clock += mm + ":";
+    if (ss < 10) clock += '0';
+    clock += ss;
+    return clock;}
+
+// 获取当前日期时间
+function timestampToTime(timestamp) {
+    var date = new Date(timestamp);
+    var Y = date.getFullYear() + '-';
+    var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
+    var D = date.getDate() < 10 ? '0' + date.getDate() : date.getDate() + ' ';
+    var hh = date.getHours() < 10 ? '0' + date.getHours() : date.getHours() + ':';
+    var mm = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes() + ':';
+    var ss = date.getSeconds() < 10 ? '0' + date.getDate() : date.getSeconds() ;
+    return Y + M + D + hh + mm + ss;}
+```
+
+
+
+踩过这个坑，还有下一个坑等着你，这一路就是给自己填坑，坑填多了，也就习惯了，直到这一路平坦了，也就无怨无悔了。
+
+转载 ： https://www.cnblogs.com/xiaofeilin/p/14468107.html
+
+ 
+
+\-------------------------------------------------------------------------
+
+
+
+```
+  onConfirm(date) {
+      const date1 = this.timestampToTime(date);
+      console.log(date1);
+      this.text = ` ${date1} `;
+    },
+    onSubmit(values) {
+      console.log("submit", values);
+    },
+    onClickLeft() {
+      this.$router.push({
+        path: "/home/index",
+      });
+    },
+    // 获取当前日期时间
+    timestampToTime(timestamp) {
+      var date = new Date(timestamp);
+      var Y = date.getFullYear() + "-";
+      var M =
+        (date.getMonth() + 1 < 10
+          ? "0" + (date.getMonth() + 1)
+          : date.getMonth() + 1) + "-";
+      var D = date.getDate() < 10 ? "0" + date.getDate() : date.getDate() + " ";
+      var text = " ";
+      var hh =
+        date.getHours() < 10 ? "0" + date.getHours() : date.getHours() + ":";
+      var mm =
+        date.getMinutes() < 10
+          ? "0" + date.getMinutes()
+          : date.getMinutes() + ":";
+      var ss =
+        date.getSeconds() < 10 ? "0" + date.getDate() : date.getSeconds();
+      return Y + M + D + text + hh + mm + ss;
+    }
+```
+
+
+
+ 
+
+![img](1251386-20210807173934199-1577629554.png)
+
+ 
+
+
+
+```
+onConfirm(date) {
+      var now = new Date();
+      var Today = now.getDate();
+
+      const date2 = date.getDate(); //签到的时间
+      if (Today != date2) {
+        Toast.fail("请选择今天日期,签到！");
+      } else {
+        const date1 = this.timestampToTime(date);
+        this.text = ` ${date1} `;
+        Toast.success("签到成功");
+      }
+    },
+```
+
+
+
+## `for in & for of`
+
+- `for in`是`ES5`标准，遍历**对象**的键名：`key`
+
+  - 想遍历对象的属性，可以用`for in`循环, 或内建的`Object.keys()`方法
+
+    ```js
+    let person1 = {
+        age: '19',
+        name: 'sai',
+        address: 'beijing'
+    }
+    
+    for(let key in person1) {
+        console.log(key) // age name address
+        console.log(person1[key]) // 19 sai beijing
+    }
+    ```
+
+  - **`Object.keys(myObject)`获取对象的实例属性组成的数组，不包括原型方法和属性**
+
+    ```js
+    let person1 = {
+        age: '19',
+        name: 'sai',
+        address: 'beijing'
+    }
+    
+    let res = Object.keys(person1)
+    console.log(res) // ['age', 'name', 'address']
+    ```
+
+    
+
+- `for of`是`ES6`标准，遍历**数组**的值：`value`
+
+  - **`for of`不支持普通对象**，
+
+  - 如果非要用`for in`遍历数组，会遍历**数组**所有的可枚举属性，包括原型。例如的原型方法`method`和`name`属性
+
+    ```js
+    Object.prototype.objCustom = function () {}; 
+    Array.prototype.arrCustom = function () {};
+    
+    let iterable = [3, 5, 7];
+    iterable.foo = "hello";
+    
+    for (let i in iterable) { // 如果非要用`for in`遍历数组，得到的是索引，及所有可枚举的属性，包括原型
+      console.log(i); //  0, 1, 2, "foo", "arrCustom", "objCustom"
+    }
+    
+    
+    for (let i of iterable) {
+      console.log(i); // 3, 5, 7
+    ```
+
+    - 故而一般不用**`for in`遍历数组而用来遍历对象** ，这也就是`for of`存在的意义了,**`for of `不遍历`method`和`name`,适合用来遍历数组**
+
+    - 如果非要用`for in`遍历数组，得到的是索引，及所有可枚举的属性，包括原型
+
+      - 索引是字符串型的数字，因而不能直接进行几何运算
+
+        ```js
+        let person2 = [
+            'name', 'age', 'address'
+        ]
+        
+        for(let key in person2) {
+            console.log(typeof key) // string
+            console.log(person2[key]) // name age address
+        }
+        ```
+
+      - 遍历顺序可能不是实际的内部顺序
+
+      - 别用`for in`遍历数据就行了
+
+## `Array`
+
+### `Array.prototype.forEach()`
+
+`forEach() `方法对数组的每个元素执行一次给定的函数。
+
+```js
+const array1 = ['a', 'b', 'c'];
+
+array1.forEach(element => console.log(element));
+
+// expected output: "a"
+// expected output: "b"
+// expected output: "c"
+
+```
+
+## `Function`
+
+### `Function.prototype.call()`
+
+`call() `方法使用一个指定的` this `值和单独给出的一个或多个参数来调用一个函数。
+
+```js
+function Product(name, price) {
+  this.name = name;
+  this.price = price;
+}
+
+function Food(name, price) {
+  Product.call(this, name, price);
+  this.category = 'food';
+}
+
+console.log(new Food('cheese', 5).name);
+// expected output: "cheese"
+
+```
+
+
+
+## `this`
+
+分不同的情况
+
+- 例一：构造函数中的`this`，一般都指向其自身
+
+  ```js
+  function Product(name, price) {
+    console.log(this)
+    this.name = name;
+    this.price = price;
+  }
+  
+  const p = new Product('a',1)
+  console.log(p)
+  ```
+
+  ![image-20220714092924481](/image-20220714092924481.png)
+
+- 例二：函数中调用了另外一个函数，另外一个函数中的`this`是`window`，本身的`this`函数构造还是函数自身
+
+  ```js
+  function Product(name, price) {
+    console.log('Product', this)
+    this.name = name;
+    this.price = price;
+  }
+  
+  function Food(name, price) {
+    Product(name,price)
+    console.log('Food', this)
+    this.category = 'food';
+  }
+  
+  console.log(new Food('cheese', 5));
+  
+  ```
+
+  `Food`的实例上，没有`name`和`price`属性
+
+  ![image-20220714093303895](/image-20220714093303895-16577623861601.png)
+
+  例三：使用`call()`方法指定`Product`的`this`为`Food`函数，然后添加属性的操作，就是在`Food`函数上进行的，结果自然就有`name`和`age`属性了
+
+  ```js
+  function Product(name, price) {
+    console.log('Product', this)
+    this.name = name;
+    this.price = price;
+  }
+  
+  
+  function Food(name, price) {
+    // Product(name,price)
+    Product.call(this, name, price)
+    console.log('Food', this)
+    this.category = 'food';
+  }
+  
+  console.log(new Food('cheese', 5));
+  
+  ```
+
+  ![image-20220714093724427](/image-20220714093724427.png)
+
+  我的理解：
+
+  - `this`，它实际上对应着程序顺序执行时的某一个具体的（函数）对象的一个引用
+
+  - 类似于对象给自身添加属性的操作，`this.name`这些也是在给函数对象自身添加属性
+
+  - `call()`方法改变的是啥，就是告诉程序，`this`的指向变成了`Food`函数，你给我在`Food`函数对象上执行`Product`函数，而`Product`函数根据拿到的`this`添加的`name`和`price`属性，自然就添加到了`Food`函数对象上
+
+  - 至于为啥直接在`Food`函数，运行`Product`函数时，`Product`函数内部的`this`指向了`window`全局对象，我们再来看几个案例
+
+    - 我们上面打印`this`的时机，都是在生成实例对象时打印的
+
+    - 现在我们直接运行函数，打印内部的`this`
+
+    - 在《JS高级程序设计》第四版的第5章 基本引用类型，5.4 单例内置对象，5.4.1 `Global`，4`window`，可以认识到
+
+      - 浏览器将 `window`对象实现为 `Global`对象的代理。因此，所有全局作用域中声明的变量和函数都变成了 `window` 的属性。
+
+        ```js
+        var color = "red"; 
+        function sayColor() { 
+         console.log(window.color); 
+        } 
+        window.sayColor(); // "red"
+        ```
+
+      - 另一种获取 Global 对象的方式是：
+
+        ```js
+        let global = function() { 
+         return this; 
+        }();
+        ```
+
+        这段代码创建一个立即调用的函数表达式，返回了 `this` 的值。如前所述，当一个函数在没有明确（通过成为某个对象的方法，或者通过 `call()/apply()`）指定 `this` 值的情况下执行时，`this` 值等于`Global` 对象。
+
+        因此，调用一个简单返回 `this` 的函数是在任何执行上下文中获取 Global 对象的通用方式。
+
+    - 到这儿我们就可以理解，为啥在`Food`函数中，直接运行`Product`函数，`Product`函数中的`this`是`window`
+
+    - 补充：
+
+      当一个函数明确成为某个对象的方法时，其`this`指向该对象
+
+      ```js
+      let p1 = {
+         Product: function () {
+           console.log('Product', this)
+           this.name = 'aa';
+           this.price = 1;
+         },
+         this: this
+      }
+      p1.Product()
+      console.log(p1)
+      ```
+
+      ![image-20220714101722961](/image-20220714101722961.png)
+
+    - 这`this`在不同情况下，为啥总会变来变去呢？
+
+      - 那得看10.0.2` this` 这一小节了
+
+      - 在标准函数中，`this` 引用的是把函数当成方法调用的上下文对象，这时候通常称其为 `this` 值（在网页的全局上下文中调用函数时，`this` 指向 `windows`）。
+
+        ```js
+        window.color = 'red'; 
+        let o = { 
+         color: 'blue' 
+        }; 
+        function sayColor() { 
+         console.log(this.color); 
+        } 
+        sayColor(); // 'red' 
+        o.sayColor = sayColor; 
+        o.sayColor(); // 'blue'
+        ```
+
+        
+
+
+
+# jQuery
+
+## jQuery - AJAX
+
+### jQuery - AJAX 简介
+
+简短地说，在不重载整个网页的情况下，AJAX 通过后台加载数据，并在网页上进行显示。
+
+ **如果没有 jQuery，AJAX 编程还是有些难度的。**
+
+编写常规的 AJAX 代码并不容易，因为不同的浏览器对 AJAX 的实现并不相同。这意味着您必须编写额外的代码对浏览器进行测试。不过，jQuery 团队为我们解决了这个难题，我们只需要一行简单的代码，就可以实现 AJAX 功能。
+
+ [jQuery AJAX 简介](https://www.runoob.com/jquery/jquery-ajax-intro.html)
+
+[jQuery – AJAX get() 和 post() 方法](https://www.runoob.com/jquery/jquery-ajax-get-post.html) 
+
+### jQuery - AJAX load() 方法
+
+load() 方法从服务器加载数据，并把返回的数据放入被选元素中。
+
+`$(selector).load(URL,data,callback);`
+
+必需的 *URL* 参数规定您希望加载的 URL。
+
+可选的 *data* 参数规定与请求一同发送的查询字符串键/值对集合。
+
+可选的 *callback* 参数是 load() 方法完成后所执行的函数名称。
+
+```javascript
+$(document).ready(function(){
+	$("button").click(function(){
+		$("#div1").load("/try/ajax/demo_test.txt");
+	});
+});
+```
+
+下面的例子把 "demo_test.txt" 文件中 id="p1" 的元素的内容，加载到指定的` <div> `元素中：
+
+```javascript
+$("#div1").load("demo_test.txt #p1");
+```
+
+回调函数可以设置不同的参数：
+
+- *responseTxt* - 包含调用成功时的结果内容
+- *statusTXT* - 包含调用的状态
+- *xhr* - 包含 XMLHttpRequest 对象
+
+```javascript
+$("button").click(function(){
+  $("#div1").load("demo_test.txt",function(responseTxt,statusTxt,xhr){
+    if(statusTxt=="success")
+      alert("外部内容加载成功!");
+    if(statusTxt=="error")
+      alert("Error: "+xhr.status+": "+xhr.statusText);
+  });
+});
+```
+
+为了避免多页面情形下的代码重复，可以利用 load() 方法，将重复的部分（例如导航栏）放入单独的文件，使用下列方法进行导入：
+
+```javascript
+//1.当前文件中要插入的地方使用此结构：
+<div class="include" file="***.html"></div>
+
+//2.***.html中放入内容，用html格式仅仅因为会有编辑器的书写辅助。。
+
+//3.代码：
+$(".include").each(function() {
+    if (!!$(this).attr("file")) {
+        var $includeObj = $(this);
+        $(this).load($(this).attr("file"), function(html) {
+            $includeObj.after(html).remove(); //加载的文件内容写入到当前标签后面并移除当前标签
+        })
+    }
+});
+或者在index文件里只写重复部分，剩下的一股脑放各自单独文件 load() 进来~
+```
+
+### jQuery - AJAX get() 和 post() 方法
+
+两种在客户端和服务器端进行请求-响应的常用方法是：GET 和 POST。
+
+- *GET* - 从指定的资源请求数据
+- *POST* - 向指定的资源提交要处理的数据
+
+GET 基本上用于从服务器获得（取回）数据。注释：GET 方法可能返回缓存数据。
+
+POST 也可用于从服务器获取数据。不过，POST 方法不会缓存数据，并且常用于连同请求一起发送数据。
+
+$.get() 方法通过 HTTP GET 请求从服务器上请求数据。
+
+`$.get(URL,callback);`
+
+```javascript
+$("button").click(function(){
+  $.get("demo_test.php",function(data,status){
+    alert("数据: " + data + "\n状态: " + status);
+  });
+});
+```
+
+$.get() 的第一个参数是我们希望请求的 URL（"demo_test.php"）。
+
+第二个参数是回调函数。第一个回调参数存有被请求页面的内容，第二个回调参数存有请求的状态。
+
+$.post() 方法通过 HTTP POST 请求向服务器提交数据。
+
+`$.post(URL,data,callback);`
+
+```javascript
+$("button").click(function(){
+    $.post("/try/ajax/demo_test_post.php",
+    {
+        name:"菜鸟教程",
+        url:"http://www.runoob.com"
+    },
+    function(data,status){
+        alert("数据: \n" + data + "\n状态: " + status);
+    });
+});
+```
+
+$.post() 的第一个参数是我们希望请求的 URL ("demo_test_post.php")。
+
+然后我们连同请求（name 和 url）一起发送数据。
+
+"demo_test_post.php" 中的 PHP 脚本读取这些参数，对它们进行处理，然后返回结果。
+
+第三个参数是回调函数。第一个回调参数存有被请求页面的内容，而第二个参数存有请求的状态。
+
+**提示：** 这个 PHP 文件 ("demo_test_post.php") 类似这样：
+
+```php
+<?php
+$name = isset($_POST['name']) ? htmlspecialchars($_POST['name']) : '';
+$url = isset($_POST['url']) ? htmlspecialchars($_POST['url']) : '';
+echo '网站名: ' . $name;
+echo "\n";
+echo 'URL 地址: ' .$url;
+?>
+```
+
+### GET 和 POST 方法的区别：
+
+**1、发送的数据数量**
+
+在 GET 中，只能发送有限数量的数据，因为数据是在 URL 中发送的。
+
+在 POST 中，可以发送大量的数据，因为数据是在正文主体中发送的。
+
+**2、安全性**
+
+GET 方法发送的数据不受保护，因为数据在 URL 栏中公开，这增加了漏洞和黑客攻击的风险。
+
+POST 方法发送的数据是安全的，因为数据未在 URL 栏中公开，还可以在其中使用多种编码技术，这使其具有弹性。
+
+**3、加入书签中**
+
+GET 查询的结果可以加入书签中，因为它以 URL 的形式存在；而 POST 查询的结果无法加入书签中。
+
+**4、编码**
+
+在表单中使用 GET 方法时，数据类型中只接受 ASCII 字符。
+
+在表单提交时，POST 方法不绑定表单数据类型，并允许二进制和 ASCII 字符。
+
+**5、可变大小**
+
+GET 方法中的可变大小约为 2000 个字符。
+
+POST 方法最多允许 8 Mb 的可变大小。
+
+**6、缓存**
+
+GET 方法的数据是可缓存的，而 POST 方法的数据是无法缓存的。
+
+**7、主要作用**
+
+GET 方法主要用于获取信息。而 POST 方法主要用于更新数据。
+
+[get方法与post方法对比](

@@ -3,17 +3,21 @@ title:《JavaScript高级程序设计（第4版）》
 date:2022-7-9 07:31:58
 tags:
   - js书籍
+categories:
+  - 书籍
 cover:false
 typora-root-url: 《JS高级程序设计》
 ---
 
 
 
-# `JavaScript高级程序设计（第4版）`
+**`JavaScript高级程序设计（第4版）`**
 
 > 关于第四版出版的若干问题：https://www.zhihu.com/question/20825869
 >
 > 正如权威指南作者所说，最新的参考现在在网上可以轻易查到，还实时更新，不存在时效问题。他推荐的是 Mozilla 的 [MDN Web Docs](https://link.zhihu.com/?target=https%3A//wiki.developer.mozilla.org/zh-CN/) 和 Node 的 [Node.js参考文档](https://link.zhihu.com/?target=http%3A//nodejs.org/api)。
+
+
 
 # 语言基础
 
@@ -110,6 +114,112 @@ typora-root-url: 《JS高级程序设计》
 
 
 
+# 基本引用类型
+
+
+
+# 集合引用类型
+
+## `Object`
+
+
+
+## `Array`
+
+### 操作方法
+
+#### `concact()`：合并数组
+
+- 可以在现有数组全部元素基础上创建一个新数组。
+
+- 它首先会创建一个当前数组的副本，然后再把它的参数添加到副本末尾，最后返回这个新构建的数组。
+
+  - 如果传入一个或多个数组，则 `concat()`会把这些数组的每一项都添加到结果数组。
+  - 如果参数不是数组，则直接把它们添加到结果数组末尾。
+
+  ```js
+  let colors = ["red", "green", "blue"]; 
+  let colors2 = colors.concat("yellow", ["black", "brown"]); 
+  console.log(colors); // ["red", "green","blue"] 
+  console.log(colors2); // ["red", "green", "blue", "yellow", "black", "brown"]
+  ```
+
+- 打平数组
+
+- 操作不影响原始数组
+
+#### `slice()`：截取数组
+
+- 创建一个包含原有数组中一个或多个元素的新数组
+
+- 可以接收一个或两个参数：返回元素的开始索引和结束索引。
+
+  - 如果只有一个参数，则 `slice()`会返回该索引到数组末尾的所有元素。
+  - 如果有两个参数，则 `slice()`返回从开始索引到结束索引对应的所有元素，其中不包含结束索引对应的元素（左闭右开）。
+
+  ```js
+  let colors = ["red", "green", "blue", "yellow", "purple"]; 
+  let colors2 = colors.slice(1); 
+  let colors3 = colors.slice(1, 4); 
+  alert(colors2); // green,blue,yellow,purple 
+  alert(colors3); // green,blue,yellow
+  ```
+
+- 如果 `slice()`的参数有负值，那么就以数值长度加上这个负值的结果确定位置。
+
+  - 比如，在包含 5 个元素的数组上调用 `slice(-2,-1`)，就相当于调用 slice(3,4)。
+  - 如果结束位置小于开始位置，则返回空数组。
+
+- 操作不影响原始数组
+
+#### `splice()`：删除、插入或替换数组元素
+
+- 删除：
+
+  - 需要给 `splice()`**传 2 个参数**：要删除的第一个元素的位置和要删除的元素数量。
+  - 可以从数组中删除任意多个元素，比如 `splice(0, 2)`会删除前两个元素。
+
+- 插入
+
+  - 需要给 `splice()`传 3 个参数：开始位置、0（要删除的元素数量）和要插入的元素，可以在数组中指定的位置插入元素。第三个参数之后还可以传第四个、第五个参数，乃至任意多个要插入的元素。
+  - 比如，`splice(2, 0, "red", "green")`会从数组位置 2 开始插入字符串"`red`"和"`green`"。
+
+- 替换（先删除，再替换）
+
+  - `splice()`在删除元素的同时可以在指定位置插入新元素，同样要传入 3 个参数：开始位置、要删除元素的数量和要插入的任意多个元素。要插入的元素数量不一定跟删除的元素数量一致。
+  - 比如，`splice(2, 1, "red", "green")`会在位置 2 删除一个元素，然后从该位置开始向数组中插入"red"和"green"。
+
+- 我的思考：
+
+  - 只要第二个参数不为0，就是删除元素了
+  - 只要有两个以上的参数，就是插入元素了
+  - 具体删了谁，插入了谁，在哪个位置插入的，看具体参数的值即可
+
+- `splice()`方法始终返回这样一个数组，它包含从数组中被删除的元素（如果没有删除元素，则返回空数组）。
+
+  ```js
+  let colors = ["red", "green", "blue"]; 
+  let removed = colors.splice(0,1); // 删除第一项
+  console.log(colors); // green,blue 
+  console.log(removed); // red，只有一个元素的数组
+  
+  removed = colors.splice(1, 0, "yellow", "orange"); // 在位置 1 插入两个元素，原来在位置1的blue被挤后面去了
+  console.log(colors); // green,yellow,orange,blue 
+  console.log(removed); // 空数组
+  
+  removed = colors.splice(1, 1, "red", "purple"); // 插入两个值，删除一个元素
+  console.log(colors); // green,red,purple,orange,blue 
+  console.log(removed); // yellow，只有一个元素的数组
+  ```
+
+- 操作会影响到原数组
+
+# 迭代器与生成器
+
+
+
+
+
 # 对象、类与面向对象
 
 ## 理解对象
@@ -200,3 +310,6 @@ console.dir(person)
 ### 概述
 
 ### 工厂模式
+
+
+

@@ -10,11 +10,7 @@ categories:
 typora-root-url: vue2源码
 ---
 
-
-
 [TOC]
-
-
 
 # 教程一
 
@@ -29,8 +25,6 @@ typora-root-url: vue2源码
 
 > 目标：掌握`Vue2`**核心源码及核心设计思想**
 
-
-
 **第二周**（从0手写`VueRouter`及`Vuex`）
 
 - 掌握`HashHistory`、`BrowserHistory`及路由钩子实现原理，及`RouterView`、`RouterLink`组件实现
@@ -38,16 +32,12 @@ typora-root-url: vue2源码
 
 > 目标：掌握前端路由实现原理及状态管理实现原理
 
-
-
 **第三周**
 
 - 剖析`Vue2`源码，调试`Vue2`核心源码
 - `Vue2`常见面试题解析
 
 > 目标：掌握如何阅读框架源码，掌握`Vue`相关面试题
-
-
 
 **第四周**（`TS`详解、掌握`TS`核心应用）
 
@@ -57,8 +47,6 @@ typora-root-url: vue2源码
 
 > 目标：掌握`TS`的使用为学习`Vue3`做准备
 
-
-
 **第五周**（`Vue3`核心讲解）
 
 - 掌握`Vue3`核心语法及组件化开发，`Vue3`新特性和新增`API`
@@ -66,8 +54,6 @@ typora-root-url: vue2源码
 - `Vue3 + TS`后台管理系统项目实战（一）
 
 > 目标：快速上手`Vue3`，利用`Vue3 + TS`开发项目
-
-
 
 **第六周**（`Vue3`项目实战）
 
@@ -104,7 +90,6 @@ npm i @babel/core
 
 # 安装预设(比如说怎么把let、const转换成var)
 npm i @babel/preset-env
-
 ```
 
 实操注意点：
@@ -115,6 +100,7 @@ npm i @babel/preset-env
 [root@VM-4-12-centos VUE2_STAGE]# npm i rollup rollup-plugin-babel @babel/core @babel/preset-env -D
 npm WARN deprecated rollup-plugin-babel@4.4.0: This package has been deprecated and is no longer maintained. Please use @rollup/plugin-babel.
 ```
+
 
 解决办法：
 
@@ -150,7 +136,6 @@ npm i @rollup/plugin-babel -D
     "rollup": "^2.75.7"
   }
 }
-
 ```
 
 根目录`VUE2-STAGE`新建`rollup`配置文件`rollup.config.js`
@@ -178,8 +163,6 @@ export default {
 }
 ```
 
-
-
 根目录新建`.babelrc`文件
 
 ```json
@@ -191,8 +174,6 @@ export default {
 ```
 
 配置较少的话，也可以直接写在`rollup.config.js`中
-
-
 
 在`package.json`中添加`npm run dev`脚本
 
@@ -208,8 +189,6 @@ export default {
 // ...
 ```
 
-
-
 根目录新建打包入口文件`src/index.js`
 
 ```js
@@ -217,10 +196,7 @@ export const a = 100
 export default {
     a: 1
 }
-
 ```
-
-
 
 测试能否打包
 
@@ -240,7 +216,6 @@ bundles ./src/index.js → dist/vue.js...
 created dist/vue.js in 304ms
 
 [2022-06-30 17:36:35] waiting for changes...
-
 ```
 
 根目录下会生成之前配置的目录及文件夹
@@ -251,8 +226,6 @@ created dist/vue.js in 304ms
 |-- vue.js
 `-- vue.js.map
 ```
-
-
 
 `index.js`对应的打包文件
 
@@ -275,10 +248,7 @@ created dist/vue.js in 304ms
 
 }));
 //# sourceMappingURL=vue.js.map
-
 ```
-
-
 
 可以新建`index.html`并引入该打包文件
 
@@ -301,8 +271,6 @@ created dist/vue.js in 304ms
 全局上多了一个`Vue`的对象，升上的属性就是我们导出的，效果如下：
 
 ![image-20220630185136069](image-20220630185136069.png)
-
-
 
 `index.js`中也可以设置断点，进行调试
 
@@ -328,8 +296,6 @@ export default {
 
 满足上面要求的数据，就是响应式数据。简单点来说，响应式数据变化可以更新视图
 
-
-
 不考虑工程化开发，当初在`html`中我们是这么写`Vue`代码的
 
 把所有需要的数据，都放在配置对象里
@@ -337,7 +303,7 @@ export default {
 ```html
 <script src='vue.js'></script>
 <script>
-	const vm = new Vue({
+    const vm = new Vue({
         data: {
             name: 'sai',
             age: 18
@@ -346,13 +312,11 @@ export default {
 </script>
 ```
 
-
-
 > Tips：`Vue2`中没有用类的写法，因为类的方法如果有很多，就都耦合在一起了，函数的写法直接`Vue.prototype`就可以了（虽然类也可以Vue.prototype这样写，但一般不会这样搞）
->
+> 
 > ```js
 > function Vue() {
->     
+> 
 > }
 > 
 > Vue.prototype.a = function(){}
@@ -361,10 +325,8 @@ export default {
 > 
 > export default Vue
 > ```
->
+> 
 > 并且可以将扩展的功能单独放在一个文件中，方便管理
-
-
 
 那么现在要干嘛呢？
 
@@ -446,21 +408,18 @@ export default Vue
 ```js
 export function initMixin(Vue) {
     Vue.prototype._init = function(options) {
-    	this.$options = options // Vue中采取$作为自己的变量，如果传入了形如$name这样的以$开头的变量，是不会被Vue实例管理的（Vue给自己画了个界限，所有以$开头的，都认为是自己的属性）
+        this.$options = options // Vue中采取$作为自己的变量，如果传入了形如$name这样的以$开头的变量，是不会被Vue实例管理的（Vue给自己画了个界限，所有以$开头的，都认为是自己的属性）
         debugger
     }
     // Vue.prototype.xxx = function() {
         // 扩展的第二个方法，怎么拿到options呢，只有通过实例来传递
     // }
 }
-
 ```
 
 可以看到，此时`Vue`上多了`$options`属性
 
 ![image-20220702210913280](image-20220702210913280.png)
-
-
 
 写法优化
 
@@ -469,7 +428,7 @@ export function initMixin(Vue) {
     Vue.prototype._init = function(options) {
         const vm = this // 保留下this，不然后面一直写this，写法上有点恶心
         vm.$options = options // 将用户的选项挂载到实例上
-      	debugger      
+          debugger      
 
     }
 }
@@ -478,8 +437,6 @@ export function initMixin(Vue) {
 `this`和`vm`都指向`Vue`实例
 
 ![image-20220702211212033](image-20220702211212033.png)
-
-
 
 挂载完`options`之后，干嘛呢？
 
@@ -490,9 +447,9 @@ export function initMixin(Vue) {
     Vue.prototype._init = function(options) {
         const vm = this
         vm.$options = options
-            
+
         // 初始化状态 data/computed/watch等等配置项
-    	initState(vm)
+        initState(vm)
         // 初始化状态之后，还要去编译模板、创建虚拟dom等
     }
 }
@@ -505,7 +462,7 @@ function initState(vm) {
     //if(opts.props) {
     //    initProps()
     //}
-    
+
     // 处理`data`
     if(opts.data) {
         initData(vm)
@@ -517,13 +474,11 @@ function initData(vm) {
     let data = vm.$options.data // data有两种情况，对象或函数
     console.log(this) // 这里的this是undefined
     data = typeof data === 'function' ? data.call(this) : data // 对data类型进行判断后，拿到data
-	debugger
+    debugger
 }
 ```
 
 ![image-20220704063245372](image-20220704063245372.png)
-
-
 
 将`initState`和`initData`这两个初始化数据的方法，单独抽出来，放到`state.js`中
 
@@ -545,7 +500,7 @@ function initData(vm) {
 至此，状态初始化中的数据初始化，已经完成了第一步，拿到用户自定义配置
 
 > 本小节技能点需完善的地方
->
+> 
 > - 浏览器控制台调试大全
 > - `js`中`this`的系列问题
 > - `js`中的`call`方法
@@ -588,8 +543,6 @@ export function observe(data) {
 `observe`中可以拿到`data`数据
 
 ![image-20220710111903316](image-20220710111903316.png)
-
-
 
 ##### 实现对象属性劫持
 
@@ -738,9 +691,9 @@ function proxy(vm, target, key) {
 function initData(vm) {
     let data = vm.$options.data
     data = typeof data === 'function' ? data.call(vm) : data
-    
+
     vm._data = data
-    
+
     observe(data)
 
 
@@ -855,8 +808,6 @@ export function observe(data) {
 
 ![image-20220711151136480](image-20220711151136480.png)
 
-
-
 至此，对象属性劫持的`define`核心逻辑就完成了
 
 - 循环对象，给对象用`defineReactive`方法，把属性重新定义
@@ -942,7 +893,7 @@ class Observer {
     walk(data) {
         Object.keys(data).forEach(key => defineReactive(data, key, data[key]))
     }
-    
+
     observeArray(data) {
         data.forEach(item => observe(item)) 
     }
@@ -972,11 +923,11 @@ class Observer {
 所以就需要重写数组的方法
 
 - 在传入的`data`对应的`__proto__`属性中，重写各个数组方法
-
+  
   - 给当前数组的的原型链，重新指向新的原型（也会覆盖掉`forEach`方法，可以先注释掉`observeArray`方法的调用）
-
+    
     `observe/index.js`
-
+    
     ```js
     class Observer {
         constructor(data) {
@@ -1002,33 +953,33 @@ class Observer {
     }
     // ...
     ```
-
+    
     打印如下：
-
+    
     ![image-20220712054236080](image-20220712054236080.png)
 
 当然我们不可能直接这样重写`__proto__`，我们需要保留数组原有的特性，并且可以重写部分方法，`observe`文件夹下新建`array.js`
 
 - 存一份原来的`Array.prototype`，该对象上定义着各种方法
-
+  
   ```js
   let oldArrayProto = Array.prototype
   ```
-
-  ![image-20220714110255721](/image-20220714110255721.png)
+  
+  ![image-20220714110255721](image-20220714110255721.png)
 
 - 以`oldArrayProto`为原型定义新的变量
-
+  
   ```js
   let newArrayProto = Object.create(oldArrayProto)
   ```
-
+  
   目前`newArrayProto`是一个空对象，：
-
-  ![image-20220714110927390](/image-20220714110927390.png)
+  
+  ![image-20220714110927390](image-20220714110927390.png)
 
 - 定义所有的变异方法：
-
+  
   ```js
   let methods = [
       'push',
@@ -1042,7 +993,7 @@ class Observer {
   ```
 
 - 遍历`methods`数组，给`newArrayProto`循环添加属性，这一步就是在重写
-
+  
   ```js
   let oldArrayProto = Array.prototype
   
@@ -1062,24 +1013,100 @@ class Observer {
       }
   })
   ```
-
+  
   我们现在调用`newArrayProto`身上的方法，返回的都是自定义的`a`
-
-  ![image-20220714112458922](/image-20220714112458922.png)
+  
+  ![image-20220714112458922](image-20220714112458922.png)
 
 - 很明显，在返回之前调用一下原来的方法就可以了
-
-  - 这里要注意要，执行原来方法时的`this`指向问题，谁调的`this`应该就指向谁
-
-  ```js
-  methods.forEach(method => {
-      // arr.push(1,2,3)
-      newArrayProto[method] = function (...args) { // 这里重写了数组方法
-          const result = oldArrayProto[method].call(this, ...args) // 内部调用原来的方法，一般称为函数的劫持（切片编程(切面编程)：自己写个功能，把以前的功能塞进去，外面可以做一些自己的事，aop）
-          return result
-      }
-  })
-  ```
+  
+  - 这里要注意要，如果不改变`this`的指向，比如调用`push`方法的时候，实际上就是`oldArrayProto`这个原型对象调用了`push`方法，属性会被加到原型对象上面，样例：
+    
+    ```js
+    let oldArrayProto = Array.prototype
+    
+    let newArrayProto = Object.create(oldArrayProto) 
+    
+    // 找到所有的变异方法
+    let methods = [
+        'push',
+        'pop',
+        'shift',
+        'unshift',
+        'reverse',
+        'sort',
+        'splice'
+    ]
+    
+    methods.forEach(method => {
+        newArrayProto[method] = function (...args) { 
+            // const result = oldArrayProto[method].call(this, ...args) 
+            const result = oldArrayProto[method](...args) 
+    
+            return result
+        }
+    })
+    
+    let data1 = ['a']
+    data1.__proto__ = newArrayProto
+    data1.push('b', 'c')
+    
+    console.log(data1)
+    ```
+    
+    可以看到，`push`方法全都作用在了`oldArrayProto`身上了，因为方法本身就是定义在它身上的
+    
+    ![image-20220715091536149](/image-20220715091536149.png)
+  
+  - 需要注意`this`指向问题，谁调的`this`应该就指向谁，所以要使用`call`方法，将`push`方法执行时的上下文，改为`data`本身
+    
+    ```js
+    let oldArrayProto = Array.prototype
+    
+    let newArrayProto = Object.create(oldArrayProto) 
+    
+    // 找到所有的变异方法
+    let methods = [
+        'push',
+        'pop',
+        'shift',
+        'unshift',
+        'reverse',
+        'sort',
+        'splice'
+    ]
+    
+    methods.forEach(method => {
+        newArrayProto[method] = function (...args) { 
+            const result = oldArrayProto[method].call(this, ...args) 
+            // const result = oldArrayProto[method](...args) 
+    
+            return result
+        }
+    })
+    
+    let data1 = ['a']
+    data1.__proto__ = newArrayProto
+    data1.push('b', 'c')
+    
+    console.log(data1)
+    ```
+    
+    `push`方法指定了正确的上下文：
+    
+    ![image-20220715091732694](/image-20220715091732694.png)
+  
+  - 本例如下：
+    
+    ```js
+    methods.forEach(method => {
+        // arr.push(1,2,3)
+        newArrayProto[method] = function (...args) { // 这里重写了数组方法
+            const result = oldArrayProto[method].call(this, ...args) // 内部调用原来的方法，一般称为函数的劫持（切片编程(切面编程)：自己写个功能，把以前的功能塞进去，外面可以做一些自己的事，aop）
+            return result
+        }
+    })
+    ```
 
 - 最后导出`newArrayProto`对象，在`observe/index.js`中导入，并将`data`的隐式原型属性指向`newArrayProto`对象
 
@@ -1173,14 +1200,12 @@ class Observer {
 
 测试下，用到的是什么方法，就会打印什么方法
 
-
-
 但是，如果追加的是一个对象，还会有问题
 
 ```html
   <script src="./vue.js"></script>
   <script>
-	// ...
+    // ...
       vm.hobby.unshift({a:1})
   </script>
 ```
@@ -1188,7 +1213,6 @@ class Observer {
 ps：记得取消之前的注释
 
 ```js
-
 // ...
         if(Array.isArray(data)) {
             data.__proto__ = newArrayProto
@@ -1201,18 +1225,24 @@ ps：记得取消之前的注释
 
 可以看到，虽然`hobby`里面的对象被劫持了，但是数组中新增的对象，并没有被劫持
 
-因为目前我们只是拦截了变异方法，并没有对新增的属性做处理，即要对`args`做处理
+因为目前我们只是拦截了变异方法，并没有对新增的属性做处理，即要对`rest`参数`args`做处理
 
-![image-20220714140840410](/image-20220714140840410.png)
+![image-20220714140840410](image-20220714140840410.png)
 
 我们劫持了函数之后，也要对新增的数据再次进行劫持
 
-- 根据不同的方法，拿到新增的内容
+- 拿到`rest`参数（是个数组），根据调用的方法做不同的处理
+  - `push`、`unshift`
+    - 直接可以用过`rest`参数获取到
+  - `splice`
+    - 如果是删除操作，`splice`方法是没有第三个参数的，`args`是为
 
+- 根据不同的方法，拿到新增的内容
+  
   ```js
   methods.forEach(method => {
-  	newArrayProto[method] = function (...args) {
-  		// ...
+      newArrayProto[method] = function (...args) {
+          // ...
           // 我们需要对新增的数据，再次进行劫持
           let inserted
           switch (method) {
@@ -1220,31 +1250,27 @@ ps：记得取消之前的注释
               case 'unshift': // arr.unshift(1,2,3)
                   inserted = args
                   break
-              case 'splice': // arr.splice(0, 1, {a:1}, {a:1})
-                  inserted = args.slice(2)
+              case 'splice': // arr.splice(0, 1, {a:1}, {b:2}) 只要第三个参数有值，即是新增了属性
+                  inserted = args.slice(2) // [{a:1}, {b:2}]
                   break
               default:
                   break
           }
           console.log('新增的内容', inserted)
-  		// inserted是一个数组
+          // inserted是一个数组
           return result
       }
   })
   ```
 
-  
-
 - 对新增的内容，再次进行观测
-
+  
   - `inserted`是一个数组，要对数组进行观测，需要拿到在`Observer`类中定义的`observeArray`方法，但不好直接拿到该方法
-
-  - 在`forEach`中，我们只能拿到`this`，指向的是上下文（指向的是调用`push`方法的那个对象）
-
-    - 之前在`index.html`中，调用的形式是`vm.hobby.push(1,2,3)`，也就是说，是`data`调用的`push`
-
-    - `Observer`类的构造函数中，在`data`上，自定义`__ob__`属性，指向`this`：`data.__ob__ = this`，这里的`this`指向的是`Observer`类的实例
-
+  
+  - 在`forEach`中，我们只能拿到`this`，指向的是上下文（指向的是调用`push`方法的那个对象），可以打印下`this`，指向的就是`data`，在`index.html`中，调用的形式是`vm.hobby.push(1,2,3)`，也表明了是`data`调用的`push`
+    
+    - 在`Observer`类的构造函数中，在`data`上，自定义`__ob__`属性，指向`this`：`data.__ob__ = this`，这里的`this`指向的是`Observer`类的实例
+    
       ```js
       class Observer {
           constructor(data) {
@@ -1259,16 +1285,16 @@ ps：记得取消之前的注释
           // ...
       }
       ```
-
+    
     - 那么在`forEach`中，由于`this`指向的就是`data`，可以通过`this.__ob__`拿到`Observer`的实例，然后调用`observeArray`方法
-
+    
       - 在循环内部，就可以通过`this.__ob__.observeArray`对新增内容进行观测了
       - 这并不是一种设计上的巧妙，是没办法解决了，只能写成这样
-
+    
       ```js
       methods.forEach(method => {
-      	newArrayProto[method] = function (...args) {
-      		// ...
+          newArrayProto[method] = function (...args) {
+              // ...
               let inserted
               let ob = this.__ob__ // 指向的是Observer类的实例
               switch (method) {
@@ -1282,7 +1308,7 @@ ps：记得取消之前的注释
                   default:
                       break
               }
-      		// inserted是一个数组
+              // inserted是一个数组
               if(inserted) {
                   ob.observeArray(inserted) // 调用监测数组的方法
               }
@@ -1290,11 +1316,11 @@ ps：记得取消之前的注释
           }
       })
       ```
-
+    
     - 同时，另外一个好处是，也给`data`加了一个标识，如果`data`上有`__ob__`，则说明这个属性被观测过，可以借助此完善`observe`函数的判断
-
+    
       `observe/index.js`
-
+    
       ```js
       import { newArrayProto } from './array'
       class Observer {
@@ -1330,69 +1356,69 @@ ps：记得取消之前的注释
           })
       }
       
-      
       export function observe(data) {
-          // 对data类型进行判断
-          if(typeof data !== 'object' || data == null) {
-              return // 只对对象进行劫持
-          }
       
-          // 如要考虑到一个对象已经被劫持的情况
-          // 如果一个对象已经被劫持过了，那么就不需要再被劫持
-          // 可以添加一个实例，用实例来判断是否被劫持过（应该是用实例身上的属性）
-          if(data.__ob__ instanceof Observer) {
-              return data.__ob__ // 如果被代理过了，直接返回它的实例
-          }
-          return new Observer(data)
+      // 对data类型进行判断
+      if(typeof data !== 'object' || data == null) {
+          return // 只对对象进行劫持
+      }
+      
+      // 如要考虑到一个对象已经被劫持的情况
+      // 如果一个对象已经被劫持过了，那么就不需要再被劫持
+      // 可以添加一个实例，用实例来判断是否被劫持过（应该是用实例身上的属性）
+      if(data.__ob__ instanceof Observer) {
+          return data.__ob__ // 如果被代理过了，直接返回它的实例
+      }
+      return new Observer(data)
+      
       }
       ```
-
-      - 但这样写行不行呢？我们再来测试下，看下页面
-
-        ![image-20220714151621487](/image-20220714151621487.png)
-
-        完犊子了，内存爆了！
-
-        咋回事，我们是为了解决`data`是数组的情况，给`data`添加了`__ob__`自定义属性
-
-        但是，如果`data`是对象，它会在先加一个自定义属性`__ob__`，这是合理的，相当于增加一个标识，这一步没问题，但到了下一步，走`walk`方法，会被`data`身上的`__ob__`属性，也是对象，然后在加一个，再走`walk`，就死循环了
-        
-        在`data.__ob__ = this`之前打个断点，执行到`walk`时，我们进入内部，看下`data`
-        
-        ![image-20220714190149824](/image-20220714190149824.png)
-        
-        再继续往下走到`observe`，添加条件断点：`key === __ob__`，不断点下一步，观察右边的调用栈，一直在增加
-        
-        ![image-20220714191311887](/image-20220714191311887.png)
-        
-        那么怎么处理呢？我们希望在遍历对象的时候，不能遍历到`__ob__`这个属性，让其变成不可枚举的即可。改写原来的写法：
-        
-        ```js
-        class Observer {
-            constructor(data) {
-                // data.__ob__ = this
-                // 在data上添加属性的同时，让其变成不可枚举的
-                // 并且这种写法，也没有影响到data位数组的情况
-                Object.defineProperty(data, '__ob__', {
-                    value: this,
-                    enumerable: false // 将__ob__变成不可枚举（循环的时候无法获取到）
-                })
-                if(Array.isArray(data)) {
-                    data.__proto__ = newArrayProto
-                    this.observeArray(data)
-                } else {
-                    this.walk(data)
-                }
-            }
-        	// ...
-        }
-        
-        ```
-
+    
+    - 但这样写行不行呢？我们再来测试下，看下页面
+    
+      ![image-20220714151621487](image-20220714151621487.png)
+    
+      完犊子了，内存爆了！
+    
+      咋回事，我们是为了解决`data`是数组的情况，给`data`添加了`__ob__`自定义属性
+    
+      但是，如果`data`是对象，它会先加一个自定义属性`__ob__`，这是合理的，相当于增加一个标识，这一步没问题，但到了下一步，走`walk`方法，会被`data`身上的`__ob__`属性，也是对象，然后在加一个，再走`walk`，就死循环了
+    
+      在`data.__ob__ = this`之前打个断点，执行到`walk`时，我们进入内部，看下`data`
+    
+      ![image-20220714190149824](image-20220714190149824.png)
+    
+      再继续往下走到`observe`，添加条件断点：`key === __ob__`，不断点下一步，观察右边的调用栈，一直在增加
+    
+      ![image-20220714191311887](image-20220714191311887.png)
+    
+      那么怎么处理呢？我们希望在遍历对象的时候，不能遍历到`__ob__`这个属性，让其变成不可枚举的即可。改写原来的写法：
+    
+       ```js
+         class Observer {
+             constructor(data) {
+                 // data.__ob__ = this
+                 // 在data上添加属性的同时，让其变成不可枚举的
+                 // 并且这种写法，也没有影响到data位数组的情况
+                 Object.defineProperty(data, '__ob__', {
+                     value: this,
+                     enumerable: false // 将__ob__变成不可枚举（循环的时候无法获取到）
+                 })
+                 if(Array.isArray(data)) {
+                     data.__proto__ = newArrayProto
+                     this.observeArray(data)
+                 } else {
+                     this.walk(data)
+                 }
+             }
+             // ...
+         }
+       ```
+  
 - 此时我们再测试一下
-
+  
   `index.html`
-
+  
   ```html
     <script src="./vue.js"></script>
     <script>
@@ -1419,75 +1445,177 @@ ps：记得取消之前的注释
       console.log(vm.hobby)
     </script>
   ```
-
+  
   数组里有四项，通过数组方法新增的对象，也有了`get`和`set`
-
-  ![image-20220714192439428](/image-20220714192439428.png)
+  
+  ![image-20220714192439428](image-20220714192439428.png)
 
 至此，数组的劫持，全部搞定
 
 - 数组劫持核心，就是重写数组的方法，并且去观测数组中的每一项
   - 如果是数组的话，需要对每一项新增的属性，做一下判断，并且把数组的每一项，再进行观测
 
-
+接下来就要和视图挂钩了
 
 ### 模板编译原理
 
+当初我们需要写一个`div`并指定`id`，在里面写小胡子语法
+
+`index.html`
+
+```html
+<body>
+  <!-- 模板 -->
+  <div id="app">
+  	<div>
+    	{{name}}    
+    </div>
+    <span>{{age}}</span>
+  </div>
+
+  <script src="./vue.js"></script>
+  <script>
+    const vm = new Vue({
+        data() {
+            return {
+                name: 'sai',
+                age: 11
+            }
+        }
+    })
+  </script>
+</body>
+```
+
+我们要对这个模板进行编译，需要给配置对象，传一个`el`属性，将数据解析到`el`元素上，将`{{name}}`和`{{age}}`进行一个数据的替换
+
+- 方案一：模板引擎
+  - 每次把模板拿到，用数据来替换
+  - 性能很差，需要正则匹配替换（`vue1.0`的时候，没有引入虚拟`dom`）
+- 方案二：采用虚拟`dom`
+  - 数据变化后，比较虚拟`dom`的差异，最后更新需要更新的地方
+  - 核心就是，把模板变成`js`语法，可以通过`js`语法生成虚拟`dom`
+    - 从一个东西，变成另一个东西（语法之间的转换），这是一个很典型的**语法转译**问题，如`es6 => es5`，需要先变成语法树，再重新组装代码，成为新的语法
+
+```html
+<body>
+  <div id="app">
+  	<div>
+    	{{name}}    
+    </div>
+    <span>{{age}}</span>
+  </div>
+    
+  <script src="./vue.js"></script>
+  <script>
+    const vm = new Vue({
+        data() {
+            return {
+                name: 'sai',
+                age: 11
+            }
+        },
+        el: "#app" // 将数据解析到el元素上
+    })
+  </script>
+</body>
+```
+
+模板除了可以写在`el`上，也可以写在`template`上
+
+```html
+  <script src="./vue.js"></script>
+  <script>
+    const vm = new Vue({
+        template: ``
+    })
+  </script>
+```
+
+或者可以用一个方法来替代：`render()`
+
+```html
+  <script src="./vue.js"></script>
+  <script>
+    const vm = new Vue({
+        render() {
+            return h('div', {})
+        }
+    })
+  </script>
+```
+
+而我们最终的目标就是，把`template`语法变成`render()`函数
+
 #### 将模板转换成`ast`语法树
 
+- 先看配置项，有没有`el`属性
 
+  - 如果有，`vm`原型对象上定义`$mount`函数，将`options.el`传入`$mount`方法，并实现数据的挂载
+    - 有了`$mount`方法后，我们也可以不写`el`配置项，直接调用`vm.$mount("#app")`实现手动挂载
+
+- `$mount`的功能
+
+  - 先找到对应的元素：
+
+    ```js
+        Vue.prototype.$mount = function (el) {
+            const vm = this
+            el = document.querySelector(el)
+        }
+    ```
+
+    返回`el`对应的`dom`元素
+
+  - 根据配置项的进行进行不同的处理
+
+    - 判断是否有`render`函数
+      - 如果没有
+        - 判断是否有`template`配置项
+          - 如果没有`template`配置项，但是有`el`配置项
+            - 使用`el.outerHTML`拿到模板
+          - 如果有`template`配置项，就用`template`配置项
+
+    `init.js`
+
+    ```js
+    import {initState} from "./state";
+    
+    export function initMixin(Vue) {
+        Vue.prototype._init = function(options) {
+            const vm = this
+            vm.$options = options
+            initState(vm)
+    
+            if(optiosn.el) {
+                vm.$mount(options.el)
+            }
+        }
+    
+        Vue.prototype.$mount = function (el) {
+            const vm = this
+            el = document.querySelector(el)
+            let ops = vm.$options
+            if(!ops.render) { // 先查找render函数
+                let template
+                if(!ops.template && el) { // 没有template配置项，但是有el配置项
+                    let template = el.outerHTML // 就用el的配置项，outHTML返回的是匹配到自身的dom元素
+                } else { // 如果有template,就用template配置项
+                    if(el) {
+                        template = ops.template
+                    }
+                }
+                console.log(template)
+            }
+        }
+    }
+    
+    
+    ```
 
 #### 代码生成，实现虚拟`DOM`
 
-
-
 #### 通过虚拟`DOM`生成真实`DOM`
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 # 教程二
 
@@ -1499,11 +1627,7 @@ ps：记得取消之前的注释
 
 下载链接：https://github.com/vuejs/vue
 
-
-
 下载后，执行`npm i`安装依赖
-
-
 
 修改`package.json`如下依赖，`scripts` 中的 `dev` 命令中添加 `--sourcemap`，这样就可以在浏览器中调试源代码时，查看当前代码在源代码中的位置：
 
@@ -1514,8 +1638,6 @@ ps：记得取消之前的注释
   }
 }
 ```
-
-
 
 ### 概念扫盲
 
@@ -1534,8 +1656,6 @@ ps：记得取消之前的注释
 - **UMD**：兼容 CommonJS 和 AMD 规范，通过 CDN 引入的 vue.js 就是 UMD 规范的代码，包含编译器和运行时。
 - **CommonJS**：典型的应用比如 nodeJS，CommonsJS 规范的包是为了给 browserify 和 webpack 1 这样旧的打包器使用的。他们默认的入口文件为 `vue.runtime.common.js`。
 - **ES Module**：现代 JavaScript 规范，ES Module 规范的包是给像 webpack 2 和 rollup 这样的现代打包器使用的。这些打包器默认使用仅包含运行时的 `vue.runtime.esm.js` 文件。
-
-
 
 **运行时（Runtime）+ 编译器（Compiler） vs. 只包含运行时（Runtime-only）**
 
@@ -1586,8 +1706,6 @@ Add to your project's `package.json`:
 }
 ```
 
-
-
 ### 目录结构
 
 ```
@@ -1619,8 +1737,6 @@ Add to your project's `package.json`:
 ├── types                       TS 类型声明
 ```
 
-
-
 ## Vue初始化过程
 
 ### 目标
@@ -1637,7 +1753,7 @@ Add to your project's `package.json`:
 我们就采用第二种方式，写示例，打断点，一步到位。
 
 - 在 `/examples` 目录下增加一个示例文件 —— `test.html`，在文件中添加如下内容：
-
+  
   ```html
   <!DOCTYPE html>
   <html lang="en">
@@ -1664,4 +1780,3 @@ Add to your project's `package.json`:
   ```
 
 - 在浏览器中打开控制台，然后打开 `test.html`，则会进入断点调试，然后找到 Vue 构造函数所在的文件
-
