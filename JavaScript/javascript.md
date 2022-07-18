@@ -3,9 +3,9 @@ title: JavaScript基础
 date: 2022-7-16 09:58:44
 cover: false
 tags:
-  - javascript
+  - JavaScript
 categories:
-  - javascript
+  - JavaScript
 typora-root-url: javascript
 ---
 

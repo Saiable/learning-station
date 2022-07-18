@@ -1,3 +1,11 @@
+---
+title: crx问题记录
+date: 2022-7-19 07:28:42
+cover: false
+---
+
+
+
 记录crx开发中，遇到的问题
 
 # unsafe-eval
