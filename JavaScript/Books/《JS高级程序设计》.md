@@ -1,11 +1,7 @@
 ---
-title:《JavaScript高级程序设计（第4版）》
-date:2022-7-9 07:31:58
-tags:
-  - js书籍
-categories:
-  - 书籍
-cover:false
+title: 《JavaScript高级程序设计（第4版）》
+date: 2022-7-9 07:31:58
+cover: false
 typora-root-url: 《JS高级程序设计》
 ---
 

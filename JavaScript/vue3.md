@@ -1,5 +1,6 @@
 ---
-title:Vue3基础使用
+title: Vue3基础使用
+cover: false
 ---
 [TOC]
 

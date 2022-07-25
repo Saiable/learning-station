@@ -1,3 +1,9 @@
+---
+title: Neovim 配置实战：从0到1打造自己的IDE
+cover: false
+date: 2022/7/25 20:34:51
+---
+
 
 
 [TOC]
