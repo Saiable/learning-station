@@ -1,7 +1,13 @@
 ---
-title: Koa2搭建通用API服务
+title: Koa2搭建API服务
+date: 2022/7/25 23:52:13
+updated: 2022/7/26 18:47:53
 cover: false
-date: 2022/7/25 05:52:13
+tags:
+- Koa
+categories: Koa
+description: 包含内容：项目初始化、目录结构优化、ORM工具继承
+toc_number: true
 typora-root-url: koa
 ---
 
@@ -9,7 +15,7 @@ typora-root-url: koa
 
 https://www.bilibili.com/video/BV18h411H7GE?spm_id_from=333.999.0.0
 
-# Node+Koa2搭建通用API服务
+# Node+Koa2搭建`API`服务
 
 教程来源：https://www.bilibili.com/video/BV13A411w79h?spm_id_from=333.999.0.0
 
@@ -370,7 +376,7 @@ app.listen(APP_PORT, () => { // 开启服务
   ```
 
 
-## 解析`body`，拆分`service`层
+## 解析`body`、拆分`service`层
 
 ### 解析`body`
 
@@ -556,3 +562,705 @@ module.exports = new UserController()
 后台打印结果：
 
 ![image-20220725232505667](image-20220725232505667.png)
+
+
+
+## `ORM`工具集成
+
+### `sequelize`介绍
+
+`ORM`：对象关系映射
+
+- 数据表映射（对应）一个类
+- 数据表中的数据行（记录）对应一个对象
+- 数据表字段对应对象的属性
+- 数据表的操作，对应对象的方法
+- 就是使用面向对象的方式，来操作数据库
+
+使用`sequelize` `ORM`数据库工具：https://github.com/demopark/sequelize-docs-Zh-CN/tree/master
+
+- 基于`Promise`的`ORM`工具
+- Sequelize 是一个基于` promise` 的 `Node.js ORM` 工具, 目前支持 `Postgres, MySQL, MariaDB, SQLite 以及 Microsoft SQL Server, Amazon Redshift 和 Snowflake’s Data Cloud`. 它具有强大的事务支持, 关联关系, 预读和延迟加载,读取复制等功能.
+
+- 安装`sequelize`和`mysql2`（支持`Promise`）
+
+  ```
+  npm i sequelize mysql2
+  ```
+
+  得注意下安装的`sequelize`支持的最低版本的`mysql`，目前默认安装的`sequlize`版本是`6.21.3`，对应的`mysql`版本至少是`5.7`及以上：https://github.com/demopark/sequelize-docs-Zh-CN/tree/v6
+
+  ![image-20220726064512073](image-20220726064512073.png)
+
+
+
+### 安装数据库
+
+在正式连接之前，我们需要装下`mysql`数据库，这里暂时安装`windows`版本，参照：https://blog.csdn.net/jsugs/article/details/124143762
+
+
+
+![image-20220726070015186](image-20220726070015186.png)
+
+
+
+改密码后再用`navicat连接`，会报错`Authentication plugin 'caching_sha2_password' cannot be loaded`，参照：https://www.jianshu.com/p/465a444ad846
+
+```bash
+ALTER USER 'root'@'localhost' IDENTIFIED BY '123123' PASSWORD EXPIRE NEVER;   #修改加密规则 
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '123123';   #更新一下用户的密码
+FLUSH PRIVILEGES;   #刷新权限 
+```
+
+
+
+![image-20220726071528438](image-20220726071528438.png)
+
+查询mysql进程，并杀掉
+
+```bash
+netstat -aon|findstr "3306"
+
+taskkill /pid 26372 -t -f
+```
+
+成功进入后，新建数据库
+
+一开始是没有选中下面两个的，设置名称后直接确定
+
+![image-20220726071755569](image-20220726071755569.png)
+
+
+
+### 连接数据库
+
+官方示例：https://github.com/demopark/sequelize-docs-Zh-CN/blob/v6/core-concepts/getting-started.md
+
+```js
+const { Sequelize } = require('sequelize');
+
+// 方法 1: 传递一个连接 URI
+const sequelize = new Sequelize('sqlite::memory:') // Sqlite 示例
+const sequelize = new Sequelize('postgres://user:pass@example.com:5432/dbname') // Postgres 示例
+
+// 方法 2: 分别传递参数 (sqlite)
+const sequelize = new Sequelize({
+  dialect: 'sqlite',
+  storage: 'path/to/database.sqlite'
+});
+
+// 方法 3: 分别传递参数 (其它数据库)
+const sequelize = new Sequelize('database', 'username', 'password', {
+  host: 'localhost',
+  dialect: /* 选择 'mysql' | 'mariadb' | 'postgres' | 'mssql' 其一 */
+});
+```
+
+新建`src/db/seq.js`
+
+该文件中实现数据库的连接，并导出
+
+```js
+const {Sequelize} = require('sequelize')
+
+const seq = new Sequelize('mytest', 'root', '123123', {
+    host: 'localhost',
+    dialect: 'mysql'
+})
+
+
+seq.authenticate().then(res => {
+    console.log('数据库连接成功', res)
+}).catch(error => {
+    console.log('数据库连接失败', error)
+})
+
+module.exports = seq
+```
+
+在`db`目录下，使用`node`测试下：
+
+![image-20220726200218491](image-20220726200218491.png)
+
+开发环境我们这样搞没事，生产环境可能会用连接池
+
+### 配置文件
+
+使用`dotenv`将参数提取成配置文件
+
+修改`.env`
+
+```
+APP_PORT = 8000
+
+MYSQL_HOST = localhost
+MYSQL_PORT = 3306
+MYSQL_USER = root
+MYSQL_PASSWORD = 123123
+MYSQL_DATABASE = mytest
+```
+
+`seq.js`中导入并使用
+
+```js
+const { Sequelize } = require('sequelize')
+const { 
+    MYSQL_HOST,
+    MYSQL_PORT,
+    MYSQL_USER,
+    MYSQL_PASSWORD,
+    MYSQL_DATABASE 
+} = require('../config/config.default')
+
+console.log(MYSQL_HOST,MYSQL_DATABASE)
+const seq = new Sequelize(MYSQL_DATABASE, MYSQL_USER, MYSQL_PASSWORD, {
+    host: MYSQL_HOST,
+    dialect: 'mysql',
+})
+
+
+// seq.authenticate().then(res => {
+//     console.log('数据库连接成功', res)
+// }).catch(error => {
+//     console.log('数据库连接失败', error)
+// })
+
+module.exports = seq
+```
+
+此时需要在根目录下测试，不然读不到`.env`文件
+
+![image-20220726201817869](image-20220726201817869.png)
+
+测试完将测试代码注释掉
+
+## 创建`User`模型
+
+### 模型创建
+
+新建`src/model`文件夹
+
+`service`层通过`model`层来具体操作数据库
+
+新建`user.model.js`，使用`define`方法来创建模型：https://www.sequelize.com.cn/core-concepts/model-basics#%E4%BD%BF%E7%94%A8-sequelizedefine
+
+全局定义表名等于模型名，`seq.js`：
+
+```js
+const { Sequelize } = require('sequelize')
+const { 
+    MYSQL_HOST,
+    MYSQL_PORT,
+    MYSQL_USER,
+    MYSQL_PASSWORD,
+    MYSQL_DATABASE 
+} = require('../config/config.default')
+
+console.log(MYSQL_HOST,MYSQL_DATABASE)
+const seq = new Sequelize(MYSQL_DATABASE, MYSQL_USER, MYSQL_PASSWORD, {
+    host: MYSQL_HOST,
+    dialect: 'mysql',
+    define: {
+        freezeTableName: true // 全局定义表明等于模型名
+    }
+})
+
+module.exports = seq
+```
+
+根据表设计文档，定义模型属性：
+
+**用户表**
+
+表名：`sai_users`
+
+| 字段名    | 字段类型     | 说明                              |
+| --------- | ------------ | --------------------------------- |
+| id        | int          | 主键，自增（sequelize会自动维护） |
+| user_name | varchar(255) | 用户名，unique                    |
+| password  | char(64)     | 密码                              |
+| is_admin  | tinyint(1)   | 0：不是管理员，1：是管理员        |
+
+定义模型属性时的数据类型，参见：https://www.sequelize.com.cn/core-concepts/model-basics#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B
+
+`user.model.js`
+
+```js
+const { DataTypes } = require("sequelize") // 不要相信vscode的自动导入，坑！！
+
+const seq = require('../db/seq')
+
+// 创建模型
+const User = seq.define('sai_user', {
+    // id会被sequelize自动创建
+
+    // user_name
+    user_name: {
+        type: DataTypes.STRING,
+        allowNull: false, // 不允许为空
+        unique: true,
+        comment: '用户名唯一' // 注释
+    },
+    // password
+    password: {
+        type: DataTypes.CHAR(64),
+        allowNull: false,
+        comment: '密码'
+    },
+    is_admin: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: 0,
+        comment: '是否为管理员，0：不是管理员（默认值），1：是管理员'
+    }
+})
+
+User.sync({force: true})
+```
+
+有关模型同步：https://www.sequelize.com.cn/core-concepts/model-basics#%E6%A8%A1%E5%9E%8B%E5%90%8C%E6%AD%A5
+
+根目录下，执行`node src/model/user.model.js`
+
+就是执行了`sql`语句
+
+```bash
+PS D:\workspace\github\code\project-workshop\code-prac\koa\01> node .\src\model\user.model.js
+localhost mytest
+Executing (default): DROP TABLE IF EXISTS `sai_user`;
+Executing (default): CREATE TABLE IF NOT EXISTS `sai_user` (`id` INTEGER NOT NULL auto_increment , `user_name` VARCHAR(255) NOT NULL UNIQUE COMMENT '用户名唯一', `password` CHAR(64) NOT NULL COMMENT '
+密码', `is_admin` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '是否为管理员，0：不是管理员（默认值），1：是管理员', `createdAt` DATETIME NOT NULL, `updatedAt` DATETIME NOT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB;
+Executing (default): SHOW INDEX FROM `sai_user`
+```
+
+可以看到，数据库中多了一个表：
+
+![image-20220726211457412](image-20220726211457412.png)
+
+![image-20220726211857584](image-20220726211857584.png)
+
+其中，`createAt`和`updatedAt`是`sequelize`自动给我们维护的，如果不需要时间戳，在`define`函数中，添加配置项：`{timestamps: false}`，但是一般情况下，都是保留的
+
+导出`User`模型，并注释掉`sync`的代码
+
+```js
+const { DataTypes } = require("sequelize")
+
+const seq = require('../db/seq')
+
+// 创建模型
+const User = seq.define('sai_user', {
+    // id会被sequelize自动创建
+
+    // user_name
+    user_name: {
+        type: DataTypes.STRING,
+        allowNull: false, // 不允许为空
+        unique: true,
+        comment: '用户名唯一' // 注释
+    },
+    // password
+    password: {
+        type: DataTypes.CHAR(64),
+        allowNull: false,
+        comment: '密码'
+    },
+    is_admin: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: 0,
+        comment: '是否为管理员，0：不是管理员（默认值），1：是管理员'
+    }
+})
+
+// User.sync({force: true}) // 强制同步数据库（创建数据表）
+module.exports = User
+```
+
+### 添加用户
+
+我们继续完善写入数据库的代码
+
+需要通过`ORM`实现标准的`CRUD`：https://www.sequelize.com.cn/core-concepts/model-querying-basics
+
+`user.service.js`
+
+```js
+const User = require('../model/user.model')
+
+class UserService {
+    // 主要用来操作数据库
+    // 处理函数对应数据库的操作，就是增删改查
+    // 注册，就是往数据库里，增加一条记录
+    async createUser(user_name, password) { // 当参数超过三个时，建议用一个对象
+        //@TODO: 写入数据库
+        // 插入数据
+        const res = await User.create({
+            user_name,
+            password
+        })
+        console.log(res)
+
+        return res
+    }
+}
+
+module.exports = new UserService()
+```
+
+使用`apifox`发送`register`接口，成功后查看数据库
+
+![image-20220726231148358](image-20220726231148358.png)
+
+![image-20220726231243724](image-20220726231243724.png)
+
+成功注册，注意下时区慢8小时
+
+再看下后台打印：
+
+执行的了`insert`语句
+
+`User.create`返回的是一个`sai_user`的表模型对象，`dataValues`对应着表里面的一条记录
+
+```bash
+Executing (default): INSERT INTO `sai_user` (`id`,`user_name`,`password`,`is_admin`,`createdAt`,`updatedAt`) VALUES (DEFAULT,?,?,?,?,?);
+sai_user {
+  dataValues: {
+    is_admin: false,
+    id: 1,
+    user_name: '邵洋',
+    password: 'do',
+    updatedAt: 2022-07-26T15:08:52.849Z,
+    createdAt: 2022-07-26T15:08:52.849Z
+  },
+  _previousDataValues: {
+    user_name: '邵洋',
+    password: 'do',
+    id: 1,
+    is_admin: false,
+    createdAt: 2022-07-26T15:08:52.849Z,
+    updatedAt: 2022-07-26T15:08:52.849Z
+  },
+  uniqno: 1,
+  _changed: Set(0) {},
+  _options: {
+    isNewRecord: true,
+    _schema: null,
+    _schemaDelimiter: '',
+    attributes: undefined,
+    include: undefined,
+    raw: undefined,
+    silent: undefined
+  },
+  isNewRecord: false
+}
+```
+
+我们要返回给用户`dataValues`的结果
+
+对于其他的值，在`service`层就可以直接过滤掉，直接返回`res.dataValues`
+
+`user.service.js`
+
+```js
+const User = require('../model/user.model')
+class UserService {
+    // 主要用来操作数据库
+    // 处理函数对应数据库的操作，就是增删改查
+    // 注册，就是往数据库里，增加一条记录
+    async createUser(user_name, password) { // 当参数超过三个时，建议用一个对象
+        //@TODO: 写入数据库
+        // 插入数据
+        const res = await User.create({ user_name, password })
+
+        return res.dataValues
+    }
+}
+
+module.exports = new UserService()
+```
+
+那么`controller`层拿到返回的数据后，再根据接口文档，构建最终要返回给客户端的数据格式
+
+注册接口：
+
+成功
+
+```json
+{
+	"code": 0,
+	"message": "用户注册成功",
+    "result": {
+        "id": 2,
+        "user_name": "user"
+    }
+}
+```
+
+失败
+
+```json
+{
+    "code": "10001",
+    "message": "用户名或密码不能为空",
+    "result": ""
+}
+```
+
+修改控制层
+
+`user.controller.js`
+
+```js
+const {createUser} = require('../service/user.service')
+
+class UserController{
+    async register(ctx, next) {
+        // 1. 获取数据
+        // console.log(ctx.request.body)
+        const {user_name, password} = ctx.request.body
+        // 2.操作数据库
+        const res = await createUser(user_name, password)
+        // console.log(res)
+        // 3.返回结果
+        ctx.body = {
+            code: 0,
+            message: '用户注册成功',
+            result: {
+                id: res.id,
+                user_name: res.user_name
+            }
+        }
+    }
+
+    async login(ctx, next) {
+        ctx.body = '用户登录成功'
+    }
+}
+
+module.exports = new UserController()
+```
+
+再次使用`apifox`测试下`register`接口，注意要使用新的样例
+
+![image-20220727060131292](image-20220727060131292.png)
+
+整个的流程小结：
+
+用户发送请求，`koa`服务接受到请求，先导入各种中间件，然后处理路由，根据路由调用处理函数（控制层），处理函数中涉及业务逻辑及数据库操作（服务层），服务层根据模型层，返回给控制层操作数据库的结果，控制层根据该结果封装接口数据，返回给路由，最后`koa`将路由的结果，作为接口响应发送到服务端
+
+### 错误处理
+
+重复注册和没有用户名，目前都会返回`500`，错误类型不够细致
+
+![image-20220727061109390](image-20220727061109390.png)
+
+
+
+后台是可以看到两次操作的错误提示的
+
+![image-20220727061249819](image-20220727061249819.png)
+
+对于不同的错误类型，我们要分别处理
+
+
+
+在控制层接受到用户参数时，要进行验证
+
+- 合法性验证
+
+  `user.controller.js`
+
+  ```js
+  const {createUser} = require('../service/user.service')
+  
+  class UserController{
+      async register(ctx, next) {
+          const {user_name, password} = ctx.request.body
+          // 合法性验证
+          if(!user_name || !password) {
+              // 记录错误信息，后续可以记录到错误日志中
+              console.error('用户名或密码为空')
+              ctx.status = 400
+              ctx.body = {
+                  code: '10001', // 自定义的，公司一般会有开发规范
+                  message: '用户名或者密码为空',
+                  result: ''
+              }
+  
+              return // 合法性验证不通过的话，直接返回
+          }
+  
+  		// 验证通过后，再去操作数据库
+          const res = await createUser(user_name, password)
+          console.log(res)
+          ctx.body = {
+              code: 0,
+              message: '用户注册成功',
+              result: {
+                  id: res.id,
+                  user_name: res.user_name
+              }
+          }
+      }
+  
+      async login(ctx, next) {
+          ctx.body = '用户登录成功'
+      }
+  }
+  
+  module.exports = new UserController()
+  ```
+
+  参数只写一个字段，测试一下注册接口：
+  ![image-20220727062331691](image-20220727062331691.png)
+
+  可以看到后台，打印的错误日志
+
+  ![image-20220727062455540](image-20220727062455540.png)
+
+  
+
+- 合理性验证
+
+  - `controller`层，需要根据传入的参数，查询数据库
+
+    `user.controller.js`
+
+    ```js
+    const {createUser, getUserInfo} = require('../service/user.service')
+    
+    class UserController{
+        async register(ctx, next) {
+            const {user_name, password} = ctx.request.body
+            if(!user_name || !password) {
+                console.error('用户名或密码为空')
+                ctx.status = 400
+                ctx.body = {
+                    code: '10001',
+                    message: '用户名或者密码为空',
+                    result: ''
+                }
+    
+                return
+            }
+    
+            // 合理性验证
+            // 需要再次查询数据库 getUserInfo
+            if(getUserInfo({user_name})) { // 根据用户名来查询，参数使用对象，这样可以让查询参数不受顺序影响
+                ctx.status = 409 // 状态完成冲突，不熟悉的话，可以去MDN上看下常见状态码
+                ctx.body = {
+                    code: '10002',
+                    message: '用户名已经存在',
+                    result: ''
+                }
+                return 
+            }
+    
+    
+            const res = await createUser(user_name, password)
+            console.log(res)
+            ctx.body = {
+                code: 0,
+                message: '用户注册成功',
+                result: {
+                    id: res.id,
+                    user_name: res.user_name
+                }
+            }
+        }
+    
+        async login(ctx, next) {
+            ctx.body = '用户登录成功'
+        }
+    }
+    
+    module.exports = new UserController()
+    ```
+
+  - `service`层中新增`getUserInfo`方法
+
+    `user.service.js`
+
+    ```js
+    const User = require('../model/user.model')
+    class UserService {
+    
+        async createUser(user_name, password) {
+            const res = await User.create({ user_name, password })
+            return res.dataValues
+        }
+    
+        async getUserInfo({id, user_name, password, is_admin}) { // 参数设计成一个对象，因为查询用户，有可能根据id、user_name、password、is_admin字段去查询
+            // 判断参数是否存在，拿到实参
+            const  whereOpt = {}
+            id && Object.assign(whereOpt, {id})
+            user_name && Object.assign(whereOpt, {user_name})
+            password && Object.assign(whereOpt, {password})
+            is_admin && Object.assign(whereOpt, {is_admin})
+    
+            // 调用ORM查询接口：findOne，这是一个异步函数
+            const res = User.findOne({
+                attributes: ['id', 'user_name', 'password', 'is_admin'],
+                where: whereOpt
+            })
+    
+            return res ? res.dataValues : null
+        }
+    }
+    
+    module.exports = new UserService()
+    ```
+
+    测试下接口返回值
+
+    选一个数据库中已经有的用户名进行测试
+
+    ![image-20220727070845751](image-20220727070845751.png)
+
+    后代打印的`sql`
+
+    ![image-20220727070942651](image-20220727070942651.png)
+
+### 错误处理函数封装
+
+我们可以把格式的验证，单独封装成一个中间件（处理函数）
+
+![image-20220727071500267](image-20220727071500267.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
