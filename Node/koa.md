@@ -1,12 +1,11 @@
 ---
 title: Koa2搭建API服务
 date: 2022/7/25 23:52:13
-updated: 2022/7/26 18:47:53
 cover: false
 tags:
 - Koa
 categories: Koa
-description: 包含内容：项目初始化、目录结构优化、ORM工具继承
+description: '包含内容：koa项目初始化、目录结构优化、ORM工具继承、错误处理'
 toc_number: true
 typora-root-url: koa
 ---
@@ -516,6 +515,8 @@ module.exports = new UserController()
 
 ### 抽取`servcie`层
 
+和数据库相关的，根据客户端传递的不同参数，来操作数据库
+
 新建`src/service`目录
 
 新建`user.service.js`
@@ -597,6 +598,14 @@ module.exports = new UserController()
 ### 安装数据库
 
 在正式连接之前，我们需要装下`mysql`数据库，这里暂时安装`windows`版本，参照：https://blog.csdn.net/jsugs/article/details/124143762
+
+启动`mysql`服务
+
+```
+输入net start mysql或sc start mysql
+```
+
+
 
 
 
@@ -1228,37 +1237,542 @@ module.exports = new UserController()
 
 ![image-20220727071500267](image-20220727071500267.png)
 
+在`controller`层拆分中间件
+
+新建`middleware/user.middleware.js`，中间件里定义各种函数，然后导出
+
+`user.middleware.js`
+
+从`controller`里把合法性验证的代码抽离出来
+
+```js
+const userValidator = async (ctx, next) => {
+    const { user_name, password } = ctx.request.body
+
+    if (!user_name || !password) {
+        console.error('用户名或密码为空', ctx.request.body)
+        ctx.status = 400
+        ctx.body = {
+            code: '10001',
+            message: '用户名或者密码为空',
+            result: ''
+        }
+
+        return // 校验没通过，直接返回
+    }
+    
+    await next() // 校验通过了的话，就放行
+
+
+}
+
+module.exports = {
+    userValidator
+}
+```
+
+那么什么时候执行中间件呢？
+
+在路由匹配的时候，只要路由一匹配上，就立刻调用校验的中间件
+
+`user.route.js`
+
+```js
+const Router = require('@koa/router')
+const router = new Router({ prefix: '/user' })
+const { register, login } = require('../controller/user.conroller')
+const { userValidator } = require('../middleware/user.middleware')
+// 注册接口
+router.post('/register', userValidator, register)
+// 登录接口
+router.post('/login', login)
+
+module.exports = router
+
+```
+
+用`apifox`测试一下，可以正常打印错误日志
+
+再抽离查询用户的代码（合理性验证）
+
+`user.middleware.js`
+
+```js
+const { getUserInfo } = require('../service/user.service')
+
+const userValidator = async (ctx, next) => {
+    const { user_name, password } = ctx.request.body
+
+    if (!user_name || !password) {
+        console.error('用户名或密码为空', ctx.request.body)
+        ctx.status = 400
+        ctx.body = {
+            code: '10001',
+            message: '用户名或者密码为空',
+            result: ''
+        }
+        return
+    }
+    
+    await next() 
+}
+
+const verifyUser = async (ctx, next) => {
+    const { user_name } = ctx.request.body
+    if (getUserInfo({ user_name })) {
+        ctx.status = 409
+        ctx.body = {
+            code: '10002',
+            message: '用户名已经存在',
+            result: ''
+        }
+        return
+    }
+
+    await next()
+}
+
+module.exports = {
+    userValidator,
+    verifyUser
+}
+```
+
+`user.route.js`
+
+```js
+const Router = require('@koa/router')
+const router = new Router({ prefix: '/user' })
+const { register, login } = require('../controller/user.conroller')
+const { userValidator, verifyUser } = require('../middleware/user.middleware')
+
+// 注册接口
+router.post('/register', userValidator, verifyUser, register)
+// 登录接口
+router.post('/login', login)
+
+module.exports = router
+```
+
+测试下用户名已存在的情况，正常
 
 
 
+至此，逻辑已经很清晰了，但我们还可以进一步管理**错误信息**
+
+### 统一错误管理
+
+在`koa`中，怎么进行错误管理呢？
+
+- 中间件里提交错误类型
+
+通过`ctx.app`可以拿到实例化的`koa`对象，它有一个`emit`方法用来提交错误，我们可以对此做一个检测
+
+`ctx.app.emit('error', {}, ctx)`
+
+- 该对象是自定义的错误类型，可以统一放在一个新的文件里管理
+
+新建`src/constant`常量文件夹
+
+新建`error.type.js`
+
+```js
+// 定义错误类型
+module.exports = {
+    userFormateError: {
+        code: '10001',
+        message: '用户名或者密码为空',
+        result: ''
+    },
+    userAlreadyExists: {
+        code: '10002',
+        message: '用户名已经存在',
+        result: ''
+    }
+}
+```
+
+修改`user.middle.js`
+
+```js
+const { getUserInfo } = require('../service/user.service')
+const { userFormateError, userAlreadyExists } = require('../constant/error.type')
+
+const userValidator = async (ctx, next) => {
+    const { user_name, password } = ctx.request.body
+
+    if (!user_name || !password) {
+        console.error('用户名或密码为空', ctx.request.body)
+        // ctx.status = 400
+        ctx.app.emit('error', userFormateError, ctx) // 该对象是自定义的错误类型，可以统一放在一个新的文件里管理
+        return
+    }
+
+    await next()
+
+}
+
+const verifyUser = async (ctx, next) => {
+    const { user_name } = ctx.request.body
+
+    if (getUserInfo({ user_name })) {
+        // ctx.status = 409
+        ctx.app.emit('error', userAlreadyExists, ctx)
+        return
+    }
+
+    await next()
+}
+
+module.exports = {
+    userValidator,
+    verifyUser
+}
+```
+
+在`app/index.js`中统一进行错误处理
+
+```js
+const Koa = require('koa')
+const Router = require('@koa/router')
+const koaBody = require('koa-body')
+const userRouter = require('../router/user.route')
+const errHandler = require('./errorHandler')
+const app = new Koa()
+
+app.use(koaBody())
+const indexRouter = new Router()
+indexRouter.get('/', (ctx, next) => {   
+    ctx.body = `Request Body: ${JSON.stringify(ctx.request.body)}`
+})
+
+app.use(indexRouter.routes())
+app.use(userRouter.routes())
+
+
+// 统一进行错误处理
+// 发布订阅模式
+app.on('error', errHandler)
+module.exports = app
+
+```
+
+同级目录下，新建`errHandler.js`错误处理函数
+
+`errHandler.js`
+
+```js
+module.exports = (err, ctx) => {
+    let status = 500 // 默认错误状态码
+    switch (err.code) {
+        case '10001':
+            status = 400
+            break
+        case '10002':
+            status = 409
+            break
+        default:
+            status = 500
+    }
+
+    ctx.status = status
+    ctx.body = err
+}
+```
 
 
 
+### 小问题
+
+`verifyUser`中间件调用的`getUserInfo`返回的是一个`Promise`对象，恒为真，正常注册流程也走不下去了
+
+`user.middleware.js`
+
+```js
+const verifyUser = async (ctx, next) => {
+    const { user_name } = ctx.request.body
+
+    if (getUserInfo({ user_name })) {
+        ctx.app.emit('error', userAlreadyExists, ctx)
+        return
+    }
+
+    await next()
+}
+
+```
+
+修改
+
+- 添加`await`，相当于判断条件是一个表达式
+
+  ```js
+  const verifyUser = async (ctx, next) => {
+      const { user_name } = ctx.request.body
+  
+      if (await getUserInfo({ user_name })) {
+          ctx.app.emit('error', userAlreadyExists, ctx)
+          return
+      }
+  
+      await next()
+  }
+  
+  ```
+
+  
+
+另外假设中间件都没问题，到了控制层`createUser`这一步了，目前我们对这一步做任何的异常处理，使用`try-catch`来处理下
+
+虽说这一步是`sequelize`自己操作的数据库，不大可能会出错，但为了代码的健壮性，还是要处理下的
+
+`user.controller.js`
+
+```js
+const { createUser } = require('../service/user.service')
+const { userRegisterError } = require('../constant/error.type')
+class UserController {
+    async register(ctx, next) {
+        const { user_name, password } = ctx.request.body
+		
+        // 处理写入用户数据时，可能出现的异常
+        try {
+            const res = await createUser(user_name, password)
+            console.log(res)
+            ctx.body = {
+                code: 0,
+                message: '用户注册成功',
+                result: {
+                    id: res.id,
+                    user_name: res.user_name
+                }
+            }
+        } catch (err) {
+            console.log(err)
+            ctx.app.emit('error', userRegisterError, ctx)
+			return // 发生错误就不要继续往下执行了
+        }
+    }
+
+    async login(ctx, next) {
+        ctx.body = '用户登录成功'
+    }
+}
+
+module.exports = new UserController()
+```
+
+定义错误类型
+
+`constant/error.type.js`
+
+```js
+// 定义错误类型
+module.exports = {
+    userFormateError: {
+        code: '10001',
+        message: '用户名或者密码为空',
+        result: ''
+    },
+    userAlreadyExists: {
+        code: '10002',
+        message: '用户名已经存在',
+        result: ''
+    },
+    userRegisterError: {
+        code: '10003',
+        message: '用户注册错误',
+        result: ''
+    }
+}
+```
+
+我们在`createUser方法中，模拟下写入数据库时发生了错误
+
+`user.service.js`
+
+```js
+const User = require('../model/user.model')
+
+class UserService {
+
+    async createUser(user_name, password) {
+        const res = await User.create({ user_name, password })
+        console.log(aa) // 打印不存在的变量，模拟数据库操作错误
+        return res.dataValues
+    }
+
+	// ...
+}
+
+module.exports = new UserService()
+```
+
+测试下
+
+![image-20220728194137316](image-20220728194137316.png)
 
 
 
+后台日志
+
+![image-20220728194219755](image-20220728194219755.png)
 
 
 
+建议调用`service`层所有的函数时，都加上错误处理
+
+继续完善`verifyUser`
+
+```js
+const verifyUser = async (ctx, next) => {
+    const { user_name } = ctx.request.body
+
+    try {
+        const res = await getUserInfo({ user_name })
+        if (res) {
+            console.error('用户名已存在', { user_name })
+            ctx.app.emit('error', userAlreadyExists, ctx)
+            return
+        }
+    } catch (err) {
+        console.err('获取用户信息错误', err)
+        ctx.app.emit('error', userQueryError, ctx)
+        return 
+    }
+
+    await next()
+}
+
+```
+
+`error.type.js`
+
+```js
+// 定义错误类型
+module.exports = {
+    userFormateError: {
+        code: '10001',
+        message: '用户名或者密码为空',
+        result: ''
+    },
+    userAlreadyExists: {
+        code: '10002',
+        message: '用户名已经存在',
+        result: ''
+    },
+    userRegisterError: {
+        code: '10003',
+        message: '用户注册错误',
+        result: ''
+    },
+    userQueryError: {
+        code: '10004',
+        message: '用户查询错误',
+        result: ''
+    }
+}
+```
+
+可以看到，真正要写代码的部分，其实是比较少的
+
+很重要的一部分，在于提高代码的质量上，都在一些异常捕获和错误处理上，这一块是需要下功夫的，平时写代码的时候，要有这样的意识
+
+这样当代码上线后，如果有问题，我们调试错误会很方便
+
+`ctx.app.emit`提交的错误，最后会以接口的形式返回给客户端，如果服务器自己想记录错误信息，可以使用`console.error()`来记录日志信息
 
 
 
+目前来说，这里还是有一个问题，就是重复注册直接走到了`register`，验证重复用户名的中间件直接就通过了！！
 
 
 
+### 加密
+
+在将密码保存到数据库之前，要对密码进行加密处理
+
+`md5`加密还是有可能被破解的，使用`bcrypt`加密
+
+第一个依赖也多，这里我们使用第二个`bcryptjs`：在 JavaScript 中优化了 `bcrypt`，零依赖关系。
+
+![image-20220729054812130](image-20220729054812130.png)
+
+安装
+
+```
+npm i bcryptjs
+```
+
+用法：有同步和异步的用法：https://www.npmjs.com/package/bcryptjs
+
+使用：
+
+- 将代码加密功能，也抽离成一个中间件（单一职责原则）
+  - 不想`bcrypt`这种加密方式，耦合到代码中
+  - 后面有可能会换成其他加密方式：`hash`、`md5`
+
+`user.middleware.js`
+
+```js
+// ...
+const scyptPassword = async (ctx, next) => {
+    const { password } = ctx.request.body
+    const salt =  bcrypt.genSaltSync(10); // 生成盐
+    const hash = bcrypt.hashSync("B4c0/\/", salt); // 根据盐生成hash，hash保存的是密文
+    ctx.request.body.password = hash // 使用hash覆盖password
+    await next()
+}
+
+
+module.exports = {
+    userValidator,
+    verifyUser,
+    scyptPassword
+}
+```
+
+`user.route.js`导入并使用
+
+测试注册接口成功后，查看`user`表`password`字段，已加密
+
+![image-20220729060929127](image-20220729060929127.png)
 
 
 
+### 小结：注册接口
 
+梳理一下整理流程，及每个模块的功能
 
+## 登录接口
 
+`user.controller.js`
 
+```js
+    async login(ctx, next) {
+        const { user_name } = ctx.request.body
+        ctx.body = `欢迎回来，${user_name}`
+    }
+```
 
+完善`apifox`
 
+![image-20220729062050491](image-20220729062050491.png)
 
+添加样例，应为数据库有已有的数据
 
+![image-20220729062118325](image-20220729062118325.png)
 
+![image-20220729062229643](image-20220729062229643.png)
 
+但事实上，现在`login`对任何的输入都是可以的，我们需要对数据进行一个校验
+
+- 是否为空（合法性校验）
+  - 复用
+- 是否存在（合理性校验）
+  - 复用
+- 验证登录
+- 登录成功后记录用户状态
 
 
 
