@@ -1686,7 +1686,28 @@ module.exports = {
 
 目前来说，这里还是有一个问题，就是重复注册直接走到了`register`，验证重复用户名的中间件直接就通过了！！
 
+原因是`getUserInfo`函数里的`User.findOne`是一个异步函数，需要加一个`await`，否则会出错
 
+```js
+    async getUserInfo({id, user_name, password, is_admin}) {
+        const  whereOpt = {}
+        id && Object.assign(whereOpt, {id})
+        user_name && Object.assign(whereOpt, {user_name})
+        password && Object.assign(whereOpt, {password})
+        is_admin && Object.assign(whereOpt, {is_admin})
+
+        // 调用ORM查询接口：findOne，这是一个异步函数
+        const res = await User.findOne({
+            attributes: ['id', 'user_name', 'password', 'is_admin'],
+            where: whereOpt
+        })
+
+        return res ? res.dataValues : null
+    }
+}
+```
+
+这样重复注册走到`verifyUser`中间件时，就不会被当做异常处理
 
 ### 加密
 
@@ -1715,11 +1736,13 @@ npm i bcryptjs
 `user.middleware.js`
 
 ```js
+const bcrypt = require('bcryptjs')
+
 // ...
 const scyptPassword = async (ctx, next) => {
     const { password } = ctx.request.body
     const salt =  bcrypt.genSaltSync(10); // 生成盐
-    const hash = bcrypt.hashSync("B4c0/\/", salt); // 根据盐生成hash，hash保存的是密文
+    const hash = bcrypt.hashSync(password, salt); // 根据盐生成hash，hash保存的是密文
     ctx.request.body.password = hash // 使用hash覆盖password
     await next()
 }
@@ -1769,12 +1792,237 @@ module.exports = {
 
 - 是否为空（合法性校验）
   - 复用
+
 - 是否存在（合理性校验）
   - 复用
+
 - 验证登录
+
+  `user.middleware.js`
+
+  ```js
+  const verifyLogin = async (ctx, next) => {
+      // 1.判断用户是否存在（不存在：报错）
+      const { user_name, password } = ctx.request.body
+      try {
+          const res = await getUserInfo({ user_name })
+          if (!res) {
+              console.log('用户不存在', res)
+              return ctx.app.emit('error', userNotFound, ctx)
+          }
+          // 2.找到了用户，比对密码是否匹配（不匹配：报错）
+          if (!bcrypt.compareSync(password, res.password)) {
+              return ctx.app.emit('error', userInvalidPassword, ctx)
+          }
+      } catch (err) {
+          console.error(err)
+          return ctx.app.emit('error', userLoginFailed, ctx) // getUserInfo出错，在不同场景下，抛出的错误应该是不同的
+      }
+  
+      //通过
+      await next()
+  
+  }
+  
+  ```
+
 - 登录成功后记录用户状态
 
+  - 用户认证与授权
 
 
 
+
+## 用户认证和授权
+
+### 颁发`token`
+
+登录成功后，给用户颁发一个令牌`token`，用户在以后的每一次请求中，携带这个令牌
+
+前后端分离中，使用`jwt`：`json web token`
+
+- `header`：头部
+- `payload`：载荷
+- `signature`：签名
+
+如何使用
+
+- 使用`jsonwebtoken`包：https://www.npmjs.com/package/jsonwebtoken
+
+  - 安装：`npm i jsonwebtoken`
+  - `sign`方法生成`token`
+
+- `user.controller.js`
+
+  ```js
+  const jwt = require('jsonwebtoken')
+  
+  // ...
+  
+  class UserController {
+      // ...
+      
+      async login(ctx, next) {
+              const { user_name } = ctx.request.body
+              // 获取用户信息（在paylaod中，记录id、user_name、is_admin）
+              try {
+                  // 从返回结果中，过滤掉password，将剩下的属性，放在新的res对象中
+                  const { password, ...res } = await getUserInfo({ user_name })
+                  ctx.body = {
+                      code: 0,
+                      message: '用户登录成功',
+                      result: {
+                          /*
+                          * @params1:配置对象
+                          * @params2:秘钥
+                          * @params3:过期时间，一天
+                          */
+                          token: jwt.sign(res, JWT_SECRET, {expiresIn: '1d'})
+                      }
+                  }
+  
+              } catch (err) {
+                  console.error('用户登录失败', err)
+                  return
+              }
+      }
+  }
+  ```
+
+  测试：
+
+  ![image-20220730062107079](image-20220730062107079.png)
+
+### 用户认证
+
+我们新建一个修改密码的接口
+
+![image-20220730063834013](/image-20220730063834013.png)
+
+修改的操作
+
+- `PUT`：全量修改
+- `PATCH`：部分修改
+
+
+
+写对应的路由
+
+`user.route.js`
+
+```js
+const Router = require('@koa/router')
+const router = new Router({ prefix: '/user' })
+const { register, login } = require('../controller/user.conroller')
+const { userValidator, verifyUser, scyptPassword, verifyLogin } = require('../middleware/user.middleware')
+
+// 注册接口
+router.post('/register', userValidator, verifyUser, scyptPassword, register)
+// 登录接口
+router.post('/login', userValidator,  verifyLogin, login)
+// 修改密码接口
+router.patch('/modifyPassword', (ctx, next) => {
+    ctx.body = '修改密码成功'
+})
+
+module.exports = router
+
+```
+
+先简单测试下
+
+我们在上面颁发`token`后，后续的请求（如修改密码）需要携带这个`token`
+
+请求头新增`Authorization`，值一开始固定的是`Bearer `，有一个空格
+
+![image-20220730082130815](image-20220730082130815.png)
+
+后面发送请求时，需要加上签发的`token`
+
+
+
+新建`auth.middleware.js`文件，将认证相关的验证放在这里面
+
+```js
+const jwt = require('jsonwebtoken')
+const { JWT_SECRET } = require('../config/config.default')
+const { tokenExpiredError } = require('../constant/error.type')
+const auth = async (ctx, next) => {
+    // 获取请求头的token
+    const { authorization } = ctx.request.header
+    const token = authorization.replace('Bearer ','') // 这里Bearer后面要有一个空格
+    // 根据自定义私钥，使用jwt验证token
+    console.log('token', token)
+    try {
+        // user中包含了payload的信息：user_name, id, is_admin
+        const user = jwt.verify(token, JWT_SECRET) // 如果jwt.verify验证失败，会抛出一个异常
+        ctx.state.user = user
+    } catch (err) {
+        // jwt.verify异常情况有多种，可参照Npm文档 https://www.npmjs.com/package/jsonwebtoken
+        switch (err.name) {
+            case 'TokenExpiredError': // jwt返回的错误类型
+                console.error('token已过期', err)
+                ctx.app.emit('error', tokenExpiredError, ctx)
+                return
+            case 'JsonWebTokenError':
+                console.error('无效的token', err)
+                ctx.app.emit('error', invalidToken, ctx)
+                return
+            default:
+                console.error('token错误', err)
+                return
+        }
+    }
+
+    await next()
+}
+
+module.exports = {
+    auth
+}
+```
+
+`error.type.js`
+
+```js
+// 定义错误类型
+// 100 用户模块
+// 101 授权模块
+module.exports = {
+	// ...
+    tokenExpiredError: {
+        code: '10101',
+        message: 'token已过期',
+        result: ''
+    },
+    invalidToken: {
+        code: '10102',
+        message: '无效的token',
+        result: ''
+    }
+}
+```
+
+在路由上，加上`token`认证的中间件
+
+`user.route.js`
+
+```js
+const Router = require('@koa/router')
+const router = new Router({ prefix: '/user' })
+const { register, login } = require('../controller/user.conroller')
+const { userValidator, verifyUser, scyptPassword, verifyLogin } = require('../middleware/user.middleware')
+const { auth } = require('../middleware/auth.middleware')
+// 注册接口
+router.post('/register', userValidator, verifyUser, scyptPassword, register)
+// 登录接口
+router.post('/login', userValidator, verifyLogin, login)
+// 修改密码接口
+router.patch('/modifyPassword', auth, (ctx, next) => { // 加上认证的中间件
+    ctx.body = '修改密码成功'
+})
+
+module.exports = router
+
+```
 
