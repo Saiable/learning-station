@@ -1,61 +1,62 @@
 ---
-title: Koa2搭建API服务
-date: 2022/7/25 23:52:13
+title: Koa2 build API service
+date: 2022/7/31 23:52:13
 cover: false
 tags:
 - Koa
 categories: Koa
-description: '包含内容：koa项目初始化、目录结构优化、ORM工具继承、错误处理'
+description: 'Contents: koa project initialization, directory structure optimization, ORM tool inheritance, error handling'
 toc_number: true
-typora-root-url: koa
+
+typora-root-url: koa_EN
 ---
 
-# Koa2入门
+# Getting started with koa2
 
 https://www.bilibili.com/video/BV18h411H7GE?spm_id_from=333.999.0.0
 
-# Node+Koa2搭建`API`服务
+# Node+koa2 build API service
 
-教程来源：https://www.bilibili.com/video/BV13A411w79h?spm_id_from=333.999.0.0
+Tutorial source：https://www.bilibili.com/video/BV13A411w79h?spm_id_from=333.999.0.0
 
-## 初始化
+## Initialization
 
 - `npm init -y`
-- `git init`，并新建`.gitignore`，添加`node_modules`
-  - 提交版本后，并通过`git log`查看记录
-- 新建`README.md`文档
+- `git init`，create a new `.gitignore` file，and add `node_modules`
+  - After submitting the version, view the records through `git log`
+- Create a new `readme.md` document
 
-## 项目初始化
+## Project initialization
 
 - `npm i koa`
 
-- 根目录新建`src/main.js`
+- Create new`src/main.js` file in  rootdirectory
 
   ```js
-  const Koa = require('koa') // 导入Koa，由于导出的是类，一般大写
+  const Koa = require('koa') // import koa, the exported class is generally capitalized
   
-  const app = new Koa() // 实例化
+  const app = new Koa() // instantiation
   
-  app.use((ctx, next) => { // 中间件
-      ctx.body = 'hello world' // 测试代码
+  app.use((ctx, next) => { // middleware
+      ctx.body = 'hello world' // test code
   })
   
-  app.listen(3000, () => { // 开启服务
+  app.listen(3000, () => { // run server
       console.log('server is running on http://localhost:3000 !');
   })
   ```
 
-- 启动开发服务：
+- Start development service：
 
-  - `node .\src\main.js`:`node`方式启动，是常驻内存，不是热加载的
+  - `node .\src\main.js`: `Node ` mode start, is resident memory, not hot loaded
 
-## 开发优化
+## Development optimization
 
-### 自动重启服务
+### Automatic restart service
 
 - `npm i nodemon`
 
-- 配置`dev`脚本：如果`nodemon`装在了全局，则不需要加`npx`
+- Configure `dev` script: if `nodemon` is installed globally, then `npx` is not required
 
   `package.json`
 
@@ -80,7 +81,7 @@ https://www.bilibili.com/video/BV18h411H7GE?spm_id_from=333.999.0.0
   
   ```
 
-- `npm run dev`启动
+- `npm run dev` run server
 
   ```bash
   PS D:\workspace\github\code\project-workshop\code-prac\koa\01> npm run dev
@@ -91,14 +92,14 @@ https://www.bilibili.com/video/BV18h411H7GE?spm_id_from=333.999.0.0
   [nodemon] 2.0.19
   [nodemon] to restart at any time, enter `rs`
   [nodemon] watching path(s): *.*
-  [nodemon] watching extensions: js,mjs,json // 监听这三种文件
-  [nodemon] starting `node ./src/main.js` // 使用node启动
-  server is running on http://localhost:3000 ! // 打印输出内容
+  [nodemon] watching extensions: js,mjs,json // Listen to these three files
+  [nodemon] starting `node ./src/main.js` // Start with node
+  server is running on http://localhost:3000 ! // Print out content
   ```
 
-### 读取配置文件
+### Read configuration file
 
-- 安装`dotenv`（可以去`npm`官网上查看介绍）：在根目录中加载`.env`的配置文件，将键值对加载到`process.env`的环境变量中
+- Install `dotenv` (you can check the introduction on the `NPM` official website)：load the configuration file of `.Env` in the root directory, and load the key value pair into the environment variable of `process.env `
 
   - `npm i dotenv`
 
@@ -279,7 +280,6 @@ app.listen(APP_PORT, () => { // 开启服务
   修改`man.js`
 
   ```js
-  
   const {APP_PORT} = require('./config/config.default')
   
   const app = require('./app')
@@ -581,6 +581,7 @@ module.exports = new UserController()
 使用`sequelize` `ORM`数据库工具：https://github.com/demopark/sequelize-docs-Zh-CN/tree/master
 
 - 基于`Promise`的`ORM`工具
+
 - Sequelize 是一个基于` promise` 的 `Node.js ORM` 工具, 目前支持 `Postgres, MySQL, MariaDB, SQLite 以及 Microsoft SQL Server, Amazon Redshift 和 Snowflake’s Data Cloud`. 它具有强大的事务支持, 关联关系, 预读和延迟加载,读取复制等功能.
 
 - 安装`sequelize`和`mysql2`（支持`Promise`）
@@ -1791,9 +1792,11 @@ module.exports = {
 但事实上，现在`login`对任何的输入都是可以的，我们需要对数据进行一个校验
 
 - 是否为空（合法性校验）
+
   - 复用
 
 - 是否存在（合理性校验）
+
   - 复用
 
 - 验证登录
@@ -1897,7 +1900,7 @@ module.exports = {
 
 我们新建一个修改密码的接口
 
-![image-20220730063834013](/image-20220730063834013.png)
+![image-20220730063834013](image-20220730063834013.png)
 
 修改的操作
 
@@ -1949,7 +1952,7 @@ const { JWT_SECRET } = require('../config/config.default')
 const { tokenExpiredError, invalidToken} = require('../constant/error.type')
 const auth = async (ctx, next) => {
     // 获取请求头的token
-    const { authorization = 'Bearer ' } = ctx.request.header // 如果没带请求头，要给一个默认值
+    const { authorization } = ctx.request.header
     const token = authorization.replace('Bearer ','') // 这里要有一个空格
     // 根据自定义私钥，使用jwt验证token
     console.log('token', token)
@@ -2237,592 +2240,4 @@ module.exports = app
 `use(router.allowedMethods()) `，请求类型不支持的话，会更友好的响应
 
 ![image-20220730193114786](image-20220730193114786.png)
-
-### 封装管理员权限
-
-#### 准备工作
-
-- 用户要登录
-  - 先将`auth`中间件加上（认证）
-- 还要有管理员权限
-  - 然后再添加一个判断管理员权限的中间件（授权）
-
-`goods.route.js`
-
-```js
-const Router = require('@koa/router')
-const router = new Router({ prefix: '/goods' })
-
-const { upload } = require('../controller/goods.controller')
-const { auth, hasAdminPermission } = require('../middleware/auth.middleware')
-
-router.post('/upload', auth, hasAdminPermission, upload)
-
-module.exports = router
-```
-
-`auth.middleware.js`
-
-```js
-const { tokenExpiredError, invalidToken, hasNoAdminPermission } = require('../constant/error.type')
-
-// ...
-const hasAdminPermission = async (ctx, next) => {
-    const { is_admin } = ctx.state.user
-    if (!is_admin) {
-        console.log('该用户无管理员权限', ctx.state.user)
-        ctx.app.emit('error', hasNoAdminPermission, ctx)
-        return
-    }
-    await next()
-}
-module.exports = {
-    auth,
-    hasAdminPermission
-}
-```
-
-`error.type.js`
-
-```js
-// ...
-    hasNoAdminPermission: {
-        code: '10103',
-        message: '无管理员权限',
-        result:''
-    }
-```
-
-然后注册`admin`用户，在数据库里`is_admin`字段的值改为`1`，接着用测试工具登录，然后测一下上传图片接口
-
-#### 图片上传
-
-`koa-body`是支持文件上传的（参数配置项，见`npm`）
-
-- `multipart`配置项默认是`false`，要改成`true`
-- `formidable`是一些关于文件上传的配置信息，`multipart`依赖`fomidabel`这个包
-  - `uploadDir`：上传路径
-  - `keepExtensions`：保持后缀名
-
-- 会把上传成功的文件信息，挂载到`ctx.request.files`中
-
-  - 可以上传多个文件
-
-  - 上传时需要约定好的一个`key`，表示具体的某一个文件，这里约定为`file`
-
-    ![image-20220731074001576](image-20220731074001576.png)
-
-修改`app.index.js`
-
-```js
-const path = require('path')
-
-const Koa = require('koa')
-const koaBody = require('koa-body')
-
-const router = require('../router') // 默认会找index.js
-const errHandler = require('./errHandler')
-
-
-const app = new Koa()
-// use方法返回app自身
-app
-    .use(koaBody({
-        multipart: true,
-        formidable: {
-            // 单独在src下新建一个upload文件夹，不推荐配置成../upload，这样的相对路径
-            // 在option里相对路径不是相对于当前文件，是相对于proces.cwd()，指向当前脚本执行时所在的目录，可以打印一下
-            // 使用node的path模块，写成绝对路径
-            uploadDir: path.join(__dirname, '../upload'), 
-            keepExtensions: true
-        }
-    }))
-    .use(router.routes())
-    .use(router.allowedMethods())
-    .on('error', errHandler)
-
-module.exports = app
-
-```
-
-我们在`upload`处理函数里，打印下文件信息
-
-```js
-class GoodsController {
-    // 根据实际业务，可以写的很复杂，比如支持word、excel、图片等资源上传
-    async upload(ctx, next) {
-        console.log('file', ctx.request.files.file)
-        ctx.body = '商品上传成功'
-    }
-}
-
-module.exports = new GoodsController()
-```
-
-信息如下，有用的几个字段：`lastModifiedDate`、`mimetype`、`size`等
-
-注意：不同版本的`koa-body`，里面的字段可能不一样，需要打印看下
-
-```bash
-file PersistentFile {
-  _events: [Object: null prototype] { error: [Function (anonymous)] },
-  _eventsCount: 1,
-  _maxListeners: undefined,
-  lastModifiedDate: 2022-07-30T23:43:02.773Z,
-  filepath: 'D:\\workspace\\github\\code\\project-workshop\\code-prac\\koa\\01\\src\\upload\\8d12dbfca3833df9df3594700.png',
-  newFilename: '8d12dbfca3833df9df3594700.png',
-  originalFilename: 'blog.png',
-  mimetype: 'image/png',
-  hashAlgorithm: false,
-  size: 257457,
-  _writeStream: WriteStream {
-    fd: null,
-    path: 'D:\\workspace\\github\\code\\project-workshop\\code-prac\\koa\\01\\src\\upload\\8d12dbfca3833df9df3594700.png',
-    flags: 'w',
-    mode: 438,
-    start: undefined,
-    pos: undefined,
-    bytesWritten: 257457,
-    closed: false,
-    _writableState: WritableState {
-      objectMode: false,
-      highWaterMark: 16384,
-      finalCalled: false,
-      needDrain: true,
-      ending: true,
-      ended: true,
-      finished: true,
-      destroyed: true,
-      decodeStrings: true,
-      defaultEncoding: 'utf8',
-      length: 0,
-      writing: false,
-      corked: 0,
-      sync: false,
-      bufferProcessing: false,
-      onwrite: [Function: bound onwrite],
-      writecb: null,
-      writelen: 0,
-      afterWriteTickInfo: null,
-      buffered: [],
-      bufferedIndex: 0,
-      allBuffers: true,
-      allNoop: true,
-      pendingcb: 0,
-      constructed: true,
-      prefinished: true,
-      errorEmitted: false,
-      emitClose: true,
-      autoDestroy: true,
-      errored: null,
-      closed: false,
-      closeEmitted: false,
-      [Symbol(kOnFinished)]: []
-    },
-    _events: [Object: null prototype] { error: [Function (anonymous)] },
-    _eventsCount: 1,
-    _maxListeners: undefined,
-    [Symbol(kFs)]: {
-      appendFile: [Function: appendFile],
-      appendFileSync: [Function: appendFileSync],
-      access: [Function: access],
-      accessSync: [Function: accessSync],
-      chown: [Function: chown],
-      chownSync: [Function: chownSync],
-      chmod: [Function: chmod],
-      chmodSync: [Function: chmodSync],
-      close: [Function: close],
-      closeSync: [Function: closeSync],
-      copyFile: [Function: copyFile],
-      copyFileSync: [Function: copyFileSync],
-      cp: [Function: cp],
-      cpSync: [Function: cpSync],
-      createReadStream: [Function: createReadStream],
-      createWriteStream: [Function: createWriteStream],
-      exists: [Function: exists],
-      existsSync: [Function: existsSync],
-      fchown: [Function: fchown],
-      fchownSync: [Function: fchownSync],
-      fchmod: [Function: fchmod],
-      fchmodSync: [Function: fchmodSync],
-      fdatasync: [Function: fdatasync],
-      fdatasyncSync: [Function: fdatasyncSync],
-      fstat: [Function: fstat],
-      fstatSync: [Function: fstatSync],
-      fsync: [Function: fsync],
-      fsyncSync: [Function: fsyncSync],
-      ftruncate: [Function: ftruncate],
-      ftruncateSync: [Function: ftruncateSync],
-      futimes: [Function: futimes],
-      futimesSync: [Function: futimesSync],
-      lchown: [Function: lchown],
-      lchownSync: [Function: lchownSync],
-      lchmod: undefined,
-      lchmodSync: undefined,
-      link: [Function: link],
-      linkSync: [Function: linkSync],
-      lstat: [Function: lstat],
-      lstatSync: [Function: lstatSync],
-      lutimes: [Function: lutimes],
-      lutimesSync: [Function: lutimesSync],
-      mkdir: [Function: mkdir],
-      mkdirSync: [Function: mkdirSync],
-      mkdtemp: [Function: mkdtemp],
-      mkdtempSync: [Function: mkdtempSync],
-      open: [Function: open],
-      openSync: [Function: openSync],
-      opendir: [Function: opendir],
-      opendirSync: [Function: opendirSync],
-      readdir: [Function: readdir],
-      readdirSync: [Function: readdirSync],
-      read: [Function: read],
-      readSync: [Function: readSync],
-      readv: [Function: readv],
-      readvSync: [Function: readvSync],
-      readFile: [Function: readFile],
-      readFileSync: [Function: readFileSync],
-      readlink: [Function: readlink],
-      readlinkSync: [Function: readlinkSync],
-      realpath: [Function],
-      realpathSync: [Function],
-      rename: [Function: rename],
-      renameSync: [Function: renameSync],
-      rm: [Function: rm],
-      rmSync: [Function: rmSync],
-      rmdir: [Function: rmdir],
-      rmdirSync: [Function: rmdirSync],
-      stat: [Function: stat],
-      statSync: [Function: statSync],
-      symlink: [Function: symlink],
-      symlinkSync: [Function: symlinkSync],
-      truncate: [Function: truncate],
-      truncateSync: [Function: truncateSync],
-      unwatchFile: [Function: unwatchFile],
-      unlink: [Function: unlink],
-      unlinkSync: [Function: unlinkSync],
-      utimes: [Function: utimes],
-      utimesSync: [Function: utimesSync],
-      watch: [Function: watch],
-      watchFile: [Function: watchFile],
-      writeFile: [Function: writeFile],
-      writeFileSync: [Function: writeFileSync],
-      write: [Function: write],
-      writeSync: [Function: writeSync],
-      writev: [Function: writev],
-      writevSync: [Function: writevSync],
-      Dir: [class Dir],
-      Dirent: [class Dirent],
-      Stats: [Function: Stats],
-      ReadStream: [Getter/Setter],
-      WriteStream: [Getter/Setter],
-      FileReadStream: [Getter/Setter],
-      FileWriteStream: [Getter/Setter],
-      _toUnixTimestamp: [Function: toUnixTimestamp],
-      F_OK: 0,
-      R_OK: 4,
-      W_OK: 2,
-      X_OK: 1,
-      constants: [Object: null prototype],
-      promises: [Getter]
-    },
-    [Symbol(kIsPerformingIO)]: false,
-    [Symbol(kCapture)]: false
-  },
-  hash: null,
-  [Symbol(kCapture)]: false
-}
-
-```
-
-完善`upload`处理函数
-
-`goods.controller.js`
-
-```js
-const path = require('path')
-
-const { fileUploadFailed } = require('../constant/error.type')
-
-class GoodsController {
-    async upload(ctx, next) {
-        const { file } = ctx.request.files
-        if (file) {
-            ctx.body = {
-                code: 0,
-                message: '商品图片上传成功',
-                result: {
-                    goods_img: path.basename(file.filepath)
-                }
-            }
-        } else {
-            return ctx.app.emit('error', fileUploadFailed, ctx)
-        }
-    }
-}
-
-module.exports = new GoodsController()
-```
-
-`error.type.js`
-
-每一种类型可以进一步携带`status`，这里没有做那么细
-
-```js
-// ...
-    fileUploadFailed: {
-        code: '10201',
-        message: '商品图片上传失败',
-        result:''
-    }
-```
-
-测试：
-
-![image-20220731075739871](image-20220731075739871.png)
-
-#### 静态资源回显
-
-现在我们希望对静态资源做一个回显，将某个目录设置成静态资源文件夹
-
-安装`koa-static`
-
-```
-npm i koa-static
-```
-
-`app/index.js`中使用
-
-```js
-const path = require('path')
-
-const Koa = require('koa')
-const koaBody = require('koa-body')
-const KoaStatic =  require('koa-static')
-
-const router = require('../router') // 默认会找index.js
-const errHandler = require('./errHandler')
-
-
-const app = new Koa()
-// use方法返回app自身
-app
-    .use(koaBody({
-        multipart: true,
-        formidable: {
-            uploadDir: path.join(__dirname, '../upload'), 
-            keepExtensions: true
-        }
-    }))
-    .use(KoaStatic(path.join(__dirname, '../upload')))
-    .use(router.routes())
-    .use(router.allowedMethods())
-    .on('error', errHandler)
-
-module.exports = app
-
-```
-
-重启项目，可以通过`http://localhost:8000/4f791979542fe84e316506b00.png`访问静态资源（后面跟实际的文件名）
-
-#### 前端实现上传图片
-
-后面会讲到
-
-- `form`表单
-- `ajax`
-
-#### 图片类型判断
-
-不能在`upload`处理函数里面校验，走到这一步时图片已经上传了
-
-下面的方式不建议
-
-`goods.controller.js`
-
-```js
-    async upload(ctx, next) {
-        const { file } = ctx.request.files
-        console.log(file)
-        const fileTypes = ['iamge/png', 'image/jpg', 'image/jpeg', 'image/webp']
-        if (file) {
-            if(!fileTypes.includes(file.mimetype)) {
-                return ctx.app.emit('error', unSupportedFileType, ctx)
-            }
-            ctx.body = {
-                code: 0,
-                message: '商品图片上传成功',
-                result: {
-                    goods_img: path.basename(file.filepath)
-                }
-            }
-        } else {
-            return ctx.app.emit('error', fileUploadFailed, ctx)
-        }
-    }
-```
-
-`error.type.js`
-
-```js
-    unSupportedFileType: {
-        code: '10202',
-        message: '商品图不支持的文件类型',
-        result:''
-    }
-```
-
-测试接口上传`txt`文件
-
-![image-20220731091404172](image-20220731091404172.png)
-
-
-
-但我们看到，后台文件其实已经上传了
-
-更好的方式失去配置`formidable`，但如果要统一错误处理，还需要写专门的中间件去返回错误类型
-
-
-
-### 发布商品接口
-
-> 路由
-
-```js
-POST /goods/release
-```
-
-> 请求参数
-
-```js
-goods_name, goods_price, goods_num, goods_img
-```
-
-> 响应
-
-```json
-{
-    "code": 0,
-    "message": "发布商品成功",
-    "result": {
-        id: "",
-        goods_name: "",
-        goods_price: "",
-        goods_img: "",
-        goods_num: ""
-    }
-}
-```
-
-
-
-
-
-发布商品，除了需要认证、授权中间件，还需要参数格式校验的中间件
-
-- 如果使用`ts`写的话，自带类型校验
-
-新建`goods.middleware.js`
-
-```js
-const validator = async(ctx, next) => {
-
-}
-
-module.exports = {
-    validator
-}
-```
-
-之前写`user`模块的时候，我们是自己写的参数校验，不是说不好，实际写业务的时候，可以直接用社区里稳定的包
-
-`koa-parameter`或者其它（先跟着教程里的来，这个库是5年前的，并且周下载量 不高了）https://www.npmjs.com/package/koa-parameter
-
-安装
-
-```js
-npm i koa-parameter
-```
-
-在`app/index.js`中导入，并在路由注册之前，导入该中间件
-
-```js
-const path = require('path')
-
-const Koa = require('koa')
-const koaBody = require('koa-body')
-const KoaStatic =  require('koa-static')
-const parameter = require('koa-parameter') // 导入koa-parameter
-
-const router = require('../router')
-const errHandler = require('./errHandler')
-
-
-const app = new Koa()
-// use方法返回app自身
-app
-    .use(koaBody({
-        multipart: true,
-        formidable: {
-            uploadDir: path.join(__dirname, '../upload'), 
-            keepExtensions: true
-        }
-    }))
-    .use(KoaStatic(path.join(__dirname, '../upload')))
-    .use(parameter(app)) // 传入app实例，在app原型对象上添加校验的方法：verifyParams
-    .use(router.routes())
-    .use(router.allowedMethods())
-    .on('error', errHandler)
-
-
-module.exports = app
-
-```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
