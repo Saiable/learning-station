@@ -2643,7 +2643,7 @@ module.exports = app
     async upload(ctx, next) {
         const { file } = ctx.request.files
         console.log(file)
-        const fileTypes = ['iamge/png', 'image/jpg', 'image/jpeg', 'image/webp']
+        const fileTypes = ['image/png', 'image/jpg', 'image/jpeg', 'image/webp']
         if (file) {
             if(!fileTypes.includes(file.mimetype)) {
                 return ctx.app.emit('error', unSupportedFileType, ctx)
@@ -2715,7 +2715,7 @@ goods_name, goods_price, goods_num, goods_img
 
 
 
-
+#### 参数格式校验
 
 发布商品，除了需要认证、授权中间件，还需要参数格式校验的中间件
 
@@ -2735,7 +2735,7 @@ module.exports = {
 
 之前写`user`模块的时候，我们是自己写的参数校验，不是说不好，实际写业务的时候，可以直接用社区里稳定的包
 
-`koa-parameter`或者其它（先跟着教程里的来，这个库是5年前的，并且周下载量 不高了）https://www.npmjs.com/package/koa-parameter
+`koa-parameter`或者其它（先跟着教程里的来，这个库是5年前的，并且周下载量 不高了）https://www.npmjs.com/package/koa-parameter，是基于`parameter`这个库
 
 安装
 
@@ -2778,21 +2778,289 @@ module.exports = app
 
 ```
 
+完善校验逻辑
+
+`goods.middleware.js`
+
+```js
+const {goodsParamsError} = require('../constant/error.type')
+
+const validator = async (ctx, next) => {
+    try {
+        ctx.verifyParams({
+            goods_name: {type: 'string', required: true},
+            goods_price: {type: 'number', required: true},
+            goods_num: {type: 'number', required: true},
+            goods_img: {type: 'string', required: true}
+        })
+    } catch (err) {
+        console.error(err)
+        // 把第三方的错误信息，传递到自定义的错误信息中，做一个统一
+        goodsParamsError.result = err
+        ctx.app.emit('error', goodsParamsError, ctx)
+        return
+    }
+
+    await next()
+}
+
+module.exports = {
+    validator
+}
+```
+
+`error.type.js`
+
+```js
+    goodsParamsError: {
+        code: '10203',
+        message: '商品参数格式错误',
+        result:''
+    }
+```
+
+新建发布商品接口，并测试
+
+我们将价格参数写成字符串，错误提示正确：
+
+![image-20220801191725388](image-20220801191725388.png)
+
+#### 发布商品写入数据库
+
+`goods.controller.js`
+
+```js
+const path = require('path')
+
+const { fileUploadFailed, unSupportedFileType, publishGoodsError } = require('../constant/error.type')
+const {createGoods} = require('../service/goods.service')
+
+class GoodsController {
+    async upload(ctx, next) {
+        const { file } = ctx.request.files
+        console.log("file", file)
+        const fileTypes = ['image/png', 'image/jpg', 'image/jpeg', 'image/webp']
+        if (file) {
+            if(!fileTypes.includes(file.mimetype)) {
+                return ctx.app.emit('error', unSupportedFileType, ctx)
+            }
+            ctx.body = {
+                code: 0,
+                message: '商品图片上传成功',
+                result: {
+                    goods_img: path.basename(file.filepath)
+                }
+            }
+        } else {
+
+            return ctx.app.emit('error', fileUploadFailed, ctx)
+        }
+    }
+
+    async release(ctx, next) {
+        try {
+            const {createdAt, updatedAt, ...res} = await createGoods(ctx.request.body)
+            ctx.body = {
+                code: 0,
+                message: '发布商品成功',
+                result: res
+            }
+        } catch(err) {
+            console.error(err)
+            return ctx.app.emit('error', publishGoodsError, ctx) // 不要把数据库相关的报错信息，暴露给前端
+        }
+    }
+}
+
+module.exports = new GoodsController()
+```
+
+`error.type.js`
+
+```js
+    publishGoodsError: {
+        code: '10204',
+        message: '商品发布失败',
+        result:''  
+    }
+```
+
+`goods.service.js`
+
+```js
+const Goods  = require('../model/goods.model') // 导入模型层时，不用解构赋值
+class goodsService {
+    async createGoods(goods) {
+        const res = await Goods.create(goods)
+        return res.dataValues
+    }
+}
+
+module.exports = new goodsService()
+```
+
+`goods.model.js`
+
+生成表结构后，记得注释掉`seq.sync()`
+
+```js
+const {DataTypes} = require('sequelize')
+
+const seq = require('../db/seq')
+
+const Goods = seq.define('sai_goods', {
+    goods_name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        comment: '商品名称'
+    },
+    goods_price: {
+        type: DataTypes.DECIMAL(10, 2),
+        allowNull: false,
+        comment: '商品价格'
+    },
+    goods_num: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        comment: '商品库存'
+    },
+    goods_img: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        comment: '商品图片的url地址'
+    }
+})
+
+// 创建表后注释掉
+// Goods.sync({force: true})
+module.exports = Goods
+```
+
+测试接口
+
+![image-20220801195958558](image-20220801195958558.png)
+
+
+
+### 修改商品接口
+
+```
+PUT /goods/modify/:id
+```
+
+> 请求参数
+
+```
+goods_name, goods_price, goods_num, goods_img
+```
+
+> 响应
+
+成功
+
+```json
+{
+    "code": 0,
+    "message": "修改商品成功",
+    "result": {
+        "id": "",
+        "goods_name": "",
+        "goods_prcie": "",
+        "goods_img": ""
+    }
+}
+```
+
+新建修改商品的测试接口
+
+![image-20220802062718051](image-20220802062718051.png)
+
+![image-20220802062725439](image-20220802062725439.png)
+
+`goods.route.js`
+
+```js
+const Router = require('@koa/router')
+const router = new Router({ prefix: '/goods' })
+
+const { upload, release, update } = require('../controller/goods.controller')
+const { auth, hasAdminPermission } = require('../middleware/auth.middleware')
+const { validator } = require('../middleware/goods.middleware')
+// 商品图片上传接口
+router.post('/upload', auth, hasAdminPermission, upload)
+// 发布商品接口
+router.post('/release', auth, hasAdminPermission, validator, release)
+// 修改商品接口
+router.put('/update/:id',auth, hasAdminPermission, validator, update)
+module.exports = router
+```
+
+`goods.controller.js`
+
+```js
+    async update(ctx, next) {
+        try {
+            const res = await updateGoods(ctx.params.id, ctx.request.body)
+            if (res) {
+                ctx.body = {
+                    code: 0,
+                    message: '修改商品成功',
+                    result: ''
+                }
+            } else {
+                return ctx.app.emit('error', invalidGoodsId, ctx)
+            }
+        } catch (err) {
+            console.error(err)
+
+            return ctx.app.emit('error', updateGoodsError, ctx)
+        }
+    }
+```
+
+`error.type.js`
+
+```js
+    invalidGoodsId: {
+        code: '10205',
+        message: '待修改的商品不存在',
+        result:''  
+    },
+    updateGoodsError: {
+        code: '10206',
+        message: '更新商品失败',
+        result:''  
+    }
+```
+
+`goods.service.js`
+
+```js
+    async updateGoods(id, goods) {
+        const res = await Goods.update(goods, { where: { id } }) // 这里的id记得加括号
+        return res[0] > 0 ? true : false
+    }
+}
+```
+
+测试接口
+
+成功：
+
+![image-20220802062917097](image-20220802062917097.png)
+
+失败：
+
+![image-20220802062940954](image-20220802062940954.png)
 
 
 
 
 
+删除商品接口
 
-
-
-
-
-
-
-
-
-
+- 硬删除（直接从数据库中删除）
+- 软删除（通过字段标识是否删除）
 
 
 
