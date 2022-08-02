@@ -2699,6 +2699,8 @@ goods_name, goods_price, goods_num, goods_img
 
 > 响应
 
+成功
+
 ```json
 {
     "code": 0,
@@ -3057,10 +3059,267 @@ module.exports = router
 
 
 
-删除商品接口
+### 删除商品接口
 
 - 硬删除（直接从数据库中删除）
 - 软删除（通过字段标识是否删除）
+
+```
+DELETE /goods/remove/:id
+```
+
+> 请求参数
+
+```
+无
+```
+
+> 响应
+
+成功
+
+```json
+{
+    "code": 0,
+    "message": "删除商品成功",
+    "result": ""
+}
+```
+
+
+
+
+
+#### 硬删除
+
+`goods.router.js`
+
+```js
+const Router = require('@koa/router')
+const router = new Router({ prefix: '/goods' })
+
+const { upload, release, update, remove } = require('../controller/goods.controller')
+const { auth, hasAdminPermission } = require('../middleware/auth.middleware')
+const { validator } = require('../middleware/goods.middleware')
+// 商品图片上传接口
+router.post('/upload', auth, hasAdminPermission, upload)
+// 发布商品接口
+router.post('/release', auth, hasAdminPermission, validator, release)
+// 修改商品接口
+router.put('/update/:id',auth, hasAdminPermission, validator, update)
+// 删除接口
+router.delete('/remove/:id', auth, hasAdminPermission, remove)
+module.exports = router
+```
+
+`goods.controller.js`
+
+```js
+    async remove(ctx, next) {
+        await removeGoods(ctx.params.id)
+        ctx.body = {
+            code: 0,
+            message: '商品删除成功',
+            result: ''
+        }
+    }
+```
+
+`goods.service.js`
+
+```js
+    async removeGoods(id) {
+        const res = await Goods.destroy({ where: { id } })
+        return res[0] > 0 ? true : false
+    }
+}
+```
+
+
+
+#### 软删除
+
+> 扩展
+
+可以做成上下架的状态，考虑加一个状态字段，删除商品做成下架，下架商品更新字段值
+
+ 一般不会硬删除的
+
+修改`goods.model.js`
+
+`define`函数新增第三个参数，然后取消`sync`注释重新创建表
+
+```js
+const {DataTypes} = require('sequelize')
+
+const seq = require('../db/seq')
+
+const Goods = seq.define('sai_goods', { 
+    goods_name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        comment: '商品名称'
+    },
+    goods_price: {
+        type: DataTypes.DECIMAL(10, 2),
+        allowNull: false,
+        comment: '商品价格'
+    },
+    goods_num: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        comment: '商品库存'
+    },
+    goods_img: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        comment: '商品图片的url地址'
+    }
+}, {
+    paranoid: true
+})
+
+// 创建表后注释掉
+Goods.sync({force: true})
+module.exports = Goods
+```
+
+重新执行后，商品表会多一个字段，删除时会更新一个时间戳，表示删除
+
+![image-20220802215458234](image-20220802215458234.png)
+
+将硬删除改为软删除接口
+
+`goods.router.js`
+
+```js
+// 下架商品
+router.post('/remove/:id/off', auth, hasAdminPermission, remove)
+```
+
+新建软删除测试接口，`deleteAt`字段有值，表示下架
+
+![image-20220802220330688](image-20220802220330688.png)
+
+调通后，完善错误处理
+
+`goods.controller.js`
+
+```js
+    async remove(ctx, next) {
+        const res = await removeGoods(ctx.params.id)
+        if(res) {
+            ctx.body = {
+                code: 0,
+                message: '商品下架成功',
+                result: ''
+            }
+        } else {
+            return ctx.app.emit('error', invalidGoodsId, ctx)
+        }
+    }
+```
+
+`goods.service.js`
+
+```js
+    async removeGoods(id) {
+        const res = await Goods.destroy({ where: { id } }) // destroy的返回值，不是数组
+        return res > 0 ? true : false // 返回值为0或1
+    }
+```
+
+测试下架商品接口，
+
+对于重复下架、下架不存在的商品，给出错误提示
+
+![image-20220802221044222](image-20220802221044222.png)
+
+
+
+**上架接口**
+
+`goods.router.js`
+
+```js
+// 上架商品
+router.post('/remove/:id/on', auth, hasAdminPermission, restore)
+```
+
+`goods.controller.js`
+
+```js
+	async restore(ctx, next) {
+        const res = await restoreGoods(ctx.params.id)
+        if (res) {
+            ctx.body = {
+                code: 0,
+                message: '商品上架成功',
+                result: ''
+            }
+        } else {
+            return ctx.app.emit('error', invalidGoodsId, ctx)
+        }
+    }
+```
+
+`goods.service.js`
+
+```js
+    async restoreGoods(id) {
+        const res = await Goods.restore({ where: { id } })
+        return res > 0 ? true : false
+    }
+```
+
+测试上架接口，
+
+对于重复上架、上架不存在的商品，给出错误提示
+
+![image-20220802221044222](image-20220802221044222.png)
+
+### 商品列表接口
+
+```
+GET/goods
+```
+
+> 请求参数
+
+```
+pageNum(default=1)
+pageSize(default=10)
+```
+
+> 响应
+
+成功
+
+```json
+{
+    "code": 0,
+    "message": "获取商品成功",
+    "result": {
+        "pageNum": 1,
+        "pageSize": 10, 
+		"total": 2,
+        "list": [
+ 			{
+            	"id": 1,
+            	"goods_name": "",
+            	"goods_price": "",
+                "goods_img": ""
+            },
+        	{
+            	"id": 2,
+            	"goods_name": "",
+            	"goods_price": "",
+                "goods_img": ""
+            }, 
+        ]
+    }
+}
+```
 
 
 
