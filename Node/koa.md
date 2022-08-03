@@ -3321,9 +3321,91 @@ pageSize(default=10)
 }
 ```
 
+`goods.route.js`
+
+```js
+// 获取商品列表
+router.get('/lists', findAll)
+
+```
+
+`goods.controller.js`
+
+```js
+    async findAll(ctx, next) {
+        try {
+            console.log(ctx.params.query)
+
+            const { pageNum = 1, pageSize = 10 } = ctx.request.query
+            const res = await findGoods(pageNum, pageSize)
+            ctx.body = {
+                code: 0,
+                message: '获取商品列表成功',
+                result: res
+            }
+        } catch(err) {
+            console.error(err)
+        }
+    }
+```
+
+`goods.service.js`
+
+```js
+async findGoods(pageNum, pageSize) {
+        // 获取表记录数
+        const count = await Goods.count() // count()和findAll()将看不到软删除的记录
+
+        // 获取分页具体数据
+        const offset = (pageNum - 1) * pageSize
+        const rows = await Goods.findAll({ offset, limit: pageSize * 1 })
+
+        // 返回字段对应接口文档
+        return {
+            pageNum,
+            pageSize,
+            total: count,
+            list: rows
+        }
+
+    }
+```
+
+![image-20220803203126192](image-20220803203126192.png)
+
+这个接口还是有很多问题的，如参数校验、异常处理等
+
+## 购物车模块
+
+```
+POST /carts
+```
+
+> 请求参数
+
+```
+goods_id
+```
+
+- 计算登录用户的`user_id`	
+  - 如果该用户下的`goods_id`不存在，新建一条记录
+  - 如果该用户下的`goods_id`已存在，更新数量+1
+
+> 响应
 
 
 
+**购物车表**
+
+表名：`sai_carts`
+
+| 字段名   | 字段类型 | 说明               |
+| -------- | -------- | ------------------ |
+| id       | int      | 主键，自增         |
+| goods_id | int      | 商品id             |
+| user_id  | int      | 用户id             |
+| number   | int      | 数量               |
+| selected | tinyint  | 0：没选中；1：选中 |
 
 
 
