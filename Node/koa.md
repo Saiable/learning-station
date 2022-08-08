@@ -5,7 +5,7 @@ cover: false
 tags:
 - Koa
 categories: Koa
-description: '包含内容：koa项目初始化、目录结构优化、ORM工具继承、错误处理'
+description: "包含内容：koa项目初始化、目录结构优化、ORM工具继承、错误处理"
 toc_number: true
 typora-root-url: koa
 ---
@@ -3377,6 +3377,8 @@ async findGoods(pageNum, pageSize) {
 
 ## 购物车模块
 
+### 添加购物车
+
 ```
 POST /carts
 ```
@@ -3406,6 +3408,1572 @@ goods_id
 | user_id  | int      | 用户id             |
 | number   | int      | 数量               |
 | selected | tinyint  | 0：没选中；1：选中 |
+
+`cart.route.js`
+
+```js
+const Router = require('@koa/router')
+const router = new Router({ prefix: '/carts' })
+const { validator } = require('../middleware/cart.middleware')
+const { auth } = require('../middleware/auth.middleware')
+const { add } = require('../controller/cart.controller')
+
+
+router.post('/', auth, validator, add)
+
+module.exports = router
+
+```
+
+`cart.controller.js`
+
+```js
+const {createOrUpdate} = require('../service/cart.service')
+
+class CartController {
+    async add(ctx, next) {
+        try {
+            const user_id = ctx.state.user.id
+            const goods_id = ctx.request.body.goods_id
+    
+            const res  = await createOrUpdate(user_id, goods_id)
+            ctx.body = {
+                code: 0,
+                message: '添加到购物车成功',
+                result: res
+            }
+        } catch(err) {
+            console.error(err)
+        }
+    }
+}
+
+module.exports = new CartController()
+```
+
+`cart.service.js`
+
+```js
+const Cart = require('../model/cart.model')
+const {Op} = require('sequelize') // 要以解构赋值的形式导入
+
+
+class CartService {
+    async createOrUpdate(user_id, goods_id) {
+        // 根据user_id和goods_id同时查找
+        const res = await Cart.findOne({
+            [Op.and]: {
+                user_id,
+                goods_id
+            }
+        })
+
+        // 已经存在一条记录，将number + 1
+        if(res) {
+            await res.increment('number')
+            return await res.reload()
+        } else {
+            return await Cart.create({
+                user_id,
+                goods_id
+            })
+        }
+    }
+}
+
+module.exports = new CartService()
+```
+
+`cart.model.js`
+
+```js
+const seq = require('../db/seq')
+const {DataTypes} = require('sequelize')
+
+const Cart = seq.define('sai_carts', {
+    goods_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        comment: '商品的id'
+    },
+    user_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        comment: '用户的id'
+    },
+    number: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 1,
+        comment: '商品的数量'
+    },
+    selected: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: true,
+        comment: '是否选中'
+    }
+})
+
+// Cart.sync({force: true})
+
+module.exports = Cart
+```
+
+小问题：这里=我们没有对`goods_id`是否存在做校验，并且已经下架的商品是不能够进行操作的
+
+
+
+要做一个真实的、可以商用的接口，不是那么简单的，会有很多的细节要考虑
+
+### 获取购物车列表
+
+```
+GET /carts
+```
+
+> 请求参数
+
+```
+pageNum(default=1)
+pageSize(default=10)
+```
+
+> 响应
+
+成功
+
+```json
+{
+    "code": 0,
+    "message": "获取购物车列表成功",
+    "result": {
+        "pageNum": 1,
+        "pageSize": 10,
+        "total": 2,
+        "list": [
+            {
+                "id": 1,
+                "goods_info": {
+                    "id": 2,
+                    "goods_name": "蓝牙耳机",
+                    "goods_price": 199.00,
+                    "goods_img": "./32048091210.jpg"
+                },
+                "number": 1,
+                "selected": 1
+            },
+            {
+                "id": 2,
+                "goods_info": {
+                    "id": 2,
+                    "goods_name": "蓝牙耳机",
+                    "goods_price": 199.00,
+                    "goods_img": "./32048091210.jpg"
+                },
+                "number": 1,
+                "selected": 1
+            }
+        ]
+    }
+}
+```
+
+表关联：https://www.sequelize.com.cn/core-concepts/assocs
+
+`cart.route.js`
+
+```js
+router.get('/', auth, findAll)
+```
+
+`cart.controller.js`
+
+```js
+    async findAll(ctx, next) {
+        const {pageNum = 1, pageSize = 10} = ctx.request.query
+        const res = await findCarts(pageNum, pageSize)
+        ctx.body = {
+            code: 0,
+            message: '获取购物车列表成功',
+            result: res
+        }
+    }
+```
+
+`cart.service.js`
+
+```js
+    async findCarts(pageNum, pageSize) {
+        const offset = (pageNum - 1) * pageSize
+        const { count, rows } = await Cart.findAndCountAll({
+            attributes: ['id', 'number', 'selected'], // 指定需要查找的字段
+            offset: offset,
+            limit: pageSize * 1
+        })
+        return {
+            pageNum,
+            pageSize,
+            total: count,
+            list: rows
+        }
+    }
+```
+
+添加几件商品到购物车后，测试获取购物车列表的接口：
+
+```json
+{
+    "code": 0,
+    "message": "获取购物车列表成功",
+    "result": {
+        "pageNum": "1",
+        "pageSize": "10",
+        "total": 4,
+        "list": [
+            {
+                "id": 1,
+                "number": 4,
+                "selected": true
+            },
+            {
+                "id": 3,
+                "number": 1,
+                "selected": true
+            },
+            {
+                "id": 4,
+                "number": 2,
+                "selected": true
+            },
+            {
+                "id": 5,
+                "number": 2,
+                "selected": true
+            }
+        ]
+    }
+}
+```
+
+现在需要做一个联表查询，查询具体的商品信息
+
+现在是`cart`表要关联`goods`表（根据`cart`表里的`goods_id`去`goods`表里查询）
+
+`cart.model.js`
+
+```js
+const seq = require('../db/seq')
+const {DataTypes} = require('sequelize')
+const Goods = require('./goods.model') // 导入Goods模型
+
+
+const Cart = seq.define('sai_carts', {
+	// ...
+})
+
+// Cart.sync({force: true})
+Cart.belongsTo(Goods, {
+    foreignKey: 'goods_id',
+    as: 'goods_info'
+}) // 外键在Cart表里用belongsTo，否则用hasOne
+
+
+module.exports = Cart
+```
+
+`cart.service.js`
+
+```js
+const Goods = require('../model/goods.model')
+
+// ...
+	async findCarts(pageNum, pageSize) {
+        const offset = (pageNum - 1) * pageSize
+        const { count, rows } = await Cart.findAndCountAll({
+            attributes: ['id', 'number', 'selected'],
+            offset: offset,
+            limit: pageSize * 1,
+            include: {
+                model: Goods,
+                as: 'goods_info', // 指定查询结构的别名，和接口文档的字段保持一致
+                attributes: ['id', 'goods_name', 'goods_price', 'goods_img'] // 这里的先后顺序，会反映到接口中的字段顺序
+            }
+        })
+        return {
+            pageNum,
+            pageSize,
+            total: count,
+            list: rows
+        }
+    }
+```
+
+测试接口：
+
+```json
+{
+    "code": 0,
+    "message": "获取购物车列表成功",
+    "result": {
+        "pageNum": "1",
+        "pageSize": "10",
+        "total": 4,
+        "list": [
+            {
+                "id": 1,
+                "number": 4,
+                "selected": true,
+                "goods_info": {
+                    "id": 3,
+                    "goods_name": "证断影然度叫",
+                    "goods_img": "http://dummyimage.com/400x400",
+                    "goods_price": "53.00"
+                }
+            },
+            {
+                "id": 3,
+                "number": 1,
+                "selected": true,
+                "goods_info": {
+                    "id": 2,
+                    "goods_name": "酸这争取",
+                    "goods_img": "http://dummyimage.com/400x400",
+                    "goods_price": "13.00"
+                }
+            },
+            {
+                "id": 4,
+                "number": 2,
+                "selected": true,
+                "goods_info": {
+                    "id": 3,
+                    "goods_name": "证断影然度叫",
+                    "goods_img": "http://dummyimage.com/400x400",
+                    "goods_price": "53.00"
+                }
+            },
+            {
+                "id": 5,
+                "number": 2,
+                "selected": true,
+                "goods_info": {
+                    "id": 2,
+                    "goods_name": "酸这争取",
+                    "goods_img": "http://dummyimage.com/400x400",
+                    "goods_price": "13.00"
+                }
+            }
+        ]
+    }
+}
+```
+
+如果自己写`SQL`也可以，可以用`LEFT OUTER JOIN`做联表查询
+
+```sql
+SELECT `sai_carts`.`id`, `sai_carts`.`number`, `sai_carts`.`selected`, `goods_info`.`id` AS `goods_info.id`, `goods_info`.`goods_name` AS `goods_info.goods_name`, `goods_info`.`goods_img` AS `goods_info.goods_img`, `goods_info`.`goods_price` AS `goods_info.goods_price` FROM `sai_carts` AS `sai_carts` LEFT OUTER JOIN `sai_goods` AS `goods_info` ON `sai_carts`.`goods_id` = `goods_info`.`id` AND (`goods_info`.`deletedAt` IS NULL) LIMIT 0, 10;
+```
+
+一个接口把前端想要的所有信息都返回，避免两次网络请求（否则将根据`goods_id`又重新发送请求获取商品信息）
+
+要多看看`sequelize`官方文档
+
+
+
+### 更新购物车
+
+通过更新接口可以修改购物车中商品的选中状态和数量
+
+```
+PATCH /carts/:id
+```
+
+> 请求参数
+
+```
+number, selected
+```
+
+>  响应
+
+成功
+
+```json
+{
+    "code": 0,
+    "message": "获取购物车列表成功",
+    "result": {
+        "pageNum": 1,
+        "pageSize": 10,
+        "total": 2,
+        "list": [
+            {
+                "id": 1,
+                "goods_info": {
+                    "id": 2,
+                    "goods_name": "蓝牙耳机",
+                    "goods_price": 199.00,
+                    "goods_img": "./32048091210.jpg"
+                },
+                "number": 1,
+                "selected": 1
+            },
+            {
+                "id": 2,
+                "goods_info": {
+                    "id": 2,
+                    "goods_name": "蓝牙耳机",
+                    "goods_price": 199.00,
+                    "goods_img": "./32048091210.jpg"
+                },
+                "number": 1,
+                "selected": 1
+            }
+        ]
+    }
+}
+```
+
+`cart.route.js`
+
+```js
+// 更新购物车
+router.patch(
+    '/:id',
+    auth,
+    validator({
+        number: { type: 'number', required: false },
+        selected: { type: 'bool',   required: false }
+    }),
+    update
+)
+```
+
+`cart.controller.js`
+
+```js
+ 	async update(ctx, next) {
+        // 解析参数
+        const { id } = ctx.request.params
+        const { number, selected } = ctx.request.body
+
+        // 参数判断
+        if (number === undefined && selected === undefined) {
+            cartFormatError.message = 'number和selected不能同时为空'
+            return ctx.app.emit('error', cartFormatError, ctx)
+        }
+
+        // 操作数据库
+        const res = await updateCarts({ id, number, selected })
+
+        ctx.body = {
+            code: 0,
+            message: '更新购物车成功',
+            result: res
+        }
+    }
+```
+
+`error.type.js`
+
+```js
+    cartFormatError: {
+        code: '10301',
+        message: '购物车数据格式错误',
+        result: ''
+
+    }
+```
+
+`cart.service.js`
+
+```js
+    async updateCarts(params) {
+        const { id, number, selected } = params
+
+        const res = await Cart.findByPk(id)
+        if(!res) return ''
+        number !== undefined ? (res.number =  number) : ''
+        selected !== undefined ? (res.selected = selected) : ''
+
+        return await res.save()
+
+    }
+```
+
+### 刪除购物车
+
+```
+DELETE /carts
+```
+
+> 请求参数
+
+```json
+{
+    "ids": [1, 2, 3]
+}
+```
+
+> 响应
+
+成功
+
+```json
+{
+    "code": 0,
+    "message": "获取购物车列表成功",
+    "result": {
+        "pageNum": 1,
+        "pageSize": 10,
+        "total": 2,
+        "list": [
+            {
+                "id": 1,
+                "goods_info": {
+                    "id": 2,
+                    "goods_name": "蓝牙耳机",
+                    "goods_price": 199.00,
+                    "goods_img": "./32048091210.jpg"
+                },
+                "number": 1,
+                "selected": 1
+            },
+            {
+                "id": 2,
+                "goods_info": {
+                    "id": 2,
+                    "goods_name": "蓝牙耳机",
+                    "goods_price": 199.00,
+                    "goods_img": "./32048091210.jpg"
+                },
+                "number": 1,
+                "selected": 1
+            }
+        ]
+    }
+}
+```
+
+`cart.route.js`
+
+```js
+// 删除购物车，默认delete、get、head请求方法下,koa-body不会把请求体放到ctx.body中，需要在koa-body中开启：parsedMethods: ['POST', 'PUT', 'PATCH', 'DELETE']
+router.delete('/', auth, validator({ ids: 'array' }), remove)
+
+```
+
+`app.index.js`
+
+```js
+// ...
+const app = new Koa()
+app
+    .use(koaBody({
+        multipart: true,
+        formidable: {
+
+            uploadDir: path.join(__dirname, '../upload'), 
+            keepExtensions: true
+        },
+        parsedMethods: ['POST', 'PUT', 'PATCH', 'DELETE'] // 让其支持DELETE方法下，也写入body参数
+    }))
+    .use(KoaStatic(path.join(__dirname, '../upload')))
+    .use(parameter(app))
+    .use(router.routes())
+    .use(router.allowedMethods())
+    .on('error', errHandler)
+
+
+module.exports = app
+
+```
+
+`cart.controller.js`
+
+```js
+async remove(ctx, next) {
+        try {
+            const { ids } = ctx.request.body
+            console.log(ids)
+            const res = await removeCarts(ids)
+
+            ctx.body = {
+                code: 0,
+                message: '删除购物车成功',
+                result: res
+            }
+        } catch (err) {
+            console.error(err)
+        }
+    }
+```
+
+`cart.service.js`
+
+```js
+async removeCarts(ids) {
+        return await Cart.destroy({
+            where: {
+                id: {
+                    [Op.in]: ids
+                }
+            }
+        })
+    }
+```
+
+
+
+### 全选中接口
+
+```
+POST /carts/selectAll
+```
+
+> 请求参数
+
+无
+
+> 响应
+
+成功
+
+```json
+{
+    "code": 0,
+    "message": "获取购物车列表成功",
+    "result": {
+        "pageNum": 1,
+        "pageSize": 10,
+        "total": 2,
+        "list": [
+            {
+                "id": 1,
+                "goods_info": {
+                    "id": 2,
+                    "goods_name": "蓝牙耳机",
+                    "goods_price": 199.00,
+                    "goods_img": "./32048091210.jpg"
+                },
+                "number": 1,
+                "selected": 1
+            },
+            {
+                "id": 2,
+                "goods_info": {
+                    "id": 2,
+                    "goods_name": "蓝牙耳机",
+                    "goods_price": 199.00,
+                    "goods_img": "./32048091210.jpg"
+                },
+                "number": 1,
+                "selected": 1
+            }
+        ]
+    }
+}
+```
+
+
+
+### 全不选中接口
+
+```
+POST /carts/unSelectAll
+```
+
+> 请求参数
+
+无
+
+> 响应
+
+成功
+
+```json
+{
+    "code": 0,
+    "message": "获取购物车列表成功",
+    "result": {
+        "pageNum": 1,
+        "pageSize": 10,
+        "total": 2,
+        "list": [
+            {
+                "id": 1,
+                "goods_info": {
+                    "id": 2,
+                    "goods_name": "蓝牙耳机",
+                    "goods_price": 199.00,
+                    "goods_img": "./32048091210.jpg"
+                },
+                "number": 1,
+                "selected": 1
+            },
+            {
+                "id": 2,
+                "goods_info": {
+                    "id": 2,
+                    "goods_name": "蓝牙耳机",
+                    "goods_price": 199.00,
+                    "goods_img": "./32048091210.jpg"
+                },
+                "number": 1,
+                "selected": 1
+            }
+        ]
+    }
+}
+```
+
+
+
+`cart.route.js`
+
+```js
+// 全选 和 全部不选 ，其实可以合并起来写
+router.post('/selectAll', auth, selectAll)
+router.post('/unselectAll', auth, unSelectAll)
+
+```
+
+`cart.controller.js`
+
+```js
+async selectAll(ctx, next) {
+        try {
+            const user_id = ctx.state.user.id
+            const res = await selectAllCarts(user_id)
+
+            ctx.body = {
+                code: 0,
+                message: '全部选中',
+                result: res
+            }
+        } catch (err) {
+            console.error(err)
+        }
+    }
+
+    async unSelectAll(ctx, next) {
+        const user_id = ctx.state.user.id
+
+        const res = await unSelectAllCarts(user_id)
+
+        ctx.body = {
+            code: 0,
+            message: '全不选',
+            result: res
+        }
+    }
+```
+
+`cart.service.js`
+
+```js
+ 	async selectAllCarts(user_id) {
+        return await Cart.update({ selected: true }, {
+            where: {
+                user_id
+            }
+        })
+    }
+
+    async unSelectAllCarts(user_id) {
+        return await Cart.update({ selected: false }, {
+            where: {
+                user_id
+            }
+        })
+    }
+```
+
+### 获取购物车商品总数量接口
+
+```
+GET /carts/total
+```
+
+> 请求参数
+
+无
+
+> 响应
+
+成功
+
+```json
+{
+    "code": 0,
+    "message": "获取购物车商品数量成功",
+    "result": {
+        "total": 10
+    }
+}
+```
+
+
+
+这个接口可以不写，直接在前端计算显示
+
+## 地址模块
+
+### 添加地址接口
+
+这里我们做一下限制，假设只支持3个地址
+
+```
+POST /address
+```
+
+> 请求参数
+
+```
+consignee, phone, address
+```
+
+> 响应
+
+成功
+
+```json
+{
+    "code": 0,
+    "message": "添加地址成功",
+    "result": {
+        
+    }
+}
+```
+
+
+
+地址表
+
+表名：`sai_address`
+
+| 字段名     | 字段类型     | 说明                     |
+| ---------- | ------------ | ------------------------ |
+| id         | int          | 主键，自增               |
+| user_id    | int          | 用户id                   |
+| consignee  | varchar(255) | 收货人                   |
+| phone      | char(11)     | 手机号                   |
+| address    | varchar(255) | 收货地址                 |
+| is_default | tinyint      | 0：不是默认，1：默认地址 |
+
+`address.route.js`
+
+```js
+const Router = require('@koa/router')
+const router = new Router({ prefix: '/address' })
+
+const { auth } = require('../middleware/auth.middleware')
+const { validator } = require('../middleware/address.middleware')
+const {create} = require('../controller/address.controller')
+
+
+router.post('/', auth, validator({
+    consignee: 'string',
+    phone: { type: 'string', format: /^1\d{10}$/ }, // 简单的手机号正则
+    address: 'string'
+}), create)
+
+
+module.exports = router
+
+
+```
+
+`address.middleware.js`
+
+```js
+const { addressFormatError } = require('../constant/error.type')
+
+const validator = (rules) => {
+    return async (ctx, next) => {
+        try {
+            await ctx.verifyParams(rules)
+        } catch (err) {
+            console.error(err)
+            addressFormatError.result = err
+            ctx.app.emit('error', addressFormatError, ctx)
+            return
+        }
+
+        await next()
+    }
+}
+
+module.exports = {
+    validator
+}
+```
+
+不同模块的参数校验中间件，可以进一步封装的
+
+`address.controller.js`
+
+```js
+const {createAddr} = require('../service/address.service')
+
+class AddressController {
+    async create(ctx, next) {
+        const user_id = ctx.state.user.id
+        const { consignee, phone, address } = ctx.request.body
+
+        const res = await createAddr({user_id, consignee, phone, address})
+
+        ctx.body = {
+            code: 0,
+            message: '添加地址成功',
+            result: res
+        }
+    }
+}
+
+module.exports = new AddressController()
+```
+
+`address.service.js`
+
+```js
+const Address = require('../model/address.model')
+
+class AddressService {
+    async createAddr(addr) {
+        return await Address.create(addr)
+    }
+}
+
+module.exports = new AddressService()
+```
+
+`address.model.js`
+
+```js
+const seq = require('../db/seq')
+const {DataTypes} = require('sequelize')
+
+const Address = seq.define('sai_address', {
+    user_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        comment: '用户id'
+    },
+    consignee: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        comment: '收货人姓名'
+    },
+    phone: {
+        type: DataTypes.CHAR(11),
+        allowNull: false,
+        comment: '收货人手机号'
+    },
+    address: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        comment: '收货人地址'
+    },
+    is_default: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+        comment: '是否为默认地址，0：不是，1：是'
+    }
+})
+
+// Address.sync({force: true})
+
+module.exports = Address
+```
+
+
+
+### 获取地址列表接口
+
+```
+GET /address
+```
+
+> 请求 参数
+
+无
+
+> 响应
+
+成功
+
+```json
+{
+    "code": 0,
+    "message": "获取列表成功",
+    "result": [
+        {
+            "id": 1,
+            "consignee": "enim Duis id",
+            "phone": "18167553843",
+            "address": "澳门特别行政区贵港市滨湖区"
+        },
+        {
+            "id": 2,
+            "consignee": "nisi ullamco",
+            "phone": "13157913140",
+            "address": "陕西省揭阳市玛多县"
+        }
+    ]
+}
+```
+
+`address.route.js`
+
+```js
+// 获取地址
+router.get('/', auth, findAll)
+```
+
+`address.controller.js`
+
+```js
+   async findAll(ctx, next) {
+        const user_id = ctx.state.user.id
+
+        // const { user_id: uid, createdAt, updatedAt, ...res } = await findAllAddr(user_id) // 返回的是数组，过滤属性可以在service层
+        const res = await findAllAddr(user_id)
+
+        ctx.body = {
+            code: 0,
+            message: '获取地址成功',
+            result: res
+        }
+    }
+```
+
+`address.service.js`
+
+```js
+    async findAllAddr(user_id) {
+        return await Address.findAll({
+            attributes: ['id', 'consignee', 'phone', 'address', 'is_default'],
+            where: { user_id }
+        })
+    }
+```
+
+正确响应：
+
+```json
+{
+    "code": 0,
+    "message": "获取地址成功",
+    "result": [
+        {
+            "id": 1,
+            "consignee": "enim Duis id",
+            "phone": "18167553843",
+            "address": "澳门特别行政区贵港市滨湖区",
+            "is_default": false
+        },
+        {
+            "id": 2,
+            "consignee": "commodo adipisicing officia",
+            "phone": "18661881741",
+            "address": "安徽省广元市青神县",
+            "is_default": false
+        },
+        {
+            "id": 3,
+            "consignee": "nisi ullamco",
+            "phone": "13157913140",
+            "address": "陕西省揭阳市玛多县",
+            "is_default": false
+        }
+    ]
+}
+```
+
+
+
+
+
+### 修改地址接口
+
+```
+PUT /address/:id
+```
+
+> 请求参数
+
+```
+consignee, phone, address
+```
+
+> 响应
+
+成功
+
+```json
+{
+    "code": 0,
+    "message": "修改列表成功",
+    "result": [
+        {
+            "id": 1,
+            "consignee": "enim Duis id",
+            "phone": "18167553843",
+            "address": "澳门特别行政区贵港市滨湖区"
+        },
+        {
+            "id": 2,
+            "consignee": "nisi ullamco",
+            "phone": "13157913140",
+            "address": "陕西省揭阳市玛多县"
+        }
+    ]
+}
+```
+
+`address.route.js`
+
+```js
+// 修改地址
+router.put('/:id', auth, validator({
+    consignee: 'string',
+    phone: { type: 'string', format: /^1\d{10}$/ },
+    address: 'string'
+}), update)
+
+```
+
+`address.controller.js`
+
+```js
+    async update(ctx, next) {
+        const id = ctx.request.params.id
+
+        const res = await updateAddr(id, ctx.request.body)
+
+        ctx.body = {
+            code: 0,
+            message: '更新地址成功',
+            result: res
+        }
+    }
+```
+
+`address.service.js`
+
+```js
+    async updateAddr(id, addr) {
+        return await Address.update(addr, { where: { id } })
+    }
+```
+
+正确响应
+
+```json
+{
+    "code": 0,
+    "message": "更新地址成功",
+    "result": [
+        1
+    ]
+}
+```
+
+如果修改后的地址需要回填，就需要进一步完善
+
+### 删除接口
+
+```
+DELETE /address/:id
+```
+
+> 请求参数
+
+```
+无
+```
+
+> 响应
+
+```json
+{
+    "code": 0,
+    "message": "获取列表成功",
+    "result": [
+        {
+            "id": 1,
+            "consignee": "enim Duis id",
+            "phone": "18167553843",
+            "address": "澳门特别行政区贵港市滨湖区"
+        },
+        {
+            "id": 2,
+            "consignee": "nisi ullamco",
+            "phone": "13157913140",
+            "address": "陕西省揭阳市玛多县"
+        }
+    ]
+}
+```
+
+`address.route.js`
+
+```js
+// 删除地址
+router.delete('/:id', auth, remove)
+
+```
+
+`address.controller.js`
+
+```js
+	async remove(ctx, next) {
+        const id = ctx.request.params.id
+
+        const res = await removeAddr(id)
+        
+        ctx.body = {
+            code: 0,
+            message: '删除地址成功',
+            result: res
+        }
+    }
+```
+
+`address.service.js`
+
+```js
+    async removeAddr(id) {
+        return await Address.destroy({ where: { id } })
+    }
+```
+
+成功响应
+
+```json
+{
+    "code": 0,
+    "message": "删除地址成功",
+    "result": 1
+}
+```
+
+### 设为默认接口
+
+```
+PATCH /address/:id
+```
+
+> 请求参数
+
+```
+无
+```
+
+`address.route.js`
+
+```js
+// 删除地址
+router.delete('/:id', auth, remove)
+```
+
+`address.controller.js`
+
+```js
+	async setDefault(ctx, next) {
+        const user_id = ctx.state.user.id
+        const id = ctx.request.params.id
+
+        const res = await setDefaultAddr(user_id, id)
+
+        ctx.body = {
+            code: 0,
+            message: '设置默认地址成功',
+            result: res
+        }
+    }
+```
+
+`address.service.js`
+
+```js
+    async setDefaultAddr(user_id, id) {
+        // 先把所有的地址都设置为非默认
+        await Address.update( 
+            { is_default: false },
+            {
+                where: { user_id }
+            }
+        )
+        // 再根据传的值，设置为默认地址
+        return await Address.update(
+            { is_default: true },
+            {
+                where: { id }
+            }
+        )
+
+    }
+```
+
+成功响应：
+
+```json
+{
+    "code": 0,
+    "message": "设置默认地址成功",
+    "result": [
+        1
+    ]
+}
+```
+
+## 订单模块
+
+### 生成订单接口
+
+```
+POST /orders
+```
+
+> 请求参数
+
+```
+address_id, goods_info, total
+```
+
+> 响应
+
+成功
+
+```json
+{
+    "code": 0,
+    "message": "生成订单成功",
+    "result": {
+        "id": 1,
+        "address_id": 1,
+        "goods_info": "",
+        "total": "",
+        "order_number": ""
+    }
+}
+```
+
+订单表
+
+表名：`sai_orders`
+
+
+
+| 字段名       | 字段类型      | 说明                                                         |
+| ------------ | ------------- | ------------------------------------------------------------ |
+| id           | int           | 主键，自增                                                   |
+| user_id      | int           | 用户id                                                       |
+| address_id   | int           | 地址id                                                       |
+| goods_info   | text          | 商品信息，json字符                                           |
+| total        | decimal(10,2) | 订单总金额                                                   |
+| order_number | char(16)      | 订单号，唯一订单标识                                         |
+| status       | tinyint       | 订单状态（ 0：未支付，1：已支付，2：已发货，3：已签收，4：取消 ） |
+
+
+
+`order.route.js`
+
+```js
+const Router = require('@koa/router')
+const router = new Router({ prefix: '/orders' })
+
+const { auth } = require('../middleware/auth.middleware')
+const { validator } = require('../middleware/order.middleware')
+const { create } = require('../controller/order.controller')
+
+router.post(
+    '/',
+    auth,
+    validator({
+        address_id: 'int',
+        goods_info: 'string',
+        total: 'string'
+    }),
+    create
+)
+
+module.exports = router
+```
+
+`order.middleware.js`
+
+```js
+const { orderFormatError } = require('../constant/error.type')
+
+const validator = (rules) => {
+    return async (ctx, next) => {
+        try {
+            await ctx.verifyParams(rules)
+        } catch (err) {
+            console.error(err)
+            orderFormatError.result = err
+            ctx.app.emit('error', orderFormatError, ctx)
+            return
+        }
+
+        await next()
+    }
+}
+
+module.exports = {
+    validator
+}
+```
+
+`error.type.js`
+
+```js
+    orderFormatError: {
+        code: '10401',
+        message: '数据格式错误',
+        result: ''
+    }
+```
+
+`order.controller.js`
+
+```js
+const { createOrder } = require('../service/order.service')
+
+class OrderController {
+    async create(ctx, next) {
+        const user_id = ctx.state.user.id
+        const { address_id, goods_info, total } = ctx.request.body
+        const order_number = 'sai' + Date.now()
+
+        const res = await createOrder({
+            user_id,
+            address_id,
+            goods_info,
+            total,
+            order_number
+        })
+
+        ctx.body = {
+            code: 0,
+            message: '生成订单成功',
+            result: res
+        }
+    }
+}
+
+module.exports = new OrderController()
+```
+
+`order.service.js`
+
+```js
+const Order  = require('../model/order.model')
+class OrderService {
+    async createOrder(order) {
+        return await Order.create(order)
+    }
+}
+
+module.exports = new OrderService()
+```
+
+`order.model.js`
+
+```js
+const seq = require('../db/seq')
+const {DataTypes} = require('sequelize')
+
+const Order = seq.define('sai_orders', {
+    user_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        comment: '用户id'
+    },
+    address_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        comment: '地址id'
+    },
+    goods_info: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+        comment: '商品信息'
+    },
+    total: {
+        type: DataTypes.DECIMAL(10,2),
+        allowNull: false,
+        comment: '订单总金额'
+    },
+    order_number: {
+        type: DataTypes.CHAR(16),
+        allowNull: false,
+        comment: '订单号'
+    },
+    status: {
+        type: DataTypes.TINYINT,
+        allowNull: false,
+        defaultValue: 0,
+        comment: '订单状态（ 0：未支付，1：已支付，2：已发货，3：已签收，4：取消 ）'
+    }
+})
+
+// Order.sync({force: true})
+
+module.exports = Order
+```
+
+正确响应：
+
+```json
+{
+    "code": 0,
+    "message": "生成订单成功",
+    "result": {
+        "status": 0,
+        "id": 2,
+        "user_id": 48,
+        "address_id": 2,
+        "goods_info": "[{}, {}, {}]",
+        "total": "199.99",
+        "order_number": "sai1659969030037",
+        "updatedAt": "2022-08-08T14:30:30.041Z",
+        "createdAt": "2022-08-08T14:30:30.041Z"
+    }
+}
+```
+
+### 订单列表接口
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
