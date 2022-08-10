@@ -1,3 +1,11 @@
+---
+title: 'ES6+核心知识和源码分析'
+date: 2022-8-8 07:15:24
+cover: false
+---
+
+
+
 # `ES6`+核心知识和源码分析
 
 ## 模块化发展历程：`AMD、CMD、CommonJS、ES Module`

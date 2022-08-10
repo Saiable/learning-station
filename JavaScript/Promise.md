@@ -1,5 +1,7 @@
 ---
-title: Promise的基本使用与实现
+title: 'Promise的基本使用与实现'
+date: 2022-8-8 07:15:24
+cover: false
 ---
 [TOC]
 

@@ -1,9 +1,15 @@
 ---
-title: web基础及进阶
+title: 'web基础及进阶路线'
+date: 2022/8/9 09:03:02
 cover: false
+sticky: 99
+tags:
+- 学习路线
+categories: 学习路线
+typora-root-url: ./
 ---
 
-[TOC]
+
 
 > 本篇基于互联网，汇总了前端技术的从0基础到进阶的学习大纲，会逐渐对每个专题进行文档输出
 
@@ -13,7 +19,11 @@ cover: false
 
 ## 浏览器的发展历史
 
+[前端发展历史 | 吕小布の博客 (mindcons.cn)](https://mindcons.cn/2022/08/09/web/HTML/前端发展历史/)
+
 ## 项目技术的发展历程
+
+
 
 ### 项目打包上线流程
 

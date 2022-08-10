@@ -1,5 +1,5 @@
 ---
-title: TypeScript基础
+title: 'TypeScript基础'
 cover: false
 date: 2022-7-19 19:38:20
 tags:
