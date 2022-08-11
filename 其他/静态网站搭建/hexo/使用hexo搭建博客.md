@@ -15,7 +15,7 @@ https://www.bilibili.com/read/cv12633102
 
 https://blog.csdn.net/qq_41356250/article/details/125148095
 
-
+https://tzy1997.com/articles/hexo1610/
 
 # 环境准备
 
@@ -37,7 +37,7 @@ https://blog.csdn.net/qq_41356250/article/details/125148095
 permalink: :year/:month/:day/:title
 ```
 
-前往你的`Hexo`博客根目录，打开`cmd`命令窗口执行`npm install hexo-abbrlink --save`：https://www.npmjs.com/package/hexo-abbrlink
+前往你的`Hexo`博客根目录，打开cmd命令窗口执行`npm install hexo-abbrlink --save`。
 
 修改站点配置文件`_config.yml`中`permalink`属性。
 
@@ -358,3 +358,92 @@ body,
 
 ```
 
+## 搜索
+
+### 标题搜索
+
+```bash
+npm install hexo-generator-search --save
+```
+
+修改站点配置文件`_config.yml`，添加如下代码
+
+```yml
+search:
+  path: search.xml
+  field: post
+  content: true
+
+```
+
+主题中开启搜索。
+在主题配置文件`_config.butterfly.yml`中修改以下内容：
+
+```diff
+local_search:
+-  enable: false
++  enable: true
+```
+
+重新编译运行，即可看到效果。
+前往博客根目录，打开cmd命令窗口依次执行如下命令：
+
+```bash
+hexo cl && hexo generate
+hexo s -p 8000
+```
+
+实际部署时注意`CNAME`文件
+
+经测试，现在这个插件直接就可以支持搜索文章内容了
+
+![image-20220811195825913](image-20220811195825913.png)
+
+### 内容搜索
+
+https://tzy1997.com/articles/hexo1607/
+
+获取 `Algolia` 账号
+
+注册 `Algolia`。https://www.algolia.com/
+进入官网地址 注册，也可以直接用Github授权登录。
+
+![image-20220811194142680](image-20220811194142680.png)
+
+
+
+![image-20220811194210278](image-20220811194210278.png)
+
+
+
+![image-20220811194246448](image-20220811194246448.png)
+
+
+
+![image-20220811194312469](image-20220811194312469.png)
+
+```bash
+npm install hexo-algoliasearch --save
+```
+
+修改站点配置文件`_config.yml`，添加如下代码：
+
+```yaml
+algolia:
+  appId: "your applicationID"
+  apiKey: "your Search-Only API Key"
+  adminApiKey: "your Admin API Key"
+  chunkSize: 5000
+  indexName: "your indexName"
+  fields:
+    - content:strip:truncate,0,500
+    - excerpt:strip
+    - gallery
+    - permalink
+    - photos
+    - slug
+    - tags
+    - title
+```
+
+![image-20220811194420778](image-20220811194420778.png)

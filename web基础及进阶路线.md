@@ -19,7 +19,7 @@ typora-root-url: ./
 
 ## 浏览器的发展历史
 
-[前端发展历史 | 吕小布の博客 (mindcons.cn)](https://mindcons.cn/2022/08/09/web/HTML/前端发展历史/)
+[前端发展历史 | mindcons.cn](https://mindcons.cn/sai/21175/)
 
 ## 项目技术的发展历程
 
