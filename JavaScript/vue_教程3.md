@@ -1,7 +1,13 @@
 ---
-title: Vue基本使用
+title: 'Vue2/Vue3基本使用'
 date: 2022-7-25 20:30:40
 cover: false
+toc_number: false
+tags:
+- Vue2
+- Vue3
+categories: Vue
+typora-root-url: vue_教程3
 ---
 
 [TOC]
