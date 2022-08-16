@@ -7,9 +7,47 @@ tags:
 categories: 'CSS'
 ---
 
+# 什么是`CSS`
+
+在 [HTML 概述](https://developer.mozilla.org/zh-CN/docs/Learn/HTML/Introduction_to_HTML) 模块我们学习了 HTML 是什么，以及如何使用它来组成页面。 浏览器能够解析这些页面。标题部分看起来会比正常文本更大，段落则会另起一行，并且相互之间会有一定间隔。链接通过下划线和不同的颜色与其他文本区分开来。这些都是浏览器的默认样式——当开发者没有指定样式时，浏览器通过这些最简单的样式使页面具有基本可读性。
+
+CSS 是用来指定文档如何展示给用户的一门语言——如网页的样式、布局、等等。一份**文档**是由标记语言组织起来的文本文件 —— [HTML](https://developer.mozilla.org/zh-CN/docs/Glossary/HTML) 是最常见的标记语言， 但你可能也听说过其他可标记语言，如 [SVG](https://developer.mozilla.org/zh-CN/docs/Glossary/SVG) 或 [XML](https://developer.mozilla.org/zh-CN/docs/Glossary/XML)。
+
+# `CSS`基本语法
+
+CSS 是一门基于规则的语言 —— 你能定义用于你的网页中特定元素样式的一组规则. 比如“我希望页面中的主标题是红色的大字”
+
+下面这段代码使用非常简单的 CSS 规则实现了之前提到的效果：
+
+```css
+h1 {
+    color: red;
+    font-size: 5em;
+}
+
+```
+
+语法由一个 [选择器 (selector)](https://developer.mozilla.org/zh-CN/docs/Glossary/CSS_Selector)起头。它 *选择 (selects)* 了我们将要用来添加样式的 HTML 元素。在这个例子中我们为一级标题（主标题[`` (en-US)](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/Heading_Elements)）添加样式。
+
+接着输入一对大括号`{ }`。在大括号内部定义一个或多个形式为 **属性 (property):值 (value);** 的 **声明 (declarations)**。每个声明都指定了我们所选择元素的一个属性，之后跟一个我们想赋给这个属性的值。
+
+冒号之前是属性，冒号之后是值。不同的 CSS [属性 (properties) (en-US)](https://developer.mozilla.org/en-US/docs/Glossary/property/CSS) 对应不同的合法值。在这个例子中，我们指定了 `color` 属性，它可以接受许多[颜色值](https://developer.mozilla.org/zh-CN/docs/Learn/CSS/Building_blocks/Values_and_units#颜色)；还有 `font-size` 属性，它可以接收许多 [size units](https://developer.mozilla.org/zh-CN/docs/Learn/CSS/Building_blocks/Values_and_units#数字，长度和百分比) 值。
+
+在 MDN 上每个属性都有单独的页面，不论你是忘记了某个属性，还是想要知道一个属性还能接受什么其它的值，这些页面都可以帮助你。
+
+# `CSS`规范
+
+所有的标准 Web 技术 (HTML, CSS, JavaScript 等) 都被定义在一个巨大的文档中，称作 规范 specifications (或者简称为 "specs")，它是由 (像是 [W3C (en-US)](https://developer.mozilla.org/en-US/docs/Glossary/W3C), [WHATWG](https://developer.mozilla.org/zh-CN/docs/Glossary/WHATWG), [ECMA](https://developer.mozilla.org/zh-CN/docs/Glossary/ECMA) 或 [Khronos (en-US)](https://developer.mozilla.org/en-US/docs/Glossary/Khronos)) 这些规范化组织所发布的，其中还定义了各种技术是如何工作的。
+
+CSS 也不例外——它是由 W3C(万维网联盟) 中的一个名叫 [CSS Working Group](https://www.w3.org/Style/CSS/) 团体发展起来的。这个团体是由浏览器厂商和其他公司中对 CSS 感兴趣的人作为代表组成的。也有其他的人员，比如*受邀专家 (invited experts)*，他们作为不从属于任何组织的独立声音加入团体。
+
+新的 CSS 特性被开发出来，或是因为某个浏览器热衷于开发新功能，或是因为 Web 设计人员与开发者要求增加一个新特性，又或是 CSS Working Group 内部的讨论决定。CSS 始终在发展，并伴随着新的特性。然而，有一件事情从始至终都未改变，那就是不让新的改变破坏旧的网站，即使是 2000 年建立的网站，如今也能正常访问！
+
+作为一个 CSS 新手，你会发现阅读 CSS 规范 中的内容非常吃力——它旨在为工程师在用户代理 (user agents) 中实现对 CSS 各种特性的支持，而不是作为一本为 Web 开发者理解 CSS 内容的教程。即使是有经验的开发者，也更倾向于使用 MDN 文档或者其它教程。但是，知晓它的存在，理解 CSS、规范 和 浏览器支持（见下文）之间的关系是很有价值的。
 
 
-### 样式的继承
+
+# 样式的继承
 
 - 我们为一个元素设置的样式，同时也会应用到它到底后台元素上
 
@@ -21,7 +59,7 @@ categories: 'CSS'
 
 注意：并不是所有的样式都会被继承，比如，背景相关的，布局相关的等，这些样式都不会被继承
 
-### 长度单位
+# 长度单位
 
 - 像素
   - 屏幕（显示器）实际上是由一个一个小点点构成的
@@ -37,7 +75,7 @@ categories: 'CSS'
 - rem
   - rem是相对于根元素的字体大小来计算
 
-### 颜色单位
+# 颜色单位
 
 - 在css中可以直接使用颜色名，来设置各种颜色
   - 比如：red、orange、yellow...
@@ -57,7 +95,7 @@ categories: 'CSS'
   - S（饱和度，颜色的浓度：0% ~ 100%）
   - L（亮度，颜色的亮度：0% ~ 100%）
 
-### background
+# background
 
 [CSS background 属性 (w3school.com.cn)](https://www.w3school.com.cn/cssref/pr_background.asp)
 
@@ -69,11 +107,11 @@ categories: 'CSS'
 
   
 
-### display
+# display
 
-### button
+# button
 
-### css变量
+# css变量
 
 来源：[CSS变量（CSS variable） - Cloud% - 博客园 (cnblogs.com)](https://www.cnblogs.com/nyw1983/p/11628729.html)
 
