@@ -36,11 +36,13 @@ typora-root-url: ./
 
 # HTML
 
-## `HTML(5)`核心
+## `HTML`核心
 
-### `HTML`到底是什么
+[HTML核心 | mindcons.cn](https://mindcons.cn/sai/18839/)
 
-### 常用的文本标记`HTML`元素
+- `HTML`到底是什么
+
+- 常用的文本标记`HTML`元素
 
 ### `HTML`标签语义化及嵌套规范
 
@@ -62,7 +64,15 @@ typora-root-url: ./
 
 ## `CSS核心`
 
+
+
 - 什么是`CSS`
+- `CSS`用来干什么
+- `CSS`基本语法
+- `CSS`包含哪些内容模块
+- `CSS`规范
+- `CSS`浏览器支持
+- `CSS`基本使用
 
 ### `CSS`样式之颜色、文字、文本设置
 
