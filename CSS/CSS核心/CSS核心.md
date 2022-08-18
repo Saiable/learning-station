@@ -549,17 +549,7 @@ p {
 
 ```
 
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>My CSS experiment</title>
-  </head>
-  <body>
-    <h1 style="color: blue;background-color: yellow;border: 1px solid black;">Hello World!</h1>
-    <p style="color:red;">This is my first CSS example</p>
-  </body>
-</html>
+![image-20220818090227023](image-20220818090227023.png)
 
 **除非你有充足的理由，否则不要这样做！** 它难以维护（在需要更新时，你必须在修改同一个文档的多处地方），并且这种写法将文档结构和文档表现混合起来了，这使得代码变得难以阅读和理解。将不同类型的代码分开存放在不同的文档中，会让我们的工作更加清晰。
 
@@ -1751,6 +1741,1513 @@ article > p { }
 第二个是一个列表，布局属性是 `display: flex`。 将在容器中建立一个 flex 布局，但是每个列表是一个块级元素 —— 像段落一样 —— 会充满整个容器的宽度并且换行。
 
 下面有个块级段落，里面有两个 `<span>` 元素。正常情况下是 `inline`，但是其中一个加了 block 类，设置属性 `display: block`。
+
+```html
+<p>I am a paragraph. A short one.</p>
+<ul>
+  <li>Item One</li>
+  <li>Item Two</li>
+  <li>Item Three</li>
+</ul>
+<p>I am another paragraph. Some of the <span class="block">words</span> have been wrapped in a <span>span element</span>.</p>
+    
+```
+
+```css
+p, 
+ul {
+  border: 2px solid rebeccapurple;
+  padding: .5em;
+}
+
+.block,
+li {
+  border: 2px solid blue;
+  padding: .5em;
+}
+
+ul {
+  display: flex;
+  list-style: none;
+}
+
+.block {
+  display: block;
+}      
+    
+```
+
+![image-20220818090604745](image-20220818090604745.png)
+
+
+
+
+
+我们可以看到 `inline` 元素在下面例子中的表现。 `<span>` 在第一段默认是内联元素所以不换行。
+
+还有一个 `<ul>` 设置为 `display: inline-flex`，使得在一些 flex 元素外创建一个内联框。
+
+最后设置两个段落为 `display: inline`。 `inline flex` 容器和段落在一行上而不是像块级元素一样换行。
+
+**你可以修改 `display: inline` 为 `display: block` 或者 `display: inline-flex` 改为 `display: flex` 来观察显示模式切换。**
+
+```html
+<p>
+    I am a paragraph. Some of the
+    <span>words</span> have been wrapped in a
+    <span>span element</span>.
+</p>     
+<ul>
+  <li>Item One</li>
+  <li>Item Two</li>
+  <li>Item Three</li>
+</ul>
+<p class="inline">I am a paragraph. A short one.</p>
+<p class="inline">I am another paragraph. Also a short one.</p>
+    
+```
+
+```css
+p, 
+ul {
+  border: 2px solid rebeccapurple;
+}
+
+span,
+li {
+  border: 2px solid blue;
+}
+
+ul {
+  display: inline-flex;
+  list-style: none;
+  padding: 0;
+} 
+
+.inline {
+  display: inline;
+}
+    
+```
+
+​	![image-20220818090851705](image-20220818090851705.png)
+
+
+
+在后面的内容中会遇到诸如弹性盒子布局的内容；现在需要记住的是， `display` 属性可以改变盒子的外部显示类型是块级还是内联，这将会改变它与布局中的其他元素的显示方式。
+
+剩下的内容，我们会专注于外部显示类型。
+
+### 什么是 CSS 盒模型
+
+完整的 CSS 盒模型应用于块级盒子，内联盒子只使用盒模型中定义的部分内容。模型定义了盒的每个部分 —— margin, border, padding, and content —— 合在一起就可以创建我们在页面上看到的内容。为了增加一些额外的复杂性，有一个标准的和替代（IE）的盒模型。
+
+#### 盒模型的各个部分
+
+CSS 中组成一个块级盒子需要：
+
+- **Content box**: 这个区域是用来显示内容，大小可以通过设置 [`width`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/width) 和 [`height`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/height).
+- **Padding box**: 包围在内容区域外部的空白区域； 大小通过 [`padding`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/padding) 相关属性设置。
+- **Border box**: 边框盒包裹内容和内边距。大小通过 [`border`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border) 相关属性设置。
+- **Margin box**: 这是最外面的区域，是盒子和其他元素之间的空白区域。大小通过 [`margin`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/margin) 相关属性设置。
+
+如下图：
+
+![Diagram of the box model](box-model.png)
+
+#### 标准盒模型
+
+在标准模型中，如果你给盒设置 `width` 和 `height`，实际设置的是 *content box*。 padding 和 border 再加上设置的宽高一起决定整个盒子的大小。 见下图。
+
+假设定义了 `width`, `height`, `margin`, `border`, and `padding`:
+
+```css
+.box {
+  width: 350px;
+  height: 150px;
+  margin: 25px;
+  padding: 25px;
+  border: 5px solid black;
+}
+
+```
+
+如果使用标准模型宽度 = 410px (350 + 25 + 25 + 5 + 5)，高度 = 210px (150 + 25 + 25 + 5 + 5)，padding 加 border 再加 content box。
+
+![Showing the size of the box when the standard box model is being used.](standard-box-model.png)
+
+> **备注：** margin 不计入实际大小 —— 当然，它会影响盒子在页面所占空间，但是影响的是盒子外部空间。盒子的范围到边框为止 —— 不会延伸到 margin。
+
+#### 替代（IE）盒模型
+
+你可能会认为盒子的大小还要加上边框和内边距，这样很麻烦，而且你的想法是对的 ! 因为这个原因，css 还有一个替代盒模型。使用这个模型，所有宽度都是可见宽度，所以内容宽度是该宽度减去边框和填充部分。使用上面相同的样式得到 (width = 350px, height = 150px).
+
+![Showing the size of the box when the alternate box model is being used.](alternate-box-model.png)
+
+默认浏览器会使用标准模型。如果需要使用替代模型，您可以通过为其设置 `box-sizing: border-box` 来实现。 这样就可以告诉浏览器使用 `border-box` 来定义区域，从而设定您想要的大小。
+
+```css
+.box {
+  box-sizing: border-box;
+}
+```
+
+如果你希望所有元素都使用替代模式，而且确实很常用，设置 `box-sizing` 在 `<html>` 元素上，然后设置所有元素继承该属性，正如下面的例子。如果想要深入理解，请看 [the CSS Tricks article on box-sizing](https://css-tricks.com/inheriting-box-sizing-probably-slightly-better-best-practice/)。
+
+```css
+html {
+  box-sizing: border-box;
+}
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+```
+
+> **备注：** 一个有趣的历史记录 ——Internet Explorer 默认使用替代盒模型，没有可用的机制来切换。（译者注：IE8+ 支持使用 `box-sizing` 进行切换）
+
+### 玩转盒模型
+
+下面的例子中，你可以看到两个盒子。都有类 `.box`，给了相同的 `width`, `height`, `margin`, `border`, and `padding`。唯一区别是第二个设置了替代模型。
+
+**你能改变第二个盒子的大小 (通过添加 CSS 到 `.alternate` 类中) 让它和第一个盒子宽高一样吗？**
+
+```html
+<div class="box">I use the standard box model.</div>
+<div class="box alternate">I use the alternate box model.</div>
+    
+```
+
+```css
+.box {
+  border: 5px solid rebeccapurple;
+  background-color: lightgray;
+  padding: 40px;
+  margin: 40px;
+  width: 300px;
+  height: 150px;
+}
+
+.alternate {
+  box-sizing: border-box;
+}
+    
+```
+
+![image-20220818092251807](image-20220818092251807.png)
+
+> **备注：** [单击此处查看答案](https://github.com/mdn/css-examples/blob/master/learn/solutions.md#the-box-model)。
+
+#### 使用调试工具来查看盒模型
+
+[浏览器开发者工具](https://developer.mozilla.org/zh-CN/docs/Learn/Common_questions/What_are_browser_developer_tools)可以使你更容易地理解 box 模型。如果你在 Firefox 的 DevTools 中查看一个元素，你可以看到元素的大小以及它的外边距、内边距和边框。这是一个很好的检查元素大小的方式，可以便捷的判断你的盒子大小是否符合预期 !
+
+![Inspecting the box model of an element using Firefox DevTools](box-model-devtools.png)
+
+### 外边距，内边距，边框
+
+您已经在上面的示例中看到了[`margin`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/margin)、[`padding`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/padding)和[`border`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border)属性。该示例中使用的是属性的**简写**，允许我们一次设置盒子的四个边。这些简写等价于分别控制盒子的不同边的普通写法。
+
+接下来，我们更详细地研究这些属性：
+
+#### 外边距
+
+外边距是盒子周围一圈看不到的空间。它会把其他元素从盒子旁边推开。外边距属性值可以为正也可以为负。设置负值会导致和其他内容重叠。无论使用标准模型还是替代模型，外边距总是在计算可见部分后额外添加。
+
+我们可以使用[`margin`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/margin)属性一次控制一个元素的所有边距，或者每边单独使用等价的普通属性控制：
+
+- [`margin-top`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/margin-top)
+- [`margin-right`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/margin-right)
+- [`margin-bottom`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/margin-bottom)
+- [`margin-left`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/margin-left)
+
+**在下面的示例中，尝试更改外边距的值，来查看当前元素和其包含元素，在外边距设置为正时是如何推开周边元素，以及设置为负时，是如何收缩空间的。**
+
+```html
+<div class="container">
+  <div class="box">Change my margin.</div>
+</div>
+    
+```
+
+```css
+.container {
+    width: 400px;
+    height: 150px;
+    border: 5px solid blueviolet;
+    margin-top: 100px;
+    margin-left: 100px;
+}
+
+.box {
+    width: 250px;
+    height: 100px;
+    border: 5px solid mediumpurple;
+    background-color: darkgrey;
+}
+
+.box {
+    margin-top: -40px;
+    margin-right: 30px;
+    margin-bottom: 40px;
+    margin-left: 4em;
+}
+
+	
+```
+
+#### 外边距折叠
+
+理解外边距的一个关键是外边距折叠的概念。如果你有**两个外边距相接**的元素，这些外边距将合并为一个外边距，即最大的单个外边距的大小。
+
+在下面的例子中，我们有两个段落。顶部段落的页 `margin-bottom`为 50px。第二段的`margin-top` 为 30px。因为外边距折叠的概念，所以框之间的实际外边距是 50px，而不是两个外边距的总和。
+
+**您可以通过将第 2 段的 `margin-top` 设置为 0 来测试它。两个段落之间的可见边距不会改变——它保留了第一个段落 `margin-bottom`设置的 50 像素。**
+
+```html
+  <div class="container">
+    <p class="box box-one">I am paragraph one.</p>
+    <p class="box box-two">I am paragraph two.</p>
+  </div>
+```
+
+```css
+.container {
+    width: 700px;
+    height: 300px;
+    border: 5px solid blueviolet;
+    margin-top: 100px;
+    margin-left: 100px;
+}
+
+.box {
+    height: 80px;
+    border: 5px solid mediumpurple;
+    background-color: darkgrey;
+}
+.box-one {
+    margin-bottom: 50px;
+}
+
+.box-two {
+    margin-top: 30px;
+}
+
+
+```
+
+
+
+![image-20220818094435941](image-20220818094435941.png)
+
+有许多规则规定了什么时候外边距会折叠，什么时候不会折叠。相关更多信息，请参阅[外边距重叠](https://developer.mozilla.org/zh-CN/docs/Web/CSS/CSS_Box_Model/Mastering_margin_collapsing)。现在首先要记住的事情是，外边距会折叠这个事情。如果你用外边距创建空间而没有得到你想要的效果，那这可能就是这个原因。
+
+#### 边框
+
+边框是在`padding`和`margin`之间绘制的。如果您正在使用标准的盒模型，边框的大小将添加到框的宽度和高度。如果您使用的是替代盒模型，那么边框的大小会使内容框更小，因为它会占用一些可用的宽度和高度。
+
+为边框设置样式时，有大量的属性可以使用——有四个边框，每个边框都有样式、宽度和颜色，我们可能需要对它们进行操作。
+
+可以使用[`border`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border)属性一次设置所有四个边框的宽度、颜色和样式。
+
+分别设置每边的宽度、颜色和样式，可以使用：
+
+- [`border-top`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border-top)
+- [`border-right`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border-right)
+- [`border-bottom`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border-bottom)
+- [`border-left`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border-left)
+
+设置所有边的颜色、样式或宽度，请使用以下属性：
+
+- [`border-width`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border-width)
+- [`border-style`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border-style)
+- [`border-color`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border-color)
+
+设置单边的颜色、样式或宽度，可以使用最细粒度的普通属性之一：
+
+- [`border-top-width`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border-top-width)
+- [`border-top-style`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border-top-style)
+- [`border-top-color`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border-top-color)
+- [`border-right-width`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border-right-width)
+- [`border-right-style`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border-right-style)
+- [`border-right-color`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border-right-color)
+- [`border-bottom-width`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border-bottom-width)
+- [`border-bottom-style`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border-bottom-style)
+- [`border-bottom-color`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border-bottom-color)
+- [`border-left-width`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border-left-width)
+- [`border-left-style`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border-left-style)
+- [`border-left-color`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border-left-color)
+
+**设置边框的颜色、样式或宽度，可以使用最细粒度的普通属性或者简写属性。在下面的示例中，我们使用了各种普通属性或者简写属性来创建边框。尝试一下不同的属性，以检查您是否理解它们是如何工作的。MDN 中的边框属性页面为您提供可用的不同边框样式的信息。**
+
+```html
+<div class="container">
+  <div class="box">Change my borders.</div>
+</div>
+    
+```
+
+```css
+.container {
+  border-top: 5px dotted green;
+  border-right: 1px solid black;
+  border-bottom: 20px double rgb(23,45,145);
+}
+
+.box {
+  border: 1px solid #333333;
+  border-top-style: dotted;
+  border-right-width: 20px;
+  border-bottom-color: hotpink;
+}
+    
+```
+
+![image-20220818095501037](image-20220818095501037.png)
+
+#### 内边距
+
+内边距位于边框和内容区域之间。与外边距不同，您不能有负数量的内边距，所以值必须是 0 或正的值。应用于元素的任何背景都将显示在内边距后面，内边距通常用于将内容推离边框。
+
+我们可以使用[`padding`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/padding)简写属性控制元素所有边，或者每边单独使用等价的普通属性：
+
+- [`padding-top`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/padding-top)
+- [`padding-right`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/padding-right)
+- [`padding-bottom`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/padding-bottom)
+- [`padding-left`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/padding-left)
+
+**如果在下面的示例中更改类`.box`的内边距值，您可以看到，这将更改文本开始的位置。**
+
+**您还可以更改类`.container`的内边距，这将在容器和方框之间留出空间。任何元素上的内边距都可以更改，并在其边界和元素内部的任何内容之间留出空间。**
+
+```html
+<div class="container">
+  <div class="box">Change my padding.</div>
+</div>
+    
+```
+
+```css
+.container {
+    width: 400px;
+    height: 150px;
+    border: 5px solid blueviolet;
+    margin-top: 100px;
+    margin-left: 100px;
+}
+
+.box {
+    width: 250px;
+    height: 100px;
+    border: 5px solid mediumpurple;
+    background-color: darkgrey;
+
+}
+
+.container {
+    padding: 20px;
+}
+
+.box {
+    padding-top: 0;
+    padding-right: 30px;
+    padding-bottom: 40px;
+    padding-left: 4em;
+}
+
+
+
+```
+
+![image-20220818100650492](image-20220818100650492.png)
+
+### 盒子模型和内联盒子
+
+以上所有的方法都完全适用于块级盒子。有些属性也可以应用于内联盒子，例如由`<span>`元素创建的那些内联盒子。
+
+在下面的示例中，我们在一个段落中使用了`<span>`，并对其应用了宽度、高度、边距、边框和内边距。可以看到，宽度和高度被忽略了。垂直外边距、内边距和边框是生效的，但它们不会改变其他内容与内联盒子的关系，内边距和边框会与段落中的其他单词重叠。水平内边距、边距和边框将其他内容从盒子中移开。
+
+由于垂直方向不会推开其他元素，当`p`指定较小的长度或者缩放浏览器时，文本会与`span`重叠
+
+```html
+<p>
+    I am a paragraph and this is a <span>span</span> inside that paragraph. A span is an inline element and so does not respect width and height.
+</p>     
+    
+```
+
+```css
+span {
+    margin: 20px;
+    padding: 20px;
+    width: 80px;
+    height: 50px;
+    background-color: lightblue;
+    border: 2px solid blue;
+}
+
+p {
+    width: 300px;
+}
+```
+
+![image-20220818101248468](image-20220818101248468.png)
+
+当`p`元素不设置长度时
+
+![image-20220818102516323](image-20220818102516323.png)
+
+### 使用 `display: inline-block`
+
+display 有一个特殊的值，它在内联和块之间提供了一个中间状态。这对于以下情况非常有用：您不希望一个项切换到新行，但希望它可以设定宽度和高度，并避免上面看到的重叠。
+
+一个元素使用 `display: inline-block`，实现我们需要的块级的部分效果：
+
+- 设置`width` 和`height` 属性会生效。
+- `padding`, `margin`, 以及`border` 会推开其他元素。
+
+但是，它不会跳转到新行，如果显式添加 `width` 和 `height` 属性，它只会变得比其内容更大。
+
+**在上一个示例中，我们将 `display: inline-block` 添加到 `<span>` 元素中。尝试将此更改为 `display: block` 或完全删除行，以查看显示模型中的差异**。
+
+```css
+span {
+    margin: 20px;
+    padding: 20px;
+    width: 80px;
+    height: 50px;
+    background-color: lightblue;
+    border: 2px solid blue;
+
+    display: inline-block;
+}
+
+p {
+    width: 300px;
+}
+```
+
+![image-20220818103342939](image-20220818103342939.png)
+
+当您想要通过添加内边距使链接具有更大的命中区域时，这是很有用的。`<a>` 是像 `<span>` 一样的内联元素；你可以使用 `display: inline-block` 来设置内边距，让用户更容易点击链接。
+
+这种情况在导航栏中很常见。下面的导航使用 `flexbox` 显示在一行中，我们为 `<a>` 元素添加了内边距，因为我们希望能够在 `<a>` 在鼠标移动到上面时改变背景色。内边距似乎覆盖了 `<ul>` 元素上的边框。这是因为 `<a>` 是一个内联元素。
+
+使用 `.links-list a` 选择器将 `display: inline-block` 添加到样式规则中，你将看到它是如何通过内边距推开其他元素来修复这个问题的。
+
+```html
+<nav>
+  <ul class="links-list">
+    <li><a href="">Link one</a></li>
+    <li><a href="">Link two</a></li>
+    <li><a href="">Link three</a></li>
+  </ul>
+</nav>    
+    
+```
+
+```css
+.links-list a {
+    background-color: rgb(179,57,81);
+    color: #fff;
+    text-decoration: none;
+    padding: 1em 2em;
+
+    display: inline-block
+}
+
+.links-list a:hover {
+    background-color: rgb(66, 28, 40);
+    color: #fff;
+}
+
+ul {
+    display: flex;
+    list-style: none;
+    border: 1px solid black;
+}
+
+nav {
+    margin-top: 40px;
+}
+```
+
+`a`标签未设置`display: inline-block`：
+
+![image-20220818104548247](image-20220818104548247.png)
+
+设置之后：
+
+![image-20220818104703783](image-20220818104703783.png)
+
+### 小结
+
+这就是你需要了解的关于盒子模型的大部分内容。如果以后你发现对于盒模型的布局仍有困惑，你将会回来温故这些内容。
+
+在下一节课中，我们将看看如何使用[背景和边框](https://developer.mozilla.org/zh-CN/docs/Learn/CSS/Building_blocks/Backgrounds_and_borders)来使你的普通盒子看起来更有趣。
+
+
+
+## 背景与边框
+
+在这节课中，我们来看看，使用 CSS 背景和边框来做一些，具有一些创造性的事情。渐变、背景图像和圆角，背景和边框的巧妙运用是 CSS 中许多样式问题的答案。
+
+### CSS 的背景样式
+
+CSS [`background`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/background) 属性是我们将在本课中学习的许多普通背景属性的简写。如果您在样式表中发现了一个复杂的背景属性，可能会觉得难以理解，因为可以同时传入这么多值。
+
+```css
+.box {
+  background: linear-gradient(105deg, rgba(255,255,255,.2) 39%, rgba(51,56,57,1) 96%) center center / 400px 200px no-repeat,
+  url(big-star.png) center no-repeat, rebeccapurple;
+}
+
+```
+
+在本教程的后面部分，我们将返回到简写的工作方式，但是首先，我们通过分开使用各个普通背景属性的方式，看一下在 CSS 中使用背景可以做哪些不同的事情。
+
+#### 背景颜色
+
+[`background-color`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/background-color) 属性定义了 CSS 中任何元素的背景颜色。属性接受任何有效的`<color>值`。背景色扩展到元素的内容和内边距的下面。
+
+在下面的示例中，我们使用了各种颜色值来为元素盒子添加背景颜色：heading 和[`span`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/span)元素。
+
+```html
+<div class="box">
+  <h2>Background Colors</h2>
+  <p>Try changing the background <span>colors</span>.</p>
+</div>
+    
+```
+
+```css
+.box {
+  background-color: #567895;
+}
+
+h2 {
+  background-color: black;
+  color: white;
+}
+span {
+  background-color: rgba(255,255,255,.5);
+}
+    
+```
+
+![image-20220818105806528](image-20220818105806528.png)
+
+#### 背景图片
+
+[`background-image`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/background-image) 属性允许在元素的背景中显示图像。在下面的例子中，我们有两个方框——一个是比方框大的背景图像，另一个是星星的小图像。
+
+这个例子演示了关于背景图像的两种情形。默认情况下，大图不会缩小以适应方框，因此我们只能看到它的一个小角，而小图则是平铺以填充方框。在这种情况下，实际的图像只是单独的一颗星星。
+
+```html
+<div class="wrapper">
+  <div class="box a"></div>
+  <div class="box b"></div>
+</div>
+    
+```
+
+```css
+.a {
+    background-image: url('https://mdn.github.io/css-examples/learn/backgrounds-borders/balloons.jpg');
+}
+
+.b {
+    background-image: url('https://mdn.github.io/css-examples/learn/backgrounds-borders/star.png');
+}
+
+.box {
+    width: 250px;
+    height: 100px;
+}
+```
+
+![image-20220818110429595](image-20220818110429595.png)
+
+**如果除了背景图像外，还指定了背景颜色，则图像将显示在颜色的顶部。尝试向上面的示例添加一个 background-color 属性，看看效果如何。**
+
+```css
+.a {
+    background-image: url('https://mdn.github.io/css-examples/learn/backgrounds-borders/balloons.jpg');
+    background-color: darkgrey;
+}
+
+.b {
+    background-image: url('https://mdn.github.io/css-examples/learn/backgrounds-borders/star.png');
+    background-color: darkgrey;
+
+}
+
+.box {
+    width: 250px;
+    height: 100px;
+}
+```
+
+
+
+![image-20220818110840742](image-20220818110840742.png)
+
+#### 控制背景平铺
+
+[`background-repeat`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/background-repeat) 属性用于控制图像的平铺行为。可用的值是：
+
+- `no-repeat` — 不重复。
+- `repeat-x` —水平重复。
+- `repeat-y` —垂直重复。
+- `repeat` — 在两个方向重复。
+
+**在示例中尝试这些值。我们已经将值设置为 no-repeat，因此您将只能看到一个星星。尝试不同的值—repeat-x 和 repeat-y—看看它们的效果如何。**
+
+```html
+  <div class="wrapper">
+    <div class="box b"></div>
+  </div>
+```
+
+```css
+.b {
+    background-image: url('https://mdn.github.io/css-examples/learn/backgrounds-borders/star.png');
+    background-repeat: no-repeat;
+    border: 1px solid black;
+}
+
+.box {
+    width: 250px;
+    height: 100px;
+}
+```
+
+![image-20220818111436324](image-20220818111436324.png)
+
+#### 调整背景图像的大小
+
+在上面的例子中，我们有一个很大的图像，由于它比作为背景的元素大，所以最后被裁剪掉了。在这种情况下，我们可以使用 [`background-size`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/background-size)属性，它可以设置长度或百分比值，来调整图像的大小以适应背景。
+
+你也可以使用关键字：
+
+- `cover` —浏览器将使图像足够大，使它完全覆盖了盒子区，同时仍然保持其高宽比。在这种情况下，有些图像可能会跳出盒子外
+- `contain` — 浏览器将使图像的大小适合盒子内。在这种情况下，如果图像的长宽比与盒子的长宽比不同，则可能在图像的任何一边或顶部和底部出现间隙。
+
+在下面的例子中，我使用了上面例子中的大图，并使用长度单位来调整方框内的大小。你可以看到这扭曲了图像。
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>My CSS experiment</title>
+    <link rel="stylesheet" href="./styles.css">
+
+  </head>
+  <body>
+  <div class="wrapper">
+    <div class="box a"></div>
+  </div>
+
+  </body>
+</html>
+
+```
+
+```css
+.a {
+    background-image: url('https://mdn.github.io/css-examples/learn/backgrounds-borders/balloons.jpg');
+    background-repeat: no-repeat;
+    background-size: 100px 80px ;
+    border: 1px solid black;
+}
+
+.box {
+    width: 250px;
+    height: 100px;
+}
+```
+
+![image-20220818111921726](image-20220818111921726.png)
+
+试试下面：
+
+- 改变用于修改背景大小的长度单位。
+
+- 去掉长度单位，看看使用`background-size: cover` or `background-size: contain`会发生什么。
+
+  `cover`
+
+  ![image-20220818112037989](image-20220818112037989.png)
+
+  `contain`
+
+  ![image-20220818112113617](image-20220818112113617.png)
+
+- 如果您的图像小于盒子，您可以更改 background-repeat 的值来重复图像。
+
+#### 背景图像定位
+
+[`background-position`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/background-position) 属性允许您选择背景图像显示在其应用到的盒子中的位置。它使用的坐标系中，框的左上角是 (0,0)，框沿着水平 (x) 和垂直 (y) 轴定位。
+
+> **备注：** 默认的背景位置值是 (0,0)。
+
+最常见的背景位置值有两个单独的值——一个水平值后面跟着一个垂直值。
+
+你可以使用像`top`和`right`这样的关键字 (在 [`background-image`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/background-image) 页面上查找其他的关键字):
+
+```css
+.box {
+  background-image: url(star.png);
+  background-repeat: no-repeat;
+  background-position: top center;
+}
+
+```
+
+或者使用 [长度值](https://developer.mozilla.org/zh-CN/docs/Web/CSS/length) 和 [百分比](https://developer.mozilla.org/zh-CN/docs/Web/CSS/percentage)：
+
+```css
+.box {
+  background-image: url(star.png);
+  background-repeat: no-repeat;
+  background-position: 20px 10%;
+}
+
+```
+
+你也可以混合使用关键字，长度值以及百分比，例如：
+
+```css
+.box {
+  background-image: url(star.png);
+  background-repeat: no-repeat;
+  background-position: top 20px;
+}
+
+```
+
+最后，您还可以使用 4-value 语法来指示到盒子的某些边的距离——在本例中，长度单位是与其前面的值的偏移量。所以在下面的 CSS 中，我们将背景从顶部调整 20px，从右侧调整 10px:
+
+```css
+.box {
+  background-image: url(star.png);
+  background-repeat: no-repeat;
+  background-position: top 20px right 10px;
+}
+
+```
+
+**使用下面的示例来处理这些值并在框内移动星星。**
+
+```html
+  <div class="wrapper">
+    <div class="box b"></div>
+  </div>
+```
+
+```css
+.b {
+    background-image: url('https://mdn.github.io/css-examples/learn/backgrounds-borders/star.png');
+    background-repeat: no-repeat;
+    border: 1px solid black;
+    background-position: 20px center;
+}
+
+.box {
+    width: 250px;
+    height: 100px;
+}
+```
+
+![image-20220818112751001](image-20220818112751001.png)
+
+#### 渐变背景
+
+当渐变用于背景时，也可以使用像图像一样的 [`background-image`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/background-image) 属性设置。
+
+您可以在 MDN 的 [`gradient`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/gradient) 数据类型页面上，了解更多关于渐变的不同类型，以及使用它们可以做的事情。使用渐变的一个有趣方法是，使用 web 上可用的许多 CSS 渐变生成器之一，比如[这个](https://cssgradient.io/)。您可以创建一个渐变，然后复制并粘贴生成它的源代码。
+
+在下面的示例中尝试一些不同的渐变。在这两个盒子里，我们分别有一个线性梯度，它延伸到整个盒子上，还有一个径向梯度，它有一个固定的大小，因此会重复。
+
+```html
+  <div class="wrapper">
+    <div class="box a"></div>
+    <div class="box b"></div>
+  </div>
+```
+
+```css
+.a {
+    background-image: linear-gradient(105deg, rgba(0,249,255,1) 39%, rgba(51,56,57,1) 96%);
+}
+
+.b {
+    background-image: radial-gradient(circle, rgba(0,249,255,1) 39%, rgba(51,56,57,1) 96%);
+    background-size: 100px 50px;
+}
+
+.box {
+    width: 250px;
+    height: 100px;
+}
+```
+
+![image-20220818113139871](image-20220818113139871.png)
+
+
+
+#### 多个背景图像
+
+也可以有多个背景图像——在单个属性值中指定多个 `background-image` 值，用逗号分隔每个值。
+
+当你这样做时，你可能会以背景图像互相重叠而告终。背景将与最后列出的背景图像层在堆栈的底部，背景图像在代码列表中最先出现的在顶端。
+
+> **备注：** 渐变可以与常规的背景图像很好地混合在一起。
+
+其它 `background-*` 属性，该属性值用逗号分隔的方式设置。例如下列 `background-image`：
+
+```css
+background-image: url(image1.png), url(image2.png), url(image3.png), url(image4.png);
+background-repeat: no-repeat, repeat-x, repeat;
+background-position: 10px 20px,  top right;
+
+```
+
+不同属性的每个值，将与其他属性中相同位置的值匹配。例如，上面的 image1 的 `background-repeat` 值将是 `no-repeat`。但是，当不同的属性具有不同数量的值时，会发生什么情况呢？答案是较小数量的值会循环—在上面的例子中有四个背景图像，但是只有两个背景位置值。前两个位置值将应用于前两个图像，然后它们将再次循环—image3 将被赋予第一个位置值，image4 将被赋予第二个位置值。
+
+**我们来试一试。在下面的示例中包含了两个图像。为了演示叠加顺序，请尝试切换哪个背景图像在列表中最先出现。或使用其他属性更改位置、大小或重复值。**
+
+```html
+  <div class="wrapper">
+    <div class="box"></div>
+  </div>
+```
+
+```css
+.box {
+    background-image: url('https://mdn.github.io/css-examples/learn/backgrounds-borders/star.png'), url('https://mdn.github.io/css-examples/learn/backgrounds-borders/big-star.png');
+}
+
+.box {
+    width: 250px;
+    height: 100px;
+}
+```
+
+![image-20220818114600342](image-20220818114600342.png)
+
+#### 背景附加
+
+另一个可供选择的背景是指定他们如何滚动时，内容滚动。这是由 [`background-attachment`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/background-attachment) 属性控制的，它可以接受以下值：
+
+- `scroll`: 使元素的背景在页面滚动时滚动。如果滚动了元素内容，则背景不会移动。实际上，背景被固定在页面的相同位置，所以它会随着页面的滚动而滚动。
+- `fixed`: 使元素的背景固定在视图端口上，这样当页面或元素内容滚动时，它就不会滚动。它将始终保持在屏幕上相同的位置。
+- `local`: 这个值是后来添加的 (它只在 Internet Explorer 9+中受支持，而其他的在 IE4+中受支持)，因为滚动值相当混乱，在很多情况下并不能真正实现您想要的功能。局部值将背景固定在设置的元素上，因此当您滚动元素时，背景也随之滚动。
+
+[`background-attachment`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/background-attachment) 属性只有在有内容要滚动时才会有效果，所以我们做了一个示例来演示这三个值之间的区别——看看 [background-attachment.html](https://mdn.github.io/learning-area/css/styling-boxes/backgrounds/background-attachment.html) (或者看看这儿的 [源代码](https://github.com/mdn/learning-area/tree/master/css/styling-boxes/backgrounds)))。
+
+#### 使用 background 的简写
+
+正如我在本课开始时提到的，您将经常看到使用 [`background`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/background) 属性指定的背景。这种简写允许您一次设置所有不同的属性。
+
+如果使用多个背景，则需要为第一个背景指定所有普通属性，然后在逗号后面添加下一个背景。在下面的例子中，我们有一个渐变，它指定大小和位置，然后是一个无重复的图像背景，它指定位置，然后是一个颜色。
+
+这里有一些规则，需要在简写背景属性时遵循，例如：
+
+- `background-color` 只能在逗号之后指定。
+- `background-size` 值只能包含在背景位置之后，用'/'字符分隔，例如：`center/80%`。
+
+查看 [`background`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/background) 的 MDN 页面，以查看所有的注意事项。
+
+```html
+<div class="box"></div>
+    
+```
+
+```css
+.box {
+    background:
+            linear-gradient(105deg, rgba(255,255,255,.2) 39%, rgba(51,56,57,1) 96%) center center / 400px 200px no-repeat,
+            url('https://mdn.github.io/css-examples/learn/backgrounds-borders/big-star.png') center no-repeat,
+            rebeccapurple;
+    width: 320px;
+    height: 100px;
+}
+
+```
+
+![image-20220818135017051](image-20220818135017051.png)
+
+#### 背景的可访问性考虑
+
+当你把文字放在背景图片或颜色上面时，你应该注意你有足够的对比度让文字对你的访客来说是清晰易读的。如果指定了一个图像，并且文本将被放置在该图像的顶部，您还应该指定一个`background-color` ，以便在图像未加载时文本也足够清晰。
+
+屏幕阅读者不能解析背景图像，因此背景图片应该只是纯粹的装饰；任何重要的内容都应该是 HTML 页面的一部分，而不是包含在背景中。
+
+### 边框
+
+在学习盒子模型时，我们发现了边框如何影响盒子的大小。在这节课中，我们将看看如何创造性地使用边框。通常，当我们使用 CSS 向元素添加边框时，我们使用一个简写属性在一行 CSS 中设置边框的颜色、宽度和样式。我们可以使用 [`border`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border) 为一个框的所有四个边设置边框。
+
+```css
+.box {
+  border: 1px solid black;
+}
+
+```
+
+或者我们可以只设置盒子的一个边，例如：
+
+```css
+.box {
+  border-top: 1px solid black;
+}
+
+```
+
+这些简写的等价于：
+
+```css
+.box {
+  border-width: 1px;
+  border-style: solid;
+  border-color: black;
+}
+
+```
+
+也可以使用更加细粒度的属性：
+
+```css
+.box {
+  border-top-width: 1px;
+  border-top-style: solid;
+  border-top-color: black;
+}
+
+```
+
+> **备注：** 这些顶部、右侧、底部和左侧边框属性还具有与文档写入模式相关的映射逻辑属性 (例如，从左到右或从右到左的文本，或从上到下)。在下一课中，我们将探讨这些问题，这包括处理不同的文本指示 [详情](https://developer.mozilla.org/zh-CN/docs/Learn/CSS/Building_blocks/Handling_different_text_directions)。
+
+#### 圆角
+
+通过使用 [`border-radius`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border-radius) 属性和与方框的每个角相关的长边来实现方框的圆角。可以使用两个长度或百分比作为值，第一个值定义水平半径，第二个值定义垂直半径。在很多情况下，您将只传递一个值，这两个值都将使用。
+
+例如，要使一个盒子的四个角都有 10px 的圆角半径：
+
+```css
+.box {
+  border-radius: 10px;
+}
+
+```
+
+或使右上角的水平半径为 1em，垂直半径为 10％：
+
+```css
+.box {
+  border-top-right-radius: 1em 10%;
+}
+
+```
+
+我们在下面的示例中设置了所有四个角，然后更改右上角的值使之不同。您可以使用这些值来更改圆角样式。查看 [`border-radius`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border-radius) 的属性页，查看可用的语法选项。
+
+```html
+<div class="box">
+  <h2>Borders</h2>
+  <p>Try changing the borders.</p>
+</div>
+    
+```
+
+```css
+.box {
+    border: 10px solid rebeccapurple;
+    border-radius: 1em;
+    border-top-right-radius: 10% 30%;
+    width: 320px;
+    height: 100px;
+}
+    
+```
+
+![image-20220818140419765](image-20220818140419765.png)
+
+### 小结
+
+我们在这里已经介绍了很多，您可以看到有很多要添加背景或边框到盒子中。如果您想了解更多关于我们讨论过的特性的信息，请浏览不同的属性页面。MDN 上的每个页面都有更多的用法示例，供您玩转并增强您的知识。
+
+在下一课中，我们将了解文档排版与 CSS 的相互影响。以及了解当文本不是从左向右流动时会发生什么？
+
+## 处理不同方向的文本
+
+目前为止我们在 CSS 学习中遇到的许多属性和属性值与显示器的物理尺度紧密相关。例如，我们会在上、右、下、左设置边框。这些物理尺寸与水平排布的文本相得益彰，并且，默认浏览器对方向从左到右的文本（如英文或法文）的支持，要优于从右到左的文本（如阿拉伯语）的支持。
+
+然而，CSS 在最近几年得到了改进，以更好地支持不同方向的文本，包括从右到左，也包括从上到下的文本（如日文）——这些不同的方向属性被称为书写模式。随着学习的深入，当你开始试着对页面进行布局时，对书写模式的了解将会对你很有帮助，为此我们在这里加以介绍。
+
+### 什么是书写模式
+
+CSS 中的书写模式是指文本的排列方向是横向还是纵向的。[`writing-mode`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/writing-mode) 属性使我们从一种模式切换到另一种模式。为此，你不必使用一种竖向的语言——你还可以更改部分文字的方向以实现创新性的布局。
+
+下面的例子中，我们使用`writing-mode: vertical-rl`对一个标题的显示进行设置。现在，标题文本是竖向的了。竖向文本在平面设计中很常见，也可以为你的网页设计增添更加有趣的外观。
+
+```html
+<h1>Play with writing modes</h1>
+    
+```
+
+```css
+h1 {
+  writing-mode: vertical-rl;
+}
+    
+```
+
+![image-20220818141711691](image-20220818141711691.png)
+
+[`writing-mode`](https://developer.mozilla.org/en-US/docs/Web/CSS/writing-mode)的三个值分别是：
+
+- `horizontal-tb`: 块流向从上至下。对应的文本方向是横向的。
+- `vertical-rl`: 块流向从右向左。对应的文本方向是纵向的。
+- `vertical-lr`: 块流向从左向右。对应的文本方向是纵向的。
+
+因此，`writing-mode`属性实际上设定的是页面上块级元素的显示方向——要么是从上到下，要么是从右到左，要么是从左到右。而这决定了文本的方向。
+
+
+
+### 书写模式、块级布局和内联布局
+
+我们已经讨论了块级布局和内联布局（[block and inline layout](https://developer.mozilla.org/en-US/docs/Learn/CSS/Building_blocks/The_box_model#block_and_inline_boxes)），也知道外部显示类型元素分为块级元素和内联元素。如上所述，块级显示和内联显示与文本的书写模式（而非屏幕的物理显示）密切相关。如果你使用书写模式的显示是横向的，如英文，那么块在页面上的显示就是从上到下的。
+
+用一个例子可以更清楚地说明这一点。下一个例子中有两个盒子，分别包含一个标题和一个段落。第一个盒子应用的是`writing-mode: horizontal-tb`，这是一个从上到下的横向的书写模式。第二个盒子应用的是`writing-mode: vertical-rl`，这是一个从右到左的纵向的书写模式。
+
+```html
+  <div class="wrapper">
+    <div class="box horizontal">
+      <h2>Heading</h2>
+      <p>A paragraph. Demonstrating Writing Modes in CSS.</p>
+    </div>
+    <div class="box vertical">
+      <h2>Heading</h2>
+      <p>A paragraph. Demonstrating Writing Modes in CSS.</p>
+    </div>
+  </div>
+
+```
+
+```css
+.horizontal {
+    writing-mode: horizontal-tb;
+}
+
+.vertical {
+    writing-mode: vertical-rl;
+}
+    
+```
+
+![image-20220818142146875](image-20220818142146875.png)
+
+当我们切换书写模式时，我们也在改变块和内联文本的方向。`horizontal-tb`书写模式下块的方向是从上到下的横向的，而 `vertical-rl`书写模式下块的方向是从右到左的纵向的。因此，块维度指的总是块在页面书写模式下的显示方向。而内联维度指的总是文本方向。
+
+这张图展示了在水平书写模式下的两种维度。
+
+![img](horizontal-tb.png)
+
+这张图片展示了纵向书写模式下的两种维度。
+
+![img](vertical.png)
+
+一旦你开始接触 CSS 布局，尤其是更新的布局方法，这些关于块级元素和内联元素的概念会变得非常重要。我之后会返回来再看。
+
+#### 方向
+
+除了书写模式，我们还可以设置文本方向。正如上面所言，有些语言（如阿拉伯语）是横向书写的，但是是从右向左。当你在对页面布局进行创新时，你可能不这么使用——如果你只是想将某部分内容放到右边排列下来，还有其他方法可以选择——然而，重要的是能意识到，这其实是 CSS 本身功能的一部分。网页可不仅限于从左向右排列的语言！
+
+由于书写模式和文本方向都是可变的，新的 CSS 布局方法不再定义从左到右和从上到下，而是将这些连同内联元素和块级元素的*开头*和*结尾*一起考量。现在不必过于担心，但是带着这些概念开始你的布局，你会发现这对你掌握 CSS 非常有用。
+
+### 逻辑属性和逻辑值
+
+我们之所以要在这里探讨书写模式和方向，是因为目前为止我们已经了解了很多与屏幕的物理显示密切相关的很多属性，而书写模式和方向在水平书写模式下会很有意义。
+
+让我们再来看看那两个盒子——一个用`horizontal-tb`设定了书写模式，一个用`vertical-rl`设定了书写模式。我为这两个盒子分别设定了宽度（ [`width`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/width)）。可以看到，当盒子处于纵向书写模式下时，宽度也发生了变化，从而导致文本超出了盒子的范围。
+
+```html
+  <div class="wrapper">
+    <div class="box horizontal">
+      <h2>Heading</h2>
+      <p>A paragraph. Demonstrating Writing Modes in CSS.</p>
+      <p>These boxes have a width.</p>
+    </div>
+    <div class="box vertical">
+      <h2>Heading</h2>
+      <p>A paragraph. Demonstrating Writing Modes in CSS.</p>
+      <p>These boxes have a width.</p>
+    </div>
+  </div>
+
+```
+
+```css
+.box {
+    width: 120px;
+    border: 1px solid black;
+}
+
+.horizontal {
+    writing-mode: horizontal-tb;
+    margin-right: 100px;
+}
+
+.vertical {
+    writing-mode: vertical-rl;
+}
+
+.wrapper {
+    display: flex;
+    padding-top: 10px;
+}
+```
+
+![image-20220818143448702](image-20220818143448702.png)
+
+通过这一些列调整，我们想要的实际上是使宽和高随着书写模式一起变化。当处于纵向书写模式之下时，我们希望盒子可以向横向模式下一样得到拓宽。
+
+为了更容易实现这样的转变，CSS 最近开发了一系列映射属性。这些属性用逻辑（**logical**）和相对变化（**flow relative**）代替了像宽`width`和高`height`一样的物理属性。
+
+横向书写模式下，映射到`width`的属性被称作内联尺寸（[`inline-size`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/inline-size)）——内联维度的尺寸。而映射`height`的属性被称为块级尺寸（[`block-size`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/block-size)），这是块级维度的尺寸。下面的例子展示了替换掉`width`的`inline-size`是如何生效的。
+
+```html
+  <div class="wrapper">
+    <div class="box horizontal">
+      <h2>Heading</h2>
+      <p>A paragraph. Demonstrating Writing Modes in CSS.</p>
+      <p>These boxes have a width.</p>
+    </div>
+    <div class="box vertical">
+      <h2>Heading</h2>
+      <p>A paragraph. Demonstrating Writing Modes in CSS.</p>
+      <p>These boxes have a width.</p>
+    </div>
+  </div>
+
+```
+
+```css
+.box {
+    inline-size: 120px;
+    border: 1px solid black;
+}
+
+.horizontal {
+    writing-mode: horizontal-tb;
+    margin-right: 100px;
+}
+
+.vertical {
+    writing-mode: vertical-rl;
+}
+
+.wrapper {
+    display: flex;
+    padding-top: 10px;
+}
+```
+
+![image-20220818143716260](image-20220818143716260.png)
+
+#### 逻辑外边距、边框和内边距属性
+
+我们在前面两节中学习了 CSS 的盒模型和 CSS 边框。在外边距、边框和内边距属性中，你会发现许多物理属性，例如 [`margin-top`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/margin-top)、 [`padding-left`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/padding-left)和 [`border-bottom`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border-bottom)。就像 width 和 height 有映射，这些属性也有相应的映射。
+
+`margin-top`属性的映射是[`margin-block-start`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/margin-block-start)——总是指向块级维度开始处的边距。
+
+[`padding-left`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/padding-left)属性映射到 [`padding-inline-start`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/padding-inline-start)，这是应用到内联开始方向（这是该书写模式文本开始的地方）上的内边距。[`border-bottom`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border-bottom)属性映射到的是[`border-block-end`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border-block-end)，也就是块级维度结尾处的边框。
+
+下面是物理和逻辑属性之间的对比。
+
+**如果你用`writing-mode`把盒子`.box`的书写模式改为`vertical-rl`，你将会看到尽管盒子的物理方向变了，盒子的物理属性仍然没变，然而逻辑属性会随着书写模式一起改变。**
+
+**你还可以看到，二级标题[`h2`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/Heading_Elements)有一个黑色的底部边框`border-bottom`。你知道如何使得底部边框无论在那种书写模式下都位于文本的下方吗？**
+
+```html
+  <div class="wrapper">
+    <div class="box physical">
+      <h2>Physical Properties</h2>
+      <p>A paragraph. Demonstrating Logical Properties in CSS.</p>
+    </div>
+    <div class="box logical">
+      <h2>Logical Properties</h2>
+      <p>A paragraph. Demonstrating Logical Properties in CSS.</p>
+    </div>
+  </div>
+
+```
+
+```css
+.box {
+    inline-size: 200px;
+    writing-mode: horizontal-tb;
+}
+
+.logical {
+    margin-block-start: 20px;
+    padding-inline-end: 2em;
+    padding-block-start: 2px;
+    border-block-start: 5px solid pink;
+    border-inline-end: 10px dotted rebeccapurple;
+    border-block-end: 1em double orange;
+    border-inline-start: 1px solid black;
+}
+
+.physical {
+    margin-top: 20px;
+    padding-right: 2em;
+    padding-top: 2px;
+    border-top: 5px solid pink;
+    border-right: 10px dotted rebeccapurple;
+    border-bottom: 1em double orange;
+    border-left: 1px solid black;
+}
+
+h2 {
+    border-bottom: 5px solid black;
+}
+
+```
+
+![image-20220818144124241](image-20220818144124241.png)
+
+对于每一个普通边距，都有许多属性可以参考，你可以在 MDN 页面（[Logical Properties and Values](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Logical_Properties)）查看所有映射属性。
+
+逻辑属性是通过`inline/block/start/end`来区分方向的
+
+#### 逻辑值
+
+目前为止我们看到的都是逻辑属性的名称。还有一些属性的取值是一些物理值（如`top`、`right`、`bottom`和`left`）。这些值同样拥有逻辑值映射（`block-start`、`inline-end`、`block-end`和`inline-start`）。
+
+例如，你可以将一张图片移到左边，并使文本环绕图片。你可以将`left`替换为`inline-start` ，就像下面的例子中一样。
+
+```html
+  <div class="wrapper">
+    <div class="box logical">
+      <img src="https://mdn.github.io/css-examples/learn/backgrounds-borders/big-star.png" alt="star">
+      <p>This box uses logical properties. The star image has been floated inline-start, it also has a margin on the inline-end and block-end.</p>
+    </div>
+  </div>
+
+```
+
+```css
+.box {
+    inline-size: 200px;
+    writing-mode: horizontal-tb;
+}
+
+img{
+    float: inline-start;
+    margin-inline-end: 10px;
+    margin-block-end: 10px;
+}
+
+.wrapper {
+    border: 1px solid black;
+}
+```
+
+![image-20220818144845468](image-20220818144845468.png)
+
+
+
+**将这个例子的书写模式改为`vertical-rl`，看看图片会发生什么。将`inline-start`改为`inline-end`来改变图片的移动。**
+
+```css
+.box {
+    inline-size: 200px;
+    writing-mode: vertical-rl;
+}
+
+img{
+    float: inline-start;
+    margin-inline-end: 10px;
+    margin-block-end: 10px;
+}
+
+.wrapper {
+    border: 1px solid black;
+}
+```
+
+![image-20220818145008661](image-20220818145008661.png)
+
+这里我们同样使用逻辑边距值来保证在任何书写模式下边距的位置都是对的。
+
+> **备注：** [`float`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/float)的逻辑值暂时只有 Firefox 和 Firefox for Android 支持，上面的例子可能无法生效。
+
+#### 应该使用物理属性还是逻辑属性呢？
+
+逻辑属性是在物理属性之后出现的，因而最近才开始在浏览器中应用。你可以通过查看 MDN 的属性页面来了解浏览器对逻辑属性的支持情况。如果你并没有应用多种书写模式，那么现在你可能更倾向于**使用物理属性**，因为这些在你使用弹性布局和网格布局时非常有用。
+
+### 小结
+
+本章介绍的概念在 CSS 的重要性越来越大。了解块级方向和内联方向，以及文本的排列方向如何随书写模式发生变化，将来会非常有用。即便你仅使用横向的书写模式，这也能帮助你了解。
+
+在下一部分，我们将会看一下 CSS 中的溢出。
+
+## 内容溢出
+
+本节课，我们来了解一下 CSS 中另外一个重要的概念——**溢出**。溢出是在盒子无法容纳下太多的内容的时候发生的。在这篇教程里面，你将会学习到什么是溢出，以及如何控制它。
+
+### 什么是溢出？
+
+我们知道，CSS 中万物皆盒，因此我们可以通过给[`width`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/width)和[`height`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/height)（或者 [`inline-size`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/inline-size) 和 [`block-size`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/block-size)）赋值的方式来约束盒子的尺寸。溢出是在你往盒子里面塞太多东西的时候发生的，所以盒子里面的东西也不会老老实实待着。CSS 给了你好几种工具来控制溢出，在学习的早期理解这些概念是很有用的。在你写 CSS 的时候你经常会遇到溢出的情形，尤其是当你以后更加深入到 CSS 布局的时候。
+
+### CSS 尽力减少“数据损失”
+
+我们从两个展示了在碰到溢出的时候，CSS 默认会如何处理的例子开始吧。
+
+第一个例子是，一个盒子，在块方向上已经受到`height`的限制。然后我们已经加了过多的内容，以至于盒子里面没有空间容纳。内容正在从盒子里面溢出，并让自己把盒子下面的段落弄得一团糟。
+
+```html
+<div class="box">This box has a height and a width. This means that if there is too much content to be displayed within the assigned height, there will be an overflow situation. If overflow is set to hidden then any overflow will not be visible.</div>
+
+<p>This content is outside of the box.</p>
+    
+```
+
+```css
+.box {
+  border: 1px solid #333333;
+  width: 200px;
+  height: 100px;
+}
+    
+```
+
+![image-20220818145926784](image-20220818145926784.png)
+
+第二个例子是一个单词，位于在内联方向上受到限制的盒子里面。盒子已经被做得小到无法放置那个单词的地步，于是那个单词就突破了盒子的限制。
+
+```html
+<div class="word">Overflow</div>
+
+```
+
+```css
+.word {
+  border: 1px solid #333333;
+  width: 100px;
+  font-size: 250%;
+}
+    
+```
+
+![image-20220818150042273](image-20220818150042273.png)
+
+你也许会好奇，为什么 CSS 默认会采取如此不整洁的方式，让内容这么凌乱地溢出出来呢？为何不把多余的内容隐藏起来，或者让盒子变大呢？
+
+只要有可能，CSS 就不会隐藏你的内容，隐藏引起的数据损失通常会造成困扰。在 CSS 的术语里面，这会导致一些内容消失，你的访客可能不会注意到这一点，如果消失的是表格上的提交按钮，没有人能填完这个表格，这是很麻烦的事情！所以 CSS 反而会把它以可见的形式溢出出去。这样做的结果就是，你会看到错误的 CSS 导致的一片混乱，或者最坏的情况也只是你的网站的访客会告诉你有些内容冒了出来，你的网站需要修缮。
+
+如果你已经用`width`或者`height`限制住了一个盒子，CSS 假定，你知道你在做什么，而且你已经控制住了溢出的隐患。总之，在盒子里面需要放置文本的时候，限制住块方向的尺寸是会引起问题的，因为可能会有比你在设计网站的时候所预计的文本更多的文本，或者文本变大了——比如用户增加字体大小的时候。
+
+在下面的几节课里，我们会看一下各种不同的控制尺寸的方式，以减少溢出的影响。但是，如果你需要固定的尺寸，你也可以控制溢出表现的形式。那么让我们接着读下去吧！
+
+### overflow 属性
+
+[`overflow`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/overflow)属性是你控制一个元素溢出的方式，它告诉浏览器你想怎样处理溢出。`overflow`的默认值为`visible`，这就是我们的内容溢出的时候，我们在默认情况下看到它们的原因。
+
+如果你想在内容溢出的时候把它裁剪掉，你可以在你的盒子上设置`overflow: hidden`。这就会像它表面上所显示的那样作用——隐藏掉溢出。这可能会很自然地让东西消失掉，所以你只应该在判断隐藏内容不会引起问题的时候这样做。
+
+```html
+<div class="box">This box has a height and a width. This means that if there is too much content to be displayed within the assigned height, there will be an overflow situation. If overflow is set to hidden then any overflow will not be visible.</div>
+
+<p>This content is outside of the box.</p>
+    
+```
+
+```css
+.box {
+  border: 1px solid #333333;
+  width: 200px;
+  height: 100px;
+  overflow: hidden;
+}
+    
+```
+
+![image-20220818150416726](image-20220818150416726.png)
+
+也许你还会想在有内容溢出的时候加个滚动条？如果你用了`overflow: scroll`，那么你的浏览器总会显示滚动条，即使没有足够多引起溢出的内容。你可能会需要这样的样式，它避免了滚动条在内容变化的时候出现和消失。
+
+```css
+.box {
+  border: 1px solid #333333;
+  width: 200px;
+  height: 100px;
+  overflow: scroll;
+}
+    
+```
+
+![image-20220818150601051](image-20220818150601051.png)
+
+**如果你移除了下面的盒子里的一些内容，你可以看一下，滚动条是否还会在没有能滚动的东西的时候保留。**
+
+```html
+  <div class="box">This box has a height and a width. </div>
+
+  <p>This content is outside of the box.</p>
+
+```
+
+![image-20220818150634699](image-20220818150634699.png)
+
+在以上的例子里面，我们仅仅需要在`y`轴方向上滚动，但是我们在两个方向上都有了滚动条。你可以使用[`overflow-y`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/overflow-y)属性，设置`overflow-y: scroll`来仅在`y`轴方向滚动。
+
+```css
+.box {
+  border: 1px solid #333333;
+  width: 200px;
+  height: 100px;
+  overflow: scroll;
+}
+    
+```
+
+![image-20220818150748161](image-20220818150748161.png)
+
+你也可以用[`overflow-x`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/overflow-x)，以在 x 轴方向上滚动，尽管这不是处理长英文词的好办法！如果你真的需要在小盒子里面和长英文词打交道，那么你可能要了解一下[`word-break`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/word-break)或者[`overflow-wrap`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/overflow-wrap)属性。除此以外，一些[在 CSS 里面调整大小](https://developer.mozilla.org/zh-CN/docs/Learn/CSS/Building_blocks/Sizing_items_in_CSS)这节课里面讨论过的方式可能会帮助你创建可以和有变化容量的内容相协调的盒子。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # 长度单位
 
