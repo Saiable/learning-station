@@ -1,12 +1,14 @@
 ---
-title: 'CSS核心'
-date: 2022-7-9 07:28:42
+title: 'CSS常见属性解析'
+date: 2022-8-9 07:28:42
 cover: false
 tags:
-- CSS核心
+- CSS
 categories: 'CSS'
 typora-root-url: CSS核心
 ---
+
+
 
 # `CSS`第一步
 
@@ -3219,37 +3221,319 @@ img{
 
 你也可以用[`overflow-x`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/overflow-x)，以在 x 轴方向上滚动，尽管这不是处理长英文词的好办法！如果你真的需要在小盒子里面和长英文词打交道，那么你可能要了解一下[`word-break`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/word-break)或者[`overflow-wrap`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/overflow-wrap)属性。除此以外，一些[在 CSS 里面调整大小](https://developer.mozilla.org/zh-CN/docs/Learn/CSS/Building_blocks/Sizing_items_in_CSS)这节课里面讨论过的方式可能会帮助你创建可以和有变化容量的内容相协调的盒子。
 
+```html
+<div class="word">Overflow</div>
+    
+```
+
+```css
+.word {
+  border: 5px solid #333333;
+  width: 100px;
+  font-size: 250%;
+  overflow-x: scroll;
+}
+    
+```
+
+![image-20220819082617868](image-20220819082617868.png)
+
+和`scroll`一样，在无论是否有多到需要 用滚动条的内容的时候，页面上都会显示一个滚动条。
+
+> **备注：** 你可以用`overflow`属性指定 x 轴和 y 轴方向的滚动，同时使用两个值进行传递。如果指定了两个关键字，第一个对`overflow-x`生效而第二个对`overflow-y`生效。否则，`overflow-x`和`overflow-y`将会被设置成同样的值。例如，`overflow: scroll hidden`会把`overflow-x`设置成`scroll`，而`overflow-y`则为`hidden`。
+
+如果你只是想让滚动条在有比盒子所能装下更多的内容的时候才显示，那么使用`overflow: auto`。此时由浏览器决定是否显示滚动条。桌面浏览器一般仅仅会在有足以引起溢出的内容的时候这么做。
+
+### 溢出建立了块级排版上下文
+
+CSS 中有所谓**块级排版上下文**（Block Formatting Context，BFC）**的概念**。现在你不用太过在意，但是你应该知道，在你使用诸如`scroll`或者`auto`的时候，你就建立了一个块级排版上下文。结果就是，你改变了`overflow`的值的话，对应的盒子就变成了更加小巧的状态。在容器之外的东西没法混进容器内，也没有东西可以突出盒子，进入周围的版面。激活了滚动动作，你的盒子里面所有的内容会被收纳，而且不会遮到页面上其他的物件，于是就产生了一个协调的滚动体验。
+
+### 网页设计时不需要的溢出
+
+现代网页布局的方式（正如[CSS layout](https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout)模块中所介绍的那些）可以很好地处理溢出。我们不一定能预料到网页上会有多少内容，人们很好地设计它们，使得它们能与这种现状协调。但是在以往，开发者会更多地使用固定高度，尽力让毫无关联的盒子的底部对齐。这是很脆弱的，在旧时的应用里面，你偶尔会遇到一些盒子，它们的内容遮到了页面上的其他内容。如果你看到了，那么你现在应该知道，这就是溢出，理论上你应该能重新排布这些布局，使得它不必依赖于盒子尺寸的调整。
+
+在开发网站的时候，你应该一直把溢出的问题挂在心头，你应该用或多或少的内容测试设计，增加文本的字号，确保你的 CSS 可以正常地协调。改变溢出属性的值，来隐藏内容或者增加滚动条，会是你仅仅在少数特别情况下需要的，例如在你确实需要一个可滚动盒子的时候。
+
+### 小结
+
+这节短短的课已经介绍了溢出的概念，你现在明白，CSS 会尽力不让溢出的内容不可见，因为这会造成数据损失。你已经发现，你可以控制住潜在的溢出，同样，你也应该测试你的作品，确保你不会一下子就弄出令人困扰的溢出。
+
+## CSS 的值与单位
+
+CSS 中使用的每个属性都允许拥有一个或一组值，查看 MDN 上的任何属性页将帮助您理解对任何特定属性有效的值。在本节课中，我们将学习一些最常用的值和单位。
+
+### 什么是 CSS 的值？
+
+在 CSS 规范和 MDN 的属性页上，您将能够发现值的存在，因为它们将被尖括号包围，如`<color>`或`<length>`。当您看到值`<color>`对特定属性有效时，这意味着您可以使用任何有效的颜色作为该属性的值，如 [`<color>`](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value)参考页面所列。	
+
+> **备注：** 您还将看到被称为数据类型的 CSS 值。这些术语基本上是可以互换的——当你在 CSS 中看到一些被称为数据类型的东西时，它实际上只是一种表示值的奇特方式。
+>
+> **备注：** 是的，CSS 值倾向于使用尖括号表示，以区别于 CSS 属性 (例如[`color`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/color)属性和 [`<color>`](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value) 数据类型)。您可能还会混淆 CSS 数据类型和 HTML 元素，因为它们都使用尖括号，但这不太可能——它们在完全不一样的上下文中使用。
+
+在下面的例子中，我们使用关键字设置标题的颜色，使用`rgb()`函数设置背景：
+
+```css
+h1 {
+  color: black;
+  background-color: rgb(197,93,161);
+}
+
+```
+
+CSS 中的值是一种定义允许子值集合的方法。这意味着如果您看到`<color>`是有效的，那么您就不需要考虑可以使用哪些不同类型的颜色值—关键字、十六进制值、`rgb()`函数等等。假设浏览器支持这些可用的`<color>`值，则可以使用它们任意一个。MDN 上针对每个值的页面将提供有关浏览器支持的信息。例如，如果您查看 [`<color>`](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value)的页面，您将看到浏览器兼容性部分列出了不同类型的颜色值以及对它们的支持。
+
+让我们来看看您可能经常遇到的一些值和单位类型，并提供一些示例，以便您尝试使用各种值的可能性。
+
+### 数字，长度和百分比
+
+您可能会发现自己在 CSS 中使用了各种数值数据类型。以下全部归类为数值：
+
+| 数值类型                                                     | 描述                                                         |
+| :----------------------------------------------------------- | :----------------------------------------------------------- |
+| [`<integer>`](https://developer.mozilla.org/en-US/docs/Web/CSS/integer) | [`<integer>`](https://developer.mozilla.org/en-US/docs/Web/CSS/integer)是一个整数，比如 1024 或 -55。 |
+| [`<number>`](https://developer.mozilla.org/en-US/docs/Web/CSS/number) | [`<number>`](https://developer.mozilla.org/en-US/docs/Web/CSS/number)表示一个小数——它可能有小数点后面的部分，也可能没有，例如 0.255、128 或 -1.2。 |
+| `<dimension>`                                                | `<dimension>`是一个`<number>`，它有一个附加的单位，例如 45deg、5s 或 10px。`<dimension>`是一个伞形类别，包括`<length>`、`<angle>`、`<time>`和`<resolution>`类型。 |
+| [`<percentage>`](https://developer.mozilla.org/en-US/docs/Web/CSS/percentage) | [`<percentage>`](https://developer.mozilla.org/en-US/docs/Web/CSS/percentage)表示一些其他值的一部分，例如 50%。百分比值总是相对于另一个量，例如，一个元素的长度相对于其父元素的长度。 |
+
+#### 长度
+
+以下都是绝对长度单位——它们与其他任何东西都没有关系，通常被认为总是相同的大小。
+
+| 单位 | 名称         | 等价换算            |
+| :--- | :----------- | :------------------ |
+| `cm` | 厘米         | 1cm = 96px/2.54     |
+| `mm` | 毫米         | 1mm = 1/10th of 1cm |
+| `Q`  | 四分之一毫米 | 1Q = 1/40th of 1cm  |
+| `in` | 英寸         | 1in = 2.54cm = 96px |
+| `pc` | 十二点活字   | 1pc = 1/6th of 1in  |
+| `pt` | 点           | 1pt = 1/72th of 1in |
+| `px` | 像素         | 1px = 1/96th of 1in |
+
+这些值中的大多数在用于打印时比用于屏幕输出时更有用。例如，我们通常不会在屏幕上使用 cm。
+
+惟一一个您经常使用的值，估计就是 px(像素)。
+
+#### 相对长度单位
+
+| 单位   | 相对于                                                       |
+| :----- | :----------------------------------------------------------- |
+| `em`   | 在 font-size 中使用是相对于父元素的字体大小，在其他属性中使用是相对于自身的字体大小，如 width |
+| `ex`   | 字符“x”的高度                                                |
+| `ch`   | 数字“0”的宽度                                                |
+| `rem`  | 根元素的字体大小                                             |
+| `lh`   | 元素的 line-height                                           |
+| `vw`   | 视窗宽度的 1%                                                |
+| `vh`   | 视窗高度的 1%                                                |
+| `vmin` | 视窗较小尺寸的 1%                                            |
+| `vmax` | 视图大尺寸的 1%                                              |
+
+#### 探索一个例子
+
+在下面的示例中，您可以看到一些相对长度单位和绝对长度单位的行为。第一个框以像素为单位设置[`width`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/width)。作为一个绝对单位，这个宽度将保持不变，无论其他如何变化。
+
+第二个框的宽度设置为`vw`(视口宽度) 单位。这个值相对于视口宽度，所以 10`vw`是视口宽度的 10%。如果您更改浏览器窗口的宽度，那么框的大小应该会更改。
+
+第三个盒子使用 em 单位。这些是相对于字体大小的。我在包含[`<div>`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/div)的元素上设置了一个 1em 的字体大小，它有一个`.wrapper`类。将这个值更改为 1.5em，您将看到所有元素的字体大小都增加了，但是只有最后一项会变宽，因为宽度与字体大小有关。
+
+按照上面的说明操作之后，尝试以其他方式处理这些值，看看您将收获什么。
+
+```html
+  <div class="wrapper">
+    <div class="box px">I am 200px wide</div>
+    <div class="box vw">I am 10vw wide</div>
+    <div class="box em">I am 10em wide</div>
+  </div>
+```
+
+```css
+.wrapper {
+    font-size: 1em;
+}
+
+.px {
+    width: 200px;
+}
+
+.vw {
+    width: 10vw;
+}
+
+.em {
+    width: 10em;
+}
+
+.box {
+    border: 2px solid black;
+    background-color: darkorange;
+}
+```
+
+![image-20220819085618437](image-20220819085618437.png)
+
+#### ems and rems
+
+`em`和`rem`是您在从框到文本调整大小时最常遇到的两个相对长度。了解这些方法是如何工作的以及它们之间的区别是很有意义的，尤其是当您开始学习更复杂的主题时，比如样式化文本或 CSS 布局。下面的示例提供了一个演示。
+
+HTML 是一组嵌套的列表—我们总共有三个列表，并且两个示例都有相同的 HTML。唯一的区别是第一个类具有 ems，第二个类具有 rems。
+
+首先，我们将 16px 设置为`<html>`元素的字体大小。
+
+概括地说，在排版属性中 em 单位的意思是“父元素的字体大小”。带有 ems 类的[`<ul>`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/ul)内的[`<li>`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/li)元素从它们的父元素中获取大小。因此，每一个连续的嵌套级别都会逐渐变大，因为每个嵌套的字体大小都被设置为 1.3em—是其父嵌套字体大小的 1.3 倍。
+
+概括地说，rem 单位的意思是“根元素的字体大小”。(“根 em”的 rem 标准。)`<ul>`内`<li>`的元素和一个 rems 类从根元素 (`<html>)`中获取它们的大小。这意味着每一个连续的嵌套层都不会不断变大。
+
+但是，如果您在 CSS 中更改<html>字体大小，您将看到所有其他相关内容都发生了更改，包括 rem 和 em 大小的文本。
+
+```html
+<ul class="ems">
+  <li>One</li>
+  <li>Two</li>
+  <li>Three
+    <ul>
+      <li>Three A</li>
+      <li>Three B
+        <ul>
+          <li>Three B 2</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<ul class="rems">
+  <li>One</li>
+  <li>Two</li>
+  <li>Three
+    <ul>
+      <li>Three A</li>
+      <li>Three B
+        <ul>
+          <li>Three B 2</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+    
+```
+
+```css
+html {
+  font-size: 16px;
+}
+
+.ems li {
+  font-size: 1.3em;
+}
+
+.rems li {
+  font-size: 1.3rem;
+}
+
+```
+
+![image-20220819090503088](image-20220819090503088.png)
+
+#### 百分比
+
+在许多情况下，百分比与长度的处理方法是一样的。百分比的问题在于，它们总是相对于其他值设置的。例如，如果将元素的字体大小设置为百分比，那么它将是元素父元素字体大小的百分比。如果使用百分比作为宽度值，那么它将是父值宽度的百分比。
+
+在下面的示例中，两个百分比大小的框和两个像素大小的框具有相同的类名。分别为 200px 和 40% 宽。
+
+不同之处在于，第二组两个框位于一个 400 像素宽的包装器中。第二个 200px 宽的盒子和第一个一样宽，但是第二个 40% 的盒子现在是 400px 的 40%——比第一个窄多了！
+
+尝试更改包装器的宽度或百分比值，看看这是如何工作的。
+
+```html
+<div class="box px">I am 200px wide</div>
+<div class="box percent">I am 40% wide</div>
+<div class="wrapper">
+  <div class="box px">I am 200px wide</div>
+  <div class="box percent">I am 40% wide</div>
+</div>
+    
+```
+
+```css
+.wrapper {
+    width: 400px;
+    border: 5px solid rebeccapurple;
+}
+
+.px {
+    width: 200px;
+}
+
+.percent {
+    width: 40%;
+}
+
+.box {
+    border: 5px solid cornflowerblue;
+}
+```
+
+![image-20220819091149426](image-20220819091149426.png)
+
+下一个示例以百分比设置字体大小。每个`<li>`都有 80% 的字体大小，因此嵌套列表项在从父级继承其大小时将逐渐变小。
+
+```html
+<ul>
+  <li>One</li>
+  <li>Two</li>
+  <li>Three
+    <ul>
+      <li>Three A</li>
+      <li>Three B
+        <ul>
+          <li>Three B 2</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>  
+
+    
+```
+
+```css
+li {
+  font-size: 80%;
+}
+    
+```
+
+![image-20220819091339930](image-20220819091339930.png)
+
+注意，虽然许多值接受长度或百分比，但也有一些值只接受长度。您可以在 MDN 属性引用页面上看到它能接受哪些值。如果允许的值包括`<length-percent>`，则可以使用长度或百分比。如果允许的值只包含`<length>`，则不可能使用百分比。
 
 
 
+#### 数字
 
+有些值接受数字，不添加任何单位。接受无单位数字的属性的一个例子是不透明度属性（`opacity` ），它控制元素的不透明度 (它的透明程度)。此属性接受 0(完全透明) 和 1(完全不透明) 之间的数字。
 
+在下面的示例中，尝试将不透明度值更改为 0 到 1 之间的各种小数值，并查看框及其内容是如何变得透明或者不透明的。
 
+```html
+<div class="wrapper">
+  <div class="box">I am a box with opacity</div>
+</div> 
+    
+```
 
+```css
+.box {
+  opacity: 0.6;
+}
+    
+```
 
+![image-20220819091801651](image-20220819091801651.png)
 
+> **备注：** 当您在 CSS 中使用数字作为值时，它不应该用引号括起来。
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# 长度单位
+#### 补充
 
 - 像素
   - 屏幕（显示器）实际上是由一个一个小点点构成的
@@ -3265,7 +3549,247 @@ img{
 - rem
   - rem是相对于根元素的字体大小来计算
 
-# 颜色单位
+### 颜色
+
+在 CSS 中指定颜色的方法有很多，其中一些是最近才实现的。在 CSS 中，相同的颜色值可以在任何地方使用，无论您指定的是文本颜色、背景颜色还是其他颜色。
+
+现代计算机的标准颜色系统是 24 位的，它允许通过不同的红、绿、蓝通道的组合显示大约 1670 万种不同的颜色，每个通道有 256 个不同的值 (256 x 256 x 256 = 16,777,216)。让我们来看看在 CSS 中指定颜色的一些方法。
+
+> **备注：** 在本教程中，我们将研究具有良好浏览器支持的常用指定颜色的方法；虽然还有其他的，但是他们没有很好的支持，也不太常见。
+
+#### 颜色关键词
+
+在这学习示例或 MDN 上的其他示例中，您经常会看到使用的颜色关键字，因为它们是一种指定颜色的简单易懂的方式。有一些关键词，其中一些有相当有趣的名字！您可以在页面上看到 [`<color>`](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value)值的完整列表。
+
+**在下面的示例中尝试使用不同的颜色值，以了解它们是如何工作的。**
+
+#### 十六进制 RGB 值
+
+您可能遇到的下一种颜色值类型是十六进制代码。每个十六进制值由一个散列/磅符号 (#) 和六个十六进制数字组成，每个十六进制数字都可以取 0 到 f(代表 15) 之间的 16 个值中的一个——所以是 0123456789abcdef。每对值表示一个通道—红色、绿色和蓝色—并允许我们为每个通道指定 256 个可用值中的任意一个 (16 x 16 = 256)。
+
+这些值有点复杂，不太容易理解，但是它们比关键字更通用——您可以使用十六进制值来表示您想在配色方案中使用的任何颜色。
+
+```html
+<div class="wrapper">
+  <div class="box one">#02798b</div>
+  <div class="box two">#c55da1</div>
+  <div class="box three">#128a7d</div>
+</div>
+    
+```
+
+```css
+.one {
+    background-color: #02798b;
+}
+
+.two {
+    background-color: #c55da1;
+}
+
+.three {
+    background-color: #128a7d;
+}
+
+
+.box {
+    width: 320px;
+    height: 100px;
+    border-radius: 10px;
+    margin: 20px;
+    text-align: center;
+    line-height: 100px;
+    vertical-align: middle;
+}
+```
+
+![image-20220819092201269](image-20220819092201269.png)
+
+**同样，大胆尝试更改值，看看颜色如何变化吧！**
+
+#### RGB 和 RGBA 的值
+
+我们将在这里讨论的第三种方案是 RGB。RGB 值是一个函数—RGB()—它有三个参数，表示颜色的红色、绿色和蓝色通道值，与十六进制值的方法非常相似。RGB 的不同之处在于，每个通道不是由两个十六进制数字表示的，而是由一个介于 0 到 255 之间的十进制数字表示的——这有点容易理解。
+
+让我们重写上一个例子，使用 RGB 颜色：
+
+```html
+  <div class="wrapper">
+    <div class="box one">rgb(2, 121, 139)</div>
+    <div class="box two">rgb(197, 93, 161)</div>
+    <div class="box three">rgb(18, 138, 125)</div>
+  </div>
+
+
+```
+
+```css
+.one {
+    background-color: rgb(2, 121, 139);
+}
+
+.two {
+    background-color: rgb(197, 93, 161);
+}
+
+.three {
+    background-color: rgb(18, 138, 125);
+}
+
+
+.box {
+    width: 320px;
+    height: 100px;
+    border-radius: 10px;
+    margin: 20px;
+    text-align: center;
+    line-height: 100px;
+    vertical-align: middle;
+}
+```
+
+![image-20220819092340839](image-20220819092340839.png)
+
+您还可以使用 RGBA 颜色——它们的工作方式与 RGB 颜色完全相同，因此您可以使用任何 RGB 值，但是有第四个值表示颜色的 alpha 通道，它控制不透明度。如果将这个值设置为`0`，它将使颜色完全透明，而设置为`1`将使颜色完全不透明。介于两者之间的值提供了不同级别的透明度。
+
+> **备注：** 在颜色上设置 alpha 通道与使用我们前面看到的[`opacity`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/opacity)属性有一个关键区别。当你使用不透明度时，你让元素和它里面的所有东西都不透明，而使用 RGBA 颜色只让你指定的颜色不透明。
+
+在下面的例子中，我添加了一个背景图片到我们的彩色方块的包含块中。然后我设置了不同的不透明度值——注意当 alpha 通道值较小时，背景如何显示的。
+
+```html
+<div class="wrapper">
+  <div class="box one">rgba(2, 121, 139, .3)</div>
+  <div class="box two">rgba(197, 93, 161, .7)</div>
+  <div class="box three">rgba(18, 138, 125, .9)</div>
+</div>
+    
+```
+
+```css
+.one {
+    background-color: rgba(2, 121, 139, .3);
+}
+
+.two {
+    background-color: rgba(197, 93, 161, .7);
+}
+
+.three {
+    background-color: rgba(18, 138, 125, .9);
+}
+
+body {
+    background-image: url("https://mdn.github.io/css-examples/learn/values-units/balloons.jpg");
+}
+
+.box {
+    width: 320px;
+    height: 100px;
+    border-radius: 10px;
+    margin: 20px;
+    text-align: center;
+    line-height: 100px;
+    vertical-align: middle;
+}
+```
+
+![image-20220819092801835](image-20220819092801835.png)
+
+**在本例中，尝试更改 alpha 通道值，看看它如何影响颜色输出。**
+
+> **备注：** 在某种程度上，现代浏览器得到了更新，从而让`rgba()` 和`rgb()` （以及 `hsl()`和 `hsla()`;见下文）成为彼此的纯别名并开始表现完全相同，因此`rgba()` 和`rgb()` 接受带有和不带有 alpha 通道值的颜色。尝试将上面示例的`rgba()` 函数更改为`rgb()` ，看看颜色是否仍然有效！使用哪种样式由您决定，但是将非透明和透明的颜色定义分开使用不同的功能可以（非常）更好地支持浏览器，并且可以直观地指示代码中定义透明颜色的位置。
+
+#### HSL 和 HSLA 的值
+
+与 RGB 相比，HSL 颜色模型的支持稍差一些 (在旧版本的 IE 中不支持)，它是在设计师们感兴趣之后实现的。`hsl()` 函数接受色调、饱和度和亮度值作为参数，而不是红色、绿色和蓝色值，这些值的不同方式组合，可以区分 1670 万种颜色：
+
+- **色调**：颜色的底色。这个值在 0 和 360 之间，表示色轮周围的角度。
+- **饱和度**：颜色有多饱和？它的值为 0 - 100%，其中 0 为无颜色 (它将显示为灰色阴影)，100% 为全色饱和度
+- **亮度**：颜色有多亮？它从 0 - 100% 中获取一个值，其中 0 表示没有光 (它将完全显示为黑色)，100% 表示完全亮 (它将完全显示为白色)
+
+我们可以更新 RGB 的例子来使用 HSL 颜色，就像这样：
+
+```html
+  <div class="wrapper">
+    <div class="box one">hsl(188, 97%, 28%)</div>
+    <div class="box two">hsl(321, 47%, 57%)</div>
+    <div class="box three">hsl(174, 77%, 31%)</div>
+  </div>
+
+
+```
+
+```css
+.one {
+    background-color: hsl(188, 97%, 28%);
+}
+
+.two {
+    background-color: hsl(321, 47%, 57%);
+}
+
+.three {
+    background-color: hsl(174, 77%, 31%);
+}
+
+.box {
+    width: 320px;
+    height: 100px;
+    border-radius: 10px;
+    margin: 20px;
+    text-align: center;
+    line-height: 100px;
+    vertical-align: middle;
+}
+```
+
+![image-20220819093115747](image-20220819093115747.png)
+
+就像 RGB 有 RGBA 一样，HSL 也有 HSLA 等效物，它使您能够指定 alpha 通道值。我已经在下面通过将 RGBA 示例更改为使用 HSLA 颜色来演示了这一点。
+
+```html
+<div class="wrapper">
+  <div class="box one">hsla(188, 97%, 28%, .3)</div>
+  <div class="box two">hsla(321, 47%, 57%, .7)</div>
+  <div class="box three">hsla(174, 77%, 31%, .9)</div>
+</div>
+    
+```
+
+```css
+.one {
+    background-color: hsla(188, 97%, 28%, .3);
+}
+
+.two {
+    background-color: hsla(321, 47%, 57%, .7);
+}
+
+.three {
+    background-color: hsla(174, 77%, 31%, .9);
+}
+
+
+body {
+    background-image: url("https://mdn.github.io/css-examples/learn/values-units/balloons.jpg");
+}
+
+.box {
+    width: 320px;
+    height: 100px;
+    border-radius: 10px;
+    margin: 20px;
+    text-align: center;
+    line-height: 100px;
+    vertical-align: middle;
+}
+```
+
+![image-20220819093224722](image-20220819093224722.png)
+
+您可以在项目中使用这些颜色值中的任何一个。对于大多数项目，您可能会选择一个调色板，然后在整个项目中使用这些颜色——以及您所选择的定义这些颜色的方法。你可以混合使用不同的颜色模型，但是为了一致性，通常最好是你的整个项目使用相同的一个！
+
+#### 补充
 
 - 在css中可以直接使用颜色名，来设置各种颜色
   - 比如：red、orange、yellow...
@@ -3285,583 +3809,2597 @@ img{
   - S（饱和度，颜色的浓度：0% ~ 100%）
   - L（亮度，颜色的亮度：0% ~ 100%）
 
-# background
+### 图片
 
-[CSS background 属性 (w3school.com.cn)](https://www.w3school.com.cn/cssref/pr_background.asp)
+[`<image>`](https://developer.mozilla.org/en-US/docs/Web/CSS/image) 数据类型用于图像为有效值的任何地方。它可以是一个通过 `url()`函数指向的实际图像文件，也可以是一个渐变。
 
-- 颜色渐变
+在下面的例子中，我们演示了一个图像和一个渐变作为 CSS `background-image`属性的值。
 
-  ```css
-  background-image: linear-gradient(to top, #a8edea 0%, #fed6e3 100%);
-  ```
-
-  
-
-# display
-
-# button
-
-# css变量
-
-来源：[CSS变量（CSS variable） - Cloud% - 博客园 (cnblogs.com)](https://www.cnblogs.com/nyw1983/p/11628729.html)
-
-**CSS变量** 是由CSS作者定义的实体，其中包含要在整个文档中重复使用的特定值。使用自定义属性来设置变量名，并使用特定的var()来访问。
-
-#### 一、CSS变量的用途
-
-​    构建大型站点时，在这些网页中，有大量的CSS样式，并且会在许多场合大量重复的使用。比如说：为了保持一种配色方案，在这个配色方案中会有一些颜色经常重复出现在CSS样式表中。如果想要修改配色方案，不论是想单独修改某个颜色或是整套配色，都不是一个简单的问题，而且很容易出错。
-
-​    CSS可以减轻工作的复杂性，更方便修改和添加。不需要额外的编译。第二个好处就是变量本身是包含语义的信息。使CSS文件变得更易读和容易理解。main-text-color比单纯出现在文档中的#00ff00要更加容易理解，特别是有相同颜色出现在不同的文件中时。
-
-#### 二、什么是CSS变量
-
-**CSS变量当前有两种形式：**
-
-- **变量**，就是拥有合法标识符和合法的值。可以被使用在任意的地方。可以使用var()函数使用函数
-
-var(--main-size)会返回--main-size对应的值。
-
-- **自定义属性**，这些属性使用--*where*的特殊格式作为名字
-
---main-size:30px; 即声明一个CSS语句，意思是：将30px赋值给--main-size变量。
-
-**注意：自定义属性和常规属性一样，只作用在当前层级，如果没有特别定义则将从其父元素继承其值。**
-
-在之前的标准中，自定义属性以var-作为前缀，后来才改成--前缀。Firefox 31和以后的版本遵循新标准。
-
-#### 三、变量的声明
-
- **声明变量之前，变量名之前要加上两个连字符（--）**
-
+```html
+<div class="box image"></div>
+<div class="box gradient"></div>  
+    
 ```
-body{
-        --head-color:#ada5f3;
-        --foot-color:#da56d4:
-    }
-```
-
-在这个例子中，body选择器中出现了两个变量：--head-color 和 --foot-color。
-
-CSS变量与color、background这些正式属性并没有什么不同，只是没有默认含义。CSS变量其实与自定义的CSS属性用法相同。CSS变量又叫做 **CSS自定义属性（CSS custom properties）**之所以选用两根连字符（--）表示CSS变量，是因为$foo 被Sass占用了，@foo被Less占用了，为了产生冲突，所以就改用（--）表示CSS变量了
-
-**注意：变量名的大小写敏感，--head不同于--Head，这是两个不同的变量。**
-
-**变量的作用域**
-
-**一个变量的作用域是其对应的选择器的作用范围，div选择器对应div的范围，由于这个原因，全局的变量通常放在根元素****`:root`****里面，确保任何选择器都可以读取它们。**
-
-**（一）声明一个局部变量**
-
-```
-element {
-  --main-bg-color: brown;
-}
-```
-
-**（二）声明一个全局变量**
-
-```
-:root {
-  --global-color: #666;
-  --pane-padding: 5px 42px;
-}
-```
-
-**：root 这个伪类选择器匹配的是文档树的根元素。对于HTML来说，：root表示的是`<html>`根元素，除了优先级更高以外，与html元素选择器相同。**
-
-使用全局变量（在全局中声明以后，其他选择器也可以调用）
-
-```
-.demo{
-   color: var(--global-color);
-}
-```
-
-####  四、var()函数
-
-（一） **var( ) 函数用以读取变量**，**var（变量名）**
-
-```
-.box{
-        --cor:#ddf;
-        background-color: var(--cor);
-        width:400px;height:40px;
-    }
-```
-
-![img](../../html&css.assets/1748092-20191007101146543-983283535.png)
-
-（二） **var()函数还可以使用第二个参数，表示变量的默认值。如果这个变量不存在，就会使用这个默认值**
-
-```
-.box{
-        --cor:#ddf;
-        background-color: var(--corlo , red);
-        width:400px;height:40px;
-    }
-```
-
- 在这个例子里，var()使用了两个参数，变量--corlo和默认值red，由于不存在--corlo这个变量，所以使用red默认值。
-
-**注意：第二个参数不处理内部的逗号或是空格，都视为参数的一部分**
-
-```
-font-size: var(--sizq,40px 12px);
-```
-
-![img](../../html&css.assets/1748092-20191007102418482-270517516.png)
-
- （三） **var()函数还可以用在变量的声明**
-
-```
-.box{
-        --cor:#ddf;
-        --bacolor: var(--cor);
-    }
-```
-
-**注意：变量只能用作属性值，不能用作属性名；**
-
-```
-.box{
-        --size:font-size;
-        var(--size):30px;
-    }
-```
-
-在这个例子中，变量--size用作属性名，这是无效的
-
-#### 五、变量的类型
-
-**（一）字符串**
-
-**如果变量值是一个字符串，可以与其他字符串进行拼串**
-
-```
- --main-text:"hello";
- --text:var(--main-text)"world ! ";
-```
-
-**实例：**（使用两个变量值，使内容显示为hello world）
-
-
-
-```
-span:before{
-        --main-text:"hello";
-        --text:var(--main-text)"world ! ";
-        content:"--text: "var(--text);
-        background: skyblue
-    }
-```
-
-
-
-表现效果为
-
-![img](../../html&css.assets/1748092-20191007162043064-996595741.png)
-
- 
-
-**（二）数值**
-
-**注意：如果变量的值为数值，则在使用的时候不可以与数值单位直接连用**
-
-```
-.foo {
-  --gap: 20;
-  /* 无效 */
-  margin-top: var(--gap)px;
-}
-```
-
-本例中，使用时数值与单位直接写在一起，这是无效的。必须使用 **`calc()`函数**，将它们连接。
-
-```
-span{
-        background: skyblue;
-        --size:30;
-        font-size:calc(var(--size)*1px);
-    }
-```
-
-表现效果：
-
-![img](../../html&css.assets/1748092-20191007162904136-329405177.png)
-
-**注意：如果变量赋值的时候带有单位（例如：--size:20px;），就不能写成字符串**
-
-
-
-```
-/* 无效 */
-.foo {
-  --foo: '20px';
-  font-size: var(--foo);
-}
-
-/* 有效 */
-.foo {
-  --foo: 20px;
-  font-size: var(--foo);
-}
-```
-
-#### 六、响应式布局
-
-CSS 是动态的，页面的任何变化，都会导致采用的规则变化。
-
-利用这个特点，**可以在响应式布局的 `media`命令里面声明变量，使得不同的屏幕宽度有不同的变量值。**
-
-
-
-```
-body {
-  --primary: #7F583F;
-  --secondary: #F7EFD2;
-}
-a {
-  color: var(--primary);
-  text-decoration-color: var(--secondary);
-}
-
-@media screen and (min-width: 768px) {
-  body {
-    --primary:  #F7EFD2;
-    --secondary: #7F583F;
-  }
-}
-```
-
-#### 七、兼容性处理
-
-**浏览器兼容性**
-
-![img](../../html&css.assets/1748092-20191007171556707-2101956118.png)
-
-![img](../../html&css.assets/1748092-20191007171707738-2097760259.png)
-
-**对于不支持CSS变量的浏览器，可采用下面的写法**（为了适应一些不支持CSS变量的浏览器，还可以在样式中另外用CSS样式单独声明以下）
-
-```
-    span{
-        --size:30px;
-        font-size:var(--size);
-                font-size:30px;
-    }
-```
-
-**可以使用 @supports 检测浏览器是否支持CSS变量**
-
-
-
-```
-@supports ( (--a: 0)) {
-  /* supported */
-}
-
-@supports ( not (--a: 0)) {
-  /* not supported */
-}
-```
-
-
-
-####  八、JavaScript操作
-
-JavaScript也可以检验浏览器是否支持CSS变量
-
-[![复制代码](../../html&css.assets/copycode-164237211006512.gif)](javascript:void(0);)
-
-```
-const isSupported =
-  window.CSS &&
-  window.CSS.supports &&
-  window.CSS.supports('--a', 0);
-
-if (isSupported) {
-  /* supported */
-} else {
-  /* not supported */
-}
-```
-
-
-
-**JavaScript操作CSS变量的写法如下（**这表示JavaScript可以实现将任意值存入CSS样式表）：
-
-
-
-```
-// 设置变量
-document.body.style.setProperty('--primary', '#7F583F');
-
-// 读取变量
-document.body.style.getPropertyValue('--primary').trim();
-// '#7F583F'
-
-// 删除变量
-document.body.style.removeProperty('--primary');
-```
-
-
-
-####  实例：
-
-为不同的元素设置颜色
-
-**CSS样式**
-
-[![复制代码](../../html&css.assets/copycode-164237218083014.gif)](javascript:void(0);)
 
 ```css
-.one {
-          color: white;
-          background-color: skyblue;
-          margin: 10px;
-          width: 50px;
-          height: 50px;
-          display: inline-block;
-    }
-    .two{
-        color:white;
-        background:black;
-        margin:10px;
-        width:150px;
-        height: 50px;
-        display:inline-block;
-    }
-    .three{
-        color:white;
-        background-color:skyblue;
-        margin:10px;
-        width:75px;
-    }
-    .four{
-        color:white;
-        background-color:skyblue;
-        margin:10px;
-        width:100px; 
-    }
-    .five{
-        background-color: skyblue;
-    }
+.image {
+  background-image: url(star.png);
+}
+
+.gradient {
+  background-image: linear-gradient(90deg, rgba(119,0,255,1) 39%, rgba(0,212,255,1) 100%);
+}
+    
+```
+
+![image-20220819093803432](image-20220819093803432.png)
+
+> **备注：** `<image>`还有一些其他可能的值，但是这些都是较新的，并且目前对浏览器的支持很差。如果您想了解`<image>`数据类型，请查看 MDN 页面。
+
+### 位置
+
+[`<position>`](https://developer.mozilla.org/en-US/docs/Web/CSS/position_value) 数据类型表示一组 2D 坐标，用于定位一个元素，如背景图像 (通过 [`background-position`](https://developer.mozilla.org/en-US/docs/Web/CSS/background-position))。它可以使用关键字 (如 `top`, `left`, `bottom`, `right`, 以及`center` ) 将元素与 2D 框的特定边界对齐，以及表示框的顶部和左侧边缘偏移量的长度。
+
+一个典型的位置值由两个值组成——第一个值水平地设置位置，第二个值垂直地设置位置。如果只指定一个轴的值，另一个轴将默认为 `center`。
+
+在下面的示例中，我们使用关键字将背景图像从容器的顶部到右侧放置了 40px。
+
+```html
+<div class="box"></div> 
+    
+```
+
+```css
+.box {
+  height: 300px;
+  width: 400px;
+  background-image: url(star.png);
+  background-repeat: no-repeat;
+  background-position: right 40px;
+}
+    
+```
+
+![image-20220819094156883](image-20220819094156883.png)
+
+**尝试使用这些值，看看如何把这些图像移来移去。**
+
+### 字符串和标识符
+
+在上面的示例中，我们看到关键字被用作值的地方 (例如`<color>`关键字，如 `red`, `black`, `rebeccapurple`, and `goldenrod`)。这些关键字被更准确地描述为标识符，一个 CSS 可以理解的特殊值。因此它们没有使用引号括起来——它们不被当作字符串。
+
+在某些地方可以使用 CSS 中的字符串，例如 [在指定生成的内容时](https://developer.mozilla.org/en-US/docs/Learn/CSS/Building_blocks/Selectors/Pseudo-classes_and_pseudo-elements#generating_content_with_before_and_after)。在本例中，引用该值以证明它是一个字符串。在下面的示例中，我们使用非引号括起来的颜色关键字和引号括起来的内容字符串。
+
+```html
+<div class="box"></div> 
+    
+```
+
+```css
+.box {
+  width:400px;
+  padding: 1em;
+  border-radius: .5em;
+  border: 5px solid rebeccapurple;
+  background-color: lightblue;
+}
+
+.box::after {
+  content: "This is a string. I know because it is quoted in the CSS."
+}
+    
+```
+
+![image-20220819094521123](image-20220819094521123.png)
+
+### 函数
+
+我们将查看的最后一种类型的值是一组称为函数的值。在编程中，函数是一段可重用的代码，可以多次运行，以完成重复的任务，对开发人员和计算机都是如此。函数通常与 JavaScript、Python 或 c++等语言相关联，但它们也以属性值的形式存在于 CSS 中。我们已经在颜色部分看到了函数的作用——`rgb()`、`hsl()`等。用于从文件返回图像的值——`url()`——也是一个函数。
+
+行为更类似于传统编程语言的值是`calc()`函数。这个函数使您能够在 CSS 中进行简单的计算。如果您希望计算出在为项目编写 CSS 时无法定义的值，并且需要浏览器在运行时为您计算出这些值，那么它特别有用。
+
+例如，下面我们使用`calc()`使框宽为 20% + 100px。20% 是根据父容器.wrapper 的宽度来计算的，因此如果宽度改变，它也会改变。我们不能事先做这个计算，因为我们不知道父类的 20% 是多少，所以我们使用`calc()`来告诉浏览器为我们做这个计算。
+
+```html
+<div class="wrapper">
+  <div class="box">My width is calculated.</div> 
+</div>
+    
+```
+
+```css
+.wrapper {
+    width: 90vw;
+    border-radius: .5em;
+    border: 5px solid rebeccapurple;
+}
+
+.box {
+    width: calc(20% + 100px);
+    background-color: lightblue;
+
+}
+
+```
+
+![image-20220819095011974](image-20220819095011974.png)
+
+**尝试拖动浏览器查看**
+
+### 小结
+
+本文简要介绍了您可能会遇到的最常见的值和单位类型。你可以看看所有不同类型的 [CSS 的值和单位](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Values_and_Units) 参考页面；当你学习这些课程时，你将会遇到很多这样的情况。
+
+需要记住的关键一点是，每个属性都有一个已定义的允许值列表，每个值都有一个定义来解释子值是什么。然后您可以在 MDN 上查看详细信息。
+
+## 在 CSS 中调整大小
+
+在前面的课程中你已经看到了几种使用 CSS 为页面中元素设定尺寸的方法。 在我们设计网页的时候，需要理解这些不同方法之间的差异。在本课程中，我们将总结设定元素尺寸的方法，并定义几个术语，这些内容将会在未来对你有所帮助。
+
+### 原始尺寸，或固有尺寸
+
+在受 CSS 设置影响之前，HTML 元素有其原始的尺寸。一个直观的例子就是图像。一副图像的长和宽由这个图像文件自身确定。这个尺寸就是固有尺寸。
+
+如果你把图片放置在网页中的时候没有在`<img>` 标签或 CSS 中设置其尺寸，那么将使用其固有尺寸显示。我们给下面的示例图像绘制了一个边框，以便你看出图像文件的长宽。
+
+![image-20220819100607694](image-20220819100607694.png)
+
+一个空的`<div>`是没有尺寸的。如果你在你的 HTML 文件中添加一个空`<div> `并给予其边框（就像刚才我们为图像做的那样），你会在页面上看到一条线。这是边框被压缩后的效果— 它内部没有内容。在我们下面的例子中，边框宽度扩展到整个容器宽度，因为它是块级元素，而块级元素的行为就是这样的。它没有高度，或者说高度为 0，因为内部没有内容。
+
+![image-20220819100550746](image-20220819100550746.png)
+
+在上面的例子中，试着在空元素内部添加些内容。现在边框内包含一些文字了，因为元素的高度由其所含内容高度确定。**再强调一次，这就是元素的固有尺寸 — 由其所包含的内容决定。**
+
+### 设置具体的尺寸
+
+我们当然可以给设计中的元素指定具体大小。当给元素指定尺寸（然后其内容需要适合该尺寸）时，我们将其称为外部尺寸。以上面例子中的` <div>` 举例 — 我们可以给它一个具体的 width 和 height 值，然后不论我们放什么内容进去它都是该尺寸。 正如我们在上一课有关溢出的内容中所发现的，如果内容的数量超出了元素可容纳的空间，则设置的高度会导致内容溢出。
+
+由于存在溢出问题，在网络上使用长度或百分比固定元素的高度需要非常小心。
+
+### 使用百分数
+
+许多时候，百分数是长度单位，正如我们在[Value and units 这节课中讨论的那样](https://developer.mozilla.org/zh-CN/docs/Learn/CSS/Building_blocks/Values_and_units#percentages)，它们常常可与长度互换。当使用百分数时，你需要清楚，它是**什么**东西的百分数。对于一个处于另外一个容器当中的盒子，如果你给予了子盒子一个百分数作为宽度，那么它指的是父容器宽度的百分数。
+
+这是因为百分数是以包含盒子的块为根据解析的。如果我们的`<div>`没有被指定百分数的值，那么它会占据 100% 的可用空间，因为它是块级别的元素。如果我们给了它一个百分数作为宽度，那么这就是它原来情况下可以占据空间的百分数。
+
+### 把百分数作为内外边距
+
+如果你把`margins`和`padding`设置为百分数的话，你会注意到一些奇怪的表现。在下面的例子里，我们有一个盒子，我们给了里面的盒子 10% 的[`margin`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/margin)以及 10% 的[`padding`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/padding)。盒子底部和顶部的内外边距，和左右外边距有同样的大小。
+
+![image-20220819101009762](image-20220819101009762.png)
+
+或许，你期望元素的上下外边距是其高度的百分比，元素的左右外边距是其宽度的百分比。但情况并非如此！
+
+使用百分比作为元素外边距（margin）或填充（padding）的单位时，值是以包含块的**内联尺寸**进行计算的，也就是元素的水平宽度。在我们的示例中，所有的外边距或填充都是宽度的 10%。请记住一个事实，当你使用百分比作为元素外边距或填充的单位时，你将得到一个相同尺寸的外边距或填充。
+
+
+
+### min-和 max-尺寸
+
+除了让万物都有一个确定的大小以外，我们可以让 CSS 给定一个元素的最大或最小尺寸。如果你有一个包含了变化容量的内容的盒子，而且你总是想让它**至少**有个确定的高度，你应该给它设置一个[`min-height`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/min-height)属性。盒子就会一直保持大于这个最小高度，但是如果有比这个盒子在最小高度状态下所能容纳的更多内容，那么盒子就会变大。
+
+在以下的示例中，你可以看到两个盒子，两个都有 150 像素的确定高度，左边的盒子有 150 像素高，右边的盒子有需要更多空间才能装下的内容，所以它变得比 150 像素高。
+
+```html
+    <div class="box"></div>
+    <div class="box">These boxes both have a min-height set, this box has content in it which will need more space than the assigned height, and so it grows from the minimum.These boxes both have a min-height set, this box has content in it which will need more space than the assigned height, and so it grows from the minimum.</div>
+```
+
+```css
+.box {
+    float: left;
+    border: 5px solid darkblue;
+    min-height: 150px;
+    width: 200px;
+}
+
+
+```
+
+![image-20220819101525346](image-20220819101525346.png)
+
+这在避免溢出的同时并处理变化容量的内容的时候是很有用的。
+
+[`max-width`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/max-width)的常见用法为，在没有足够空间以原有宽度展示图像时，让图像缩小，同时确保它们不会比这一宽度大。
+
+作为示例，如果你设定一个图像的属性为`width: 100%`，而且它的原始宽度小于容器，图像会被强制拉伸以变大，看起来像素更加明显。如果它的原始宽度大于容器，它则会溢出。两种情形都不是你想要看到的。
+
+如果你使用了`max-width: 100%`，那么图像可以变得比原始尺寸更小，但是不会大于原始尺寸的 100%。
+
+在下面的示例里，我们使用了两次相同的图片。第一次使用，属性值已设为`width: 100%`，位于比图片大的容器里，因此图片拉伸到了与容器相同的宽度；第二次的属性值则设为`max-width: 100%`，因此它并没有拉伸到充满容器；第三个盒子再一次包含了相同的图片，同时设定了`max-width: 100%`属性，这时你能看到它是怎样缩小来和盒子大小相适应的。
+
+```html
+<div class="wrapper">
+  <div class="box">
+    <img src="https://mdn.github.io/css-examples/learn/backgrounds-borders/big-star.png" alt="star" class="width">
+  </div>
+  <div class="box">
+    <img src="https://mdn.github.io/css-examples/learn/backgrounds-borders/big-star.png" alt="star" class="max"></div>
+  <div class="minibox">
+    <img src="https://mdn.github.io/css-examples/learn/backgrounds-borders/big-star.png" alt="star" class="max">
+  </div>
+</div>
+
+```
+
+```css
+.width {
+    width: 100%;
+}
+
+.max {
+    max-width: 100%;
+}
+
+.minibox {
+    width: 50px;
+}
+
+
+.box {
+    width: 200px;
+    border: 1px solid blueviolet;
+}
+.minibox {
+    border: 1px solid blueviolet;
+
+}
+```
+
+![image-20220819140705759](image-20220819140705759.png)
+
+这个技术是用来让图片**可响应**的，所以在更小的设备上浏览的时候，它们会合适地缩放。你无论怎样都不应该用这个技术先载入大原始尺寸的图片，再对它们在浏览器中进行缩放。图像应该合适地调整尺寸，以使它们不会比预计中展示时所需要的最大尺寸大。下载过大的图像会造成你的网站变慢，如果用户使用按量收费的网络连接，会让用户花更多钱。
+
+> **备注：**了解更多关于[响应式图片技术](https://developer.mozilla.org/en-US/docs/Learn/HTML/Multimedia_and_embedding/Responsive_images)的事情。
+
+
+
+### 视口单位
+
+视口，即你在浏览器中看到的部分页面，也是有尺寸的。在 CSS 中，我们有与视口尺寸相关的度量单位，即意为视口宽度的`vw`单位，以及意为视口高度的 `vh`单位。使用这些单位，你可以把一些东西做得随用户的视口改变大小。
+
+`1vh`等于视口高度的 1%，`1vw`则为视口宽度的 1%.你可以用这些单位约束盒子的大小，还有文字的大小。在下面的示例里，我们有一个大小被设为 20vh 和 20vw 的盒子。这个盒子里面有一个字母`A`，其[`font-size`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/font-size)属性被设成了 10vh。
+
+```html
+<div class="box">
+  A
+</div>
+    
+```
+
+```css
+.box {
+  border: 5px solid darkblue;
+  width: 20vw;
+  height: 20vh;
+  font-size: 10vh;
+}
+    
+```
+
+![image-20220819141035238](image-20220819141035238.png)
+
+**如果你改变了`vh`和`vw`的对应值，盒子和字体的大小也会改变；视口大小的变化也会让它们的大小变化，因为它们是依照视口来定大小的。想看到随着你改变视口大小的时候示例的变化的话，你需要在一个新浏览器视窗里面载入此示例，因为你可以控制该视窗的大小，同时上面示例所在的嵌入的`<iframe>`的大小即是对上面示例而言的视口。[打开此示例](https://mdn.github.io/css-examples/learn/sizing/vw-vh.html)，调整浏览器视窗的大小，观察在盒子和文本的大小上所发生的事情。**
+
+在你的设计中，根据视口改变物件的大小是很有用的。例如，如果你想要在你其他内容之前，有一个充满整个视口的视觉宣传段落，让你的页面的那个部分有 100vh 高的话，会把剩下的内容推到视口的下面，只有向下滚动文档的时候它们才会出现。
+
+### 小结
+
+本节课，你已经得到了一个对于你可能在约束网站上的内容大小的时候，会遇到的一些关键问题的详细介绍。当你继续学习[CSS 布局](https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout)的时候，约束大小会成为掌握不同布局途径的非常重要的基础，所以在继续之前有必要在这里理解这些概念。
+
+## 图像、媒体和表单元素
+
+在这节课里，我们来看一下，CSS 是如何处理某些特殊元素的。图像、其他媒体和表格元素的表现和普通的盒子有些不同，这取决于你使用 CSS 格式化它们的能力。理解什么可能做到，什么不可能做到能够省些力气，本节课将会聚焦于一些你需要知道的主要的事情上。
+
+### 替换元素
+
+图像和视频被描述为**[替换元素](https://developer.mozilla.org/zh-CN/docs/Web/CSS/Replaced_element)**。这意味着 CSS 不能影响它们的内部布局——而仅影响它们在页面上相对于其它元素的位置。但是，正如我们将看到的，CSS 可以对图像执行多种操作。
+
+某些替换元素（例如图像和视频）也具有**宽高比**。这意味着它在水平（x）和垂直（y）方向上均具有大小，并且默认情况下将使用文件的固有尺寸进行显示。
+
+### 调整图像大小
+
+正如你从之前的几节课中所学到的那样，CSS 中万物皆盒。如果你把一张图片放在一个盒子里，而这张图片的原始长和宽比盒子的小或大，那么这张图要么缩在盒子里，要么就从盒子里面溢出。你需要决定如何处理这样的溢出。
+
+下面的示例中有两个盒子，长宽均为 200 像素：
+
+- 一个包含了一张小于 200 像素的图像，它比盒子小，并且不会自动拉伸来充满盒子。
+- 另一张图像大于 200 像素，溢出了盒子。
+
+![image-20220819142748332](image-20220819142748332.png)
+
+那么该如何处理溢出问题呢？
+
+正如我们在[之前的课程](https://developer.mozilla.org/zh-CN/docs/Learn/CSS/Building_blocks/Sizing_items_in_CSS)  所学的那样，一个常用的方法是将一张图片的 max-width 设为 100%。这将会使图片的尺寸小于等于盒子。这个技术也会对其他替换元素（例如 `<video>`，或者 `<iframe>` 起作用。
+
+**上面的示例中的 `<img>` 元素加入 `max-width: 100%`，你会看到，左边那张小的图像没有变化，而大的图像变小了，恰好装在了盒子里。**
+
+你可以选择对容器内的图像作其它方式的处理。例如，你可能想把一张图像调整到能够完全盖住一个盒子的大小。
+
+[`object-fit`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/object-fit) 属性可以在这里帮助你。当使用 `object-fit` 时，替换元素可以以多种方式被调整到合乎盒子的大小。
+
+下面的示例中我们使用了值 `cover` 来缩小图像，同时维持了图像的原始比例。这样图像就可以充满盒子。但由于比例保持不变，图像多余的一部分将会被盒子裁切掉。
+
+```html
+<div class="wrapper">
+  <div class="box">
+    <img src="https://mdn.github.io/css-examples/learn/values-units/balloons.jpg" alt="balloons" class="cover">
+  </div>
+  <div class="box">
+    <img src="https://mdn.github.io/css-examples/learn/values-units/balloons.jpg" alt="balloons" class="contain">
+  </div>
+</div>
+```
+
+```css
+.box {
+    width: 200px;
+    height: 200px;
+    border: 1px solid blueviolet;
+    margin: 10px;
+}
+
+img {
+    height: 100%;
+    width: 100%;
+}
+
+.cover {
+    object-fit: cover;
+}
+
+.contain {
+    object-fit: contain;
+}
+
+```
+
+![image-20220819144242311](image-20220819144242311.png)
+
+
+
+如果我们使用值 `contain`，图像就会被缩放到足以完整地放到盒子里面的大小。如果它和盒子的比例不同，将会出现“开天窗”的结果。
+
+你可能也想试试 `fill` 值，它可以让图像充满盒子，但是不会维持比例。
+
+### 布局中的替换元素
+
+在对替换元素使用各种 CSS 布局时，你可能会发现他们的表现方式与其他元素有一些细节上的差异。例如，flex 或者 grid 布局中，默认情况下元素会被拉伸到充满整块区域。但是图像不会被拉伸，而会对齐到网格区域或者弹性容器的起始处。
+
+你可以在下面的示例中看到这一现象。该示例有一个两列两行的网格容器，里面有四个物件。所有的 `<div>` 元素有自己的背景色，被拉伸到充满了行和列。但是，图像并没有被拉伸。
+
+```html
+<div class="wrapper">
+  <img src="https://mdn.github.io/css-examples/learn/backgrounds-borders/big-star.png" alt="star">
+  <div></div>
+  <div></div>
+  <div></div>
+</div>
+    
+```
+
+```css
+.wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 200px 200px;
+  gap: 20px;
+}
+
+.wrapper > div {
+  background-color: rebeccapurple;
+  border-radius: .5em;
+}
+    
+```
+
+![image-20220819144741253](image-20220819144741253.png)
+
+如果你是按序阅读这些课程的，那么你可能还没有看到布局的部分。不过没关系，只要记住替换元素在成为网格或者弹性布局的一部分时，有不同的默认行为就好了。这一默认行为很有必要，因为它避免了替换元素被布局拉伸成奇怪的样子。
+
+为了强制图像拉伸，以充满其所在的网格单元，你必须做类似于下面的事情：
+
+```css
+img {
+  width: 100%;
+  height: 100%;
+}
+
+```
+
+这将会无条件地拉伸图像，所以很可能不会是你想要的。
+
+![image-20220819144907406](image-20220819144907406.png)
+
+### form 元素
+
+用 CSS 格式化表单元素是一个需要技巧的工作，[HTML 表单指南](https://developer.mozilla.org/zh-CN/docs/Learn/Forms)包含了详细的格式化表单元素的指导，我不会在这里复述。本节需要介绍的是一些值得关注的关键基础内容。
+
+很多表单控件是通过` <input> `元素添加到网页上的。该元素定义了简单的表单区域，例如文字输入。更进一步还有 HTML5 新加入的更加复杂的区域，例如颜色和日期撷取器。另外还有一些其他元素，例如用于多行文本输入的 `<textarea>`，以及那些用来包含和标记表单特定部分的元素，例如 `<fieldset>` 和 `<legend> `。
+
+HTML5 还包含了允许 Web 开发者指定必填区域的特性，甚至还能检验填入内容的类型。如果用户输入了一些不符合要求的内容，或者未填写必填区域，浏览器会显示错误提示。不同的浏览器在给此类元素样式化和自定义方面不尽相同。
+
+#### 样式化文本输入元素
+
+允许文本输入的元素有很多，例如 `<input type="text">`，及其指定特定类型的元素，如 `<input type="email">` 以及 `<textarea>` 元素，这些都是相当容易样式化的，它们和页面上其他盒子的表现相同。只不过在不同的操作系统和浏览器上访问时这些元素默认的样式化方式可能不同。
+
+在下面的示例中，我们已经将一些文本输入元素用 CSS 样式化了。可以看到，边框、内外边距之类的东西都如期生效了。现在，我们使用属性选择器来指向不同的输入类型，尝试通过改变边框、添加输入区域背景色、改变字体和内边距的方式来改变表单的外观。
+
+```html
+<form>
+  <div><label for="name">Name</label>
+  <input type="text" id="name"></div>
+  <div><label for="email">Email</label>
+  <input type="email" id="email"></div>
+
+  <div class="buttons"><input type="submit" value="Submit"></div>
+</form>
+    
+```
+
+```css
+input[type="text"],
+input[type="email"] {
+    border: 2px solid #000;
+    margin: 0 0 1em 0;
+    padding: 10px;
+    width: 20%;
+}
+
+input[type="submit"] {
+    border: 3px solid #333;
+    background-color: #999;
+    border-radius: 5px;
+    padding: 10px 2em;
+    font-weight: bold;
+    color: #fff;
+}
+
+input[type="submit"]:hover {
+    background-color: #333;
+}
+
+    
+```
+
+![image-20220819145429928](image-20220819145429928.png)
+
+> **警告：** 你应该谨慎改变表单样式，确保用户仍然能轻松辨认表单元素。原则上，你可以创建一个没有边框和背景的，几乎无法与周围的内容区分开来的输入表单，但这会使辨认和填写变得非常困难。
+
+正如在本教程的 HTML 部分的[样式化表单](https://developer.mozilla.org/zh-CN/docs/Learn/Forms/Styling_web_forms)里解释的那样，许多更加复杂的输入类型是由操作系统渲染的，无法进行样式化。因而你应该总是留意到表单在不同的用户看来差异很大，并在许多浏览器上测试复杂的表单。
+
+#### 继承和表单元素
+
+在一些浏览器中，表单元素默认不会继承字体样式，因此如果你想要确保你的表单填入区域使用 body 中或者一个父元素中定义的字体，你需要向你的 CSS 中加入这条规则。
+
+```css
+button,
+input,
+select,
+textarea {
+  font-family : inherit;
+  font-size : 100%;
+}
+
+```
+
+#### form 元素与 box-sizing
+
+跨浏览器的 form 元素对于不同的挂件使用不同的盒子约束规则。你已经在我们的[盒模型课](https://developer.mozilla.org/zh-CN/docs/Learn/CSS/Building_blocks/The_box_model)中学习了 `box-sizing` 属性，在样式化表单时候，你可以使用这一知识，确保在给 form 元素设定宽度和高度时可以有统一的体验。
+
+为了保证统一，最好将所有元素的内外边距都设为 `0`，然后在单独进行样式化控制的时候将这些加回来。
+
+```css
+button,
+input,
+select,
+textarea {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+```
+
+#### 其他有用的设置
+
+除了上面提到的规则以外，你也应该在 `<textarea>` 上设置 `overflow: auto` 以避免 IE 在不需要滚动条的时候显示滚动条：
+
+```css
+textarea {
+  overflow: auto;
+}
+
+```
+
+#### 将一切都放在一起“重置”
+
+作为最后一步，我们可以将上面讨论过的各式属性包起来，成为以下的“表单重置”，以提供一个统一的在其上继续进行工作的地基，这包含了前三节提到的所有东西：
+
+```css
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: 100%;
+  box-sizing: border-box;
+  padding: 0; margin: 0;
+}
+
+textarea {
+  overflow: auto;
+}
+
+```
+
+> **备注：** 通用样式表被许多开发者用作所有项目的一系列基础样式，典型就是那些做了和以上提到相似的事情的那些，在你开始自己的 CSS 作业前，它确保了跨浏览器的任何事情都被默认设定为统一样式。它们不像以往那么重要了，因为浏览器显著地要比以往更加统一。但是，如果你想要看一个例子，可以看看这个[Normalize.css](http://necolas.github.io/normalize.css/)，它被许多项目用作基础，是非常流行的样式表。
+
+至于样式化表单的更加深入的信息，可以看下这些教程的 HTML 一节的这两篇文章：
+
+- [Styling HTML Forms](https://developer.mozilla.org/zh-CN/docs/Learn/Forms/Styling_web_forms)
+- [Advanced Styling for HTML Forms](https://developer.mozilla.org/zh-CN/docs/Learn/Forms/Advanced_form_styling)
+
+### 小结
+
+这节课致力于说明在你用 CSS 处理图像、媒体和其他不普通的元素时，你会遇到的不同之处。在下篇文章中，我们将会了解一些在你样式化 HTMl 表格时有用的技巧。
+
+
+
+## 样式化表格
+
+设计一个 HTML 表格不是世界上最迷人的工作，但有时我们必须这样做。本文提供了一个使 HTML 表格看起来不错的指南，其中一些功能在前面的文章中已作详细介绍。
+
+### 一个典型的 HTML 表格
+
+让我们从一个典型的 HTML 表格开始。恩，我说典型——大多数 HTML 表格都是关于鞋子，天气，或者员工的。我们决定通过制作英国著名的朋克乐队来让事情变得更有趣。标记看起来是这样的
+
+```html
+    <table>
+      <caption>A summary of the UK's most famous punk bands</caption>
+      <thead>
+        <tr>
+          <th scope="col">Band</th>
+          <th scope="col">Year formed</th>
+          <th scope="col">No. of Albums</th>
+          <th scope="col">Most famous song</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">Buzzcocks</th>
+          <td>1976</td>
+          <td>9</td>
+          <td>Ever fallen in love (with someone you shouldn't've)</td>
+        </tr>
+        <tr>
+          <th scope="row">The Clash</th>
+          <td>1976</td>
+          <td>6</td>
+          <td>London Calling</td>
+        </tr>
+        <tr>
+          <th scope="row">The Damned</th>
+          <td>1976</td>
+          <td>10</td>
+          <td>Smash it up</td>
+        </tr>
+        <tr>
+          <th scope="row">Sex Pistols</th>
+          <td>1975</td>
+          <td>1</td>
+          <td>Anarchy in the UK</td>
+        </tr>
+        <tr>
+          <th scope="row">Sham 69</th>
+          <td>1976</td>
+          <td>13</td>
+          <td>If The Kids Are United</td>
+        </tr>
+        <tr>
+          <th scope="row">Siouxsie and the Banshees</th>
+          <td>1976</td>
+          <td>11</td>
+          <td>Hong Kong Garden</td>
+        </tr>
+        <tr>
+          <th scope="row">Stiff Little Fingers</th>
+          <td>1977</td>
+          <td>10</td>
+          <td>Suspect Device</td>
+        </tr>
+        <tr>
+          <th scope="row">The Stranglers</th>
+          <td>1974</td>
+          <td>17</td>
+          <td>No More Heroes</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <th scope="row" colspan="2">Total albums</th>
+          <td colspan="2">77</td>
+        </tr>
+      </tfoot>
+    </table>
+```
+
+由于scope、`<caption>`、`<thead>`、`<tbody>`等特性，表格被很好地标记了，易于使用，并且易于访问，不幸的是，它在屏幕上呈现时看起来不太好（见它的预览版 [punk-bands-unstyled.html](https://mdn.github.io/learning-area/css/styling-boxes/styling-tables/punk-bands-unstyled.html)）：
+
+![image-20220819170737716](image-20220819170737716.png)
+
+它看起来很拥挤，很难阅读，也很无聊。我们需要使用一些 CSS 来解决这个问题。
+
+### 自主学习：样式化我们的表格
+
+在这个自主学习部分中，我们将一起来样式化我们的表格。
+
+1. 首先，复制[实例标记](https://github.com/mdn/learning-area/blob/master/css/styling-boxes/styling-tables/punk-bands-unstyled.html)到本地，下载这两个图像 ([noise](https://github.com/mdn/learning-area/blob/master/css/styling-boxes/styling-tables/noise.png)和 [leopardskin](https://github.com/mdn/learning-area/blob/master/css/styling-boxes/styling-tables/leopardskin.jpg))，然后将三个结果文件放在本地计算机的某个工作目录中。
+2. 接下来，创建一个名为`style.css`的新文件并将其保存在与其他文件相同的目录中。
+3. 将 CSS 链接到 HTML 中，将下面的 HTML 代码放到 HTML 的[`<head>`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/head)中：
+
+```css
+<link href="style.css" rel="stylesheet" type="text/css">
+
+```
+
+#### 间距和布局
+
+我们需要做的第一件事是整理出空间/布局——默认的表格样式是如此的拥挤！要做到这一点，请将以下 CSS 添加到您的 `style.css` 文件：
+
+需要注意的最重要的部分如下：
+
+- 在你的表上，给`table-layout`属性设置一个为`fixed`的值通常是一个好主意，因为它使表的行为在默认情况下更可预测。通常情况下，表列的尺寸会根据所包含的内容大小而变化，这会产生一些奇怪的结果。通过 `table-layout: fixed`，您可以根据列标题的宽度来规定列的宽度，然后适当地处理它们的内容。这就是为什么我们使用了`thead th:nth-child(n) `选择了四个不同的标题 (`:nth-child`) 选择器（“选择第 n 个子元素，它是一个顺序排列的`<th>`元素，且其父元素是`<thead>`元素”）并给定了它们的百分比宽度。整个列宽度与列标题的宽度是一样的，这是一种很好的设定表列尺寸的方式。Chris Coyier 在[Fixed Table Layouts](https://css-tricks.com/fixing-tables-long-strings/)中更详细地讨论了这一技术。 我们将它与一个 100% 的width组合在一起，这意味着该表将填充它放入的任何容器，并且能很好的响应（虽然它仍然需要更多的工作来让它在窄屏宽度上看起来很好）。
+
+- 一个[`border-collapse`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border-collapse)属性的`collapse`值对于任何表样式的工作来说都是一个标准的最佳实践。默认情况下，当您在表元素上设置边框时，它们之间将会有间隔，如下图所示：
+
+  ![image-20220819170346402](image-20220819170346402.png)
+
+- 这看起来不太好 (虽然可能是你想要的样子，谁知道呢？)。使用 `border-collapse: collapse;` ，让边框合为一条，现在看起来好多了：
+
+  ![image-20220819170509482](image-20220819170509482.png)
+
+- 我们在整个表设置了一个[`border`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border)，这是必要的，因为我们将在表页眉和页脚后面设置一些边框——当你在表格外面没有一个边界而且以空隙结尾的时候，它看起来很奇怪，而且是不连贯的。
+
+- 我们在`<th>`和`<td>`元素上设置了一些padding——这些元素使数据项有了一些空间，使表看起来更加清晰。
+
+此刻，我们的表看起来好多了：
+
+![img](table-with-spacing.png)
+
+#### 一些简单的排版
+
+现在我们把类型整理一下。
+
+首先，我们在[Google Fonts](https://www.google.com/fonts)上找到了一种适合于朋克乐队的字体的字体。如果你愿意，你可以去那里找一个不同的。现在，您只需替换我们提供的`<link>`元素和定制的`font-family`声明，并使用 Google 字体提供给您的内容。
+
+首先，将下面的`<link>`元素添加到您的 HTML 头部，就在您现有的 `<link>` 元素之上：
+
+```html
+<link href='https://fonts.googleapis.com/css?family=Rock+Salt' rel='stylesheet' type='text/css'>
+
+```
+
+现在将下面的 CSS 添加到您的`style.css`文件，在之前内容后面添加：
+
+```css
+/* typography */
+
+html {
+  font-family: 'helvetica neue', helvetica, arial, sans-serif;
+}
+
+thead th, tfoot th {
+  font-family: 'Rock Salt', cursive;
+}
+
+th {
+  letter-spacing: 2px;
+}
+
+td {
+  letter-spacing: 1px;
+}
+
+tbody td {
+  text-align: center;
+}
+
+tfoot th {
+  text-align: right;
+}
+
+```
+
+![image-20220819171636576](image-20220819171636576.png)
+
+这里没有什么特别的东西。我们通常会对字体样式进行调整，使其更易于阅读：
+
+- 我们已经设置了一个全局无衬线字体;这纯粹是一种风格上的选择。我们还在和元素的标题上设置了自定义字体，这是一种很不错的、很有朋克风格的外观。
+- 我们在标题和单元格上设置了一些[`letter-spacing`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/letter-spacing)，因为我们觉得它有助于提高可读性。再次强调，这主要是一种风格上的选择。
+- 我们在`<tbody>`中的表格单元中对文本进行了居中对齐，使它们与标题对齐。默认情况下，单元格被赋予了一个[`text-align`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-align)的`left`值，并且标题被赋予了一个`center`值，但是通常情况下，让两者对齐看起来更好。标题字体的默认粗体值足以区分它们的外观。
+- 我们在`<tfoot>`中对标题进行了右对齐，以便与它的数据点更好地关联。
+
+#### 图形和颜色
+
+现在轮到图形和颜色了！因为表格上充满“朋克“和“个性”，我们需要给它再搭配一些鲜艳的造型。别担心，你不必让你的表格”燥起来“，你可以选择一些更巧妙、更有品位的东西。
+
+首先将下面的 CSS 添加到`style.css`文件中，在底部添加：
+
+```css
+thead, tfoot {
+  background: url('https://img0.baidu.com/it/u=4245296189,1945278349&fm=253&fmt=auto&app=138&f=JPEG?w=700&h=401');
+  color: white;
+  text-shadow: 1px 1px 1px black;
+}
+
+thead th, tfoot th, tfoot td {
+  background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.5));
+  border: 3px solid purple;
+}
+
+```
+
+我们已经将一个background-image添加到`<thead>`和`<tfoot>`，并将页眉和页脚的所有文本颜色color更改为白色 (并给它一个text-shadow)，这样它的可读性就更好了。你应该确保你的文字与你的背景形成鲜明的对比，使得它是可读的。
+
+我们还为`<th>`和 `<td>`添加了一个线性渐变，在页眉和页脚中添加了一个漂亮的纹理，同时也为这些元素提供了一个明亮的紫色边框。有多个嵌套的元素是很有用的，这样您就可以将样式层叠在一起。是的，我们可以通过设置多组背景图像属性值来在`<thead>`和 `<tfoot>`元素上同时使用背景图像和线性渐变，但是我们决定分开使用，因为考虑到不支持多个背景图像或线性渐变的老浏览器。
+
+我们还为`<th>`和 `<td>`添加了一个线性渐变，在页眉和页脚中添加了一个漂亮的纹理，同时也为这些元素提供了一个明亮的紫色边框。有多个嵌套的元素是很有用的，这样您就可以将样式层叠在一起。是的，我们可以通过设置多组背景图像属性值来在`<thead>`和 `<tfoot>`元素上同时使用背景图像和线性渐变，但是我们决定分开使用，因为考虑到不支持多个背景图像或线性渐变的老浏览器。
+
+#### 斑马条纹图案
+
+我们想用一个单独的部分来展示如何实现斑马条纹（**zebra stripes**）——通过改变不同数据行的颜色，使表中交替行不同的数据行可以更容易地进行解析和读取。将下面的 CSS 添加到您的 `style.css` 文件底部：
+
+```css
+
+tbody tr:nth-child(odd) {
+    background-color: rgba(238, 238, 238, 0.78);
+}
+
+tbody tr:nth-child(even) {
+    background-color: rgba(114, 114, 114, 0.6);
+}
+
+
+
+```
+
+![image-20220820104647954](image-20220820104647954.png)
+
+#### 样式化标题
+
+对我们的表格还有最后一点处理——样式化标题。要做到这一点，请将以下内容添加到您的`style.css` 文件底部：
+
+```css
+caption {
+  font-family: 'Rock Salt', cursive;
+  padding: 20px;
+  font-style: italic;
+  caption-side: bottom;
+  color: #666;
+  text-align: right;
+  letter-spacing: 1px;
+}
+
+```
+
+这里没有什么值得注意的地方，除了[`caption-side`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/caption-side)属性，它被赋予了一个`bottom`的值。这就导致标题被放置在表格的底部，与其他声明一起提供了最后的外观
+
+![image-20220820104706764](image-20220820104706764.png)
+
+### 自主学习：样式化你自己的表格
+
+现在，我们希望您可以使用我们的示例表格 HTML(或者使用您自己的一些！)，并将其样式设计成比我们的表更好的设计和不那么花哨的东西。
+
+#### 表格样式小贴士
+
+在继续之前，我们认为我们将为您提供一个快速列表，列出了上面提到的最有用的点：
+
+- 使您的表格标记尽可能简单，并且保持灵活性，例如使用百分比，这样设计就更有响应性。
+- 使用 [`table-layout`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/table-layout)`: fixed` 创建更可控的表布局，可以通过在标题[`width`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/width)中设置[`width`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/width)来轻松设置列的宽度。
+- 使用 [`border-collapse`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border-collapse)`: collapse` 使表元素边框合并，生成一个更整洁、更易于控制的外观。
+- 使用`<thead>`, `<tbody>`和`<tfoot>` 将表格分割成逻辑块，并提供额外的应用 CSS 的地方，因此如果需要的话，可以更容易地将样式层叠在一起。
+- 使用斑马线来让其他行更容易阅读。
+- 使用 `text-align`直线对齐您的`<th>`和`<td>`文本，使内容更整洁、更易于跟随。
+
+### 小结
+
+现在，我们身后的表格样式令人炫目，令人兴奋，我们需要一些其他的东西来占据我们的时间。不要担心——下一章会介绍如何调试 CSS，如何解决诸如布局不能像所应该的那样进行呈现的问题，或者元素无法像你预料的那样生效的问题。那里包含了使用浏览器开发者工具寻找你的问题的解决方案的信息。
+
+## 调试`CSS`
+
+参考链接：https://developer.mozilla.org/zh-CN/docs/Learn/CSS/Building_blocks/Debugging_CSS
+
+## 组织`CSS`
+
+参考链接：	https://developer.mozilla.org/zh-CN/docs/Learn/CSS/Building_blocks/Organizing
+
+# 样式化文本
+
+掌握了 CSS 语言的基础之后，对于您来说，下一个需要关心的 CSS 主题就是为文本添加样式——一个您将会最经常使用 CSS 做的事情。在这里，我们专注于为文本样式的基础，包括设置字体、粗细、斜体、行还有字符间距、阴影以及文本的其他特征。我们将会通过在您的网页中应用自定义字体、样式化列表以及链接来圆满地结束本模块。
+
+## 基本文本和字体样式
+
+这里我们将详细介绍文本/字体样式的所有基本原理，包括设置文字的粗细，字体和样式，文字的属性简写，文字的对齐，和其他效果，以及行和字母间距。
+
+### CSS 中的文字样式涉及什么？
+
+正如你已经在你使用 HTML 和 CSS 完成工作时所经历的一样，元素中的文本是布置在元素的内容框中。以内容区域的左上角作为起点 (或者是右上角，是在 RTL 语言的情况下)，一直延续到行的结束部分。一旦达到行的尽头，它就会进到下一行，然后继续，再接着下一行，直到所有内容都放入了盒子中。文本内容表现地像一些内联元素，被布置到相邻的行上，除非到达了行的尽头，否则不会换行，或者你想强制地，手动地造成换行的话，你可以使用 [`<br>`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/br) 元素。
+
+用于样式文本的 CSS 属性通常可以分为两类，我们将在本文中分别观察。
+
+- **字体样式**: 作用于字体的属性，会直接应用到文本中，比如使用哪种字体，字体的大小是怎样的，字体是粗体还是斜体，等等。
+- **文本布局风格**: 作用于文本的间距以及其他布局功能的属性，比如，允许操纵行与字之间的空间，以及在内容框中，文本如何对齐。
+
+> 备注： 请记住，包含在元素中的文本是作为一个单一的实体。你不能将文字其中一部分选中或添加样式，如果你要这么做，那么你必须要用适合的元素来包装它们，比如 ( `<span>` 或者 `<strong>`), 或者使用伪元素，像::first-letter (选中元素文本的第一个字母), `::first-line` (选中元素文本的第一行), 或者 `::selection` (当前光标双击选中的文本)
+
+### 字体
+
+我们直接来看看样式字体的属性。在这个例子中，我们会在一个相同的 HTML 示例中应用一些不同的 CSS 属性，就像这样：
+
+```html
+<h1>Tommy the cat</h1>
+
+<p>I remember as if it were a meal ago...</p>
+
+<p>Said Tommy the Cat as he reeled back to clear whatever foreign matter
+ may have nestled its way into his mighty throat. Many a fat alley rat
+had met its demise while staring point blank down the cavernous barrel of
+ this awesome prowling machine. Truly a wonder of nature this urban
+predator — Tommy the cat had many a story to tell. But it was a rare
+occasion such as this that he did.</p>
+
+```
+
+你可以在这找到完成版本 [finished example on Github](https://mdn.github.io/learning-area/css/styling-text/fundamentals/) (也可以看源码 [the source code](https://github.com/mdn/learning-area/blob/master/css/styling-text/fundamentals/index.html).)
+
+#### 颜色
+
+[`color`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/color) 属性设置选中元素的前景内容的颜色 (通常指文本，不过也包含一些其他东西，或者是使用 [`text-decoration`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-decoration) 属性放置在文本下方或上方的线 (`underline overline`)。
+
+`color` 也可以接受任何合法的 [CSS 颜色单位](https://developer.mozilla.org/en-US/docs/Learn/CSS/Building_blocks/Values_and_units#colors), 比如：
+
+```css
+p {
+  color: red;
+}
+
+```
+
+这将导致段落变为红色，而不是标准的浏览器默认的黑色
+
+![image-20220820145556172](image-20220820145556172.png)
+
+#### 字体种类
+
+要在你的文本上设置一个不同的字体，你可以使用 [`font-family`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/font-family) 属性，这个允许你为浏览器指定一个字体 (或者一个字体的列表)，然后浏览器可以将这种字体应用到选中的元素上。浏览器只会把在当前机器上可用的字体应用到当前正在访问的网站上；如果字体不可用，那么就会用浏览器默认的字体代替 [default font](https://developer.mozilla.org/zh-CN/docs/Learn/CSS/Styling_text/Fundamentals#默认字体). 下面是一个简单的例子：
+
+```css
+p {
+  font-family: arial;
+}
+
+```
+
+这段语句使所有在页面上的段落都采用 arial 字体，这个字体可在任何电脑上找到。
+
+##### 网页安全字体
+
+说到字体可用性，只有某几个字体通常可以应用到所有系统，因此可以毫无顾忌地使用。这些都是所谓的 **网页安全字体**。
+
+大多数时候，作为网页开发者，我们希望对用于显示我们的文本内容的字体有更具体的控制。问题在于，需要一个方法来知道当前正在浏览我们的网站网页的电脑，它有哪些可用字体。我们并不是总能在每种情况下都知道这一点，但是网络安全字体在几乎所有最常用的操作系统（Windows，Mac，最常见的 Linux 发行版，Android 和 iOS 版本）中都可用。
+
+实际的 Web 安全字体列表将随着操作系统的发展而改变，但是可以认为下面的字体是网页安全的，至少对于现在来说 (它们中的许多都非常流行，这要感谢微软在 90 年代末和 21 世纪初期的倡议*[Core fonts for the Web](https://en.wikipedia.org/wiki/Core_fonts_for_the_Web)* )：
+
+|                 |            |                                                              |
+| :-------------- | :--------- | :----------------------------------------------------------- |
+| 字体名称        | 泛型       | 注意                                                         |
+| Arial           | sans-serif | 通常认为最佳做法还是添加 Helvetica 作为 Arial 的首选替代品，尽管它们的字体面几乎相同，但 Helvetica 被认为具有更好的形状，即使 Arial 更广泛地可用。 |
+| Courier New     | monospace  | 某些操作系统有一个 Courier New 字体的替代（可能较旧的）版本叫 Courier。使用 Courier New 作为 Courier 的首选替代方案，被认为是最佳做法。 |
+| Georgia         | serif      |                                                              |
+| Times New Roman | serif      | 某些操作系统有一个 Times New Roman 字体的替代（可能较旧的）版本叫 Times。使用 Times 作为 Times New Roman 的首选替代方案，被认为是最佳做法。 |
+| Trebuchet MS    | sans-serif | 您应该小心使用这种字体——它在移动操作系统上并不广泛。         |
+| Verdana         | sans-serif |                                                              |
+
+> **备注：** 在各种资源中，[cssfontstack.com](http://www.cssfontstack.com/) 网站维护了一个可用在 Windows 和 Mac 操作系统上使用的网页安全字体的列表，这可以帮助决策网站的安全性。
+
+> **备注：** 有一个可以下载来自一个网页的自定义字体的方法，允许你通过任何你想要的方法来定制你使用的字体：**网页字体**。这个有一点复杂，我们将在这个模块中的另一篇文章中讨论这一点。
+
+##### 默认字体
+
+CSS 定义了 5 个常用的字体名称: `serif`, `sans-serif`, `monospace`, `cursive`, 和 `fantasy`. 这些都是非常通用的，当使用这些通用名称时，使用的字体完全取决于每个浏览器，而且它们所运行的每个操作系统也会有所不同。这是一种糟糕的情况，浏览器会尽力提供一个看上去合适的字体。 `serif`, `sans-serif` 和 `monospace` 是比较好预测的，默认的情况应该比较合理，另一方面，`cursive` 和 `fantasy` 是不太好预测的，我们建议使用它们的时候应该稍微注意一些，多多测试。
+
+
+
+##### 字体栈
+
+由于你无法保证你想在你的网页上使用的字体的可用性 (甚至一个网络字体可能由于某些原因而出错), 你可以提供一个**字体栈** (**font stack**)，这样的话，浏览器就有多种字体可以选择了。只需包含一个`font-family属性`，其值由几个用逗号分离的字体名称组成。比如
+
+```css
+p {
+  font-family: "Trebuchet MS", Verdana, sans-serif;
+}
+
+```
+
+在这种情况下，浏览器从列表的第一个开始，然后查看在当前机器中，这个字体是否可用。如果可用，就把这个字体应用到选中的元素中。如果不可用，它就移到列表中的下一个字体，然后再检查。
+
+在字体栈的最后提供一个合适的通用的字体名称是个不错的办法，这样的话，即使列出的字体都无法使用，浏览器至少可以提供一个还算合适的选择。为了强调这一点，如果没有其他选项可用，那么段落将被赋予浏览器的默认衬线字体 - 通常是 Time New Roman - 这对于 sans-serif 字体是不利的！
+
+> **备注：** 有一些字体名称不止一个单词，比如`Trebuchet MS` ，那么就需要用引号包裹。
+
+
+
+##### 一个使用 font-family 的例子
+
+```css
+p {
+  color: red;
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+```
+
+#### 字体大小
+
+在我们之前的模块中的[CSS values and units](https://developer.mozilla.org/en-US/docs/Learn/CSS/Building_blocks/Values_and_units) 文章，我们回顾了[length and size units](https://developer.mozilla.org/en-US/docs/Learn/CSS/Building_blocks/Values_and_units#length_and_size). 字体大小 (通过 [`font-size`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/font-size) 属性设置) 可以取大多数这些单位的值 (以及其他，比如百分比 [percentages](https://developer.mozilla.org/en-US/docs/Learn/CSS/Building_blocks/Values_and_units#percentages))，然而你在调整字体大小时，最常用的单位是：
+
+- `px` (像素): 将像素的值赋予给你的文本。这是一个绝对单位， 它导致了在任何情况下，页面上的文本所计算出来的像素值都是一样的。
+- `em`: 1em 等于我们设计的当前元素的父元素上设置的字体大小 (更加具体的话，比如包含在父元素中的大写字母 M 的宽度) 如果你有大量设置了不同字体大小的嵌套元素，这可能会变得棘手，但它是可行的，如下图所示。为什么要使用这个麻烦的单位呢？当你习惯这样做时，那么就会变得很自然，你可以使用`em`调整任何东西
+- `rem`: 这个单位的效果和 em 差不多，除了 `1rem` 等于 HTML 中的根元素的字体大小， (i.e. `<html>`) ，而不是父元素。这可以让你更容易计算字体大小，但是遗憾的是， `rem` 不支持 `Internet Explorer 8` 和以下的版本。如果你的项目需要支持较老的浏览器，你可以坚持使用`em` 或`px`, 或者是 polyfill 就像 REM-unit-polyfill. （这个单位在“CSS 的值和单位”一节也有讲解）
+
+元素的 `font-size` 属性是从该元素的父元素继承的。所以这一切都是从整个文档的根元素——`<html>`开始，浏览器的 `font-size` 标准设置的值为 16px。在根元素中的任何段落 (或者那些浏览器没有设置默认大小的元素)，会有一个最终的大小值：16px。其他元素也许有默认的大小，比如 `<h1>` 元素有一个 `2em` 的默认值，所以它的最终大小值为 32px。当你开始更改嵌套元素的字体大小时，事情会变得棘手。比如，如果你有一个`<article>` 元素在你的页面上，然后设置它的 `font-size` 为 `1.5em` (通过计算，可以得到大小为 24px)，然后想让 `<article>` 元素中的段落获得一个计算值为 `20px` 的大小，那么你应该使用多少 `em`。
+
+```html
+<!-- document base font-size is 16px -->
+<article> <!-- If my font-size is 1.5em -->
+  <p>My paragraph</p> <!-- How do I compute to 20px font-size? -->
+</article>
+
+```
+
+你需要将 em 的值设置为 20/24, 或者 `0.83333333em`. 这个计算可能比较复杂，所以当你设置的时候，你需要仔细一些。如果可以使用 rem 的话，那实现起来就变得简单不少，避免在可能的情况下设置容器元素的字体大小。
+
+##### 一个简单的 size 示例
+
+当调整你的文本大小时，将文档 (document) 的基础 `font-size` 设置为 10px 往往是个不错的主意，这样之后的计算会变得简单，所需要的 (r)em 值就是想得到的像素的值除以 10，而不是 16。做完这个之后，你可以简单地调整在你的 HTML 中你想调整的不同类型文本的字体大小。在样式表的指定区域列出所有`font-size`的规则集是一个好主意，这样它们就可以很容易被找到。
+
+我们的新结果是这样的：
+
+```css
+html {
+  font-size: 10px;
+}
+
+h1 {
+  font-size: 2.6rem;
+}
+
+p {
+  font-size: 1.4rem;
+  color: red;
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+```
+
+#### 字体样式、字体粗细、文本转换和文本装饰
+
+- `font-style`
+
+  : 用来打开和关闭文本 italic (斜体)。可能的值如下 (你很少会用到这个属性，除非你因为一些理由想将斜体文字关闭斜体状态)：
+
+  - `normal`: 将文本设置为普通字体 (将存在的斜体关闭)
+  - `italic`: 如果当前字体的斜体版本可用，那么文本设置为斜体版本；如果不可用，那么会利用 oblique 状态来模拟 italics。
+  - `oblique`: 将文本设置为斜体字体的模拟版本，也就是将普通文本倾斜的样式应用到文本中。
+
+- `font-weight`: 设置文字的粗体大小。这里有很多值可选 (比如 `-light, -normal, -bold, -extrabold, -black`, 等等), 不过事实上你很少会用到 `normal` 和 `bold`以外的值：
+
+  - `normal, bold`: 普通或者加粗的字体粗细
+  - `lighter, bolder`: 将当前元素的粗体设置为比其父元素粗体更细或更粗一步。`100–900`: 数值粗体值，如果需要，可提供比上述关键字更精细的粒度控制。
+
+- `text-transform`: 允许你设置要转换的字体。值包括：
+
+  - `none`: 防止任何转型。
+  - `uppercase`: 将所有文本转为大写。
+  - `lowercase`: 将所有文本转为小写。
+  - `capitalize`: 转换所有单词让其首字母大写。
+  - `full-width`: 将所有字形转换成全角，即固定宽度的正方形，类似于等宽字体，允许拉丁字符和亚洲语言字形（如中文，日文，韩文）对齐。
+
+- [`text-decoration`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-decoration): 设置/取消字体上的文本装饰 (你将主要使用此方法在设置链接时取消设置链接上的默认下划线。) 可用值为：
+
+  - `none`: 取消已经存在的任何文本装饰。
+
+  - `underline`: 文本下划线。
+
+  - `overline`: 文本上划线
+
+  - `line-through`: 穿过文本的线。
+
+    你应该注意到 [`text-decoration`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-decoration) 可以一次接受多个值，如果你想要同时添加多个装饰值， 比如 `text-decoration: underline overline`.。同时注意 [`text-decoration`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-decoration) 是一个缩写形式，它由 [`text-decoration-line`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-decoration-line), [`text-decoration-style`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-decoration-style) 和 [`text-decoration-color`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-decoration-color) 构成。你可以使用这些属性值的组合来创建有趣的效果，比如 `text-decoration: line-through red wavy`.
+
+#### 文字阴影
+
+你可以为你的文本应用阴影，使用 [`text-shadow`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-shadow) 属性。这最多需要 4 个值，如下例所示：
+
+```css
+text-shadow: 4px 4px 5px red;
+
 ```
 
 
 
-**HTML**
+4 个属性如下：
+
+1. 阴影与原始文本的水平偏移，可以使用大多数的 CSS 单位 [length and size units](https://developer.mozilla.org/en-US/docs/Learn/CSS/Building_blocks/Values_and_units#length_and_size), 但是 px 是比较合适的。这个值必须指定。
+2. 阴影与原始文本的垂直偏移;效果基本上就像水平偏移，除了它向上/向下移动阴影，而不是左/右。这个值必须指定。
+3. 模糊半径 - 更高的值意味着阴影分散得更广泛。如果不包含此值，则默认为 0，这意味着没有模糊。可以使用大多数的 CSS 单位 [length and size units](https://developer.mozilla.org/en-US/docs/Learn/CSS/Building_blocks/Values_and_units#length_and_size).
+4. 阴影的基础颜色，可以使用大多数的 CSS 颜色单位 [CSS color unit](https://developer.mozilla.org/en-US/docs/Learn/CSS/Building_blocks/Values_and_units#colors). 如果没有指定，默认为 `black`.
+
+> **备注：** 正偏移值可以向右移动阴影，但也可以使用负偏移值来左右移动阴影，例如 `-1px -1px`.
+
+##### 多种阴影
+
+您可以通过包含以逗号分隔的多个阴影值，将多个阴影应用于同一文本，例如：
+
+```css
+text-shadow: -1px -1px 1px #aaa,
+             0px 4px 1px rgba(0,0,0,0.5),
+             4px 4px 5px rgba(0,0,0,0.7),
+             0px 0px 7px rgba(0,0,0,0.4);
+
+```
+
+如果我们把这个样式应用到我们 "Tommy the cat" 示例中的 [`<h1>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/Heading_Elements) 元素
+
+![image-20220820191446903](image-20220820191446903.png)
+
+
+
+### 文本布局
+
+有了基本的字体属性，我们来看看我们可以用来影响文本布局的属性。
+
+#### 文本对齐
+
+[`text-align`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-align) 属性用来控制文本如何和它所在的内容盒子对齐。可用值如下，并且在与常规文字处理器应用程序中的工作方式几乎相同：
+
+- `left`: 左对齐文本。
+- `right`: 右对齐文本。
+- `center`: 居中文字
+- `justify`: 使文本展开，改变单词之间的差距，使所有文本行的宽度相同。你需要仔细使用，它可以看起来很可怕。特别是当应用于其中有很多长单词的段落时。如果你要使用这个，你也应该考虑一起使用别的东西，比如 [`hyphens`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/hyphens)，打破一些更长的词语。
+
+如果我们应用 `text-align: center;` 到我们例子中的 [`<h1>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/Heading_Elements) 元素中，结果如下：
+
+![image-20220820202957446](image-20220820202957446.png)
+
+#### 行高
+
+[`line-height`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/line-height) 属性设置文本每行之间的高，可以接受大多数单位 [length and size units](https://developer.mozilla.org/en-US/docs/Learn/CSS/Building_blocks/Values_and_units#length_and_size)，不过也可以设置一个无单位的值，作为乘数，通常这种是比较好的做法。无单位的值乘以 [`font-size`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/font-size) 来获得 `line-height`。当行与行之间拉开空间，正文文本通常看起来更好更容易阅读。推荐的行高大约是 1.5–2 (双倍间距。) 所以要把我们的文本行高设置为字体高度的 1.5 倍，你可以使用这个：
+
+```css
+line-height: 1.5;
+```
+
+如果要使文本垂直居中，可以设置行高等于外部盒子的高度
+
+#### 字母和单词间距
+
+[`letter-spacing`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/letter-spacing) 和 [`word-spacing`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/word-spacing) 属性允许你设置你的文本中的字母与字母之间的间距、或是单词与单词之间的间距。你不会经常使用它们，但是可能可以通过它们，来获得一个特定的外观，或者让较为密集的文字更加可读。它们可以接受大多数单位 [length and size units](https://developer.mozilla.org/en-US/docs/Learn/CSS/Building_blocks/Values_and_units#length_and_size).
+
+所以作为例子，如果我们把这个样式应用到我们的示例中的 [`<p>`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/p) 段落的第一行：
+
+```css
+p::first-line {
+  letter-spacing: 2px;
+  word-spacing: 4px;
+}
+
+```
+
+![image-20220820203639387](image-20220820203639387.png)
+
+#### 其他一些值得看一下的属性
+
+以上属性让你了解如何开始在网页上设置文本，但是你可以使用更多的属性。我们只是想介绍最重要的。一旦你习惯使用上面的内容，你还应该探索以下几点：
+
+Font 样式：
+
+- [`font-variant`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/font-variant): 在小型大写字母和普通文本选项之间切换。
+- [`font-kerning`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/font-kerning): 开启或关闭字体间距选项。
+- [`font-feature-settings`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/font-feature-settings): 开启或关闭不同的 [OpenType](https://en.wikipedia.org/wiki/OpenType) 字体特性。
+- [`font-variant-alternates`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/font-variant-alternates): 控制给定的自定义字体的替代字形的使用。
+- [`font-variant-caps`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/font-variant-caps): 控制大写字母替代字形的使用。
+- [`font-variant-east-asian` (en-US)](https://developer.mozilla.org/en-US/docs/Web/CSS/font-variant-east-asian): 控制东亚文字替代字形的使用，像日语和汉语。
+- [`font-variant-ligatures`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/font-variant-ligatures): 控制文本中使用的连写和上下文形式。
+- [`font-variant-numeric`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/font-variant-numeric): 控制数字，分式和序标的替代字形的使用。
+- [`font-variant-position`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/font-variant-position): 控制位于上标或下标处，字号更小的替代字形的使用。
+- [`font-size-adjust`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/font-size-adjust): 独立于字体的实际大小尺寸，调整其可视大小尺寸。
+- [`font-stretch`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/font-stretch): 在给定字体的可选拉伸版本中切换。
+- [`text-underline-position`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-underline-position): 指定下划线的排版位置，通过使用 `text-decoration-line` 属性的`underline` 值。
+- [`text-rendering`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-rendering): 尝试执行一些文本渲染优化。
+
+文本布局样式：
+
+- [`text-indent`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-indent): 指定文本内容的第一行前面应该留出多少的水平空间。
+- [`text-overflow`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-overflow): 定义如何向用户表示存在被隐藏的溢出内容。
+- [`white-space`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/white-space): 定义如何处理元素内部的空白和换行。
+- [`word-break`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/word-break): 指定是否能在单词内部换行。
+- [`direction`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/direction): 定义文本的方向 (这取决于语言，并且通常最好让 HTML 来处理这部分，因为它是和文本内容相关联的。)
+- [`hyphens`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/hyphens): 为支持的语言开启或关闭连字符。
+- [`line-break`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/line-break): 对东亚语言采用更强或更弱的换行规则。
+- [`text-align-last`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-align-last): 定义一个块或行的最后一行，恰好位于一个强制换行前时，如何对齐。
+- [`text-orientation`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-orientation): 定义行内文本的方向。
+- [`word-wrap`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/overflow-wrap): 指定浏览器是否可以在单词内换行以避免超出范围。
+- [`writing-mode`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/writing-mode): 定义文本行布局为水平还是垂直，以及后继文本流的方向。
+
+### Font 简写
+
+许多字体的属性也可以通过 [`font`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/font) 的简写方式来设置 . 这些是按照以下顺序来写的： [`font-style`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/font-style), [`font-variant`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/font-variant), [`font-weight`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/font-weight), [`font-stretch`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/font-stretch), [`font-size`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/font-size), [`line-height`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/line-height), and [`font-family`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/font-family).
+
+如果你想要使用 `font` 的简写形式，在所有这些属性中，只有 `font-size` 和 `font-family` 是一定要指定的。
+
+[`font-size`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/font-size) 和 [`line-height`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/line-height) 属性之间必须放一个正斜杠。
+
+一个完整的例子如下所示：
+
+```css
+font: italic normal bold normal 3em/1.5 Helvetica, Arial, sans-serif;
+
+```
+
+## 样式列表
+
+[List 列表](https://developer.mozilla.org/zh-CN/docs/Learn/HTML/Introduction_to_HTML/HTML_text_fundamentals#lists) 大体上和其他文本一样，但是仍有一些你需要知道的特殊 CSS 属性，和一些可供参考的最佳实践，这篇文章将阐述这一切。
+
+### 一个简单的例子
+
+首先，让我们看一个简单的例子。文章中我们将看到无序，有序和描述列表——它们都具有相似的样式特性，而某些特性却又各不相同。
+
+例子中列表的 HTML 代码如下：
+
+```css
+<h2>Shopping (unordered) list</h2>
+
+<p>Paragraph for reference, paragraph for reference, paragraph for reference,
+paragraph for reference, paragraph for reference, paragraph for reference.</p>
+
+<ul>
+  <li>Humous</li>
+  <li>Pitta</li>
+  <li>Green salad</li>
+  <li>Halloumi</li>
+</ul>
+
+<h2>Recipe (ordered) list</h2>
+
+<p>Paragraph for reference, paragraph for reference, paragraph for reference,
+paragraph for reference, paragraph for reference, paragraph for reference.</p>
+
+<ol>
+  <li>Toast pitta, leave to cool, then slice down the edge.</li>
+  <li>Fry the halloumi in a shallow, non-stick pan, until browned on both sides.</li>
+  <li>Wash and chop the salad.</li>
+  <li>Fill pitta with salad, humous, and fried halloumi.</li>
+</ol>
+
+<h2>Ingredient description list</h2>
+
+<p>Paragraph for reference, paragraph for reference, paragraph for reference,
+paragraph for reference, paragraph for reference, paragraph for reference.</p>
+
+<dl>
+  <dt>Humous</dt>
+  <dd>A thick dip/sauce generally made from chick peas blended with tahini, lemon juice, salt, garlic, and other ingredients.</dd>
+  <dt>Pitta</dt>
+  <dd>A soft, slightly leavened flatbread.</dd>
+  <dt>Halloumi</dt>
+  <dd>A semi-hard, unripened, brined cheese with a higher-than-usual melting point, usually made from goat/sheep milk.</dd>
+  <dt>Green salad</dt>
+  <dd>That green healthy stuff that many of us just use to garnish kebabs.</dd>
+</dl>
+
+```
+
+现在，如果你去到例子的展示页面，并使用[浏览器开发者工具](https://developer.mozilla.org/zh-CN/docs/Learn/Common_questions/What_are_browser_developer_tools)查看那些列表元素，你会注意到若干个默认的样式预设值：
+
+- `<ul>` 和 `<ol>` 元素设置`margin`的顶部和底部：`16px(1em) 0;`和 `padding-left: 40px(2.5em);` （在这里注意的是浏览器默认字体大小为 16px）。
+
+  ![image-20220820205714180](image-20220820205714180.png)
+
+- `<li>` 默认是没有设置间距的。
+
+- `<dl>` 元素设置 `margin` 的顶部和底部：`16px(1em) `，无内边距设定。
+
+- `<dd>` 元素设置为： `margin-left 40px (2.5em)`。
+
+- 在参考中提到的 `<p>` 元素设置 `margin` 的顶部和底部：`16px(1em)`，和其他的列表类型相同。
+
+### 处理列表间距
+
+当您创建样式列表时，您需要调整样式，使其保持与周围元素相同的垂直间距（例如段落和图片，有时称为垂直节奏））和相互间的水平间距（您可以在 Github 上参考[完成的样式示例](https://mdn.github.io/learning-area/css/styling-text/styling-lists/) ，也可以找到[源代码](https://github.com/mdn/learning-area/blob/master/css/styling-text/styling-lists/index.html)。）
+
+用于文本样式和间距的 CSS 如下所示：
+
+```css
+/* General styles */
+
+html {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 10px;
+}
+
+h2 {
+  font-size: 2rem;
+}
+
+ul,ol,dl,p {
+  font-size: 1.5rem;
+}
+
+li, p {
+  line-height: 1.5;
+}
+
+/* Description list styles */
+
+
+dd, dt {
+  line-height: 1.5;
+}
+
+dt {
+  font-weight: bold;
+}
+
+dd {
+  margin-bottom: 1.5rem;
+}
+
+```
+
+- 第一条规则集设置一个网站字体，基准字体大小为 10px。页面上的所有内容都将继承该规则集。
+- 规则集 2 和 3 为标题、不同的列表类型和段落以及设置了相对字体大小（这些列表的子元素将会继承该规则集），这就意味着每个段落和列表都将拥有相同的字体大小和上下间距，有助于保持垂直间距一致。
+- 规则集 4 在段落和列表项目上设置相同的 [`line-height`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/line-height) ，因此段落和每个单独的列表项目将在行之间具有相同的间距。这也将有助于保持垂直间距一致。
+- 规则集 5-7 适用于描述列表 - 我们在描述列表的术语和其描述上设置与段落和列表项相同的行高，以及 [`margin-bottom`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/margin-bottom) 为 1.5 rem（与段落（p）和列表项目（li））相同。再次强调一遍，这里很好地实现了一致性！我们还使描述术语具有粗体字体，因此它们在视觉上脱颖而出。
+
+
+
+### 列表特定样式
+
+现在我们来看一下列表的一般间距，我们来研究一些列表具有的特定属性。我们从三个属性开始了解，这三个属性可以在 `<ul>` 或 `<ol>` 元素上设置：
+
+- [`list-style-type`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/list-style-type) ：设置用于列表的项目符号的类型，例如无序列表的方形或圆形项目符号，或有序列表的数字，字母或罗马数字。
+- [`list-style-position`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/list-style-position) ：设置在每个项目开始之前，项目符号是出现在列表项内，还是出现在其外。
+- [`list-style-image`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/list-style-image) ：允许您为项目符号使用自定义图片，而不是简单的方形或圆形。
+
+#### 符号样式
+
+像上面所提及的， [`list-style-type`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/list-style-type) 属性允许你设置项目符号点的类型，在我们的例子中，我们在有序列表上设置了大写罗马数字：
+
+```css
+ol {
+  list-style-type: upper-roman;
+}
+
+```
+
+效果显示如下：
+
+![image-20220821071645272](image-20220821071645272.png)
+
+您可以通过 [`list-style-type`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/list-style-type) 参考页面查找到更多选项。
+
+#### 项目符号位置
+
+[`list-style-position`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/list-style-position) 设置在每个项目开始之前，项目符号是出现在列表项内，还是出现在其外。如上所示，默认值为 outside，这使项目符号位于列表项之外。
+
+如果值设置为 inside，项目条目则位于行内。
+
+![image-20220821071846481](image-20220821071846481.png)
+
+#### 使用自定义的项目符号图片
+
+[`list-style-image`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/list-style-image) 属性允许对于项目符号使用自定义图片。其语法相当简单：
+
+```css
+ul {
+  list-style-image: url(star.svg);
+}
+
+```
+
+然而，这个属性在控制项目符号的位置，大小等方面是有限的。您最好使用[`background`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/background) 系列属性，您将在 [Styling boxes](https://developer.mozilla.org/en-US/docs/Learn/CSS/Building_blocks) 模块中了解更多信息。在这里我们仅做一点尝试！
+
+结束我们的例子，我们样式化无序列表像这样（放到您之前所见的顶部）：
+
+```css
+ul {
+  padding-left: 2rem;
+  list-style-type: none;
+}
+
+ul li {
+  padding-left: 2rem;
+  background-image: url('https://mdn.github.io/css-examples/learn/backgrounds-borders/star.png');
+  background-position: 0 0;
+  background-size: 1.6rem 1.6rem;
+  background-repeat: no-repeat;
+}
+
+```
+
+![image-20220821072236768](image-20220821072236768.png)
+
+我们的所做如下：
+
+- 
+- 将 `<ul>` 的`padding-left` 从默认的 40px设置为 20px，然后在列表项上设置相同的数值。这就是说，整个列表项仍然排列在列表中，但是列表项产生了一些用于背景图像的填充。如果我们没有设置填充，背景图像将与列表项文本重叠，这看起来会很乱。
+- 将 [`list-style-type`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/list-style-type) 设置为 none，以便默认情况下不会显示项目符号。我们将使用 [`background`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/background) 属性来代替项目符号。
+- 为每个无序列表项插入项目符号，其相应的属性如下：
+  - [`background-image`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/background-image): 充当项目符号的图片文件的参考路径
+  - [`background-position`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/background-position): 这定义了所选元素背景中的图像将出现在哪里 - 在我们的示例中设置 `0 0`，这意味着项目符号将出现在每个列表项的最左上侧。
+  - [`background-size`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/background-size): 设置背景图片的大小。理想条件下，我们想要项目符号与列表项的大小相同（比列表项稍大或稍小亦可）。我们使用的尺寸为 1.6rem（16px），它非常吻合我们为项目符号设置的 20px 的填充， 16px 加上 4px 的空格间距，可以使项目符号和列表项文本效果更好。
+  - [`background-repeat`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/background-repeat)：默认条件下，背景图片不断复制直到填满整个背景空间，在我们的例子中，背景图片只需复制一次，所以我们设置值为 `no-repeat`。
+
+#### list-style 速记
+
+上述提到的三种属性可以用一个单独的速记属性 [`list-style`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/list-style) 来设置。例如：
+
+```css
+ul {
+  list-style-type: square;
+  list-style-image: url(example.png);
+  list-style-position: inside;
+}
+
+```
+
+可以被如下方式代替：
+
+```css
+ul {
+  list-style: square url(example.png) inside;
+}
+
+```
+
+属性值可以任意顺序排列，你可以设置一个，两个或者三个值（该属性的默认值为 disc, none, outside），如果指定了 type 和 image，如果由于某种原因导致图像无法加载，则 type 将用作回退。
+
+
+
+### 管理列表计数
+
+有时，您可能想在有序列表上进行不同的计数方式。例如：从 1 以外的数字开始，或向后倒数，或者按步或多于 1 计数。HTML 和 CSS 有一些工具可以帮助您
+
+#### start
+
+[`start`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/ol#attr-start) 属性允许你从 1 以外的数字开始计数。示例如下：
+
+```html
+<ol start="4">
+  <li>Toast pitta, leave to cool, then slice down the edge.</li>
+  <li>Fry the halloumi in a shallow, non-stick pan, until browned on both sides.</li>
+  <li>Wash and chop the salad.</li>
+  <li>Fill pitta with salad, humous, and fried halloumi.</li>
+</ol>
+
+```
+
+输出的结果如下：
+
+![image-20220821072608841](image-20220821072608841.png)
+
+#### reversed
+
+[`reversed`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/ol#attr-reversed) 属性将启动列表倒计数。示例如下：
+
+```html
+<ol start="4" reversed>
+  <li>Toast pitta, leave to cool, then slice down the edge.</li>
+  <li>Fry the halloumi in a shallow, non-stick pan, until browned on both sides.</li>
+  <li>Wash and chop the salad.</li>
+  <li>Fill pitta with salad, humous, and fried halloumi.</li>
+</ol>
+
+```
+
+![image-20220821072737083](image-20220821072737083.png)
+
+#### value
+
+[`value`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/ol#attr-value) 属性允许设置列表项指定数值，示例如下：
+
+```html
+<ol>
+  <li value="2">Toast pitta, leave to cool, then slice down the edge.</li>
+  <li value="4">Fry the halloumi in a shallow, non-stick pan, until browned on both sides.</li>
+  <li value="6">Wash and chop the salad.</li>
+  <li value="8">Fill pitta with salad, humous, and fried halloumi.</li>
+</ol>
+
+```
+
+![image-20220821072828812](image-20220821072828812.png)
+
+> **备注：** 纵然你使用非数字的 [`list-style-type`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/list-style-type), 你仍需要使用与数值同等意义的值作为 value 的属性。
+
+## 样式化链接
+
+当为 [links](https://developer.mozilla.org/zh-CN/docs/Learn/HTML/Introduction_to_HTML/Creating_hyperlinks) 添加样式时，理解利用伪类有效地建立链接状态是很重要的，以及如何为链接添加样式来实现常用的功能，比如说导航栏、选项卡。我们将在本文中关注所有这些主题。
+
+### 让我们来看一些链接
+
+根据最佳实践 [创建超链接](https://developer.mozilla.org/zh-CN/docs/Learn/HTML/Introduction_to_HTML/Creating_hyperlinks) 中的练习，我们看到了如何在你的 HTML 中实现链接。在本篇文章中，我们会以这个知识为基础，向你展示将样式应用到链接的最佳实践
+
+#### 链接状态
+
+第一件需要理解的事情是链接状态的概念，链接存在时处于不同的状态，每一个状态都可以用对应的 [伪类](https://developer.mozilla.org/en-US/docs/Learn/CSS/Building_blocks/Selectors#pseudo-classes) 来应用样式：
+
+- **Link (没有访问过的)**: 这是链接的默认状态，当它没有处在其他状态的时候，它可以使用[`:link`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/:link) 伪类来应用样式。
+- **Visited**: 这个链接已经被访问过了 (存在于浏览器的历史纪录), 它可以使用 [`:visited`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/:visited) 伪类来应用样式。
+- **Hover**: 当用户的鼠标光标刚好停留在这个链接，它可以使用 [`:hover`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/:hover) 伪类来应用样式。
+- **Focus**: 一个链接当它被选中的时候 (比如通过键盘的 Tab 移动到这个链接的时候，或者使用编程的方法来选中这个链接 [`HTMLElement.focus()` (en-US)](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus)) 它可以使用 [`:focus`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/:focus) 伪类来应用样式。
+- **Active**: 一个链接当它被激活的时候 (比如被点击的时候)，它可以使用 [`:active`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/:active) 伪类来应用样式。
+
+
+
+#### 默认的样式
+
+下面的例子说明了一个链接的默认行为表现 (这里的 CSS 仅仅是为了放大和居中文本，使内容更加突出)
+
+```html
+<p><a href="https://mozilla.org">A link to the Mozilla homepage</a></p>
+
+```
 
 
 
 ```html
- <div class="one"></div>
-    <div class="two">
-    Text  <span class="five">- more text</span>
-    </div>
-    <input class="three">
-    <textarea class="four">Lorem Ipsum</textarea>
-```
-
-
-
-表现效果
-
-![img](../../html&css.assets/1748092-20191007155714104-558159243.png)
-
- 
-
-------
-
- 
-
-在这个例子中我们发现CSS样式中有很多重复的 background-color：skyblue；的背景颜色样式设置，我们可以将背景颜色定义在更高的层级，然后通过CSS继承性来接解决个问题，但是有时候这个方法并不一定好用。
-
-我们可以在：root 选择器中定义CSS变量，使用变量来减少重复的代码
-
-
+p {
+  font-size: 2rem;
+  text-align: center;
+}
 
 ```
-:root {
-          --main-bg-color: skyblue;
-     }
-    .one {
-          color: white;
-          background-color:var(--main-bg-color);
-          margin: 10px;
-          width: 50px;
-          height: 50px;
-          display: inline-block;
-    }
-    .two{
-        color:white;
-        background:black;
-        margin:10px;
-        width:150px;
-        height: 50px;
-        display:inline-block;
-    }
-    .three{
-        color:white;
-        background-color:var(--main-bg-color);
-        margin:10px;
-        width:75px;
-    }
-    .four{
-        color:white;
-        background-color:var(--main-bg-color);
-        margin:10px;
-        width:100px; 
-    }
-    .five{
-        background-color: var(--main-bg-color);
-    }
-```
+
+当你观察默认样式的时候，你也许会注意到一些东西：
+
+- 链接具有下划线。
+- 未访问过的 (Unvisited) 的链接是蓝色的。
+- 访问过的 (Visited) 的链接是紫色的。
+- 悬停 (Hover) 在一个链接的时候鼠标的光标会变成一个小手的图标。
+- 选中 (Focus) 链接的时候，链接周围会有一个轮廓，你应该可以按 tab 来选中这个页面的链接 (在 Mac 上，你可能需要使用*Full Keyboard Access: All controls* 选项，然后再按下 Ctrl + F7 ，这样就可以起作用)
+- 激活 (Active) 链接的时候会变成红色 (当你点击链接时，请尝试按住鼠标按钮。)
+
+有趣的是，这些默认的样式与 20 世纪 90 年代中期浏览器早期的风格几乎相同。这是因为用户知道以及期待链接就是这样变化的，如果链接的样式不同，就会让一些人感到奇怪。不过这不意味着你不应该为链接添加任何样式，只是你的样式不应该与用户预期的相差太大，你应该至少：
+
+- 为链接使用下划线，但是不要在其他内容上也用下划线，以作区分。如果你不想要带有下划线的链接，那你至少要用其他方法来高亮突出链接。
+- 当用户悬停或选择 (hover 或者 focused) 的时候，使链接有相应的变化，并且在链接被激活 (active) 的时候，变化会有一些不同。可以使用以下 CSS 属性关闭/更改默认样式：
+- [`color`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/color) 文字的颜色
+- [`cursor`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/cursor) 鼠标光标的样式，你不应该把这个关掉，除非你有非常好的理由。
+- [`outline`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/outline) 文字的轮廓 (轮廓有点像边框，唯一的区别是边框占用了盒模型的空间，而轮廓没有； 它只是设置在背景图片的顶部)。outline 是一个有用的辅助功能，所以在把它关掉之前考虑清楚；你至少应该将悬停 (hover) 状态的样式同时应用到选中 (focus) 状态上。
+
+#### 将样式应用到一些链接
+
+现在我们已经详细地看了默认的状态，让我们看一下典型的链接样式的设置。
+
+开始之前，我们先写出我们的空规则集：
+
+```css
+a {
+
+}
 
 
+a:link {
 
-最终得到的效果是和上面一样的
+}
 
-![img](../../html&css.assets/1748092-20191007155714104-558159243.png)
+a:visited {
 
- 实例：
+}
 
-为不同的元素设置颜色
+a:focus {
 
-**CSS样式**
+}
 
-[![复制代码](copycode-166055405725412.gif)](javascript:void(0);)
+a:hover {
 
-```
-.one {
-          color: white;
-          background-color: skyblue;
-          margin: 10px;
-          width: 50px;
-          height: 50px;
-          display: inline-block;
-    }
-    .two{
-        color:white;
-        background:black;
-        margin:10px;
-        width:150px;
-        height: 50px;
-        display:inline-block;
-    }
-    .three{
-        color:white;
-        background-color:skyblue;
-        margin:10px;
-        width:75px;
-    }
-    .four{
-        color:white;
-        background-color:skyblue;
-        margin:10px;
-        width:100px; 
-    }
-    .five{
-        background-color: skyblue;
-    }
-```
+}
 
-[![复制代码](copycode-166055405725412.gif)](javascript:void(0);)
+a:active {
 
-**HTML**
-
-[![复制代码](copycode-166055405725412.gif)](javascript:void(0);)
+}
 
 ```
- <div class="one"></div>
-    <div class="two">
-    Text  <span class="five">- more text</span>
-    </div>
-    <input class="three">
-    <textarea class="four">Lorem Ipsum</textarea>
+
+这几个规则的顺序是有意义的，因为链接的样式是建立在另一个样式之上的，比如，第一个规则的样式也会在后面的规则中生效，一个链接被激活 (activated) 的时候，它也是处于悬停 (hover) 状态的。如果你搞错了顺序，那么就可能不会产生正确的效果。要记住这个顺序，你可以尝试这样帮助记忆：**L**o**V**e **F**ears **HA**te.
+
+现在让我们再添加一些信息，得到正确的样式：
+
+```css
+body {
+    width: 300px;
+    margin: 0 auto;
+    font-size: 1.2rem;
+    font-family: sans-serif;
+}
+
+p {
+    line-height: 1.4;
+}
+
+a {
+    outline: none;
+    text-decoration: none;
+    padding: 2px 1px 0;
+}
+
+a:link {
+    color: #265301;
+}
+
+a:visited {
+    color: #437A16;
+}
+
+a:focus {
+    border-bottom: 1px solid;
+    background: #BAE498;
+}
+
+a:hover {
+    border-bottom: 1px solid;
+    background: #CDFEAA;
+}
+
+a:active {
+    background: #265301;
+    color: #CDFEAA;
+}
 ```
 
-[![复制代码](copycode-166055405725412.gif)](javascript:void(0);)
-
-表现效果
-
-![img](1748092-20191007155714104-558159243-166055405725011.png)
-
- 
-
-------
-
- 
-
-在这个例子中我们发现CSS样式中有很多重复的 background-color：skyblue；的背景颜色样式设置，我们可以将背景颜色定义在更高的层级，然后通过CSS继承性来接解决个问题，但是有时候这个方法并不一定好用。
-
-我们可以在：root 选择器中定义CSS变量，使用变量来减少重复的代码
-
-[![复制代码](copycode-166055405725412.gif)](javascript:void(0);)
+```html
+<p>There are several browsers available, such as <a href="https://www.mozilla.org/zh-CN/firefox/">Mozilla
+Firefox</a>, <a href="https://www.google.com/chrome/index.html">Google Chrome</a>, and
+<a href="https://www.microsoft.com/zh-CN/windows/microsoft-edge">Microsoft Edge</a>.</p>
 
 ```
-:root {
-          --main-bg-color: skyblue;
-     }
-    .one {
-          color: white;
-          background-color:var(--main-bg-color);
-          margin: 10px;
-          width: 50px;
-          height: 50px;
-          display: inline-block;
-    }
-    .two{
-        color:white;
-        background:black;
-        margin:10px;
-        width:150px;
-        height: 50px;
-        display:inline-block;
-    }
-    .three{
-        color:white;
-        background-color:var(--main-bg-color);
-        margin:10px;
-        width:75px;
-    }
-    .four{
-        color:white;
-        background-color:var(--main-bg-color);
-        margin:10px;
-        width:100px; 
-    }
-    .five{
-        background-color: var(--main-bg-color);
-    }
-```
 
+![image-20220821073753159](image-20220821073753159.png)
 
+### 在链接中包含图标
 
-最终得到的效果是和上面一样的
+常见的做法是在链接中包含图标，使链接提供更多关于链接指向的内容的信息。让我们来看一个简单的例子，例子中为一个外部链接 (链接指向的不是本站，而是外部站点)。这样的图标通常看起来像一个指向盒子的小箭头，比如，我们会使用[icons8.com 上的这个优秀的范例](https://icons8.com/web-app/741/external-link)。
 
-![img](1748092-20191007155714104-558159243-166055405725011.png)
+让我们来看一些能给我们这个效果的 HTML 和 CSS。先是一些简单的等待你样式化的 HTML：
 
-**关于CSS变量的继承性：**
-
-**优先级低的继承优先级高的变量，子元素继承父元素的变量。**
-
-定义下面的CSS：
+```html
+<p>For more information on the weather, visit our <a href="weather.html">weather page</a>,
+look at <a href="https://en.wikipedia.org/wiki/Weather">weather on Wikipedia</a>, or check
+out <a href="http://www.extremescience.com/weather.htm">weather on Extreme Science</a>.</p>
 
 ```
-.two { --test: 10px; }
-.three { --test: 2em; }
+
+那么这里发生了什么？我们将跳过大部分的 CSS，因为那些只是你之前看过的相同的信息。最后一条规则很有趣，这里，我们在外部链接上插入了一个自定义背景图片，这和上篇[自定义列表项目符号](https://developer.mozilla.org/zh-CN/docs/Learn/CSS/Styling_text/Styling_lists#using_a_custom_bullet_image)文章的做法很像。这次，我们使用了 [`background`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/background) 简写，而不是分别使用多个属性。我们设置了我们想要插入的图片的路径，指定了 `no-repeat` ，这样我们只插入了一次图片，然后指定位置为 100%，使其出现在内容的右边，距离上方是 0px。
+
+我们也使用 [`background-size`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/background-size) 来指定要显示的背景图像的大小，为了满足响应式网站设计的需要，在图标更大，需要再重新调整它的大小的时候，这样做是很有帮助的。但是，这仅适用于 IE 9 及更高版本。所以你如果需要支持那些老的浏览器，只能调整图像的原始大小，然后插入。
+
+最后，我们在链接上设置 [`padding-right`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/padding-right) ，为背景图片留出空间，这样就不会让它和文本重叠了。
+
+最后的问题，我们是如何只选中了外部链接的？如果你正确编写你的`HTML` 链接 ，你应该只会在外部链接上使用绝对 `URL`，如果链接是链接你的站点的其他部分，那么使用相对链接是更加高效的。因此“`http`”文本应该只出现在外部链接上，为此我们可以使用一个属性选择器——`a[href*="http"]` ——选中`<a>` 元素，但是这样只会选中那些拥有 `href` 属性，且属性的值包含 "`http`" 的 `<a>`的元素。
+
+就这样啦，尝试重新审视上面的动手练习部分，尝试这种新技术！
+
+### 样式化链接为按钮
+
+目前在本文中探索的用法也可以用在其他方面。比如，悬停 (hover) 的状态可以为不同的元素应用样式，不只是链接，你也许会想添加悬停状态的样式到段落、列表项、或者是其他东西。
+
+此外，在某些情况下，链接通常会应用样式，使它看上去的效果和按钮差不多，一个网站导航菜单通常是标记为一个列表，列表中包含链接，这可以很容易地被设计为看起来像一组控制按钮或是选项卡，主要是用于让用户可以访问站点的其他部分，现在让我们来看一看。
+
+```html
+    <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Pizza</a></li>
+        <li><a href="#">Music</a></li>
+        <li><a href="#">Wombats</a></li>
+        <li><a href="#">Finland</a></li>
+    </ul>
 ```
 
-在这个例子中，`var(--test)的结果是：`
+```css
+body,
+html {
+    margin: 0;
+    font-family: sans-serif;
+}
 
-- `class="two"` 对应的节点: `10px`
-- `class="three" 对应的节点`: element: `2em`
-- `class="four"` 对应的节点: `10px` (inherited from its parent)
-- `class="one"` 对应的节点: *无效值*, 即此属性值为未被自定义css变量覆盖的默认值
+ul {
+    padding: 0;
+    width: 100%;
+}
 
-> 参考博客：
+li {
+    display: inline;
+}
+
+a {
+    outline: none;
+    text-decoration: none;
+    display: inline-block;
+    width: 19.5%;
+    margin-right: 0.625%;
+    text-align: center;
+    line-height: 3;
+    color: black;
+}
+
+li:last-child a {
+    margin-right: 0;
+}
+
+a:link,
+a:visited,
+a:focus {
+    background: yellow;
+}
+
+a:hover {
+    background: orange;
+}
+
+a:active {
+    background: red;
+    color: white;
+}
+```
+
+![image-20220821074929735](image-20220821074929735.png)
+
+### 小结
+
+我们希望本文为你提供有关链接的所有知识——目前！我们的样式文本模块中的最后一篇文章详细介绍了如何在你的网站上使用自定义字体，或者更熟悉网络字体。
+
+## Web 字体
+
+在模块的第一篇文章中，我们探讨了用于样式化字体和文本的基本 CSS 特性。在这篇文章中，我们将更进一步，详细地探索 web 字体——它们允许您下载自定义字体和您的 web 页面，以允许更多不同的、自定义的文本样式。
+
+### 字体种类回顾
+
+正如我们在[基本文本和字体样式](https://developer.mozilla.org/en-US/docs/Learn/CSS/Styling_text/Fundamentals)中所看到的那样，应用到您的 HTML 的字体可以使用 [`font-family`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/font-family)属性来控制。您需要提供一个或多个字体种类名称，浏览器会在列表中搜寻，直到找到它所运行的系统上可用的字体。
+
+```css
+p {
+  font-family: Helvetica, "Trebuchet MS", Verdana, sans-serif;
+}
+
+```
+
+这个系统运行良好，但是对于传统的 web 开发人员来说，字体选择是有限的。只有少数几种字体可以保证兼容所有流行的操作系统——这就是所谓的 [Web-safe 字体](https://developer.mozilla.org/en-US/docs/Learn/CSS/Styling_text/Fundamentals#web_safe_fonts)。您可以使用字体堆栈来指定可选择的字体，后面是 Web-safe 的替代选项，然后是默认的系统字体，但是为了确保您的设计在每种字体中都显示正常，这样增加了测试的开销。
+
+
+
+### Web 字体
+
+但是还有一种选择，它非常有效，回到 IE 版本 6。Web 字体是一种 CSS 特性，允许您指定在访问时随您的网站一起下载的字体文件，这意味着任何支持 Web 字体的浏览器都可以使用您指定的字体。太酷啦！所需的语法如下所示：
+
+首先，在 CSS 的开始处有一个[`@font-face`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/@font-face)块，它指定要下载的字体文件：
+
+```css
+@font-face {
+  font-family: "myFont";
+  src: url("myFont.ttf");
+}
+
+```
+
+在这个下面，你可以使用 @font-face 中指定的字体种类名称来将你的定制字体应用到你喜欢的任何东西上，比如说：
+
+```css
+html {
+  font-family: "myFont", "Bitstream Vera Serif", serif;
+}
+
+```
+
+语法确实比这更复杂，下面我们将详细介绍。
+
+关于网页字体有两件重要的事情要记住：
+
+1. 浏览器支持不同的字体格式，因此您需要多种字体格式以获得良好的跨浏览器支持。例如，大多数现代浏览器都支持 WOFF / WOFF2(Web Open Font Format versions 1 and 2，Web 开放字体格式版本 1 和 2)，它是最有效的格式，但是旧版本 IE 只支持 EOT (Embedded Open Type，嵌入式开放类型) 的字体，你可能需要包括一个 SVG 版本的字体支持旧版本的 iPhone 和 Android 浏览器。我们将向您展示如何生成所需的代码。
+2. 字体一般都不能自由使用。您必须为他们付费，或者遵循其他许可条件，比如在代码中 (或者在您的站点上) 提供字体创建者。你不应该在没有适当的授权的情况下偷窃字体。
+
+> **备注：** Web 字体作为一种技术从 Internet Explorer 4 开始就得到了的支持！
+
+
+
+### 自主学习:web 字体示例
+
+你应该使用 [web-font-start.html](https://github.com/mdn/learning-area/blob/master/css/styling-text/web-fonts/web-font-start.html) 和 [web-font-start.css](https://github.com/mdn/learning-area/blob/master/css/styling-text/web-fonts/web-font-start.css) 文件作为开始添加到你的代码中（又见[预览版](https://mdn.github.io/learning-area/css/styling-text/web-fonts/web-font-start.html)。）现在，在你的电脑上的一个新目录中复制这些文件。在 `web-font-start.css`文件中，您将找到一些最小的 CSS 来处理这个示例的基本布局和排版。
+
+```html
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Web font example</title>
+    <link href="web-font-start.css" rel="stylesheet" type="text/css">
+  </head>
+  <body>
+    <h1>Hipster ipsum is the best</h1>
+
+    <p>Tacos actually microdosing, pour-over semiotics banjo chicharrones retro fanny pack portland everyday carry vinyl typewriter. Tacos PBR&amp;B pork belly, everyday carry ennui pickled sriracha normcore hashtag polaroid single-origin coffee cold-pressed. PBR&amp;B tattooed trust fund twee, leggings salvia iPhone photo booth health goth gastropub hammock.</p>
+
+    <p>Cray food truck brunch, XOXO +1 keffiyeh pickled chambray waistcoat ennui. Organic small batch paleo 8-bit. Intelligentsia umami wayfarers pickled, asymmetrical kombucha letterpress kitsch leggings cold-pressed squid chartreuse put a bird on it. Listicle pickled man bun cornhole heirloom art party.</p>
+
+    <h2>It is the quaintest</h2>
+
+    <p>Bespoke green juice aesthetic leggings DIY williamsburg selvage. Bespoke health goth tote bag, fingerstache venmo ennui thundercats butcher trust fund cardigan hella. Wolf vinyl you probably haven't heard of them taxidermy, ugh quinoa neutra meditation asymmetrical mixtape church-key kitsch man bun occupy. Knausgaard butcher raw denim ramps, offal seitan williamsburg venmo gastropub mlkshk cardigan chillwave chartreuse single-origin coffee twee. Ethical asymmetrical banjo typewriter fap. Polaroid waistcoat tousled selfies four dollar toast locavore thundercats. Truffaut post-ironic skateboard trust fund.</p>
+
+    <h2>No, really...</h2>
+
+    <p>Trust fund celiac farm-to-table PBR&amp;B. Brunch art party mumblecore, fingerstache cred echo park literally stumptown humblebrag chambray. Mlkshk vinyl distillery humblebrag crucifix. Mustache craft beer put a bird on it, irony deep v poutine ramps williamsburg heirloom brooklyn.</p>
+
+    <p>Taxidermy tofu YOLO, sustainable etsy flexitarian art party stumptown portland. Ethical williamsburg retro paleo. Put a bird on it leggings yuccie actually, skateboard jean shorts paleo lomo salvia plaid you probably haven't heard of them.</p>
+  </body>
+</html>
+```
+
+```css
+/* General setup */
+
+html {
+    font-size: 10px;
+    margin: 0;
+    font-family: sans-serif;
+}
+
+body {
+    width: 80%;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Typography */
+
+h1 {
+    font-size: 4.2rem;
+    font-family: 'alex_brushregular', serif;
+}
+
+h2 {
+    font-size: 3rem;
+    font-family: 'alex_brushregular', serif;
+}
+
+p {
+    font-size: 1.8rem;
+    line-height: 1.6;
+    word-spacing: 0.6rem;
+    font-family: 'milkshakeregular', serif;
+}
+
+/*! Generated by Font Squirrel (https://www.fontsquirrel.com) on August 20, 2022 */
+
+
+
+@font-face {
+    font-family: 'alex_brushregular';
+    src: url('./fonts/alexbrush-regular-webfont.woff2') format('woff2'),
+        url('./fonts/alexbrush-regular-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'milkshakeregular';
+    src: url('./fonts/milkshake-webfont.woff2') format('woff2'),
+        url('./fonts/milkshake-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+```
+
+#### 查找字体
+
+对于本例，我们将使用两种 web 字体，一种用于标题，另一种用于正文文本。首先，我们需要找到包含字体的字体文件。字体是由字体铸造厂创建的，并且存储在不同的文件格式中。 通常有三种类型的网站可以获得字体：
+
+- 免费的字体经销商：这是一个可以下载免费字体的网站 (可能还有一些许可条件，比如对字体创建者的信赖)。比如： [Font Squirre](https://www.fontsquirrel.com/)，[dafont](http://www.dafont.com/) 和 [Everything Fonts](https://everythingfonts.com/)。
+- 收费的字体经销商：这是一个收费则字体可用的网站，例如[fonts.com](http://www.fonts.com/)或[myfonts.com](http://www.myfonts.com/)。您也可以直接从字体铸造厂中购买字体，例如[Linotype](https://www.linotype.com/)，[Monotype](http://www.monotype.com/) 或 [Exljbris](http://www.exljbris.com/)。
+- 在线字体服务：这是一个存储和为你提供字体的网站，它使整个过程更容易。更多细节见[使用在线字体服务](https://developer.mozilla.org/zh-CN/docs/Learn/CSS/Styling_text/Web_fonts#使用在线字体服务)。
+
+
+
+下载一：https://www.boldfacedgoods.com/a/downloads/-/aa79fcef4a602fe5/fdee7b4c0ccf9008
+
+下载二：https://www.fontsquirrel.com/fonts/download/alex-brush
+
+让我们找到一些字体！前往[Font Squirrel](https://www.fontsquirrel.com/) 并选择两种字体——一种用于标题的有趣的字体 (可能是一种不错的显示字体或无衬线字体)，和一种用于段落，稍微不那么华丽，更易于阅读的字体。当您找到每种字体时，按下下载按钮，并将该文件保存在与您先前保存的 HTML 和 CSS 文件相同的目录中。无论它们是 TTF(True Type Fonts)) 还是 OTF(Open Type 字体) 都不重要。
+
+在每种情况下，都要解压字体包 (Web 字体通常分布在包含字体文件和许可信息的 ZIP 文件中。) 您可能会在包中发现多个字体文件，一些字体是作为一个具有不同变体的家庭分布的，例如，瘦、中、粗体、斜体、斜体等等。对于这个例子，我们只是想让您自己考虑一个单一的字体文件。
+
+#### 生成所需代码
+
+现在您需要生成所需的代码 (以及字体格式)。对于每种字体，遵循以下步骤：
+
+1. 确保您已经满足了任何许可证的要求，如果您打算在一个商业和/或 Web 项目中使用它。
+2. 前往 Fontsquirrel [Webfont Generator](https://www.fontsquirrel.com/tools/webfont-generator).
+3. 使用上传字体按钮上传你的两个字体文件。
+4. 勾选复选框，“是的，我上传的字体符合网络嵌入的合法条件。
+5. 点击下载你的套件（kit）。
+
+在生成器完成处理之后，您应该得到一个 ZIP 文件，将它保存在与 HTML 和 CSS 相同的目录中。
+
+#### 在演示中实现代码
+
+在这一点上解压您刚刚生成的 webfont 套件。在解压的目录中，您将看到三个有用的条目：
+
+- 每个字体的多个版本：（比如 `.ttf`, `.woff`, `.woff2`…… 随着浏览器支持需求的改变，提供的字体将随着时间的推移而不断更新。）正如上面提到的，跨浏览器支持需要使用多种字体——这是 Fontsquirrel 的方法，确保你得到了你需要的一切。
+- 每个字体的一个演示 HTML 文件在你的浏览器中加载，看看在不同的使用环境下字体会是什么样子。
+- 一个 `stylesheet.css` 文件，它包含了你需要的生成好的 @font-face 代码。
+
+要在演示中实现这些字体，请遵循以下步骤：
+
+1. 将解压缩的目录重命名为简易的目录，比如`fonts`
+
+2. 打开 `stylesheet.css` 文件，把包含在你的网页中的 `@font-face`块复制到你的 `web-font-start.css` 文件—— 你需要把它们放在最上面，在你的 CSS 之前，因为字体需要导入才能在你的网站上使用。
+
+3. 每个`url()`函数指向一个我们想要导入到我们的 CSS 中的字体文件——我们需要确保文件的路径是正确的，因此，在每个路径的开头添加`fonts/` （必要时进行调整）。
+
+4. 现在，您可以在字体栈中使用这些字体，就像任何 web 安全或默认的系统字体一样。 例如：
+
+   ```csss
+   font-family: 'zantrokeregular', serif;
+   ```
+
+你应该得到一个演示页面，上面有一些漂亮的字体。因为不同字体的字体大小不同，你可能需要调整大小、间距等，以区分外观和感觉。
+
+![image-20220821101636128](image-20220821101636128.png)
+
+
+
+### 使用在线字体服务
+
+在线字体服务通常会为你存储和服务字体，这样你就不用担心写`@font-face`代码了，通常只需要在你的网站上插入一两行代码就可以让一切都运行。例子包括[Typekit](https://typekit.com/) 和[Cloud.typography](http://www.typography.com/cloud/welcome/)。大多数这些服务都是基于订阅的，除了[Google Fonts](https://www.google.com/fonts)，这是一个有用的免费服务，特别是对于快速的测试工作和编写演示。
+
+大多数这些服务都很容易使用，所以我们不会详细地介绍它们。让我们快速浏览一下 Google Fonts，这样你就能明白它的意思了。再次的，使用`web-font-start.html` 和 `web-font-start.css` a 的副本作为你的开始。
+
+1. 前往 [Google Fonts](https://www.google.com/fonts).
+2. 使用左边的过滤器来显示你想要选择的字体类型，并选择一些你喜欢的字体。
+3. 要选择字体种类，按下按钮旁边的 ⊕ 按钮。
+4. 当您选择好字体种类时，按下页面底部的*[Number]* 种类选择。
+5. 在生成的屏幕中，首先需要复制所显示的 HTML 代码行，并将其粘贴到 HTML 文件的头部。将其置于现有的[``](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/link)元素之上，使得字体是导入的，然后在你的 CSS 中使用它。
+6. 然后，您需要将 CSS 声明复制到您的 CSS 中，以便将自定义字体应用到您的 HTML。
+
+
+
+就是引用在线的字体样式
+
+### 关于 @font-face 的更多细节
+
+让我们来探索由 fontsquirrel 为您生成的`@font-face`语法。这是其中一个块的样子：
+
+```css
+@font-face {
+  font-family: 'ciclefina';
+  src: url('fonts/cicle_fina-webfont.eot');
+  src: url('fonts/cicle_fina-webfont.eot?#iefix') format('embedded-opentype'),
+         url('fonts/cicle_fina-webfont.woff2') format('woff2'),
+         url('fonts/cicle_fina-webfont.woff') format('woff'),
+         url('fonts/cicle_fina-webfont.ttf') format('truetype'),
+         url('fonts/cicle_fina-webfont.svg#ciclefina') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+```
+
+这被称为"bulletproof @font-face syntax（刀枪不入的 @font-face 语法）", 这是 Paul Irish 早期的一篇文章提及后 @font-face 开始流行起来 ([Bulletproof @font-face Syntax](https://www.paulirish.com/2009/bulletproof-font-face-implementation-syntax/)。让我们来看看它是怎么做的：
+
+- `font-family`：这一行指定了您想要引用的字体的名称。你可以把它作为你喜欢的任何东西，只要你在你的 CSS 中始终如一地使用它。
+- `src`：这些行指定要导入到您的 CSS(`url`部分) 的字体文件的路径，以及每种字体文件的格式 (`format`部分)。后面的部分不是必要的，但是声明它是很有用的，因为它允许浏览器更快地找到可以使用的字体。可以列出多个声明，用逗号分隔——浏览器会搜索并使用它能找到的第一个——因此，最好是把新的、更好的格式比如 WOFF2 放在前面，把偏老的，不是那么好的格式像 TTF 这样的放在后面。唯一的例外是 EOT 字体——他们首先在旧版本的 IE 中修复了几个 bug，这样它就会尝试使用它找到的第一件东西，即使它不能真正使用字体。
+- [`font-weight`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/font-weight)/[`font-style`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/font-style): 这些行指定字体的粗细，以及它是否斜体。如果您正在导入相同字体的多个粗细，您可以指定它们的粗细/样式，然后使用不同的[`font-weight`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/font-weight)/[`font-style`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/font-style)来选择它们之间的不同值，而不必调用字体种类不同名称的所有不同成员。Roger Johansson 写的 [@font-face tip: define font-weight and font-style to keep your CSS simple](http://www.456bereastreet.com/archive/201012/font-face_tip_define_font-weight_and_font-style_to_keep_your_css_simple/) 更详细地说明了该做些什么。
+
+# `CSS`排版
+
+此刻，我们已经看过 CSS 的基础知识，如何设置文本的样式，以及如何设置和操作内容所在的框。现在是时候看看如何把你的盒子放在与视口相关的正确位置上。我们已经涵盖了必要的先决条件，所以我们现在可以深入到 CSS 布局，查看不同的显示设置，涉及浮动和定位的传统布局方法，以及像 flexbox 这样的现代布局工具。
+
+## 介绍 CSS 布局
+
+本文将回顾我们以前模块中已经介绍过的一些 CSS 布局特性——例如不同的[`display`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/display)值——并介绍我们将在本模块中使用的一些概念。
+
+CSS 页面布局技术允许我们拾取网页中的元素，并且控制它们相对正常布局流、周边元素、父容器或者主视口/窗口的位置。在这个模块中将涉及更多关于页面[布局技术](https://developer.mozilla.org/zh-CN/docs/Web/CSS/Layout_mode)的细节：
+
+- 正常布局流
+- [`display`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/display)属性
+- 弹性盒子
+- 网格
+- 浮动
+- 定位
+- CSS 表格布局
+- 多列布局
+
+每种技术都有它们的用途，各有优缺点，相互辅助。通过理解各个布局方法的设计理念，你能够找到构建你想要的网页需要的布局方案。
+
+### 正常布局流 (Normal flow)
+
+正常布局流 (normal flow) 是指在不对页面进行任何布局控制时，浏览器默认的 HTML 布局方式。让我们快速地看一个 HTML 的例子：
+
+```html
+<p>I love my cat.</p>
+
+<ul>
+  <li>Buy cat food</li>
+  <li>Exercise</li>
+  <li>Cheer up friend</li>
+</ul>
+
+<p>The end!</p>
+
+```
+
+默认情况下，浏览器的显示如下：
+
+![image-20220821103525993](image-20220821103525993.png)
+
+
+
+注意，HTML 元素完全按照源码中出现的先后次序显示——第一个段落、无序列表、第二个段落。
+
+出现在另一个元素下面的元素被描述为**块**元素，与出现在另一个元素旁边的**内联元素**不同，内联元素就像段落中的单个单词一样。
+
+> **备注：** 块元素内容的布局方向被描述为**块方向**。块方向在英语等具有水平**书写模式**(`writing mode`) 的语言中垂直运行。它可以在任何垂直书写模式的语言中水平运行。对应的**内联方向**是内联内容（如句子）的运行方向。
+
+当你使用 css 创建一个布局时，你正在离开**正常布局流**，但是对于页面上的多数元素，**正常布局流**将完全可以创建你所需要的布局。从一个结构良好的 Html 文档开始是非常重要，因为你可以按照默认的方式来搭建页面，而不是自造车轮。
+
+下列布局技术会覆盖默认的布局行为：
+
+- **[`display`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/display)** 属性 — 标准的 value，比如`block`, `inline` 或者 `inline-block` 元素在正常布局流中的表现形式 (见 [Types of CSS boxes](https://developer.mozilla.org/en-US/docs/Learn/CSS/Building_blocks/The_box_model#types_of_css_boxes)). 接着是全新的布局方式，通过设置`display`的值，比如 [CSS Grid](https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Grids) 和 [Flexbox](https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Flexbox).
+- **浮动**——应用 **[`float`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/float)** 值，诸如 `left` 能够让块级元素互相并排成一行，而不是一个堆叠在另一个上面。
+- **[`position`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/position)** 属性 — 允许你精准设置盒子中的盒子的位置，正常布局流中，默认为 `static` ，使用其它值会引起元素不同的布局方式，例如将元素固定到浏览器视口的左上角。
+- **表格布局**— 表格的布局方式可以用在非表格内容上，可以使用`display: table`和相关属性在非表元素上使用。
+- **多列布局**— 这个 [Multi-column layout](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Columns) 属性 可以让块按列布局，比如报纸的内容就是一列一列排布的。
+
+### display 属性
+
+在 css 中实现页面布局的主要方法是设定`display`属性的值。此属性允许我们更改默认的显示方式。正常流中的所有内容都有一个`display`的值，用作元素的默认行为方式。例如，英文段落显示在一个段落的下面，这是因为它们的样式是`display:block`。如果在段落中的某个文本周围创建链接，则该链接将与文本的其余部分保持内联，并且不会打断到新行。这是因为[`<a>`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/a)元素默认为`display:inline`。
+
+您可以更改此默认显示行为。例如，[`<li>`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/li)元素默认为`display:block`，这意味着在我们的英文文档中，列表项显示为一个在另一个之下。如果我们将显示值更改为`inline`，它们现在将显示在彼此旁边，就像单词在句子中所做的那样。事实上，您可以更改任何元素的`display`值，这意味着您可以根据它们的语义选择 html 元素，而不必关心它们的外观。他们的样子是你可以改变的。
+
+除了可以通过将一些内容从`block`转换为`inline`（反之亦然）来更改默认表示形式之外，还有一些更大的布局方法以`display`值开始。但是，在使用这些属性时，通常需要调用其他属性。在讨论布局时，对我们来说最重要的两个值是`display`:`flex`和`display`:`grid`。
+
+### 弹性盒子
+
+Flexbox 是 CSS 弹性盒子布局模块（[Flexible Box Layout](https://developer.mozilla.org/zh-CN/docs/Web/CSS/CSS_Flexible_Box_Layout) Module）的缩写，它被专门设计出来用于创建横向或是纵向的一维页面布局。要使用 flexbox，你只需要在想要进行 flex 布局的父元素上应用`display: flex` ，所有直接子元素都将会按照 flex 进行布局。我们来看一个例子。
+
+#### 设置 display:flex
+
+下面这些 HTML 标记描述了一个 class 为`wrapper`的容器元素，它的内部有三个`<div>`元素。它们在我们的英文文档当中，会默认地作为块元素从上到下进行显示。
+
+现在，当我们把`display: flex`添加到它的父元素时，这三个元素就自动按列进行排列。这是由于它们变成了*flex 项 (flex items)*，按照 flex 容器（也就是它们的父元素）的一些 flex 相关的初值进行 flex 布局：它们整整齐齐排成一行，是因为父元素上`flex-direction`的初值是`row`。它们全都被拉伸至和最高的元素高度相同，是因为父元素上`align-items`属性的初值是`stretch`。这就意味着所有的子元素都会被拉伸到它们的 flex 容器的高度，在这个案例里就是所有 flex 项中最高的一项。所有项目都从容器的开始位置进行排列，排列成一行后，在尾部留下一片空白。
+
+```html
+<div class="wrapper">
+  <div class="box1">One</div>
+  <div class="box2">Two</div>
+  <div class="box3">Three</div>
+</div>
+
+```
+
+``` css
+.wrapper {
+  display: flex;
+}
+
+```
+
+![image-20220821151440957](image-20220821151440957.png)
+
+#### 设置 flex 属性
+
+除了上述可以被应用到 flex 容器的属性以外，还有很多属性可以被应用到 flex 项 (flex items) 上面。这些属性可以改变 flex 项在 flex 布局中占用宽/高的方式，允许它们通过伸缩来适应可用空间。
+
+作为一个简单的例子，我们可以在我们的所有子元素上添加[`flex`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/flex) 属性，并赋值为`1`，这会使得所有的子元素都伸展并填充容器，而不是在尾部留下空白，如果有更多空间，那么子元素们就会变得更宽，反之，他们就会变得更窄。除此之外，如果你在 HTML 标记中添加了一个新元素，那么它们也会变得更小，来为新元素创造空间——不管怎样，最终它们会调整自己直到占用相同宽度的空间。
+
+```css
+.wrapper {
+    display: flex;
+  }
+.box1, .box2, .box3 {
+    flex: 1;
+    background-color: rgb(93, 205, 224);
+    margin: 0 10px;
+}  
+```
+
+![image-20220821151957722](image-20220821151957722.png)
+
+
+
+> **备注：** 为了找到更多关于 Flexbox 的信息，看看我们的 [Flexbox](https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Flexbox) 的文章。
+
+### Grid 布局
+
+Flexbox 用于设计横向或纵向的布局，而 Grid 布局则被设计用于同时在两个维度上把元素按行和列排列整齐。
+
+#### 设置 display: grid
+
+同 flex 一样，你可以通过指定 display 的值来转到 grid 布局：`display: grid`。下面的例子使用了与 flex 例子类似的 HTML 标记，描述了一个容器和若干子元素。除了使用`display:grid`，我们还分别使用 [`grid-template-rows`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/grid-template-rows) 和 [`grid-template-columns`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/grid-template-columns) 两个属性定义了一些行和列的轨道。定义了三个`1fr`的列，还有两个`100px`的行之后，无需再在子元素上指定任何规则，它们自动地排列到了我们创建的格子当中。
+
+```html
+<div class="wrapper">
+    <div class="box1">One</div>
+    <div class="box2">Two</div>
+    <div class="box3">Three</div>
+    <div class="box4">Four</div>
+    <div class="box5">Five</div>
+    <div class="box6">Six</div>
+</div>
+
+```
+
+```css
+.wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 100px 100px;
+    grid-gap: 10px;
+}
+
+```
+
+#### 在网格内放置元素
+
+一旦你拥有了一个 grid，你也可以显式地将元素摆放在里面，而不是依赖于浏览器进行自动排列。在下面的第二个例子里，我们定义了一个和上面一样的 grid，但是这一次我们只有三个子元素。我们利用 [`grid-column`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/grid-column) 和 [`grid-row`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/grid-row) 两个属性来指定每一个子元素应该从哪一行/列开始，并在哪一行/列结束。这就能够让子元素在多个行/列上展开。
+
+```html
+<div class="wrapper">
+    <div class="box1">One</div>
+    <div class="box2">Two</div>
+    <div class="box3">Three</div>
+</div>
+
+```
+
+```css
+.wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 100px 100px;
+    grid-gap: 10px;
+}
+
+.box1 {
+    grid-column: 2 / 4;
+    grid-row: 1;
+}
+
+.box2 {
+    grid-column: 1;
+    grid-row: 1 / 3;
+}
+
+.box3 {
+    grid-row: 2;
+    grid-column: 3;
+}
+
+.wrapper > div {
+    background-color: rgb(82, 212, 195);
+}
+```
+
+> **备注：** 这两个例子只是展示了 grid 布局的冰山一角，要深入了解 grid 布局，请参阅我们的文章[Grid Layout](https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Grids)。
 >
-> - http://www.ruanyifeng.com/blog/2017/05/css-variables.html
-> - https://developer.mozilla.org/zh-CN/docs/Web/Using_CSS_custom_properties
-> - https://developer.mozilla.org/zh-CN/docs/Web/:root
+> 这篇指南的其余部分介绍了其他
+
+这篇指南的其余部分介绍了其他的布局方式，它们与你的页面的主要布局结构关系不大，但是却能够帮助你实现特殊的操作。同时，只要你理解了每一个布局任务的初衷，你就能够马上意识到哪一种布局更适合你的组件。
+
+### 浮动
+
+把一个元素“浮动”(float) 起来，会改变该元素本身和在正常布局流（normal flow）中跟随它的其他元素的行为。这一元素会浮动到左侧或右侧，并且从正常布局流 (normal flow) 中移除，这时候其他的周围内容就会在这个被设置浮动 ([`float`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/float)) 的元素周围环绕。
+
+[`float`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/float) 属性有四个可能的值：
+
+- `left` — 将元素浮动到左侧。
+- `right` — 将元素浮动到右侧。
+- `none` — 默认值，不浮动。
+- `inherit` — 继承父元素的浮动属性。
+
+在下面这个例子当中，我们把一个`<div>`元素浮动到左侧，并且给了他一个右侧的[`margin`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/margin)，把文字推开。这给了我们文字环绕着这个`<div>`元素的效果，在现代网页设计当中，这是你唯一需要学会的事情。
+
+```html
+<h1>Simple float example</h1>
+
+<div class="box">Float</div>
+
+<p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla luctus aliquam dolor, eu lacinia lorem placerat vulputate. Duis felis orci, pulvinar id metus ut, rutrum luctus orci. Cras porttitor imperdiet nunc, at ultricies tellus laoreet sit amet. Sed auctor cursus massa at porta. Integer ligula ipsum, tristique sit amet orci vel, viverra egestas ligula. Curabitur vehicula tellus neque, ac ornare ex malesuada et. In vitae convallis lacus. Aliquam erat volutpat. Suspendisse ac imperdiet turpis. Aenean finibus sollicitudin eros pharetra congue. Duis ornare egestas augue ut luctus. Proin blandit quam nec lacus varius commodo et a urna. Ut id ornare felis, eget fermentum sapien.</p>
+
+```
+
+```css
+.box {
+    float: left;
+    width: 150px;
+    height: 150px;
+    margin-right: 30px;
+}
+
+```
+
+![image-20220821213141985](image-20220821213141985.png)
+
+> **备注：** CSS 浮动的知识会在我们关于 [浮动](https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Floats)的教程当中被详细地解释。除此之外，如果您想要了解在 Flexbox 和 Grid 布局出现之前我们是如何进行列布局的（仍然有可能碰到这种情形），请阅读我们关于[传统布局方式](https://developer.mozilla.org/zh-CN/docs/Learn/CSS/CSS_layout/Legacy_Layout_Methods)的文章。
+
+### 定位技术
+
+定位 (positioning) 能够让我们把一个元素从它原本在正常布局流 (normal flow) 中应该在的位置移动到另一个位置。定位 (positioning) 并不是一种用来给你做主要页面布局的方式，它更像是让你去管理和微调页面中的一个特殊项的位置。
+
+有一些非常有用的技术在特定的布局下依赖于[`position`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/position)属性。同时，理解定位 (positioning) 也能够帮助你理解正常布局流 (normal flow)，理解把一个元素移出正常布局流 (normal flow) 是怎么一回事。
+
+有五种主要的定位类型需要我们了解：
+
+- **静态定位 (Static positioning)**是每个元素默认的属性——它表示“将元素放在文档布局流的默认位置——没有什么特殊的地方”。
+- **相对定位 (Relative positioning)**允许我们相对于元素在正常的文档流中的位置移动它——包括将两个元素叠放在页面上。这对于微调和精准设计 (design pinpointing) 非常有用。
+- **绝对定位 (Absolute positioning)**将元素完全从页面的正常布局流 (normal layout flow) 中移出，类似将它单独放在一个图层中。我们可以将元素相对于页面的 `<html>` 元素边缘固定，或者相对于该元素的*最近被定位祖先元素 (nearest positioned ancestor element)*。绝对定位在创建复杂布局效果时非常有用，例如通过标签显示和隐藏的内容面板或者通过按钮控制滑动到屏幕中的信息面板。
+- **固定定位 (Fixed positioning)**与绝对定位非常类似，但是它是将一个元素相对浏览器视口固定，而不是相对另外一个元素。这在创建类似在整个页面滚动过程中总是处于屏幕的某个位置的导航菜单时非常有用。
+- **粘性定位 (Sticky positioning)**是一种新的定位方式，它会让元素先保持和`position: static`一样的定位，当它的相对视口位置 (offset from the viewport) 达到某一个预设值时，他就会像`position: fixed`一样定位。
+
+#### 简单定位示例
+
+我们将展示一些示例代码来熟悉这些布局技术。这些示例代码都作用在下面这一个相同的 HTML 上：
+
+```html
+<h1>Positioning</h1>
+
+<p>I am a basic block level element.</p>
+<p class="positioned">I am a basic block level element.</p>
+<p>I am a basic block level element.</p>
+
+```
+
+该 HTML 将使用以下 CSS 默认样式：
+
+```css
+body {
+  width: 500px;
+  margin: 0 auto;
+}
+
+p {
+    background-color: rgb(207,232,220);
+    border: 2px solid rgb(79,185,227);
+    padding: 10px;
+    margin: 10px;
+    border-radius: 5px;
+}
+
+```
+
+![image-20220822055123949](image-20220822055123949.png)
+
+#### 相对定位
+
+相对定位 (relative positioning) 让你能够把一个正常布局流 (normal flow) 中的元素从它的默认位置按坐标进行相对移动。比如将一个图标往下调一点，以便放置文字。我们可以通过下面的规则添加相对定位来实现效果:
+
+```css
+.positioned {
+  position: relative;
+  top: 30px;
+  left: 30px;
+}
+
+```
+
+这里我们给中间段落的[`position`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/position) 一个 `relative`值——这属性本身不做任何事情，所以我们还添加了[`top`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/top)和[`left`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/left)属性。这些可以将受影响的元素向下向右移——这可能看起来和你所期待的相反，但你需要把它看成是左边和顶部的元素被“推开”一定距离，这就导致了它的向下向右移动。
+
+添加此代码将给出以下结果：
+
+```css
+.positioned {
+  position: relative;
+  background: rgba(255,84,104,.3);
+  border: 2px solid rgb(255,84,104);
+  top: 30px;
+  left: 30px;
+}
+
+```
+
+![image-20220822055605043](image-20220822055605043.png)
+
+#### 绝对定位
+
+绝对定位用于将元素移出正常布局流 (normal flow)，以坐标的形式相对于它的容器定位到 web 页面的任何位置，以创建复杂的布局。有趣的是，它经常被用于与相对定位和浮动的协同工作。
+
+回到我们最初的非定位示例，我们可以添加以下的 CSS 规则来实现绝对定位：
+
+```css
+.positioned {
+  position: absolute;
+  top: 30px;
+  left: 30px;
+}
+
+```
+
+这里我们给我们的中间段一个[`position`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/position)的 `absolute`值，并且和前面一样加上 [`top`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/top) 和[`left`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/left) 属性。但是，添加此代码将给出以下结果：
+
+```css
+.positioned {
+    position: absolute;
+    background: rgba(255,84,104,.3);
+    border: 2px solid rgb(255,84,104);
+    top: 30px;
+    left: 30px;
+}
+
+```
+
+![image-20220822055830832](image-20220822055830832.png)
+
+
+
+这和之前截然不同！定位元素现在已经与页面布局的其余部分完全分离，并位于页面的顶部。其他两段现在靠在一起，好像之前那个中间段落不存在一样。[`top`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/top)和[`left`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/left)属性对绝对位置元素的影响不同于相对位置元素。在这一案例当中，他们没有指定元素相对于原始位置的移动程度。相反，在这一案例当中，它们指定元素应该从页面边界的顶部和左边的距离 (确切地说，是 `<html>`元素的距离)。我们也可以修改作为容器的那个元素（在这里是`<html>`元素），要了解这方面的知识，参见关于[定位 (positioning)](https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Positioning)的课程
+
+我们现在暂时不讨论固定定位（fixed positioning）——它基本上以相同的方式工作，除了它仍然固定在浏览器窗口的边缘，而不是它定位的父节点的边缘。
+
+#### 固定定位
+
+固定定位 (fixed positioning) 同绝对定位 (absolute positioning) 一样，将元素从文档流 (document flow) 当中移出了。但是，定位的坐标不会应用于"容器"边框来计算元素的位置，而是会应用于视口 (viewport) 边框。利用这一特性，我们可以轻松搞出一个固定位置的菜单，而不受底下的页面滚动的影响。
+
+在这个例子里面，我们在 HTML 加了三段很长的文本来使得页面可滚动，又加了一个带有`position: fixed`的盒子。
+
+```html
+<h1>Fixed positioning</h1>
+
+<div class="positioned">Fixed</div>
+
+<p>Paragraph 1.</p>
+<p>Paragraph 2.</p>
+<p>Paragraph 3.</p>
+
+```
+
+```css
+.positioned {
+    position: fixed;
+    top: 30px;
+    left: 30px;
+}
+
+```
+
+![image-20220822061501527](image-20220822061501527.png)
+
+#### 粘性定位
+
+粘性定位 (sticky positioning) 是最后一种我们能够使用的定位方式。它将默认的静态定位 (static positioning) 和固定定位 (fixed positioning) 相混合。当一个元素被指定了`position: sticky`时，它会在正常布局流中滚动，直到它出现在了我们给它设定的相对于容器的位置，这时候它就会停止随滚动移动，就像它被应用了`position: fixed`一样。
+
+```css
+.positioned {
+  position: sticky;
+  top: 30px;
+  left: 30px;
+}
+```
+
+![image-20220822061609334](image-20220822061609334.png)
+
+> **备注：** 想要发现更多关于定位的信息，请参阅我们的[Positioning](https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Positioning)和[Practical positioning examples](https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Practical_positioning_examples)文章。
+
+### 表格布局
+
+HTML 表格对于显示表格数据是很好的，但是很多年前——在浏览器中支持基本的 CSS 之前——web 开发人员过去也常常使用表格来完成整个网页布局——将它们的页眉、页脚、不同的列等等放在不同的表行和列中。这在当时是有效的，但它有很多问题——表布局是不灵活的，繁重的标记，难以调试和语义上的错误（比如，屏幕阅读器用户在导航表布局方面有问题）。
+
+一个`<table>`标签之所以能够像表格那样展示，是由于 css 默认给`<table>`标签设置了一组 table 布局属性。当这些属性被应用于排列非`<table>`元素时，这种用法被称为“使用 CSS 表格”。
+
+下面这个例子展示了一个这样的用法。使用 CSS 表格来进行布局，在现在这个时间点应该被认为是一种传统方法，它通常会被用于兼容一些不支持 Flexbox 和 Grid 的浏览器。
+
+让我们来看一个例子。首先，创建 HTML 表单的一些简单标记。每个输入元素都有一个标签，我们还在一个段落中包含了一个标题。为了进行布局，每个标签/输入对都封装在[`<div>`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/div)中。
+
+```html
+<form>
+  <p>First of all, tell us your name and age.</p>
+  <div>
+    <label for="fname">First name:</label>
+    <input type="text" id="fname">
+  </div>
+  <div>
+    <label for="lname">Last name:</label>
+    <input type="text" id="lname">
+  </div>
+  <div>
+    <label for="age">Age:</label>
+    <input type="text" id="age">
+  </div>
+</form>
+
+```
+
+现在，我们例子中的 CSS。除了使用 display 属性外，大多数 CSS 都是相当普通的。 `<form>`, `<div>`,` <label>`和`<input>`被告知要分别显示表、表行和表单元——基本上，它们会像 HTML 表格标记一样，导致标签和输入在默认情况下排列整齐。我们所要做的就是添加一些大小、边缘等等，让一切看起来都好一点，我们就完成了。
+
+你会注意到标题段落已经给出了 `display: table-caption;`——这使得它看起来就像一个表格`<caption>` ——同时出于设计需要，我们通过`caption-side: bottom;` 告诉标题应该展示在表格的底部，即使这个`<p>`标记在源码中是在`<input>`之前。这就能让你有一点灵活的弹性。
+
+```css
+html {
+  font-family: sans-serif;
+}
+
+form {
+  display: table;
+  margin: 0 auto;
+}
+
+form div {
+  display: table-row;
+}
+
+form label, form input {
+  display: table-cell;
+  margin-bottom: 10px;
+}
+
+form label {
+  width: 200px;
+  padding-right: 5%;
+  text-align: right;
+}
+
+form input {
+  width: 300px;
+}
+
+form p {
+  display: table-caption;
+  caption-side: bottom;
+  width: 300px;
+  color: #999;
+  font-style: italic;
+}
+
+```
+
+![image-20220822062021184](image-20220822062021184.png)
+
+### 多列布局
+
+多列布局模组给了我们 一种把内容按列排序的方式，就像文本在报纸上排列那样。由于在 web 内容里让你的用户在一个列上通过上下滚动来阅读两篇相关的文本是一种非常低效的方式，那么把内容排列成多列可能是一种有用的技术。
+
+要把一个块转变成多列容器 (multicol container)，我们可以使用 [`column-count`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/column-count)属性来告诉浏览器我们需要多少列，也可以使用[`column-width` ](https://developer.mozilla.org/en-US/docs/Web/CSS/column-width)来告诉浏览器以至少某个宽度的尽可能多的列来填充容器。
+
+在下面这个例子中，我们从一个 class 为`container`的`<div>`容器元素里边的一块 HTML 开始。
+
+```html
+    <div class="container">
+        <h1>Multi-column layout</h1>
+    
+        <p class="one">Paragraph 1. Lorem ipsum dolor sit amet consectetur, adipisicing elit. Porro odio officia voluptatem magnam harum nulla. Quae maxime et molestiae laboriosam. Nesciunt commodi quod voluptate nulla fuga numquam itaque? Quis illum, voluptates dolorem fuga et, reprehenderit ullam, aperiam neque in illo quasi excepturi natus id! Dolorum quibusdam mollitia facere veniam voluptatum. Eveniet facilis debitis ea blanditiis rem accusantium quod modi dolorum? Esse voluptatem at quaerat quasi laudantium a, recusandae aliquid ratione aliquam reprehenderit nemo numquam officia labore necessitatibus, alias in officiis odio rem est delectus, dicta facere. Illum inventore odit similique totam veniam, provident quibusdam delectus numquam qui aspernatur odio eius.</p>
+        <p class="two">Paragraph 2. Lorem ipsum dolor sit amet consectetur, adipisicing elit. Dolor expedita inventore sint perspiciatis accusamus eveniet deleniti rerum exercitationem aut tenetur obcaecati, quam odit neque iure ratione beatae amet consequuntur eos dignissimos. Similique, officiis repellat deleniti aspernatur molestiae corporis expedita et eveniet iusto temporibus id fuga incidunt dicta autem molestias ratione velit inventore natus? Labore exercitationem rem sit dolorum veritatis minus quis mollitia laudantium perspiciatis expedita deserunt sapiente fugiat, consequatur amet itaque. Velit corrupti totam ab, repudiandae minus unde excepturi suscipit quisquam porro tenetur ullam officiis temporibus atque laboriosam impedit maiores debitis, quaerat ex accusantium adipisci vitae nihil dicta incidunt ipsa.</p>
+    
+    </div>
+    
+```
+
+我们指定了该容器的`column-width`为 200 像素，这让浏览器创建了尽可能多的 200 像素的列来填充这一容器。接着他们共同使用剩余的空间来伸展自己的宽度。
+
+```css
+.container {
+    column-width: 200px;
+}
+
+.one {
+    color: rgb(4, 172, 116);
+}
+
+.two {
+    color: rgb(172, 97, 0);
+}
+```
+
+![image-20220822062626766](image-20220822062626766.png)
+
+### 小结
+
+本文提供了关于您应该了解的所有布局技术的简要概述。阅读更多关于每一项技术的信息！
+
+
+
+## 正常布局流
+
+这篇文章介绍正常的流布局，或者说，在你没有改变默认布局规则情况下的页面元素布局方式。
+
+如上小节对布局的介绍，如果你未曾应用任何 CSS 规则来改变它们的展现方式，网页上的元素将会按照正常布局流来组织。同样的，开始探索前，你可以通过调整元素位置，或者完全的移除元素来改变它们的表现效果。从一副简单的、结构良好并且在正常布局流下仍然易读的文档开始，是上手任何页面的最佳方式（译者注：几乎没有很简单的 CSS，标签组织符合一般用法）。这样确保了你的内容的易读性，即便用户使用受限的浏览器或者屏幕阅读设备（译者注：比如有些老旧浏览器对某些 CSS 特性的支持不理想，或者有用户自定义 CSS 样式）。此外，由于正常布局流的设计初衷在于构建易读、合理的文档，遵循这样的指引原则，你在对布局做出改动时应该是与文档协同，而不是与之对抗。
+
+在深入探索不同的布局方式之前，你最好回顾下在之前模块学习到的关于正常布局流的知识点（译者注：比如 position display float table flex-box grid-layout）.
+
+### 默认情况下，元素是如何布局的？
+
+首先，取得元素的内容来放在一个独立的元素盒子中，然后在其周边加上内边距、边框和外边距 --- 就是我们之前看到的盒子模型。
+
+默认的，一个[块级元素](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Block-level_elements)的内容宽度是其父元素的 100%，其高度与其内容高度一致。[内联元素](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Inline_elements)的 height width 与内容一致。你无法设置内联元素的 height width --- 它们就那样置于块级元素的内容里。如果你想控制内联元素的尺寸，你需要为元素设置`display: block;` （或者，`display: inline-block;` inline-block 混合了 inline 和 block 的特性。)
+
+这样解释了独立元素的布局，但是元素之间又是如何相互影响的呢？ 正常布局流（在布局介绍里提到过）是一套在浏览器视口内放置、组织元素的系统。默认的，块级元素按照基于其父元素的[书写顺序](https://developer.mozilla.org/zh-CN/docs/Web/CSS/writing-mode)(*默认值：* horizontal-tb) 的*块流动方向 (block flow direction)*放置 --- 每个块级元素会在上一个元素下面另起一行，它们会被设置好的 margin 分隔。在英语，或者其他水平书写、自上而下模式里，块级元素是垂直组织的。
+
+内联元素的表现有所不同 --- 它们不会另起一行；只要在其父级块级元素的宽度内有足够的空间，它们与其他内联元素、相邻的文本内容（或者被包裹的）被安排在同一行。如果空间不够，溢出的文本或元素将移到新的一行。
+
+我们来看一个对全部这些做出解释的简单例子：
+
+```html
+    <h1>Basic document flow</h1>
+
+    <p>I am a basic block level element. My adjacent block level elements sit on new lines below me.</p>
+
+    <p>By default we span 100% of the width of our parent element, and we are as tall as our child content. Our total
+        width and height is our content + padding + border width/height.</p>
+
+    <p>We are separated by our margins. Because of margin collapsing, we are separated by the width of one of our
+        margins, not both.</p>
+
+    <p>inline elements <span>like this one</span> and <span>this one</span> sit on the same line as one another, and
+        adjacent text nodes, if there is space on the same line. Overflowing inline elements will <span>wrap onto a new
+            line if possible (like this one containing text)</span>, or just go on to a new line if not, much like this
+        image will do: <img src="https://mdn.github.io/css-examples/learn/backgrounds-borders/star.png"></p>
+
+```
+
+```css
+body {
+    width: 500px;
+    margin: 0 auto;
+}
+
+p {
+    background: rgba(255, 84, 104, 0.3);
+    border: 2px solid rgb(255, 84, 104);
+    padding: 10px;
+    margin: 10px;
+}
+
+span {
+    background: white;
+    border: 1px solid black;
+}
+```
+
+![image-20220822070952744](image-20220822070952744.png)
+
+### 小结
+
+现在你对正常布局流有所了解，知晓浏览器默认怎么组织元素，继续下一节，学习如何改变默认布局以产出符合你的设计的布局。
+
+## 弹性盒子
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
