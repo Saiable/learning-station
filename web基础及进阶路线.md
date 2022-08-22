@@ -64,21 +64,20 @@ typora-root-url: ./
 
 ## `CSS核心`
 
+[CSS核心 | mindcons.cn](https://mindcons.cn/sai/50833/)
 
-
-- 什么是`CSS`
-- `CSS`用来干什么
-- `CSS`基本语法
-- `CSS`包含哪些内容模块
-- `CSS`规范
-- `CSS`浏览器支持
-- `CSS`基本使用
+- `CSS`第一步
+- `CSS`构建基础
+- 样式化文本
+- `CSS`排版
 
 ### `CSS`样式之颜色、文字、文本设置
 
 ### `CSS`三大特性：层叠性、继承性、优先级
 
 ### 盒子模型及使用技巧
+
+- 视觉格式化模型
 
 - 盒子模型的计算
 - `box-sizing: content-box/border-box`

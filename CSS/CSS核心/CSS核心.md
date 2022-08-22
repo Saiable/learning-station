@@ -6275,6 +6275,2435 @@ span {
 
 ## 弹性盒子
 
+弹性盒子是一种用于按行或按列布局元素的一维布局方法。元素可以膨胀以填充额外的空间，收缩以适应更小的空间。本文将解释所有的基本原理。
+
+### 为什么是 弹性盒子？
+
+长久以来，CSS 布局中唯一可靠且跨浏览器兼容的创建工具只有 [floats](https://developer.mozilla.org/zh-CN/docs/Learn/CSS/CSS_layout/Floats) 和 [positioning](https://developer.mozilla.org/zh-CN/docs/Learn/CSS/CSS_layout/Positioning)。这两个工具大部分情况下都很好使，但是在某些方面它们具有一定的局限性，让人难以完成任务。
+
+以下简单的布局需求是难以或不可能用这样的工具（ [floats](https://developer.mozilla.org/zh-CN/docs/Learn/CSS/CSS_layout/Floats) 和 [positioning](https://developer.mozilla.org/zh-CN/docs/Learn/CSS/CSS_layout/Positioning)）方便且灵活的实现的：
+
+- 在父内容里面垂直居中一个块内容。
+- 使容器的所有子项占用等量的可用宽度/高度，而不管有多少宽度/高度可用。
+- 使多列布局中的所有列采用相同的高度，即使它们包含的内容量不同。
+
+正如你将在后面的章节中看到的一样，弹性盒子使得很多布局任务变得更加容易。让我们继续吧！
+
+### 一个简单的例子
+
+在本文中，我们将通过一系列练习来帮助你了解 弹性盒子的工作原理。开始前，您应该拷贝 mozilla github 仓库的 [弹性盒子 0.html](https://github.com/mdn/learning-area/blob/master/css/css-layout/flexbox/flexbox0.html) 到本地 。在现代浏览器里打开它（比如 Firefox、Chrome），然后打开你的编辑器看一眼它的代码。你可以看它的[线上](https://mdn.github.io/learning-area/css/css-layout/flexbox/flexbox0.html)实例。
+
+你可以看到这个页面有一个含有顶级标题的 `<header>` 元素，和一个包含三个` <article>` 的 `<section>` 元素。我们将使用这些来创建一个非常的标准三列布局，如下所示：
+
+```html
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Flexbox 0 — starting code</title>
+  <style>
+      html {
+          font-family: sans-serif;
+      }
+
+      body {
+          margin: 0;
+      }
+
+      header {
+          background: purple;
+          height: 100px;
+      }
+
+      h1 {
+          text-align: center;
+          color: white;
+          line-height: 100px;
+          margin: 0;
+      }
+
+      article {
+          padding: 10px;
+          margin: 10px;
+          background: aqua;
+      }
+
+      /* Add your flexbox CSS below here */
+
+
+  </style>
+</head>
+<body>
+<header>
+  <h1>Sample flexbox example</h1>
+</header>
+
+<section>
+  <article>
+    <h2>First article</h2>
+
+    <p>Tacos actually microdosing, pour-over semiotics banjo chicharrones retro fanny pack portland everyday carry vinyl
+      typewriter. Tacos PBR&B pork belly, everyday carry ennui pickled sriracha normcore hashtag polaroid single-origin
+      coffee cold-pressed. PBR&B tattooed trust fund twee, leggings salvia iPhone photo booth health goth gastropub
+      hammock.</p>
+  </article>
+
+  <article>
+    <h2>Second article</h2>
+
+    <p>Tacos actually microdosing, pour-over semiotics banjo chicharrones retro fanny pack portland everyday carry vinyl
+      typewriter. Tacos PBR&B pork belly, everyday carry ennui pickled sriracha normcore hashtag polaroid single-origin
+      coffee cold-pressed. PBR&B tattooed trust fund twee, leggings salvia iPhone photo booth health goth gastropub
+      hammock.</p>
+  </article>
+
+  <article>
+    <h2>Third article</h2>
+
+    <p>Tacos actually microdosing, pour-over semiotics banjo chicharrones retro fanny pack portland everyday carry vinyl
+      typewriter. Tacos PBR&B pork belly, everyday carry ennui pickled sriracha normcore hashtag polaroid single-origin
+      coffee cold-pressed. PBR&B tattooed trust fund twee, leggings salvia iPhone photo booth health goth gastropub
+      hammock.</p>
+
+    <p>Cray food truck brunch, XOXO +1 keffiyeh pickled chambray waistcoat ennui. Organic small batch paleo 8-bit.
+      Intelligentsia umami wayfarers pickled, asymmetrical kombucha letterpress kitsch leggings cold-pressed squid
+      chartreuse put a bird on it. Listicle pickled man bun cornhole heirloom art party.</p>
+  </article>
+</section>
+</body>
+</html>
+```
+
+![image-20220822091433457](image-20220822091433457.png)
+
+### 指定元素的布局为 flexible
+
+首先，我们需要选择将哪些元素将设置为柔性的盒子。我们需要给这些 flexible 元素的父元素 display 设置一个特定值。在本例中，我们想要设置 `<article>` 元素，因此我们给 `<section>`（变成了 flex 容器）设置 display：
+
+```css
+section {
+  display:flex
+}
+
+```
+
+结果如下：
+
+![image-20220822091839296](image-20220822091839296.png)
+
+所以，就这样一个简单的声明就给了我们所需要的一切—非常不可思议，对吧？我们的多列布局具有大小相等的列，并且列的高度都是一样。这是因为这样的 flex 项（flex 容器的子项）的默认值是可以解决这些的常见问题的。后面还有更多内容。
+
+> **备注：** 假如你想设置行内元素为 flexible box，也可以置 [`display`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/display) 属性的值为 `inline-flex。`
+
+
+
+### flex 模型说明
+
+当元素表现为 flex 框时，它们沿着两个轴来布局：
+
+（当元素的内部显示类型为`flex`时，它的子元素们沿着两个轴来布局）
+
+![flex_terms.png](flex_terms.png)
+
+
+
+- **主轴**（main axis）是沿着 flex 元素放置的方向延伸的轴（比如页面上的横向的行、纵向的列）。该轴的开始和结束被称为 **main start** 和 **main end**。
+- **交叉轴**（cross axis）是垂直于 flex 元素放置方向的轴。该轴的开始和结束被称为 **cross start** 和 **cross end**。
+- 设置了 `display: flex` 的父元素（在本例中是 [`<section>`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/section)）被称之为 **flex 容器（flex container）。**
+- 在 flex 容器中表现为柔性的盒子的元素被称之为 **flex 项**（**flex item**）（本例中是 [`<article>`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/article) 元素。
+
+了解这些术语以便你阅读后续章节。如果您对使用的任何术语感到困惑，您可以随时返回这里。
+
+### 列还是行？
+
+弹性盒子提供了 [`flex-direction`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/flex-direction) 这样一个属性，它可以指定主轴的方向（弹性盒子子类放置的地方）— 它默认值是 `row`，这使得它们在按你浏览器的默认语言方向排成一排（在英语/中文浏览器中是从左到右）。
+
+尝试将以下声明添加到 section 元素的 css 规则里：
+
+```css
+flex-direction: column;
+
+```
+
+你会看到，这会将那些元素设置为列布局，就像我们添加这些 CSS 之前。在继续之前，请从示例中删除此规则。
+
+**备注：** 你还可以使用 `row-reverse` 和 `column-reverse` 值反向排列 flex 项目。用这些值试试看吧！
+
+`flex-direction`
+
+- `row`
+
+- `column`
+- `row-reverse`
+- `column-reverse`
+
+
+
+### 换行
+
+当你在布局中使用定宽或者定高的时候，可能会出现问题即处于容器中的 弹性盒子子元素会溢出，破坏了布局。你可以看一下 [弹性盒子-wrap0.html](https://github.com/mdn/learning-area/blob/master/css/css-layout/flexbox/flexbox-wrap0.html) 示例（你也可以拷贝到本地），如下所示：
+
+```html
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Flexbox wrap 0 — children overflowing</title>
+  <style>
+      html {
+          font-family: sans-serif;
+      }
+
+      body {
+          margin: 0;
+      }
+
+      header {
+          background: purple;
+          height: 100px;
+      }
+
+      h1 {
+          text-align: center;
+          color: white;
+          line-height: 100px;
+          margin: 0;
+      }
+
+      article {
+          padding: 10px;
+          margin: 10px;
+          background: aqua;
+      }
+
+      /* Add your flexbox CSS below here */
+
+      section {
+          display: flex;
+          flex-direction: row;
+      }
+
+      article {
+
+      }
+
+
+  </style>
+</head>
+<body>
+<header>
+  <h1>Sample flexbox example</h1>
+</header>
+
+<section>
+  <article>
+    <h2>First article</h2>
+
+    <p>Tacos actually microdosing, pour-over semiotics banjo chicharrones retro fanny pack portland everyday carry vinyl
+      typewriter. Tacos PBR&B pork belly, everyday carry ennui pickled sriracha normcore hashtag polaroid single-origin
+      coffee cold-pressed. PBR&B tattooed trust fund twee, leggings salvia iPhone photo booth health goth gastropub
+      hammock.</p>
+  </article>
+
+  <article>
+    <h2>Second article</h2>
+
+    <p>Tacos actually microdosing, pour-over semiotics banjo chicharrones retro fanny pack portland everyday carry vinyl
+      typewriter. Tacos PBR&B pork belly, everyday carry ennui pickled sriracha normcore hashtag polaroid single-origin
+      coffee cold-pressed. PBR&B tattooed trust fund twee, leggings salvia iPhone photo booth health goth gastropub
+      hammock.</p>
+  </article>
+
+  <article>
+    <h2>Third article</h2>
+
+    <p>Tacos actually microdosing, pour-over semiotics banjo chicharrones retro fanny pack portland everyday carry vinyl
+      typewriter. Tacos PBR&B pork belly, everyday carry ennui pickled sriracha normcore hashtag polaroid single-origin
+      coffee cold-pressed. PBR&B tattooed trust fund twee, leggings salvia iPhone photo booth health goth gastropub
+      hammock.</p>
+
+    <p>Cray food truck brunch, XOXO +1 keffiyeh pickled chambray waistcoat ennui. Organic small batch paleo 8-bit.
+      Intelligentsia umami wayfarers pickled, asymmetrical kombucha letterpress kitsch leggings cold-pressed squid
+      chartreuse put a bird on it. Listicle pickled man bun cornhole heirloom art party.</p>
+  </article>
+
+  <article>
+    <h2>Fourth article</h2>
+
+    <p>Tacos actually microdosing, pour-over semiotics banjo chicharrones retro fanny pack portland everyday carry vinyl
+      typewriter. Tacos PBR&B pork belly, everyday carry ennui pickled sriracha normcore hashtag polaroid single-origin
+      coffee cold-pressed. PBR&B tattooed trust fund twee, leggings salvia iPhone photo booth health goth gastropub
+      hammock.</p>
+  </article>
+
+  <article>
+    <h2>Fifth article</h2>
+
+    <p>Tacos actually microdosing, pour-over semiotics banjo chicharrones retro fanny pack portland everyday carry vinyl
+      typewriter. Tacos PBR&B pork belly, everyday carry ennui pickled sriracha normcore hashtag polaroid single-origin
+      coffee cold-pressed. PBR&B tattooed trust fund twee, leggings salvia iPhone photo booth health goth gastropub
+      hammock.</p>
+  </article>
+
+  <article>
+    <h2>Sixth article</h2>
+
+    <p>Tacos actually microdosing, pour-over semiotics banjo chicharrones retro fanny pack portland everyday carry vinyl
+      typewriter. Tacos PBR&B pork belly, everyday carry ennui pickled sriracha normcore hashtag polaroid single-origin
+      coffee cold-pressed. PBR&B tattooed trust fund twee, leggings salvia iPhone photo booth health goth gastropub
+      hammock.</p>
+
+    <p>Cray food truck brunch, XOXO +1 keffiyeh pickled chambray waistcoat ennui. Organic small batch paleo 8-bit.
+      Intelligentsia umami wayfarers pickled, asymmetrical kombucha letterpress kitsch leggings cold-pressed squid
+      chartreuse put a bird on it. Listicle pickled man bun cornhole heirloom art party.</p>
+  </article>
+
+  <article>
+    <h2>Seventh article</h2>
+
+    <p>Tacos actually microdosing, pour-over semiotics banjo chicharrones retro fanny pack portland everyday carry vinyl
+      typewriter. Tacos PBR&B pork belly, everyday carry ennui pickled sriracha normcore hashtag polaroid single-origin
+      coffee cold-pressed. PBR&B tattooed trust fund twee, leggings salvia iPhone photo booth health goth gastropub
+      hammock.</p>
+  </article>
+
+  <article>
+    <h2>Eighth article</h2>
+
+    <p>Tacos actually microdosing, pour-over semiotics banjo chicharrones retro fanny pack portland everyday carry vinyl
+      typewriter. Tacos PBR&B pork belly, everyday carry ennui pickled sriracha normcore hashtag polaroid single-origin
+      coffee cold-pressed. PBR&B tattooed trust fund twee, leggings salvia iPhone photo booth health goth gastropub
+      hammock.</p>
+  </article>
+
+  <article>
+    <h2>Ninth article</h2>
+
+    <p>Tacos actually microdosing, pour-over semiotics banjo chicharrones retro fanny pack portland everyday carry vinyl
+      typewriter. Tacos PBR&B pork belly, everyday carry ennui pickled sriracha normcore hashtag polaroid single-origin
+      coffee cold-pressed. PBR&B tattooed trust fund twee, leggings salvia iPhone photo booth health goth gastropub
+      hammock.</p>
+
+    <p>Cray food truck brunch, XOXO +1 keffiyeh pickled chambray waistcoat ennui. Organic small batch paleo 8-bit.
+      Intelligentsia umami wayfarers pickled, asymmetrical kombucha letterpress kitsch leggings cold-pressed squid
+      chartreuse put a bird on it. Listicle pickled man bun cornhole heirloom art party.</p>
+  </article>
+
+  <article>
+    <h2>Tenth article</h2>
+
+    <p>Tacos actually microdosing, pour-over semiotics banjo chicharrones retro fanny pack portland everyday carry vinyl
+      typewriter. Tacos PBR&B pork belly, everyday carry ennui pickled sriracha normcore hashtag polaroid single-origin
+      coffee cold-pressed. PBR&B tattooed trust fund twee, leggings salvia iPhone photo booth health goth gastropub
+      hammock.</p>
+  </article>
+
+  <article>
+    <h2>Eleventh article</h2>
+
+    <p>Tacos actually microdosing, pour-over semiotics banjo chicharrones retro fanny pack portland everyday carry vinyl
+      typewriter. Tacos PBR&B pork belly, everyday carry ennui pickled sriracha normcore hashtag polaroid single-origin
+      coffee cold-pressed. PBR&B tattooed trust fund twee, leggings salvia iPhone photo booth health goth gastropub
+      hammock.</p>
+  </article>
+
+  <article>
+    <h2>Twelfth article</h2>
+
+    <p>Tacos actually microdosing, pour-over semiotics banjo chicharrones retro fanny pack portland everyday carry vinyl
+      typewriter. Tacos PBR&B pork belly, everyday carry ennui pickled sriracha normcore hashtag polaroid single-origin
+      coffee cold-pressed. PBR&B tattooed trust fund twee, leggings salvia iPhone photo booth health goth gastropub
+      hammock.</p>
+
+    <p>Cray food truck brunch, XOXO +1 keffiyeh pickled chambray waistcoat ennui. Organic small batch paleo 8-bit.
+      Intelligentsia umami wayfarers pickled, asymmetrical kombucha letterpress kitsch leggings cold-pressed squid
+      chartreuse put a bird on it. Listicle pickled man bun cornhole heirloom art party.</p>
+  </article>
+</section>
+</body>
+</html>
+```
+
+![image-20220822093943530](image-20220822093943530.png)
+
+在这里我们看到，子代确实超出了它们的容器。解决此问题的一种方法是将以下声明添加到 section css 规则中：
+
+```css
+flex-wrap: wrap
+
+```
+
+同时，把以下规则也添加到`<article>` 规则中：
+
+```css
+flex: 200px;
+
+```
+
+现在尝试一下吧；你会看到布局比原来好多了：
+
+![image-20220822094233759](image-20220822094233759.png)
+
+现在我们有了多行 弹性盒子— 任何溢出的元素将被移到下一行。
+
+在 article 元素上设置的 flex: 200px 规则，意味着每个元素的宽度至少是 200px（不一定是200px，但一定大于等于200px）；我们将在后面更详细地讨论这个属性。
+
+你可能还注意到，最后一行上的最后几个项每个都变得更宽，以便把整个行填满。
+
+![image-20220822094647722](/image-20220822094647722.png)
+
+但是这里我们可以做得更多。首先，改变 [`flex-direction`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/flex-direction) 属性值为 `row-reverse` — 你会看到仍然有多行布局，但是每一行元素排列的方向和原来是相反的了。
+
+![image-20220822094801771](image-20220822094801771.png)
+
+`flex-wrap`
+
+- `nowrap`
+- `wrap`
+- `wrap-reverser`
+
+### flex-flow 缩写
+
+到这里，应当注意到存在着 [`flex-direction`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/flex-direction) 和 [`flex-wrap`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/flex-wrap) — 的缩写 [`flex-flow`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/flex-flow)。比如，你可以将
+
+```css
+flex-direction: row;
+flex-wrap: wrap;
+
+```
+
+替换为
+
+```css
+flex-flow: row wrap;
+
+```
+
+### flex 项的动态尺寸
+
+现在让我们回到第一个例子，看看是如何控制 flex 项占用空间的比例的。打开你本地的 [弹性盒子 0.html](https://github.com/mdn/learning-area/blob/master/css/css-layout/flexbox/flexbox0.html)，或者拷贝 [弹性盒子 1.html](https://github.com/mdn/learning-area/blob/master/css/css-layout/flexbox/flexbox1.html) 作为新的开始（[查看线上](https://mdn.github.io/learning-area/css/css-layout/flexbox/flexbox1.html)）。
+
+```html
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Flexbox 1 — basic flexbox model chosen</title>
+  <style>
+      html {
+          font-family: sans-serif;
+      }
+
+      body {
+          margin: 0;
+      }
+
+      header {
+          background: purple;
+          height: 100px;
+      }
+
+      h1 {
+          text-align: center;
+          color: white;
+          line-height: 100px;
+          margin: 0;
+      }
+
+      article {
+          padding: 10px;
+          margin: 10px;
+          background: aqua;
+      }
+
+      /* Add your flexbox CSS below here */
+
+      section {
+          display: flex;
+      }
+
+
+  </style>
+</head>
+<body>
+<header>
+  <h1>Sample flexbox example</h1>
+</header>
+
+<section>
+  <article>
+    <h2>First article</h2>
+
+    <p>Tacos actually microdosing, pour-over semiotics banjo chicharrones retro fanny pack portland everyday carry vinyl
+      typewriter. Tacos PBR&B pork belly, everyday carry ennui pickled sriracha normcore hashtag polaroid single-origin
+      coffee cold-pressed. PBR&B tattooed trust fund twee, leggings salvia iPhone photo booth health goth gastropub
+      hammock.</p>
+  </article>
+
+  <article>
+    <h2>Second article</h2>
+
+    <p>Tacos actually microdosing, pour-over semiotics banjo chicharrones retro fanny pack portland everyday carry vinyl
+      typewriter. Tacos PBR&B pork belly, everyday carry ennui pickled sriracha normcore hashtag polaroid single-origin
+      coffee cold-pressed. PBR&B tattooed trust fund twee, leggings salvia iPhone photo booth health goth gastropub
+      hammock.</p>
+  </article>
+
+  <article>
+    <h2>Third article</h2>
+
+    <p>Tacos actually microdosing, pour-over semiotics banjo chicharrones retro fanny pack portland everyday carry vinyl
+      typewriter. Tacos PBR&B pork belly, everyday carry ennui pickled sriracha normcore hashtag polaroid single-origin
+      coffee cold-pressed. PBR&B tattooed trust fund twee, leggings salvia iPhone photo booth health goth gastropub
+      hammock.</p>
+
+    <p>Cray food truck brunch, XOXO +1 keffiyeh pickled chambray waistcoat ennui. Organic small batch paleo 8-bit.
+      Intelligentsia umami wayfarers pickled, asymmetrical kombucha letterpress kitsch leggings cold-pressed squid
+      chartreuse put a bird on it. Listicle pickled man bun cornhole heirloom art party.</p>
+  </article>
+</section>
+</body>
+</html>
+```
+
+
+
+第一步，将以下规则添加到 CSS 的底部：
+
+```css
+article {
+  flex: 1;
+}
+
+```
+
+这是一个无单位的比例值，表示每个 flex 项沿主轴的可用空间大小。
+
+本例中，我们设置 [`<article>`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/article) 元素的 flex 值为 1，这表示每个元素占用空间都是相等的，占用的空间是在设置 padding 和 margin 之后剩余的空间。因为它是一个比例，这意味着将每个 flex 项的设置为 400000 的效果和 1 的时候是完全一样的。
+
+现在在上一个规则下添加：
+
+
+
+```css
+article:nth-of-type(3) {
+  flex: 2;
+}
+
+```
+
+现在当你刷新，你会看到第三个 `<article>` 元素占用了两倍的可用宽度和剩下的一样 — 现在总共有四个比例单位可用。前两个 flex 项各有一个，因此它们占用每个可用空间的 1/4。第三个有两个单位，所以它占用 2/4 或这说是 1/2 的可用空间。
+
+`First article`和`Second article`的`content`宽度为`307.25`
+
+![image-20220822101800411](image-20220822101800411.png)
+
+`Third article`的宽度为`307.25*2=614.5`
+
+![image-20220822101857456](image-20220822101857456.png)
+
+您还可以指定 flex 的最小值。尝试修改现有的 article 规则：
+
+```css
+article {
+  flex: 1 200px;
+}
+
+article:nth-of-type(3) {
+  flex: 2 200px;
+}
+
+```
+
+这表示“每个 flex 项将首先给出 200px 的可用空间，然后，剩余的可用空间将根据分配的比例共享“。尝试刷新，你会看到分配空间的差别。
+
+整个`section`宽度为1366（查看时不要出现竖直滚动条），减去所有的内边距和边框`40*3=120`，剩余`1366-120=1246`
+
+每个`flex`项先给出`200px`的空间，剩余`1246-200*3=646`
+
+剩余空间将根据分配的比例共享
+
+- `First article`和`Second article`各占一份，`content`宽度为`646*1/4+200=361.5`
+- `Third article`的`content`宽度为`646*2/4+200=523`
+
+![image-20220822103441520](image-20220822103441520.png)
+
+
+
+弹性盒子的真正价值可以体现在它的灵活性/响应性，如果你调整浏览器窗口的大小，或者增加一个 `<article>` 元素，这时的布局仍旧是好的。
+
+### flex: 缩写与全写
+
+[`flex`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/flex) 是一个可以指定最多三个不同值的缩写属性：
+
+- 第一个就是上面所讨论过的无单位比例。可以单独指定全写 [`flex-grow`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/flex-grow) 属性的值。
+- 第二个无单位比例 — [`flex-shrink`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/flex-shrink) — 一般用于溢出容器的 flex 项。这指定了从每个 flex 项中取出多少溢出量，以阻止它们溢出它们的容器。这是一个相当高级的弹性盒子功能，我们不会在本文中进一步说明。
+- 第三个是上面讨论的最小值。可以单独指定全写 [`flex-basis`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/flex-basis) 属性的值。
+
+我们建议不要使用全写属性，除非你真的需要（比如要去覆盖之前写的）。使用全写会多写很多的代码，它们也可能有点让人困惑。
+
+### 水平和垂直对齐
+
+还可以使用 弹性盒子的功能让 flex 项沿主轴或交叉轴对齐。让我们一起看一下新例子 — [flex-align0.html](https://github.com/mdn/learning-area/blob/master/css/css-layout/flexbox/flex-align0.html)（[在线浏览](https://mdn.github.io/learning-area/css/css-layout/flexbox/flex-align0.html)）— 我们将会有一个整洁，灵活的按钮/工具栏。此时，你看到了一个水平菜单栏，其中一些按钮卡在左上角，就像下面这样：
+
+```html
+
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Flexbox align 0 — starting code</title>
+    <style>
+      html {
+        font-family: sans-serif;
+      }
+
+      body {
+        width: 70%;
+        max-width: 960px;
+        margin: 20px auto;
+      }
+
+      button {
+        font-size: 18px;
+        line-height: 1.5;
+        width: 15%;
+      }
+
+      div {
+        height: 100px;
+        border: 1px solid black;
+      }
+
+      /* Add your flexbox CSS below here */
+
+      
+    </style>
+  </head>
+  <body>
+    <div>
+      <button>Smile</button>
+      <button>Laugh</button>
+      <button>Wink</button>
+      <button>Shrug</button>
+      <button>Blush</button>
+    </div>
+  </body>
+</html>
+```
+
+![image-20220822105007948](image-20220822105007948.png)
+
+
+
+首先，拷贝一份到本地。
+
+然后，将下面的 CSS 添加到例子的底部：
+
+```css
+div {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+```
+
+刷新一下页面，你就会看到这些按钮很好的垂直水平居中了。我们是通过下面所说的两个新的属性做到的。
+
+[`align-items`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/align-items) 控制 flex 项在交叉轴上的位置。
+
+- 默认的值是 `stretch`，其会使所有 flex 项沿着交叉轴的方向拉伸以填充父容器。如果父容器在交叉轴方向上没有固定宽度（即高度），则所有 flex 项将变得与最长的 flex 项一样长（即高度保持一致）。我们的第一个例子在默认情况下得到相等的高度的列的原因。
+
+  ![image-20220822105534500](image-20220822105534500.png)
+
+- 在上面规则中我们使用的 `center` 值会使这些项保持其原有的高度，但是会在交叉轴居中。这就是那些按钮垂直居中的原因。
+
+  ![image-20220822105600500](image-20220822105600500.png)
+
+- 你也可以设置诸如 `flex-start` 或 `flex-end` 这样使 flex 项在交叉轴的开始或结束处对齐所有的值。查看 [`align-items`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/align-items) 了解更多。
+
+  ![image-20220822105626009](image-20220822105626009.png)
+
+你可以用 [`align-self`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/align-self) 属性覆盖 [`align-items`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/align-items) 的行为。比如，你可以这样：
+
+```css
+button:first-child {
+  align-self: flex-end;
+}
+
+```
+
+去看看它产生的效果，然后删除它。
+
+![image-20220822105726155](image-20220822105726155.png)
+
+[`justify-content`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/justify-content) 控制 flex 项在主轴上的位置。
+
+- 默认值是 `flex-start`，这会使所有 flex 项都位于主轴的开始处。
+
+  ![image-20220822105906113](image-20220822105906113.png)
+
+- 你也可以用 `flex-end` 来让 flex 项到结尾处。
+
+  ![image-20220822105954642](image-20220822105954642.png)
+
+- `center` 在 `justify-content` 里也是可用的，可以让 flex 项在主轴居中。
+
+  ![image-20220822110011487](image-20220822110011487.png)
+
+- 而我们上面用到的值 `space-around` 是很有用的——它会使所有 flex 项沿着主轴均匀地分布，在任意一端都会留有一点空间。
+
+  ![image-20220822110040716](image-20220822110040716.png)
+
+- 还有一个值是 `space-between`，它和 `space-around` 非常相似，只是它不会在两端留下任何空间。
+
+  ![image-20220822110104085](image-20220822110104085.png)
+
+- 还有一个值是`space-evenly`，它会使所有的`flex`项周围的空白空间都保持一致（首尾元素比`space-around`多了一点空白）
+
+  ![image-20220822110143310](image-20220822110143310.png)
+
+  在继续下面之前，多多使用提到过的属性吧，看看它们的效果。
+
+### flex 项排序
+
+弹性盒子也有可以改变 flex 项的布局位置的功能，而不会影响到源顺序（即 dom 树里元素的顺序）。这也是传统布局方式很难做到的一点。
+
+代码也很简单，将下面的 CSS 添加到示例代码下面。
+
+```css
+button:first-child {
+  order: 1;
+}
+
+```
+
+![image-20220822110537144](image-20220822110537144.png)
+
+刷新下，然后你会看到 "Smile" 按钮移动到了主轴的末尾。下面我们谈下它实现的一些细节：
+
+- 所有 flex 项默认的 [`order`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/order) 值是 0。
+- order 值大的 flex 项比 order 值小的在显示顺序中更靠后。
+- 相同 order 值的 flex 项按源顺序显示。所以假如你有四个元素，其 order 值分别是 2，1，1 和 0，那么它们的显示顺序就分别是第四，第二，第三，和第一。
+- 第三个元素显示在第二个后面是因为它们的 order 值一样，且第三个元素在源顺序中排在第二个后面。
+
+你也可以给 order 设置负值使它们比值为 0 的元素排得更前面。比如，你可以设置 "Blush" 按钮排在主轴的最前面：
+
+```css
+button:last-child {
+  order: -1;
+}
+```
+
+### flex 嵌套
+
+弹性盒子也能创建一些颇为复杂的布局。设置一个元素为 flex 项目，那么他同样成为一个 flex 容器，它的孩子 (直接子节点) 也表现为 flexible box。看一下 [complex-弹性盒子.html](https://github.com/mdn/learning-area/blob/master/css/css-layout/flexbox/complex-flexbox.html)（[在线浏览](https://mdn.github.io/learning-area/css/css-layout/flexbox/complex-flexbox.html)）。
+
+
+
+![image-20220822110831323](image-20220822110831323.png)
+
+
+
+### 跨浏览器兼容性
+
+大多数浏览器都支持 弹性盒子，诸如 Firefox, Chrome, Opera, Microsoft Edge 和 IE 11，较新版本的 Android/iOS 等等。但是你应该要意识到仍旧有被人使用的老浏览器不支持 弹性盒子（或者支持，但是只是支持非常非常老版本的 弹性盒子）。
+
+虽然你只是在学习和实验，这不太要紧; 然而，如果您正在考虑在真实网站中使用弹性盒子，则需要进行测试，并确保在尽可能多的浏览器中您的用户体验仍然可以接受。
+
+弹性盒子相较其他一些 CSS 特性可能更为棘手。例如，如果浏览器缺少 CSS 阴影，则该网站可能仍然可用。但是假如不支持 弹性盒子功能就会完全打破布局，使其不可用。
+
+我们将在未来的模块中讨论克服棘手的跨浏览器支持问题的策略。
+
+### 小结
+
+到这里，介绍弹性盒子的基础知识就结束了。我们希望你体会到乐趣，并且玩的开心，能随着你的学习与你一起向前。接下来，我们将看到 CSS 布局的另一个重要方面—网格系统。
+
+## 网格
+
+CSS 网格是一个用于 web 的二维布局系统。利用网格，你可以把内容按照行与列的格式进行排版。另外，网格还能非常轻松地实现一些复杂的布局。关于使用网格进行页面排版，这篇文章包含了你需要的一切知识。
+
+> **备注：** 本篇中旧版教程主要讲如何自己编写网格布局，最后过渡到浏览器支持的 CSS Grid Layout。而当前（2019-04-29）大多数浏览器已经支持了 CSS Grid Layout，没必要自己编写了，新版教程仅介绍 CSS Grid Layout 的用法
+
+### 什么是网格布局？
+
+网格是由一系列水平及垂直的线构成的一种布局模式。根据网格，我们能够将设计元素进行排列，帮助我们设计一系列具有固定位置以及宽度的元素的页面，使我们的网站页面更加统一。
+
+一个网格通常具有许多的**列（column）**与**行（row）**，以及行与行、列与列之间的间隙，这个间隙一般被称为**沟槽（gutter）**。
+
+![img](/grid.png)
+
+> **备注：** 任何有设计背景的人似乎都感到惊讶，CSS 没有内置的网格系统，而我们似乎使用各种次优方法来创建网格状的设计。正如你将在本文的最后一部分中发现的那样，这将被改变，但是你可能需要知道在未来一段时间内创建网格的现有方法。
+
+### 在 CSS 中创建自己的网格
+
+决定好你的设计所需要的网格后，你可以创建一个 CSS 网格版面并放入各类元素。我们先来看看网格的基础功能，然后尝试做一个简单的网格系统。
+
+#### 定义一个网格
+
+一如既往，你可以下载教程[文件](https://github.com/mdn/learning-area/blob/master/css/css-layout/grids/0-starting-point.html)（你可以在线看到[效果](https://mdn.github.io/learning-area/css/css-layout/grids/0-starting-point.html)）。例子中有一个容器，容器中有一些子项。默认情况下，子项按照正常布局流自顶而下排布。在这篇文章中，我们会从这开始，对这些文件做一些改变，来了解网格是如何工作的。
+
+```html
+
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>CSS Grid starting point</title>
+    <style>
+        body {
+            width: 90%;
+            max-width: 900px;
+            margin: 2em auto;
+            font: .9em/1.2 Arial, Helvetica, sans-serif;
+        }
+
+        .container > div {
+            border-radius: 5px;
+            padding: 10px;
+            background-color: rgb(207,232,220);
+            border: 2px solid rgb(79,185,227);
+        }
+    </style>
+  </head>
+
+<body>
+    <h1>Simple grid example</h1>
+
+    <div class="container">
+        <div>One</div>
+        <div>Two</div>
+        <div>Three</div>
+        <div>Four</div>
+        <div>Five</div>
+        <div>Six</div>
+        <div>Seven</div>
+    </div>
+
+</body>
+
+</html>
+```
+
+
+
+首先，将容器的[`display`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/display)属性设置为`grid`来定义一个网络。与弹性盒子一样，将父容器改为网格布局后，他的直接子项会变为网格项。把下面的 css 规则加到你的文件中。
+
+```css
+.container {
+    display: grid;
+}
+
+```
+
+与弹性盒子不同的是，在定义网格后，网页并不会马上发生变化。因为`display: grid`的声明只创建了一个只有一列的网格，所以你的子项还是会像正常布局流那样从上而下一个接一个的排布。
+
+![image-20220822112155791](image-20220822112155791.png)
+
+为了让我们的容器看起来更像一个网格，我们要给刚定义的网格加一些列。那就让我们加三个宽度为`200px`的列。当然，这里可以用任何长度单位，包括百分比。
+
+```css
+.container {
+    display: grid;
+    grid-template-columns: 200px 200px 200px;
+}
+
+```
+
+在规则里加入你的第二个声明。刷新页面后，你会看到子项们排进了新定义的网格中。
+
+![image-20220822112501064](image-20220822112501064.png)
+
+#### 使用 fr 单位的灵活网格
+
+除了长度和百分比，我们也可以用`fr`这个单位来灵活地定义网格的行与列的大小。这个单位表示了可用空间的一个比例，可能有点抽像，看看下面的例子吧。
+
+使用下面的规则来创建 3 个`1fr`的列：
+
+```css
+.container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+```
+
+![image-20220822112434674](image-20220822112434674.png)
+
+将窗口调窄（由于示例中设定了[`max-width`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/max-width)，可能需要很窄），你应该能看到每一列的宽度可以会随着可用空间变小而变小。
+
+![image-20220822112645117](image-20220822112645117.png)
+
+`fr` 单位按比例划分了可用空间，如果没有理解，可以试着改一下数值，看看会发生什么，比如下面的代码：
+
+```css
+.container {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+}
+
+```
+
+![image-20220822112758002](image-20220822112758002.png)
+
+这个定义里，第一列被分配了`2fr`可用空间，余下的两列各被分配了`1fr`的可用空间，这会使得第一列的宽度是第二第三列的两倍。另外，`fr`可以与一般的长度单位混合使用，比如`grid-template-columns: 300px 2fr 1fr`，那么第一列宽度是`300px`，剩下的两列会根据除去`300px`后的可用空间按比例分配。
+
+> **备注：** `fr`单位分配的是*可用*空间而非*所有*空间，所以如果某一格包含的内容变多了，那么整个可用空间就会减少，可用空间是不包括那些已经确定被占用的空间的。
+
+#### 网格间隙
+
+使用 [`grid-column-gap`](https://developer.mozilla.org/en-US/docs/Web/CSS/column-gap) 属性来定义列间隙；使用 [`grid-row-gap`](https://developer.mozilla.org/en-US/docs/Web/CSS/row-gap) 来定义行间隙；使用 [`grid-gap` ](https://developer.mozilla.org/en-US/docs/Web/CSS/gap) 可以同时设定两者。
+
+```css
+.container {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    grid-gap: 20px;
+}
+
+```
+
+![image-20220822113757639](image-20220822113757639.png)
+
+间隙距离可以用任何长度单位包括百分比来表示，但不能使用`fr`单位。
+
+> **备注：** `*gap`属性曾经有一个`grid-`前缀，不过后来的标准进行了修改，目的是让他们能够在不同的布局方法中都能起作用。尽管现在这个前缀不会影响语义，但为了代码的健壮性，你可以把两个属性都写上。
+
+```css
+.container {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  grid-gap: 20px;
+  gap: 20px;
+}
+
+```
+
+#### 重复构建行/列
+
+你可以使用`repeat`来重复构建具有某些宽度配置的某些列。举个例子，如果要创建多个等宽轨道，可以用下面的方法。
+
+```css
+.container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 20px;
+}
+
+```
+
+![image-20220822114000273](image-20220822114000273.png)
+
+和之前一样，你仍然得到了 3 个`1fr`的列。第一个传入 repeat 函数的值（`3`）表明了后续列宽的配置要重复多少次，而第二个值（`1fr`）表示需要重复的构建配置，这个配置可以具有多个长度设定。例如`repeat(2, 2fr 1fr)`，如果你仍然不明白，可以实际测试一下效果，这相当于填入了`2fr 1fr 2fr 1fr`。
+
+```css
+.container {
+    display: grid;
+    grid-template-columns: repeat(2, 2fr 1fr);
+    grid-gap: 20px;
+}
+
+```
+
+![image-20220822114131384](image-20220822114131384.png)
+
+#### 显式网格与隐式网格
+
+到目前为止，我们定义过了列，但还没有管过行。但在这之前，我们要来理解一下显式网格和隐式网格。显式网格是我们用`grid-template-columns` 或 `grid-template-rows` 属性创建的。而隐式网格则是当有内容被放到网格外时才会生成的。显式网格与隐式网格的关系与弹性盒子的 main 和 cross 轴的关系有些类似。
+
+隐式网格中生成的行/列大小是参数默认是`auto`，大小会根据放入的内容自动调整。当然，你也可以使用[`grid-auto-rows`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/grid-auto-rows)和[`grid-auto-columns`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/grid-auto-columns)属性手动设定隐式网格的大小。下面的例子将`grid-auto-rows`设为了`100px`，然后你可以看到那些隐式网格中的行（因为这个例子里没有设定[`grid-template-rows`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/grid-template-rows)，因此，所有行都位于隐式网格内）现在都是 100 像素高了。
+
+译者注：简单来说，隐式网格就是为了放显式网格放不下的元素，浏览器根据已经定义的显式网格自动生成的网格部分。
+
+
+
+```css
+.container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: 100px;
+  grid-gap: 20px;
+}
+
+```
+
+![image-20220822142414528](image-20220822142414528.png)
+
+#### 方便的 minmax() 函数
+
+100 像素高的行/列有时可能会不够用，因为时常会有比 100 像素高的内容加进去。所以，我们希望可以将其设定为至少 100 像素，而且可以跟随内容来自动拓展尺寸保证能容纳所有内容。显而易见，你很难知道网页上某个元素的尺寸在不同情况下会变成多少，一些额外的内容或者更大的字号就会导致许多能做到像素级精准的设计出现问题。所以，我们有了[`minmax`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/minmax)函数。
+
+[`minmax`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/minmax) 函数为一个行/列的尺寸设置了取值范围。比如设定为 `minmax(100px, auto)`，那么尺寸就至少为 100 像素，并且如果内容尺寸大于 100 像素则会根据内容自动调整。在这里试一下把 `grid-auto-rows` 属性设置为`minmax`函数。
+
+```css
+.container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: minmax(100px, auto);
+    grid-gap: 20px;
+}
+
+```
+
+如果所有网格内的内容均小于 100 像素，那么看起来不会有变化，但如果在某一项中放入很长的内容或者图片，你可以看到这个格子所在的哪一行的高度变成能刚好容纳内容的高度了。注意我们修改的是`grid-auto-rows` ，因此只会作用于隐式网格。当然，这一项属性也可以应用于显示网格，更多内容可以参考[`minmax`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/minmax)页面。
+
+#### 自动使用多列填充
+
+现在来试试把学到的关于网格的一切，包括 repeat 与 minmax 函数，组合起来，来实现一个非常有用的功能。某些情况下，我们需要让网格自动创建很多列来填满整个容器。通过设置`grid-template-columns`属性，我们可以实现这个效果，不过这一次我们会用到[`repeat`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/repeat)函数中的一个关键字`auto-fill`来替代确定的重复次数。而函数的第二个参数，我们使用[`minmax`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/minmax)函数来设定一个行/列的最小值，以及最大值`1fr`。
+
+```css
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-auto-rows: minmax(100px, auto);
+  grid-gap: 20px;
+}
+
+```
+
+![image-20220822143239545](image-20220822143239545.png)
+
+你应该能看到形成了一个包含了许多至少 200 像素宽的列的网格，将容器填满。随着容器宽度的改变，网格会自动根据容器宽度进行调整，每一列的宽度总是大于 200 像素，并且容器总会被列填满。
+
+### 基于线的元素放置
+
+在定义完了网格之后，我们要把元素放入网格中。我们的网格有许多分隔线，第一条线的起始点与文档书写模式相关。在英文中，第一条列分隔线（即网格边缘线）在网格的最左边而第一条行分隔线在网格的最上面。而对于阿拉伯语，第一条列分隔线在网格的最右边，因为阿拉伯文是从右往左书写的。
+
+我们根据这些分隔线来放置元素，通过以下属性来指定从那条线开始到哪条线结束。
+
+- [`grid-column-start`](https://developer.mozilla.org/en-US/docs/Web/CSS/grid-column-start)
+- [`grid-column-end` ](https://developer.mozilla.org/en-US/docs/Web/CSS/grid-column-end)
+- [`grid-row-start` ](https://developer.mozilla.org/en-US/docs/Web/CSS/grid-row-start)
+- [`grid-row-end` ](https://developer.mozilla.org/en-US/docs/Web/CSS/grid-row-end)
+
+这些属性的值均为分隔线序号，你也可以用以下缩写形式来同时指定开始与结束的线。
+
+- [`grid-column`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/grid-column)
+- [`grid-row`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/grid-row)
+
+注意开始与结束的线的序号要使用`/`符号分开。
+
+下载[这个文件](https://github.com/mdn/learning-area/blob/master/css/css-layout/grids/8-placement-starting-point.html)（或者查看[在线预览](https://mdn.github.io/learning-area/css/css-layout/grids/8-placement-starting-point.html)）。文件中已经定义了一个网格以及一篇简单的文章位于网格之外。你可以看到元素已经被自动放置到了我们创建的网格中。
+
+```html
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>CSS Grid - line-based placement starting point</title>
+  <style>
+      body {
+          width: 90%;
+          max-width: 900px;
+          margin: 2em auto;
+          font: .9em/1.2 Arial, Helvetica, sans-serif;
+      }
+
+      .container {
+          display: grid;
+          grid-template-columns: 1fr 3fr;
+          grid-gap: 20px;
+      }
+
+      header,
+      footer {
+          border-radius: 5px;
+          padding: 10px;
+          background-color: rgb(207, 232, 220);
+          border: 2px solid rgb(79, 185, 227);
+      }
+
+      aside {
+          border-right: 1px solid #999;
+      }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+  <header>This is my lovely blog</header>
+  <article>
+    <h1>My article</h1>
+    <p>Duis felis orci, pulvinar id metus ut, rutrum luctus orci. Cras porttitor imperdiet nunc, at ultricies tellus
+      laoreet sit amet. Sed auctor cursus massa at porta. Integer ligula ipsum, tristique sit amet orci vel, viverra
+      egestas ligula. Curabitur vehicula tellus neque, ac ornare ex malesuada et. In vitae convallis lacus. Aliquam erat
+      volutpat. Suspendisse ac imperdiet turpis. Aenean finibus sollicitudin eros pharetra congue. Duis ornare egestas
+      augue ut luctus. Proin blandit quam nec lacus varius commodo et a urna. Ut id ornare felis, eget fermentum
+      sapien.</p>
+
+    <p>Nam vulputate diam nec tempor bibendum. Donec luctus augue eget malesuada ultrices. Phasellus turpis est, posuere
+      sit amet dapibus ut, facilisis sed est. Nam id risus quis ante semper consectetur eget aliquam lorem. Vivamus
+      tristique elit dolor, sed pretium metus suscipit vel. Mauris ultricies lectus sed lobortis finibus. Vivamus eu
+      urna eget velit cursus viverra quis vestibulum sem. Aliquam tincidunt eget purus in interdum. Cum sociis natoque
+      penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
+  </article>
+  <aside><h2>Other things</h2>
+    <p>Nam vulputate diam nec tempor bibendum. Donec luctus augue eget malesuada ultrices. Phasellus turpis est, posuere
+      sit amet dapibus ut, facilisis sed est.</p></aside>
+  <footer>Contact me@mysite.com</footer>
+</div>
+
+</body>
+
+</html>
+```
+
+
+
+接下来，尝试用定义网格线的方法将所有元素放置到网格中。将以下规则加入到你的 css 的末尾：
+
+```css
+header {
+  grid-column: 1 / 3;
+  grid-row: 1;
+}
+
+article {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+aside {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+footer {
+  grid-column: 1 / 3;
+  grid-row: 3;
+}
+
+```
+
+![image-20220822144414667](image-20220822144414667.png)
+
+> **备注：** 你也可以用`-1`来定位到最后一条列分隔线或是行分隔线，并且可以用负数来指定倒数的某一条分隔线。但是这只能用于显式网格，对于[隐式网格](https://developer.mozilla.org/zh-CN/docs/Glossary/Grid)`-1`不一定能定位到最后一条分隔线。
+
+
+
+### 使用 grid-template-areas 属性放置元素
+
+另一种往网格放元素的方式是用[`grid-template-areas`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/grid-template-areas)属性，并且你要命名一些元素并在属性中使用这些名字作为一个区域。
+
+将之前基于线的元素放置代码删除（或者重新下载一份新的文件），然后加入以下 CSS 规则：
+
+```css
+.container {
+  display: grid;
+  grid-template-areas:
+      "header header"
+      "sidebar content"
+      "footer footer";
+  grid-template-columns: 1fr 3fr;
+  grid-gap: 20px;
+}
+
+header {
+  grid-area: header;
+}
+
+article {
+  grid-area: content;
+}
+
+aside {
+  grid-area: sidebar;
+}
+
+footer {
+  grid-area: footer;
+}
+
+```
+
+刷新页面，然后你应该能看到的元素会被放到与之前相同的地方，整个过程不需要我们指定任何分隔线序号。
+
+![image-20220822144858776](image-20220822144858776.png)
+
+`grid-template-areas`属性的使用规则如下：
+
+- 你需要填满网格的每个格子
+- 对于某个横跨多个格子的元素，重复写上那个元素`grid-area`属性定义的区域名字
+- 所有名字只能出现在一个连续的区域，不能在不同的位置出现
+- 一个连续的区域必须是一个矩形
+- 使用`.`符号，让一个格子留空
+
+你可以在文件中尽情发挥你的想象来测试各种网格排版，比如把页脚放在内容之下，或者把侧边栏一直延伸到最底。这种直观的元素放置方式很棒，你在 CSS 中看到的就是实际会出现的排版效果。
+
+### 一个用 CSS 网格实现的网格排版框架
+
+网格排版框架一般由 12 到 16 列的网格构成，你可以用 CSS 网格系统直接实现而不需要任何第三方的工具，毕竟这是标准定义好了的。
+
+下载这个[初始文件](https://github.com/mdn/learning-area/blob/master/css/css-layout/grids/11-grid-system-starting-point.html)，文件中包含了一个定义了 12 列网格的容器。文件中的一些内容我们曾在前两个示例中使用过，我们暂时可以先用基于线的元素放置模式来将我们的内容放到这个 12 列的网格中。
+
+```html
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>CSS Grid - line-based placement starting point</title>
+  <style>
+      body {
+          width: 90%;
+          max-width: 900px;
+          margin: 2em auto;
+          font: .9em/1.2 Arial, Helvetica, sans-serif;
+      }
+
+      .container {
+          display: grid;
+          grid-template-columns: repeat(12, minmax(0, 1fr));
+          grid-gap: 20px;
+      }
+
+      header,
+      footer {
+          border-radius: 5px;
+          padding: 10px;
+          background-color: rgb(207, 232, 220);
+          border: 2px solid rgb(79, 185, 227);
+      }
+
+      aside {
+          border-right: 1px solid #999;
+      }
+
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+  <header>This is my lovely blog</header>
+  <article>
+    <h1>My article</h1>
+    <p>Duis felis orci, pulvinar id metus ut, rutrum luctus orci. Cras porttitor imperdiet nunc, at ultricies tellus
+      laoreet sit amet. Sed auctor cursus massa at porta. Integer ligula ipsum, tristique sit amet orci vel, viverra
+      egestas ligula. Curabitur vehicula tellus neque, ac ornare ex malesuada et. In vitae convallis lacus. Aliquam erat
+      volutpat. Suspendisse ac imperdiet turpis. Aenean finibus sollicitudin eros pharetra congue. Duis ornare egestas
+      augue ut luctus. Proin blandit quam nec lacus varius commodo et a urna. Ut id ornare felis, eget fermentum
+      sapien.</p>
+
+    <p>Nam vulputate diam nec tempor bibendum. Donec luctus augue eget malesuada ultrices. Phasellus turpis est, posuere
+      sit amet dapibus ut, facilisis sed est. Nam id risus quis ante semper consectetur eget aliquam lorem. Vivamus
+      tristique elit dolor, sed pretium metus suscipit vel. Mauris ultricies lectus sed lobortis finibus. Vivamus eu
+      urna eget velit cursus viverra quis vestibulum sem. Aliquam tincidunt eget purus in interdum. Cum sociis natoque
+      penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
+  </article>
+  <aside><h2>Other things</h2>
+    <p>Nam vulputate diam nec tempor bibendum. Donec luctus augue eget malesuada ultrices. Phasellus turpis est, posuere
+      sit amet dapibus ut, facilisis sed est.</p></aside>
+  <footer>Contact me@mysite.com</footer>
+</div>
+
+</body>
+
+</html>
+```
+
+```css
+header {
+  grid-column: 1 / 13;
+  grid-row: 1;
+}
+
+article {
+  grid-column: 4 / 13;
+  grid-row: 2;
+}
+
+aside {
+  grid-column: 1 / 4;
+  grid-row: 2;
+}
+
+footer {
+  grid-column: 1 / 13;
+  grid-row: 3;
+}
+
+```
+
+你可以使用[Firefox Grid Inspector](https://firefox-source-docs.mozilla.org/devtools-user/page_inspector/how_to/examine_grid_layouts/index.html)去查看页面中的网格线，你应该能看到这 12 列的网格是如何工作的。
+
+![image-20220822145809803](/image-20220822145809803.png)
+
+### 小结
+
+我们在这篇文章中接触了 CSS 网格版面的主要特性，你现在应该可以在你自己的设计中使用了。想深入了解这些内容，你可以读一读下面关于网格版面的文章，可以下面的推荐阅读里看到。
+
+- [CSS 网格指南](https://developer.mozilla.org/zh-CN/docs/Web/CSS/CSS_Grid_Layout#guides)
+- [CSS 网格检查器：检查的你的网格版面 (en-US)](https://firefox-source-docs.mozilla.org/devtools-user/page_inspector/how_to/examine_grid_layouts/index.html)
+
+## 浮动
+
+[`float`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/float) 属性最初只用于在成块的文本内浮动图像，但是现在它已成为在网页上创建多列布局的最常用工具之一。本文将阐述它的有关知识。
+
+### 浮动的背景知识
+
+最初，引入 [`float`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/float) 属性是为了能让 Web 开发人员实现简单的布局，包括在一列文本中浮动的图像，文字环绕在它的左边或右边。你可能在报纸版面上看到过。
+
+但 Web 开发人员很快意识到，任何东西都可以浮动，而不仅仅是图像，所以浮动的使用范围扩大了。之前的 [fancy paragraph example](https://css-tricks.com/snippets/css/drop-caps/) 的课程展示了如何使用浮动创建一个有趣的 drop-cap（首字下沉）效果。
+
+浮动曾被用来实现整个网站页面的布局，它使信息列得以横向排列（默认的设定则是按照这些列在源代码中出现的顺序纵向排列）。目前出现了更新更好的页面布局技术，所以使用浮动来进行页面布局应被看作[传统的布局方法](https://developer.mozilla.org/zh-CN/docs/Learn/CSS/CSS_layout/Legacy_Layout_Methods)。
+
+在这一章中，我们仅就浮动这一命令本身的性能展开讲解。
+
+### 简单的例子
+
+让我们来探讨如何使用浮动。我们将从一个非常简单的例子开始，包括在图像周围浮动一个文本块。你可以在电脑上创建新的 `index.html` 文件，并以 [简单的 HTML 模板](https://github.com/mdn/learning-area/blob/master/html/introduction-to-html/getting-started/index.html) 填充，在适当的地方插入以下代码。稍后你可以看到示例代码应该能呈现出的效果。
+
+首先，我们写一些简单的 HTML——添加以下内容到 HTML 的`<body>`内，删除之前`<body>`里面的东西：
+
+```html
+<h1>Simple float example</h1>
+
+<div class="box">Float</div>
+
+<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla luctus aliquam dolor, eu lacinia lorem placerat vulputate. Duis felis orci, pulvinar id metus ut, rutrum luctus orci. Cras porttitor imperdiet nunc, at ultricies tellus laoreet sit amet. </p>
+
+<p>Sed auctor cursus massa at porta. Integer ligula ipsum, tristique sit amet orci vel, viverra egestas ligula. Curabitur vehicula tellus neque, ac ornare ex malesuada et. In vitae convallis lacus. Aliquam erat volutpat. Suspendisse ac imperdiet turpis. Aenean finibus sollicitudin eros pharetra congue. Duis ornare egestas augue ut luctus. Proin blandit quam nec lacus varius commodo et a urna. Ut id ornare felis, eget fermentum sapien.</p>
+
+<p>Nam vulputate diam nec tempor bibendum. Donec luctus augue eget malesuada ultrices. Phasellus turpis est, posuere sit amet dapibus ut, facilisis sed est. Nam id risus quis ante semper consectetur eget aliquam lorem. Vivamus tristique elit dolor, sed pretium metus suscipit vel. Mauris ultricies lectus sed lobortis finibus. Vivamus eu urna eget velit cursus viverra quis vestibulum sem. Aliquam tincidunt eget purus in interdum. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
+
+```
+
+现在将以下 CSS 应用到您的 HTML 中（使用`<style>`元素或 `<link>` 到单独的 .css 文件——由你选择）：
+
+```css
+body {
+    width: 90%;
+    max-width: 900px;
+    margin: 0 auto;
+    font: .9em/1.2 Arial, Helvetica, sans-serif;
+}
+
+.box {
+    width: 150px;
+    height: 100px;
+    border-radius: 5px;
+    background-color: rgb(207,232,220);
+    padding: 1em;
+}
+
+```
+
+如果你现在保存并刷新，你会看到和你预期的效果差不多——图片坐落在文本的上方，且保持正常布局流。
+
+![image-20220822150347757](image-20220822150347757.png)
+
+#### 使盒子浮动起来
+
+为了使盒子浮动起来，向规则 `.box` 下添加 [`float`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/float) 和 [`margin-right`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/margin-right) 属性：
+
+```css
+.box {
+    float: left;
+    margin-right: 15px;
+    width: 150px;
+    height: 100px;
+    border-radius: 5px;
+    background-color: rgb(207,232,220);
+    padding: 1em;
+}
+
+```
+
+现在，如果您保存和刷新，你会看到类似下面的东西：
+
+![image-20220822150902315](image-20220822150902315.png)
+
+让我们考虑一下浮动是如何工作的——浮动元素 (这个例子中的 `<div>` 元素) 会脱离正常的文档布局流，并吸附到其父容器的左边（这个例子中的 `<body>` 元素）。在正常布局中位于该浮动元素之下的内容，此时会围绕着浮动元素，填满其右侧的空间。
+
+向右浮动的内容是一样的效果，只是反过来了——浮动元素会吸附到右边，而其他内容将从左侧环绕它。尝试将上一个例子中的浮动值改为 `right` ，再把 `margin-right` 换成 `margin-left` ，看看结果是什么。
+
+![image-20220822151022906](image-20220822151022906.png)
+
+#### 让浮动效果可视化
+
+我们可以在浮动元素上应用 margin，将文字推开，但不能在文字上应用 margin 将浮动元素推走。这是因为浮动的元素脱离了正常文档流，紧随其后的元素排布在它的“后方”。你可以将示例代码进行更改，来观察到这个现象。
+
+在紧随浮动盒子的第一段文字上添加 `special` 类，然后在你的 CSS 文件中添加如下规则，它会赋予跟随其后的段落一个背景色。
+
+```css
+.special {
+  background-color: rgb(79,185,227);
+  padding: 10px;
+  color: #fff;
+}
+
+```
+
+为了更清晰的看到效果，将浮动的 `margin-left` 改为 `margin` 以将周围全部空出来。如此代码效果所示，你可以看到段落的背景色处于浮动盒子之下。
+
+![image-20220822151251972](image-20220822151251972.png)
+
+目标元素的[行内盒子](https://developer.mozilla.org/zh-CN/docs/Web/CSS/Visual_formatting_model#line_boxes)已被缩短，故文字会排布在浮动元素周围，但是浮动元素从正常文档流移出，故段落的盒子仍然保持全部宽度。
+
+### 清除浮动
+
+我们看到，一个浮动元素会被移出正常文档流，且其他元素会显示在它的下方。如果我们不想让剩余元素也受到浮动元素的影响，我们需要 *停止* 它；这是通过添加 [`clear`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/clear) 属性实现的。
+
+在前例的 HTML 代码中，向浮动元素下方的第二个段落添加 `cleared` 类，然后向 CSS 文件中添加以下样式：
+
+```css
+.cleared {
+  clear: left;
+}
+
+```
+
+![image-20220822151827188](image-20220822151827188.png)
+
+应该看到，第二个段落已经停止了浮动，不会再跟随浮动元素排布了。`clear` 属性接受下列值：
+
+- `left`：停止任何活动的左浮动
+- `right`：停止任何活动的右浮动
+- `both`：停止任何活动的左右浮动
+
+### 清除浮动元素周围的盒子
+
+现在你知道了如何停止浮动元素其后元素的浮动行为。我们来看个例子，如果存在一个盒子 *同时* 包含了很高的浮动元素和一个很短的段落，会发生什么。
+
+#### 问题所在
+
+改变你的文档结构，使得第一个段落与浮动的盒子共同处于类名为 `wrapper` 的 [`<div>`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/div) 元素之下。
+
+```html
+<div class="wrapper">
+  <div class="box">Float</div>
+
+  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla luctus aliquam dolor, eu lacinia lorem placerat vulputate.</p>
+</div>
+
+```
+
+在你的 CSS 代码中，为 `.wrapper` 类添加如下规则并重载页面：
+
+```css
+.wrapper {
+  background-color: rgb(79,185,227);
+  padding: 10px;
+  color: #fff;
+}
+
+```
+
+此外，将原先的 `.cleared` 类移除：
+
+```diff
+-.cleared {
+-  clear: left;
+-}
+
+```
+
+你会看到，就像示例代码一样，如果将背景色属性置于段落上，那么这个背景色将处于浮动元素之下。
+
+![image-20220822152606432](image-20220822152606432.png)
+
+再一次强调，这是因为浮动元素处于正常文档流之外，停止紧随其后元素的浮动并不像之前那样奏效。如果你想让盒子联合包住浮动的项目以及第一段文字，同时让紧随其后的内容从盒子中清除浮动，这就是一个问题。
+
+有三种方法可以处理这个问题，其中的两种在所有浏览器中均可以奏效（虽然看上去有点“小技巧”），剩下的一种是可以处理问题的较新的解决方案。
+
+#### clearfix 小技巧
+
+传统上，这个问题通常由所谓的 "clearfix 小技巧" 解决，其过程为：先向包含浮动内容及其本身的盒子后方插入一些生成的内容，并将生成的内容清除浮动。
+
+向示例中添加以下 CSS 代码：
+
+```css
+.wrapper::after {
+  content: "";
+  clear: both;
+  display: block;
+}
+
+```
+
+现在重载页面，盒子的浮动就应该清除了。这与在浮动盒子后手动添加诸如 `div` 的 HTML 元素，并设置其样式为 `clear:both` 是等效的。
+
+![image-20220822152830012](image-20220822152830012.png)
+
+#### 使用 overflow
+
+一个替代的方案是将包裹元素的 [`overflow`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/overflow) 属性设置为除 `visible` 外的其他值。
+
+移除上一节添加的 clearfix CSS 代码；在包裹元素上添加 `overflow: auto` 规则。现在，盒子应该再一次停止浮动。
+
+```css
+.wrapper {
+    background-color: rgb(79,185,227);
+    padding: 10px;
+    color: #fff;
+}
+```
+
+这个例子之所以能够生效，是因为创建了所谓的 **块格式化上下文（BFC）**。可以把它看作页面内部包含所需元素的一小块布局区域。如此设置可以让浮动元素包含在 BFC 及其背景之内。大部分情况下这种小技巧都可以奏效，但是可能会出现莫名其妙的滚动条或裁剪阴影，这是使用 overflow 带来的一些副作用。
+
+#### display: flow-root
+
+一个较为现代的方案是使用 `display` 属性的 `flow-root` 值。它可以无需小技巧来创建块格式化上下文（BFC），在使用上没有副作用。
+
+从 `.wrapper` 中移除 `overflow: auto` 规则并添加 `display: flow-root`。如果你的浏览器支持该属性（[支持的浏览器列表](https://developer.mozilla.org/zh-CN/docs/Web/CSS/display#浏览器兼容性)），盒子就会停止浮动。
+
+```css
+.wrapper {
+  background-color: rgb(79,185,227);
+  padding: 10px;
+  color: #fff;
+  display: flow-root;
+}
+
+```
+
+## 定位
+
+定位允许你从正常的文档流布局中取出元素，并使它们具有不同的行为，例如放在另一个元素的上面，或者始终保持在浏览器视窗内的同一位置。本文解释的是定位 ([`position`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/position)) 的各种不同值，以及如何使用它们。
+
+### 文档流
+
+定位是一个相当复杂的话题，所以我们深入了解代码之前，让我们审视一下布局理论，并让我们了解它的工作原理。
+
+首先，围绕元素内容添加任何内边距、边界和外边距来布置单个元素盒子——这就是[盒模型](https://developer.mozilla.org/zh-CN/docs/Learn/CSS/Building_blocks/The_box_model) ，我们前面看过。默认情况下，块级元素的内容宽度是其父元素的宽度的 100％，并且与其内容一样高。内联元素高宽与他们的内容高宽一样。你不能对内联元素设置宽度或高度——它们只是位于块级元素的内容中。 如果要以这种方式控制内联元素的大小，则需要将其设置为类似块级元素 `display: block;`。
+
+这只是解释了单个元素，但是元素相互之间如何交互呢？**正常的布局流**（在布局介绍文章中提到）是将元素放置在浏览器视口内的系统。默认情况下，块级元素在视口中垂直布局——每个都将显示在上一个元素下面的新行上，并且它们的外边距将分隔开它们。
+
+内联元素表现不一样——它们不会出现在新行上；相反，它们互相之间以及任何相邻（或被包裹）的文本内容位于同一行上，只要在父块级元素的宽度内有空间可以这样做。如果没有空间，那么溢流的文本或元素将向下移动到新行。
+
+如果两个相邻元素都在其上设置外边距，并且两个外边距接触，则两个外边距中的较大者保留，较小的一个消失——这叫[外边距折叠](https://developer.mozilla.org/zh-CN/docs/Web/CSS/CSS_Box_Model/Mastering_margin_collapsing), 我们之前也遇到过。
+
+让我们来看一个简单的例子来解析这一切：
+
+```html
+<h1>Basic document flow</h1>
+
+<p>I am a basic block level element. My adjacent block level elements sit on new lines below me.</p>
+
+<p>By default we span 100% of the width of our parent element, and we are as tall as our child content. Our total width and height is our content + padding + border width/height.</p>
+
+<p>We are separated by our margins. Because of margin collapsing, we are separated by the width of one of our margins, not both.</p>
+
+<p>inline elements <span>like this one</span> and <span>this one</span> sit on the same line as one another, and adjacent text nodes, if there is space on the same line. Overflowing inline elements will <span>wrap onto a new line if possible (like this one containing text)</span>, or just go on to a new line if not, much like this image will do: <img src="https://mdn.github.io/css-examples/learn/backgrounds-borders/star.png"></p>
+
+```
+
+```css
+body {
+    width: 500px;
+    margin: 0 auto;
+}
+
+p {
+    background: #9aefef;
+    border: 3px solid #7979c9;
+    padding: 10px;
+    margin: 10px;
+}
+
+span {
+    background: #d37676;
+    border: 1px solid #887b7b;
+}
+
+```
+
+
+
+在我们阅读本文时，我们将多次重复这个例子，因为我们要展示不同定位选项的效果。
+
+如果可能，我们希望你在本地计算机上跟随练习
+
+### 介绍定位
+
+定位的整个想法是允许我们覆盖上面描述的基本文档流行为，以产生有趣的效果。如果你想稍微改变布局中一些盒子的位置，使它们的默认布局流程位置稍微有点古怪，不舒服的感觉呢？定位是你的工具。或者，如果你想要创建一个浮动在页面其他部分顶部的 UI 元素，并且/或者始终停留在浏览器窗口内的相同位置，无论页面滚动多少？定位使这种布局工作成为可能。
+
+有许多不同类型的定位，你可以对 HTML 元素生效。要使某个元素上的特定类型的定位，我们使用[`position`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/position)属性。
+
+#### 静态定位
+
+静态定位是每个元素获取的默认值——它只是意味着“将元素放入它在文档布局流中的正常位置 ——这里没有什么特别的。
+
+为了演示这一点，并为以后的部分设置示例，首先在 HTML 中添加一个`positioned` 的 `class` 到第二个`<p>`：
+
+```html
+<p class="positioned"> ... </p>
+
+```
+
+现在，将以下规则添加到 CSS 的底部：
+
+```css
+.positioned {
+  position: static;
+  background: yellow;
+}
+
+```
+
+如果现在保存和刷新，除了第 2 段的更新的背景颜色，根本没有差别。这很好——正如我们之前所说，静态定位是默认行为！
+
+#### 相对定位
+
+相对定位是我们将要看的第一个位置类型。它与静态定位非常相似，占据在正常的文档流中，但你可以修改它的最终位置，包括让它与页面上的其他元素重叠。让我们继续并更新代码中的 `position` 属性：
+
+```css
+position: relative;
+
+```
+
+如果你在此阶段保存并刷新，则结果根本不会发生变化。那么如何修改元素的位置呢？你需要使用[`top`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/top)，[`bottom`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/bottom)，[`left`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/left)和[`right`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/right)属性，我们将在下一节中解释。
+
+#### 介绍 top、bottom、left 和 right
+
+[`top`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/top), [`bottom`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/bottom), [`left`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/left), 和 [`right`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/right) 来精确指定要将定位元素移动到的位置。要尝试这样做，请在 CSS 中的 `.positioned` 规则中添加以下声明：
+
+```css
+top: 30px;
+left: 30px;
+
+```
+
+> **备注：** 这些属性的值可以采用逻辑上期望的任何单位 ——px，mm，rems，％等。
+
+如果你现在保存和刷新，你会得到一个这样的结果：
+
+![image-20220822154620319](image-20220822154620319.png)
+
+酷，是吗？好吧，所以这个结果这可能不是你期待的——为什么它移动到底部和右边，但我们指定顶部和左边？听起来不合逻辑，但这只是相对定位工作的方式——你需要考虑一个看不见的力，推动定位的盒子的一侧，移动它的相反方向。所以例如，如果你指定 `top: 30px;`一个力推动框的顶部，使它向下移动 30px。
+
+#### 绝对定位
+
+绝对定位带来了非常不同的结果。让我们尝试改变代码中的位置声明如下：
+
+``` css
+position: absolute;
+
+```
+
+如果你现在保存和刷新，你应该看到这样：
+
+![image-20220822154727092](image-20220822154727092.png)
+
+首先，请注意，定位的元素应该在文档流中的间隙不再存在——第一和第三元素已经靠在一起，就像第二个元素不再存在！好吧，在某种程度上，这是真的。绝对定位的元素不再存在于正常文档布局流中。相反，它坐在它自己的层独立于一切。这是非常有用的：这意味着我们可以创建不干扰页面上其他元素的位置的隔离的 UI 功能。例如，弹出信息框和控制菜单；翻转面板；可以在页面上的任何地方拖放的 UI 功能……
+
+第二，注意元素的位置已经改变——这是因为[`top`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/top)，[`bottom`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/bottom)，[`left`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/left)和[`right`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/right)以不同的方式在绝对定位。它们指定元素应距离每个包含元素的边的距离，而不是指定元素应该移入的方向。所以在这种情况下，我们说的绝对定位元素应该位于从“包含元素”的顶部 30px，从左边 30px。
+
+> **备注：** 如果需要，你可以使用 [`top`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/top)，[`bottom`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/bottom)、[`left`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/left) 和 [`right`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/right) 调整元素大小。尝试设置 `top: 0; bottom: 0; left: 0; right: 0;` 和 `margin: 0;` 对你定位的元素，看看会发生什么！之后再回来
+
+> **备注：** 是的，margins 仍会影响定位的元素。然而 margin collapsing 不会。
+
+#### 定位上下文
+
+哪个元素是绝对定位元素的“包含元素“？这取决于绝对定位元素的父元素的 position 属性。(参见 [Identifying the containing block](https://developer.mozilla.org/zh-CN/docs/Web/CSS/Containing_block#identifying_the_containing_block)).
+
+如果所有的父元素都没有显式地定义 position 属性，那么所有的父元素默认情况下 position 属性都是 static。结果，绝对定位元素会被包含在**初始块容器**中。这个初始块容器有着和浏览器视口一样的尺寸，并且`<html>`元素也被包含在这个容器里面。简单来说，绝对定位元素会被放在`<html>`元素的外面，并且根据浏览器视口来定位。
+
+绝对定位元素在 HTML 源代码中，是被放在`<body>`中的，但是在最终的布局里面，它离页面 (而不是`<body>`) 的左边界、上边界有 30px 的距离。我们可以改变**定位上下文** —— 绝对定位的元素的相对位置元素。通过设置其中一个父元素的定位属性 —— 也就是包含绝对定位元素的那个元素（如果要设置绝对定位元素的相对元素，那么这个元素一定要包含绝对定位元素）。 为了演示这一点，将以下声明添加到你的 body 规则中：
+
+```css
+position: relative;
+
+```
+
+应该得到以下结果：
+
+![image-20220822155122877](image-20220822155122877.png)
+
+定位的元素现在相对于`<body>`元素。
+
+#### 介绍 z-index
+
+所有这些绝对定位很有趣，但还有另一件事我们还没有考虑到 ——当元素开始重叠，什么决定哪些元素出现在其他元素的顶部？在我们已经看到的示例中，我们在定位上下文中只有一个定位的元素，它出现在顶部，因为定位的元素胜过未定位的元素。当我们有不止一个的时候呢？
+
+尝试添加以下到你的 CSS，使第一段也是绝对定位：
+
+```css
+p:nth-of-type(1) {
+  position: absolute;
+  background: lime;
+  top: 10px;
+  right: 30px;
+}
+
+```
+
+此时，你将看到第一段的颜色为绿色，移出文档流程，并位于原始位置上方一点。它也堆叠在原始的 `.positioned` 段落下，其中两个重叠。这是因为 `.positioned` 段落是源顺序 (HTML 标记) 中的第二个段落，并且源顺序中后定位的元素将赢得先定位的元素。
+
+你可以更改堆叠顺序吗？是的，你可以使用[`z-index`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/z-index)属性。 “z-index”是对 z 轴的参考。你可以从源代码中的上一点回想一下，我们使用水平（x 轴）和垂直（y 轴）坐标来讨论网页，以确定像背景图像和阴影偏移之类的东西的位置。 （0,0）位于页面（或元素）的左上角，x 和 y 轴跨页面向右和向下（适合从左到右的语言，无论如何）。
+
+网页也有一个 z 轴：一条从屏幕表面到你的脸（或者在屏幕前面你喜欢的任何其他东西）的虚线。[`z-index`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/z-index) 值影响定位元素位于该轴上的位置；正值将它们移动到堆栈上方，负值将它们向下移动到堆栈中。默认情况下，定位的元素都具有 z-index 为 auto，实际上为 0。
+
+要更改堆叠顺序，请尝试将以下声明添加到 `p:nth-of-type(1)` 规则中：
+
+```css
+z-index: 1;
+
+```
+
+![image-20220822155355662](image-20220822155355662.png)
+
+请注意，z-index 只接受无单位索引值；你不能指定你想要一个元素是 Z 轴上 23 像素—— 它不这样工作。较高的值将高于较低的值，这取决于你使用的值。使用 2 和 3 将产生与 300 和 40000 相同的效果。
+
+#### 固定定位
+
+还有一种类型的定位覆盖——fixed。这与绝对定位的工作方式完全相同，只有一个主要区别：绝对定位将元素固定在相对于其位置最近的祖先。（如果没有，则为初始包含它的块）而固定定位固定元素则是相对于浏览器视口本身。这意味着你可以创建固定的有用的 UI 项目，如持久导航菜单。
+
+让我们举一个简单的例子来说明我们的意思。首先，从 CSS 中删除现有的 `p:nth-of-type(1)` 和`.positioned` 规则。
+
+现在，更新 `body` 规则以删除`position: relative;` 声明并添加固定高度，如此：
+
+```css
+body {
+  width: 500px;
+  height: 1400px;
+  margin: 0 auto;
+}
+
+```
+
+现在我们要给`<h1>` 元素 `position: fixed;`，并让它坐在视口的顶部中心。将以下规则添加到 CSS：
+
+```css
+h1 {
+  position: fixed;
+  top: 0;
+  width: 500px;
+  margin: 0 auto;
+  background: white;
+  padding: 10px;
+}
+
+```
+
+`top: 0;`是要使它贴在屏幕的顶部；我们然后给出标题与内容列相同的宽度，并使用可靠的老技巧 `margin: 0 auto;` 使它居中。然后我们给它一个白色背景和一些内边距，所以内容将不会在它下面可见。
+
+![image-20220822155954597](image-20220822155954597.png)
+
+如果你现在保存并刷新，你会看到一个有趣的小效果，标题保持固定，内容显示向上滚动并消失在其下。但是我们可以改进这一点——目前标题下面挡住一些内容的开头。这是因为定位的标题不再出现在文档流中，所以其他内容向上移动到顶部。我们要把它向下移动一点；我们可以通过在第一段设置一些顶部边距来做到这一点。添加：
+
+```css
+p:nth-of-type(1) {
+  margin-top: 60px;
+}
+
+```
+
+![image-20220822160408658](image-20220822160408658.png)
+
+#### position: sticky
+
+还有一个可用的位置值称为 position: sticky，比起其他位置值要新一些。它基本上是相对位置和固定位置的混合体，它允许被定位的元素表现得像相对定位一样，直到它滚动到某个阈值点（例如，从视口顶部起 10 像素）为止，此后它就变得固定了。例如，它可用于使导航栏随页面滚动直到特定点，然后粘贴在页面顶部。
+
+```css
+.positioned {
+  position: sticky;
+  top: 30px;
+  left: 30px;
+}
+
+```
+
+![image-20220822160556715](image-20220822160556715.png)
+
+`position: sticky` 的另一种有趣且常用的用法，是创建一个滚动索引页面。在此页面上，不同的标题会停留在页面顶部。这样的示例的标记可能如下所示：
+
+```css
+<h1>Sticky positioning</h1>
+
+<dl>
+    <dt>A</dt>
+    <dd>Apple</dd>
+    <dd>Ant</dd>
+    <dd>Altimeter</dd>
+    <dd>Airplane</dd>
+    <dt>B</dt>
+    <dd>Bird</dd>
+    <dd>Buzzard</dd>
+    <dd>Bee</dd>
+    <dd>Banana</dd>
+    <dd>Beanstalk</dd>
+    <dt>C</dt>
+    <dd>Calculator</dd>
+    <dd>Cane</dd>
+    <dd>Camera</dd>
+    <dd>Camel</dd>
+    <dt>D</dt>
+    <dd>Duck</dd>
+    <dd>Dime</dd>
+    <dd>Dipstick</dd>
+    <dd>Drone</dd>
+    <dt>E</dt>
+    <dd>Egg</dd>
+    <dd>Elephant</dd>
+    <dd>Egret</dd>
+</dl>
+
+```
+
+CSS 可能如下所示。在正常布局流中，`<dt>`元素将随内容滚动。当我们在`<dt>`元素上添加`position: sticky`，并将top的值设置为 0，当标题滚动到视口的顶部时，支持此属性的浏览器会将标题粘贴到那个位置。随后，每个后续标题将替换前一个标题，直到它向上滚动到该位置。
+
+```css
+body {
+  width: 500px;
+  height: 1400px;
+  margin: 0 auto;
+}
+
+dt {
+  background-color: black;
+  color: white;
+  padding: 10px;
+  position: sticky;
+  top: 0;
+  left: 0;
+  margin: 1em 0;
+}
+
+```
+
+![image-20220822161143409](image-20220822161143409.png)
+
+## 多列布局
+
+多列布局声明提供了一种多列组织内容的方式，正如你在一些报纸中看到的那样。 这篇文章介绍怎么使用这一特性。
+
+### 一个简单的例子
+
+我们将学习怎么使用多列布局，通常也简写为 *multicol*。你可以从这里开始 [downloading the multicol starting point file](https://github.com/mdn/learning-area/blob/master/css/css-layout/multicol/0-starting-point.html) 然后在合适的地方加入 CSS。在这一小节的结尾，你可以看到最终代码的效果。
+
+```html
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Multicol starting point</title>
+    <style>
+        body {
+            width: 90%;
+            max-width: 900px;
+            margin: 2em auto;
+            font: .9em/1.2 Arial, Helvetica, sans-serif;
+        }
+    </style>
+  </head>
+
+<body>
+    <div class="container">
+        <h1>Simple multicol example</h1>
+
+        <p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla luctus aliquam dolor, eu lacinia lorem placerat vulputate.
+            Duis felis orci, pulvinar id metus ut, rutrum luctus orci. Cras porttitor imperdiet nunc, at ultricies tellus
+            laoreet sit amet. Sed auctor cursus massa at porta. Integer ligula ipsum, tristique sit amet orci vel, viverra
+            egestas ligula. Curabitur vehicula tellus neque, ac ornare ex malesuada et. In vitae convallis lacus. Aliquam
+            erat volutpat. Suspendisse ac imperdiet turpis. Aenean finibus sollicitudin eros pharetra congue. Duis ornare
+            egestas augue ut luctus. Proin blandit quam nec lacus varius commodo et a urna. Ut id ornare felis, eget fermentum
+            sapien.</p>
+
+        <p>Nam vulputate diam nec tempor bibendum. Donec luctus augue eget malesuada ultrices. Phasellus turpis est, posuere
+            sit amet dapibus ut, facilisis sed est. Nam id risus quis ante semper consectetur eget aliquam lorem. Vivamus
+            tristique elit dolor, sed pretium metus suscipit vel. Mauris ultricies lectus sed lobortis finibus. Vivamus eu
+            urna eget velit cursus viverra quis vestibulum sem. Aliquam tincidunt eget purus in interdum. Cum sociis natoque
+            penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
+    </div>
+</body>
+
+</html>
+```
+
+
+
+#### 三列布局
+
+我们从一些很简单的 HTML 开始； 用带有类 container 的简单包装，里面是标题和一些段落。
+
+带有 `.container` 的 `<div>` 将成为我们 `multicol` 的容器。通过这两个属性开启 `multicol column-count` 或者 `column-width`。 ·column-count· 将创建指定数量的列，所以如果你把下面的 CSS 加到样式表里让后重载入页面，你将得到 3 列：
+
+```css
+.container {
+  column-count: 3;
+}
+
+```
+
+创建的这些列具有弹性的宽度 — 由浏览器计算出每一列分配多少空间。
+
+![image-20220822161807512](image-20220822161807512.png)
+
+#### 设置列宽
+
+像下面这样使用 `column-width` 更改 CSS：
+
+```css
+.container {
+  column-width: 200px;
+}
+
+```
+
+浏览器将按照你指定的宽度尽可能多的创建列；任何剩余的空间之后会被现有的列平分。 这意味着你可能无法期望得到你指定宽度，除非容器的宽度刚好可以被你指定的宽度除尽。
+
+![image-20220822161943470](image-20220822161943470.png)
+
+### 给多列增加样式
+
+Multicol 创建的列无法单独的设定样式。不存在让单独某一列比其他列更大的方法，同样无法为某一特定的列设置独特的背景色、文本颜色。你有两个机会改变列的样式：
+
+- 使用 [`column-gap`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/column-gap) 改变列间间隙。
+- 用 [`column-rule`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/column-rule) 在列间加入一条分割线。
+
+以上面的代码为例，增加 `column-gap` 属性可以更改列间间隙。
+
+你可以尝试不同的值 — 该属性接受任何长度单位。现在再加入 `column-rule`。和你之前遇到的 [`border`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border) 属性类似， `column-rule` 是 [`column-rule-color`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/column-rule-color) 和 [`column-rule-style`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/column-rule-style)的缩写，接受同 `border` 一样的单位。
+
+```css
+.container {
+  column-count: 3;
+  column-gap: 20px;
+  column-rule: 4px dotted rgb(79, 185, 227);
+}
+
+```
+
+![image-20220822162120385](image-20220822162120385.png)
+
+值得一提的是这条分割线本身并不占用宽度。它置于用 `column-gap` 创建的间隙内。如果需要更多空间，你需要增加 `column-gap` 的值。
+
+### 列与内容折断
+
+多列布局的内容被拆成碎块。和多页媒体上的内容表现大致一样 — 比如打印网页的时候。 当你把内容放入多列布局容器内，内容被拆成碎块放进列中，内容折断（译者注：比如断词断句）使得这一效果可以实现。
+
+有时，这种折断内容会降低阅读体验。在下面的举例中，我用 multicol 对一系列盒子布局，每一小块里有小标题和和一些文字。标题和文字可能被折断点拆开，从而降低阅读体验。
+
+```html
+<div class="container">
+  <div class="card">
+    <h2>I am the heading</h2>
+    <p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla luctus aliquam dolor, eu lacinia lorem placerat
+                vulputate. Duis felis orci, pulvinar id metus ut, rutrum luctus orci. Cras porttitor imperdiet nunc, at ultricies
+                tellus laoreet sit amet. Sed auctor cursus massa at porta. Integer ligula ipsum, tristique sit amet orci
+                vel, viverra egestas ligula.</p>
+    </div>
+
+    <div class="card">
+      <h2>I am the heading</h2>
+      <p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla luctus aliquam dolor, eu lacinia lorem placerat
+                vulputate. Duis felis orci, pulvinar id metus ut, rutrum luctus orci. Cras porttitor imperdiet nunc, at ultricies
+                tellus laoreet sit amet. Sed auctor cursus massa at porta. Integer ligula ipsum, tristique sit amet orci
+                vel, viverra egestas ligula.</p>
+    </div>
+
+    <div class="card">
+      <h2>I am the heading</h2>
+      <p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla luctus aliquam dolor, eu lacinia lorem placerat
+                vulputate. Duis felis orci, pulvinar id metus ut, rutrum luctus orci. Cras porttitor imperdiet nunc, at ultricies
+                tellus laoreet sit amet. Sed auctor cursus massa at porta. Integer ligula ipsum, tristique sit amet orci
+                vel, viverra egestas ligula.</p>
+    </div>
+    <div class="card">
+      <h2>I am the heading</h2>
+      <p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla luctus aliquam dolor, eu lacinia lorem placerat
+                vulputate. Duis felis orci, pulvinar id metus ut, rutrum luctus orci. Cras porttitor imperdiet nunc, at ultricies
+                tellus laoreet sit amet. Sed auctor cursus massa at porta. Integer ligula ipsum, tristique sit amet orci
+                vel, viverra egestas ligula.</p>
+    </div>
+
+    <div class="card">
+      <h2>I am the heading</h2>
+      <p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla luctus aliquam dolor, eu lacinia lorem placerat
+                vulputate. Duis felis orci, pulvinar id metus ut, rutrum luctus orci. Cras porttitor imperdiet nunc, at ultricies
+                tellus laoreet sit amet. Sed auctor cursus massa at porta. Integer ligula ipsum, tristique sit amet orci
+                vel, viverra egestas ligula.</p>
+    </div>
+
+    <div class="card">
+      <h2>I am the heading</h2>
+      <p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla luctus aliquam dolor, eu lacinia lorem placerat
+                vulputate. Duis felis orci, pulvinar id metus ut, rutrum luctus orci. Cras porttitor imperdiet nunc, at ultricies
+                tellus laoreet sit amet. Sed auctor cursus massa at porta. Integer ligula ipsum, tristique sit amet orci
+                vel, viverra egestas ligula.</p>
+    </div>
+
+    <div class="card">
+      <h2>I am the heading</h2>
+      <p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla luctus aliquam dolor, eu lacinia lorem placerat
+                vulputate. Duis felis orci, pulvinar id metus ut, rutrum luctus orci. Cras porttitor imperdiet nunc, at ultricies
+                tellus laoreet sit amet. Sed auctor cursus massa at porta. Integer ligula ipsum, tristique sit amet orci
+                vel, viverra egestas ligula.</p>
+    </div>
+
+</div>
+
+```
+
+```css
+.container {
+  column-width: 250px;
+  column-gap: 20px;
+}
+
+.card {
+  background-color: rgb(207, 232, 220);
+  border: 2px solid rgb(79, 185, 227);
+  padding: 10px;
+  margin: 0 0 1em 0;
+}
+
+```
+
+![image-20220822162446684](image-20220822162446684.png)
+
+#### 设置 break-inside
+
+我们可以使用 [CSS Fragmentation](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Fragmentation) 中声明的属性控制这一特性。 这份规范提供了一些属性来控制 multicol 和多页媒体中的内容拆分、折断。比如，在规则 `.card` 上添加属性[`break-inside`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/break-inside)，并设值 `avoid` 。`.card` 是标题和文本的容器，我们不想拆开这个盒子。
+
+现阶段，增加旧属性 `page-break-inside: avoid` 能够获得更好的浏览器支持。
+
+```css
+.card {
+  break-inside: avoid;
+  page-break-inside: avoid;
+  background-color: rgb(207,232,220);
+  border: 2px solid rgb(79,185,227);
+  padding: 10px;
+  margin: 0 0 1em 0;
+}
+
+```
+
+![image-20220822162551805](image-20220822162551805.png)
+
+刷新页面，你的盒子就会呆在一起了。
+
+### 小结
+
+现在你知道多列布局的基本用法了，构建页面时又多了一种布局选择。
+
+## 响应式设计
+
+早年设计 Web 时，页面是以适配特定的屏幕大小为考量创建的。如果用户正在使用比设计者考虑到的更小或者更大的屏幕，那么结果从多余的滚动条，到过长的行和没有被合理利用的空间，不一而足。随着人们使用的屏幕尺寸的种类越来越多，出现了响应式网页设计的概念（*responsive web design，RWD*），RWD 指的是允许 Web 页面适应不同屏幕宽度因素等，进行布局和外观的调整的一系列实践。这是改变我们设计多设备网页的方式的思想，在这篇文章里，我们将会帮你理解掌握它时所需知道的主要技能。
+
+### 历史上的网站布局
+
+在历史上的某个时刻，设计网站时，你有两个选择：
+
+- 你可以创建一个“液态”站点，它会拉伸以充满整个浏览器视窗；
+- 或者是一个“固定宽度”站点，它有一个以像素计的固定尺寸。
+
+这两种途径会倾向于导致它的表现只有在设计者的屏幕上才是最佳的！液态站点导致了小屏幕上的设计会挤成一团（如下所示），以及大屏幕上难以阅读的很长的行长度。
+
+![image-20220822162758699](image-20220822162758699.png)
+
+固定宽度站点的一个可能的后果是，在比站点更窄的屏幕上会出现一个水平滚动条（如下所示），在大屏幕上的设计边缘还会有许多空白。
+
+随着移动 Web 在早期的功能手机上开始成为现实，希望拥抱移动端的公司普遍希望为他们的网站创建一个有着不同的网址的移动版本（大多是像*m.example.com*或者*example.mobi*这类）。这意味着一个网站需要开发两个分开的版本，而且要保持时效性。
+
+除此以外，这些移动网站的体验经常缩水。由于移动设备变得更加强大，足以显示完整的网站，对于那些被困在移动版网站的移动端用户来说，这是很折磨人的，他们因此也没法获取他们知道在支持所有功能的桌面版网站上能找到的信息。
+
+### 响应式设计之前的灵活布局
+
+人们开发了许多方式，尽力解决建设网站时使用液态和固定宽度的方式所带来的弊端。2004 年，Cameron Adams 写了一篇题为《[Resolution dependent layout](https://www.themaninblue.com/writing/perspective/2004/09/21/)》的帖子，描述了一种可以创造适应多种屏幕分辨率的设计的方式。这种方式需要 JavaScript 来探测屏幕的分辨率，载入恰当的 CSS。
+
+Zoe Mickley Gillenwater 深刻影响了[她的著作](http://zomigi.com/blog/voices-that-matter-slides-available/)，在里面描述并标准化了可变站点建立的不同方式，试图在充满屏幕和完全保持固定尺寸之间找到最佳平衡。
+
+### 响应式设计
+
+“响应式设计”这个词是[Ethan Marcotte 在 2010 年首度提出的](https://alistapart.com/article/responsive-web-design/)，他将其描述为三种技术的混合使用。
+
+1. 第一个是液态网格，这早先已由 Gillenwater 进行探讨，可以在 Marcotte 的文章《[Fluid Grids](https://alistapart.com/article/fluidgrids/)》（出版于 2009 年的《A List Apart》上）中读到。
+2. 第二个是[液态图像](https://unstoppablerobotninja.com/entry/fluid-images)的理念。通过使用相当简单的将设置`max-width`属性设置为`100%`的技术，图像可以在包含它们的列变得比图像原始尺寸窄的时候，缩放得更小，但总不会变得更大。这使得图像可以被缩放，以被放到一个灵活尺寸的列，而不是溢出出去，同时也不会在列宽于图像的时候，使图像变得太大以至于画质变得粗糙。
+3. 第三个关键的组件是[媒体查询](https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries)。媒体查询使以往 Cameron Adams 探讨过的、由 JavaScript 实现的布局类型切换，可以只使用 CSS 实现。和所有尺寸的屏幕都使用一种布局不同的是，布局是可以改变的：侧栏可以在小屏幕上重新布局，而替代用的导航栏也可以显示出来。
+
+需要你理解的很重要的一点是**响应式 Web 设计不是单独的技术**，它是描述 Web 设计的一种方式、或者是一组最佳实践的一个词，它是用来建立可以**响应**查看内容的设备的样式的一个词。在 Marcotte's 原来的探索中，这意味着灵活网格（使用 float）和媒体查询，但是在这篇文章写就的几乎十年以后，Web 的响应式工作已经成为了默认做法。现代的 CSS 布局方式基本上就是响应式的，而且我们在 Web 平台上内置了新的东西，使得设计响应式站点变得容易。
+
+这篇文章的余下部分会为你指出，在建立响应式站点的时候，你可能会用到的各式 Web 平台的特色功能。
+
+### 媒介查询
+
+响应式设计仅仅是因为媒介查询才新兴起来的。媒介查询第三级规范已经在 2009 年成为了候选推荐，这意味着它可视为准备好在浏览器中开始支持了。媒介查询允许我们运行一系列测试，例如用户的屏幕是否大于某个宽度或者某个分辨率，并将 CSS 选择性地适应用户的需要应用在样式化页面上。
+
+例如，下面的媒体查询进行测试，以知晓当前的 Web 页面是否被展示为屏幕媒体（也就是说不是印刷文档），且视口至少有 800 像素宽。用于`.container`选择器的 CSS 将只会在这两件前提存在的情况下应用。
+
+```css
+@media screen and (min-width: 800px) {
+  .container {
+    margin: 1em 2em;
+  }
+}
+
+```
+
+你可以在一张样式表上加入多条媒体查询，调整整个页面或者部分页面以达到适应各式屏幕尺寸的最佳效果。媒体查询，以及样式改变时的点，被叫做*断点*（breakpoints）。
+
+使用媒体查询时的一种通用方式是，为窄屏设备（例如移动设备）创建一个简单的单栏布局，然后检查是否是大些的屏幕，在你知道你有足够容纳的屏幕宽度的时候，开始采用一种多栏的布局。这经常被描述为**移动优先**设计。
+
+在 MDN 文档中的[媒体查询](https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries)中了解更多
+
+### 灵活网格
+
+响应式站点不只是在断点之间改变它们的布局，它们是建立在灵活网格上的。一个灵活网格意味着你不需要适配每个可能使用的设备尺寸，然后为其建立一个精确到像素级的适配布局。那种方式在现存有如此多种不同大小设备的前提下是不可能实现的，比如至少在台式机上，人们并不总是让他们的浏览器窗口最大化的。
+
+使用灵活网格，你只需要加进去一个断点，在内容看起来不齐整的时候改变设计。例如如果一行随着屏幕大小增加而增长得不可读的长，或者是一个盒子在变窄时把每行的两个单词挤到一起。
+
+早年间进行响应式设计的时候，我们唯一的实现布局的选项是使用[float](https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Floats)。灵活浮动布局是这样实现的，让每个元素都有一个作为宽度的百分数，而且确保整个布局的和不会超过 100%。在他对于液态网格文章的原文中，Marcotte 详细描述了一种布局的法则，通过使用像素并把布局转化为百分数的方式设计。
+
+```
+target / context = result
+
+```
+
+例如如果我们的预期栏尺寸为 60 像素，而且它所在的上下文（或者容器）为 960 像素，我们在将零点二的空间移动到右边以后，用 960 去除 60，得到我们能够使用在我们的 CSS 上的值。
+
+```css
+.col {
+  width: 6.25%; /* 60 / 960 = 0.0625 */
+}
+
+```
+
+这种方式将会在今天整个 Web 上的许多地方上看到，而且它被我们的[Legacy layout methods](https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Legacy_Layout_Methods)一文中的布局一节中记载。可能你将会在工作中遇到使用这种方式的站点，所以有必要理解它，即使是在你不用建立一个使用浮动基础的灵活网格的情况下。
+
+下面的例子阐释了一个使用媒体查询和灵活网格的简单响应式设计。在窄屏幕上，布局将盒子堆叠在另一个的上面：
+
+```html
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>A simple float-based responsive design</title>
+    <style>
+      body {
+        font: 1.2em Helvetica, Arial, sans-serif;
+        margin: 20px;
+        padding: 0;
+        background-color: #eee;
+      }
+      .wrapper {
+        max-width: 960px;
+        margin: 2em auto;
+      }
+
+      .col1,
+      .col2 {
+        background-color: #fff;
+      }
+
+      @media screen and (min-width: 600px) {
+        .col1 {
+          width: 31.24999999%;
+          float: left;
+        }
+
+        .col2 {
+          width: 64.58333331%;
+          float: right;
+        }
+      }
+    </style>
+</head>
+
+<body>
+
+    <div class="wrapper">
+      <div class="col1">
+        <p>This layout is responsive. See what happens if you make the browser window wider or narrow.</p>
+      </div>
+      <div class="col2">
+          <p>One November night in the year 1782, so the story runs, two brothers sat over their winter fire in the little French town of Annonay, watching the grey smoke-wreaths from the hearth curl up the wide chimney. Their names were Stephen and Joseph Montgolfier, they were papermakers by trade, and were noted as possessing thoughtful minds and a deep interest in all scientific knowledge and new discovery.</p>
+          <p>Before that night—a memorable night, as it was to prove—hundreds of millions of people had watched the rising smoke-wreaths of their fires without drawing any special inspiration from the fact.”</p>
+      </div>
+
+    </div>
+</body>
+
+</html>
+```
+
+![image-20220822163902379](image-20220822163902379.png)
+
+![image-20220822163852634](image-20220822163852634.png)
+
+### 现代布局技术
+
+现代布局方式，例如[多栏布局](https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Multiple-column_Layout)、[伸缩盒](https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Flexbox)和[网格](https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Grids)默认是响应式的。它们都假设你在尽力创建一个可伸缩网格，而且给了你更容易这样做的方式。
+
+#### 多个列
+
+这些布局方式中最老的一个是多个列，即当你指定一个`column-count`的时候，这意指你希望把你的内容分成多少列。浏览器之后会算出这些列的大小，这是一个随着屏幕尺寸变化的尺寸。
+
+```css
+.container {
+  column-count: 3;
+}
+
+```
+
+如果你却去指定`column-width`的话，你是在指定一个*最小*宽度。浏览器会尽可能多数量地创建这一宽度的列，只要它们可以恰当地放进容器里面，然后将所有列之间的剩余空间共享出去。因而列的数量会随着空间的多少而改变。
+
+```css
+.container {
+  column-width: 10em;
+}
+
+```
+
+#### 伸缩盒
+
+在伸缩盒中，初始的行为是，弹性的物件将参照容器里面的空间的大小，缩小和分布物件之间的空间。通过更改`flex-grow`和 `flex-shrink`的值，你可以指示在物件遇到周围有更多或者更少的空间的情况下，你所期望的物件表现。
+
+在下面的示例中，和布局专题的[Flexbox: Flexible sizing of flex items](https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Flexbox#flexible_sizing_of_flex_items)中所描述的那样，使用了`flex: 1`的简写，可伸缩物件每个将会占据一份可伸缩容器中相等大小的空间。
+
+```css
+.container {
+  display: flex;
+}
+
+.item {
+  flex: 1;
+}
+
+```
+
+> **备注：** 作为一个示例，我们已经重构了上面的简单响应式布局，这次我们用了伸缩盒。你可以看看我们是怎么样才不再需要使用奇怪的百分数值来计算列的尺寸的：[示例](https://mdn.github.io/css-examples/learn/rwd/flex-based-rwd.html)、[源代码](https://github.com/mdn/css-examples/blob/master/learn/rwd/flex-based-rwd.html)。
+
+
+
+#### CSS 网格
+
+在 CSS 网格布局中，`fr`单位许可了跨网格轨道可用空间的分布。下面的示例创建了一个有着 3 个大小为`1fr`的轨道的网格容器。这会创建三个列轨道，每个占据了容器中可用空间的一部分。你可以在[Flexible grids with the fr unit](https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Grids#flexible_grids_with_the_fr_unit)下的学习布局网格专题了解更多和这一方式相关的信息。
+
+```css
+.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+```
+
+> **备注：** 网格布局版本的代码要更简单，因为我们可以在.wrapper 上定义列[：示例](https://mdn.github.io/css-examples/learn/rwd/grid-based-rwd.html)，[源代码](https://github.com/mdn/css-examples/blob/master/learn/rwd/grid-based-rwd.html)。
+
+
+
+### 响应式图像
+
+最简单的处理响应式图像的方式是在 Marcotte 的早年的关于响应式设计的文章上所描述的那样。基本来说，你可以用一张有着所需最大尺寸的图像。然后缩放它。这仍然是今日所使用的一种方式，而且在大多数样式表里面，你在某些地方可以找到下面的 CSS：
+
+```css
+img {
+  max-width: 100%:
+}
+
+```
+
+这种方式有显然的弊端。图像有可能会显示得比它的原始尺寸小很多，以至于浪费带宽——一个移动端用户会下载几倍于他们在浏览器窗口中实际看到的大小的图像。此外，你可能不想在移动端和桌面端有相同的图像宽高比例。例如，在移动端，方形图像的表现会很好，但是在桌面端显示同样的内容则应用宽图像。或者，认识到移动端更小尺寸的图像的你也许会希望同时展示一张不同的图像，一张在小一点的屏幕上更容易理解的图像。这些东西不能简单通过缩放图像解决。
+
+响应式图像，使用了`<picture>`元素和`<img>` `srcset`和`sizes` 特性，解决了这两个问题。你可以提供附带着“提示”（描述图像最适合的屏幕尺寸和分辨率的元数据）的多种尺寸，浏览器将会选择对设备最合适的图像，以确保用户下载尺寸适合他们使用的设备的图像。
+
+你也可以给用于不同尺寸的图像做“艺术指导”，为不同的屏幕尺寸提供不同的图像裁切或者完全不同的图像。
+
+你可以在 MDN 这里的学习 HTML 一节中找到详细的[响应式图像指南](https://developer.mozilla.org/en-US/docs/Learn/HTML/Multimedia_and_embedding/Responsive_images)。
+
+[响应式图片 - 学习 Web 开发 | MDN (mozilla.org)](https://developer.mozilla.org/zh-CN/docs/Learn/HTML/Multimedia_and_embedding/Responsive_images)
+
+### 响应式排版
+
+在早期的工作没有考虑的一个响应式设计的元素是响应式排版的理念。本质上讲，这描述了根据屏幕真实使用范围的多少，在媒体查询的同时改变字体大小。
+
+在本例子中，我们想讲我们的一级标题设置为`4rem`，也就是说它将会有我们的基础字体的四倍大。这真的是个很大的标题！我们只想在大些的屏幕上有这么个超大的标题，那我们先弄个小点的标题，再使用媒体查询，在我们知道用户使用至少`1200px`的屏幕的时候，拿大些的尺寸覆写它。
+
+```css
+html {
+  font-size: 1em;
+}
+
+h1 {
+  font-size: 2rem;
+}
+
+@media (min-width: 1200px) {
+  h1 {
+    font-size: 4rem;
+  }
+}
+
+```
+
+我们已经编辑了我们在上面的响应式网格示例，让它同时包含了使用了圈出方式的响应式类型。你也可以看下随着布局变为两栏，标题是怎样转换大小的。
+
+```html
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A simple float-based responsive design</title>
+  <style>
+      body {
+          font: 1.2em Helvetica, Arial, sans-serif;
+          margin: 20px;
+          padding: 0;
+          background-color: #eee;
+      }
+      .wrapper {
+          max-width: 960px;
+          margin: 2em auto;
+      }
+
+      .col1,
+      .col2 {
+          background-color: #fff;
+      }
+
+      @media screen and (min-width: 600px) {
+          .col1 {
+              width: 31.24999999%;
+              float: left;
+          }
+
+          .col2 {
+              width: 64.58333331%;
+              float: right;
+          }
+      }
+      html {
+          font-size: 1em;
+      }
+
+      h1 {
+          font-size: 2rem;
+      }
+
+      @media (min-width: 1200px) {
+          h1 {
+              font-size: 4rem;
+          }
+      }
+
+  </style>
+</head>
+
+<body>
+
+<div class="wrapper">
+  <div class="col1">
+    <h1>Title</h1>
+    <p>This layout is responsive. See what happens if you make the browser window wider or narrow.</p>
+  </div>
+  <div class="col2">
+    <p>One November night in the year 1782, so the story runs, two brothers sat over their winter fire in the little French town of Annonay, watching the grey smoke-wreaths from the hearth curl up the wide chimney. Their names were Stephen and Joseph Montgolfier, they were papermakers by trade, and were noted as possessing thoughtful minds and a deep interest in all scientific knowledge and new discovery.</p>
+    <p>Before that night—a memorable night, as it was to prove—hundreds of millions of people had watched the rising smoke-wreaths of their fires without drawing any special inspiration from the fact.”</p>
+  </div>
+
+</div>
+</body>
+
+</html>
+```
+
+![image-20220822165349804](image-20220822165349804.png)
+
+移动端，标题变小了：
+
+![image-20220822165410017](image-20220822165410017.png)
+
+正如这种排版方式展示的这样，你不需要让媒介查询只能改变页面的布局。它们也能用来调节每个元素，让它们在别的大小的屏幕上更加可用或者更具吸引力。
+
+### 使用视口单位实现响应式排版
+
+一个有趣的方式是使用视口单位`vw`来实现响应式排版。`1vw`等同于视口宽度的百分之一，即如果你用`vw`来设定字体大小的话，字体的大小将总是随视口的大小进行改变。
+
+```css
+h1 {
+  font-size: 6vw;
+}
+
+```
+
+问题在于，当做上面的事情的时候，因为文本总是随着视口的大小改变大小，用户失去了放缩任何使用`vw`单位的文本的能力。**所以你永远都不要只用 viewport 单位设定文本。**
+
+这里有一个解决方法，它使用了[`calc()`](https://developer.mozilla.org/en-US/docs/Web/CSS/calc)，如果你将`vw`单位加到了使用固定大小（例如`em`或者`rem`）的值组，那么文本仍然是可放缩的。基本来说，是`vw`加在了放缩后的值上。
+
+```css
+h1 {
+  font-size: calc(1.5rem + 3vw);
+}
+
+```
+
+这就是说，我们只需要指定标题的字体大小一次，而不是为移动端设定它，然后再在媒介查询中重新定义它。字体会在你增加视口大小的时候逐渐增大。
+
+**备注：** 查看这种情况的一个编排好的示例： [示例](https://mdn.github.io/css-examples/learn/rwd/type-vw.html)，[源代码](https://github.com/mdn/css-examples/blob/master/learn/rwd/type-vw.html)。
+
+### 视口元标签
+
+如果你看看一张响应式页面的 HTML 源代码，你通常将会在文档的`<head>`看到下面的[`<meta>`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/meta)标签。
+
+```html
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+```
+
+这个元标签告诉移动端浏览器，它们应该将视口宽度设定为设备的宽度，将文档放大到其预期大小的 100%，在移动端以你所希望的为移动优化的大小展示文档。
+
+为何需要这个？因为移动端浏览器倾向于在它们的视口宽度上说谎。
+
+这个元标签的存在，是由于原来 iPhone 发布以后，人们开始在小的手机屏幕上阅览网页，而大多数站点未对移动端做优化的缘故。移动端浏览器因此会把视口宽度设为 960 像素，并以这个宽度渲染页面，结果展示的是桌面布局的缩放版本。其他的移动端浏览器（例如谷歌安卓上的）也是这么做的。用户可以在站点中放大、移动，查看他们感兴趣的那部分，但是这看起来很不舒服。如果你不幸遇到了一个没有响应式设计的网站，今天你还会看到这种情况。
+
+麻烦的是，你的带断点和媒介查询的响应式设计不会在移动端浏览器上像预期那样工作。如果你有个窄屏布局，在 480 像素及以下的视口宽度下生效，但是视口是按 960 像素设定的，你将不会在移动端看到你的窄屏布局。通过设定`width=device-width`，你用设备的实际宽度覆写了苹果默认的`width=960px`，然后你的媒介查询就会像预期那样生效。
+
+**所以你应该在你的文档头部\*总是\*包含上面那行 HTML。**
+
+和视口元标签一起，你可以使用另外几个设定，但大体说来，上面那行就是你想要使用的。
+
+- `initial-scale`：设定了页面的初始缩放，我们设定为 1。
+- `height`：特别为视口设定一个高度。
+- `minimum-scale`：设定最小缩放级别。
+- `maximum-scale`：设定最大缩放级别。
+- `user-scalable`：如果设为`no`的话阻止缩放。
+
+你应该避免使用`minimum-scale`、`maximum-scale`，尤其是将`user-scalable`设为`no`。用户应该有权力尽可能大或小地进行缩放，阻止这种做法会引起访问性问题。
+
+> **备注：** 有一个 CSS @规则是被设计用来替换掉视口元标签的——[@viewport](https://developer.mozilla.org/en-US/docs/Web/CSS/@viewport)——但是浏览器对它的支持太差了。它是在 IE 和 Edge 中引入的，但自从 Chromium 内核的 Edge 发布以后，它就不再受到 Edge 浏览器支持了。
+
+
+
+### 小结
+
+响应式设计指的是一个响应浏览环境的网页或者应用设计。它涵盖了很多 CSS 和 HTML 的功能和技术，现在基本上就是我们默认建设网站的方式。想一下你在手机上访问的网站，遇到一个缩放的桌面版网站，或者你需要向侧边滚动来寻找东西的网站可能是相当不寻常的。这是因为 Web 已经迁移到了这种响应式设计的方式上。
+
+响应式设计指的是一个响应浏览环境的网页或者应用设计。它涵盖了很多 CSS 和 HTML 的功能和技术，现在基本上就是我们默认建设网站的方式。想一下你在手机上访问的网站，遇到一个缩放的桌面版网站，或者你需要向侧边滚动来寻找东西的网站可能是相当不寻常的。这是因为 Web 已经迁移到了这种响应式设计的方式上。
+
+## 媒体查询入门指南
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
