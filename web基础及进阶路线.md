@@ -41,12 +41,10 @@ typora-root-url: ./
 [HTML核心 | mindcons.cn](https://mindcons.cn/sai/18839/)
 
 - `HTML`到底是什么
-
 - 常用的文本标记`HTML`元素
+- `HTML`标签分类
 
-### `HTML`标签语义化及嵌套规范
-
-### `HTML`标签分类及相互转化
+- `HTML`标签语义化及嵌套规范
 
 ### `HTML`语义：学会如何写出更优`html`
 
@@ -1109,6 +1107,10 @@ https://promisesaplus.com/
 # 框架
 
 ## `vue2.0`
+
+### `vue2`基本使用
+
+
 
 ### `mvvm`双向数据绑定实现的原理
 

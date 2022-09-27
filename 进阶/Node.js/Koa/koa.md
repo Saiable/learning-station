@@ -53,7 +53,7 @@ https://www.bilibili.com/video/BV18h411H7GE?spm_id_from=333.999.0.0
 
 ### 自动重启服务
 
-- `npm i nodemon`
+- `npm i nodemon -D`
 
 - 配置`dev`脚本：如果`nodemon`装在了全局，则不需要加`npx`
 
@@ -397,12 +397,12 @@ user_name, password
 
 ```
 {
-	"code": 0,
-	"message": "用户注册成功",
-	"result": {
-		id: 2,
-		"user_name": "user"
-	}
+    "code": 0,
+    "message": "用户注册成功",
+    "result": {
+		"id": 2,
+        "user_name": "user"
+    }
 }
 ```
 
@@ -449,8 +449,6 @@ user_name, password
 ```bash
 npm i koa-body
 ```
-
-补充，将`nodemon`安装到开发时依赖，先卸载：`npm uninstall nodemon`，再重新安装到开发依赖：`npm i nodemon -D`
 
 
 
@@ -597,6 +595,8 @@ module.exports = new UserController()
 
 ### 安装数据库
 
+#### `windows`安装
+
 在正式连接之前，我们需要装下`mysql`数据库，这里暂时安装`windows`版本，参照：https://blog.csdn.net/jsugs/article/details/124143762
 
 启动`mysql`服务
@@ -604,8 +604,6 @@ module.exports = new UserController()
 ```
 输入net start mysql或sc start mysql
 ```
-
-
 
 
 
@@ -639,7 +637,15 @@ taskkill /pid 26372 -t -f
 
 ![image-20220726071755569](image-20220726071755569.png)
 
+#### `linux`安装
 
+使用`docker`安装，参见
+
+- 待添加
+
+- [Docker安装mysql5.7报错 ERROR 1045 (28000): Access denied for user - 简书 (jianshu.com)](https://www.jianshu.com/p/a49389497a0c)
+
+最后一步报语法错误，可以不用管
 
 ### 连接数据库
 
@@ -672,8 +678,8 @@ const sequelize = new Sequelize('database', 'username', 'password', {
 ```js
 const {Sequelize} = require('sequelize')
 
-const seq = new Sequelize('mytest', 'root', '123123', {
-    host: 'localhost',
+const seq = new Sequelize('mytest', 'root', '123123', { // 需要手动新建mytest
+    host: 'localhost', // host: '1.12.**.**', // 若需要指定其他端口号，请参阅官网查询配置
     dialect: 'mysql'
 })
 
@@ -892,7 +898,7 @@ module.exports = User
 
 需要通过`ORM`实现标准的`CRUD`：https://www.sequelize.com.cn/core-concepts/model-querying-basics
 
-`user.service.js`
+新建`src/service/user.service.js`
 
 ```js
 const User = require('../model/user.model')
@@ -1050,7 +1056,7 @@ class UserController{
 module.exports = new UserController()
 ```
 
-再次使用`apifox`测试下`register`接口，注意要使用新的样例
+再次使用`apifox`测试下`register`接口，注意要使用新的样例（不要重复注册，目前没做异常处理）
 
 ![image-20220727060131292](image-20220727060131292.png)
 
@@ -1156,7 +1162,7 @@ module.exports = new UserController()
     
             // 合理性验证
             // 需要再次查询数据库 getUserInfo
-            if(getUserInfo({user_name})) { // 根据用户名来查询，参数使用对象，这样可以让查询参数不受顺序影响
+            if(await getUserInfo({user_name})) { // 根据用户名来查询，参数使用对象，这样可以让查询参数不受顺序影响
                 ctx.status = 409 // 状态完成冲突，不熟悉的话，可以去MDN上看下常见状态码
                 ctx.body = {
                     code: '10002',
@@ -1417,7 +1423,7 @@ const verifyUser = async (ctx, next) => {
 
     if (getUserInfo({ user_name })) {
         // ctx.status = 409
-        ctx.app.emit('error', userAlreadyExists, ctx)
+        ctx.app.emit('error', userAlreadyExists, ctx)	
         return
     }
 
@@ -1587,7 +1593,7 @@ module.exports = {
 }
 ```
 
-我们在`createUser方法中，模拟下写入数据库时发生了错误
+我们在`createUser`方法中，模拟下写入数据库时发生了错误
 
 `user.service.js`
 
@@ -2084,19 +2090,33 @@ const { createUser, getUserInfo, updateById } = require('../service/user.service
 
 // ...
 
-	async modifyPassword(ctx, next) {
+async modifyPassword(ctx, next) {
 
         // 1. 获取数据
         const id = ctx.state.user.id
         const password = ctx.request.body.password
-        // 2. 操作数据库
+
         try {
+            // 2. 操作数据库
             const res = await updateById({ id, password })
+
+            // 3. 返回结果
+            if (res) {
+                ctx.body = {
+                    code: 0,
+                    message: '修改密码成功',
+                    result: ''
+                }
+            } else {
+                ctx.app.emit('error', modifyPasswordFailed, ctx)
+
+                return
+            }
         } catch (err) {
-            console.error(err)
+            console.error('修改密码更新数据库失败', err)
+            ctx.app.emit('error', modifyPasswordFailed, ctx)
+            return
         }
-        // 3. 返回结果
-        ctx.body = '修改密码成功'
 
         console.log(id, password)
     }
@@ -2715,6 +2735,17 @@ goods_name, goods_price, goods_num, goods_img
 }
 ```
 
+新增路由
+
+`goods.route.js`
+
+```js
+const { upload, release } = require('../controller/goods.controller')
+
+
+router.post('/release', auth, hasAdminPermission, release)
+```
+
 
 
 #### 参数格式校验
@@ -3193,7 +3224,7 @@ module.exports = Goods
 `goods.router.js`
 
 ```js
-// 下架商品
+// 下架商品，注意改成了post方法
 router.post('/remove/:id/off', auth, hasAdminPermission, remove)
 ```
 
@@ -3206,7 +3237,10 @@ router.post('/remove/:id/off', auth, hasAdminPermission, remove)
 `goods.controller.js`
 
 ```js
-    async remove(ctx, next) {
+const { fileUploadFailed, unSupportedFileType, publishGoodsError, invalidGoodsId } = require('../constant/error.type')
+
+
+	async remove(ctx, next) {
         const res = await removeGoods(ctx.params.id)
         if(res) {
             ctx.body = {

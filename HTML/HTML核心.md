@@ -1,19 +1,20 @@
 ---
 title: 'HTML核心'
-date: 2022/8/10 09:03:02
+date: 2022-8-10 09:03:02
 cover: false
 tags:
 - HTML
 categories: 'HTML'
+typora-root-url: HTML核心
 ---
 
 [TOC]
 
 
 
-# `HTML`核心
+# `HTML`介绍
 
-## `HTML`到底是什么
+## 开始学习`HTML`
 
 > `HTML`通过各种各样的标记，将纯文本语义化；
 >
@@ -23,96 +24,1055 @@ categories: 'HTML'
 >
 > 不同元素以一定的规则嵌套，组合形成完整页面
 
-- 什么是`HTML`
+### 什么是`HTML`
 
-  超文本标记语言 (英语：**H**yper**t**ext **M**arkup **L**anguage，简称：HTML ) 是一种用来结构化 Web 网页及其内容的标记语言。网页内容可以是：一组段落、一个重点信息列表、也可以含有图片和数据表。
+超文本标记语言 (英语：**H**yper**t**ext **M**arkup **L**anguage，简称：HTML ) 是一种用来结构化 Web 网页及其内容的标记语言。网页内容可以是：一组段落、一个重点信息列表、也可以含有图片和数据表。
 
-  HTML 不是一门编程语言，而是一种用于**定义内容结构**的标记语言。
+HTML 不是一门编程语言，而是一种用于**定义内容结构**的标记语言。
 
-  HTML 由一系列的**元素**（elements）组成，这些元素可以用来包围不同部分的内容，使其以某种方式呈现或者工作。一对标签（ tags）可以为一段文字或者一张图片添加超链接，将文字设置为斜体，改变字号，等等。
+HTML 由一系列的**元素**（elements）组成，这些元素可以用来包围不同部分的内容，使其以某种方式呈现或者工作。一对标签（ tags）可以为一段文字或者一张图片添加超链接，将文字设置为斜体，改变字号，等等。
 
-  我的理解：`HTML`通过各种各样的标记，将纯文本文字添加了语义化
+我的理解：`HTML`通过各种各样的标记，将纯文本文字进行结构化和语义化
 
-- `HTML`元素详解
+### `HTML`元素详解
 
-  - 元素的主要部分有：
-
-    ```html
-    <p>My cat is very grumpy</p>
-    ```
-
-    - **开始标签**（Opening tag）：包含元素的名称（本例为 p），被大于号、小于号所包围。表示元素从这里开始或者开始起作用 —— 在本例中即段落由此开始。
-    - **结束标签**（Closing tag）：与开始标签相似，只是其在元素名之前包含了一个斜杠。这表示着元素的结尾 —— 在本例中即段落在此结束。初学者常常会犯忘记包含结束标签的错误，这可能会产生一些奇怪的结果。
-    - **内容**（Content）：元素的内容，本例中就是所输入的文本本身。
-    - **元素**（Element）：开始标签、结束标签与内容相结合，便是一个完整的元素。
-
-  - 元素也可以有属性（Attribute）：
-
-    ```html
-    <p class="editor-note">My cat is very grumpy</p>
-    ```
-
-    - 属性包含了关于元素的一些额外信息，这些信息本身不应显现在内容中。本例中，`class` 是属性名称，`editor-note` 是属性的值。`class` 属性可为元素提供一个标识名称，以便进一步为元素指定样式或进行其他操作时使用。
-    - 属性应该包含：
-      1. 在属性与元素名称（或上一个属性，如果有超过一个属性的话）之间的空格符。
-      2. 属性的名称，并接上一个等号。
-      3. 由引号所包围的属性值。
-
-  - 我的理解：不同的标签包裹内容，形成不同的元素，表示不同含义的文本或内容
-
-- 嵌套元素
-
-  - 也可以将一个元素置于其他元素之中 —— 称作**嵌套**。
-  - 元素必须正确地开始和结束，才能清楚地显示出正确的嵌套层次。否则浏览器就得自己猜测，虽然它会竭尽全力，但很大程度不会给你期望的结果。所以一定要避免！
-  - 我的理解：嵌套元素增强了语义的表达能力
-
-- 空元素
-
-  - 不包含任何内容的元素称为空元素。比如 `img` 元素：
-
-    ```html
-    <img src="images/firefox-icon.png" alt="My test image">
-    ```
-
-    本元素包含两个属性，但是并没有 `</img>` 结束标签，元素里也没有内容。
-
-    这是因为图像元素不需要通过内容来产生效果，它的作用是向其所在的位置嵌入一个图像。
-
-    - 该元素通过包含图像文件路径的地址属性 `src`，可在所在位置嵌入图像。
-    - `alt` 属性的关键字即“描述文本”。`alt` 文本应向用户完整地传递图像要表达的意思。用 "测试图片" 来描述 Firefox 标志并不合适，修改成 "Firefox 标志：一只盘旋在地球上的火狐" 就好多了。
-
-- `HTML`文档详解
-
-  以上介绍了一些基本的 HTML 元素，但孤木不成林。现在来看看单个元素如何彼此协同构成一个完整的 HTML 页面。
+- 元素的主要部分有：
 
   ```html
-  <!DOCTYPE html>
-  <html>
-    <head>
-      <meta charset="utf-8">
-      <title>My test page</title>
-    </head>
-    <body>
-      <img src="images/firefox-icon.png" alt="My test image">
-    </body>
-  </html>
+  <p>My cat is very grumpy</p>
   ```
 
-  这里有：
+  - **开始标签**（Opening tag）：包含元素的名称（本例为 p），被大于号、小于号所包围。表示元素从这里开始或者开始起作用 —— 在本例中即段落由此开始。
+  - **结束标签**（Closing tag）：与开始标签相似，只是其在元素名之前包含了一个斜杠。这表示着元素的结尾 —— 在本例中即段落在此结束。初学者常常会犯忘记包含结束标签的错误，这可能会产生一些奇怪的结果。
+  - **内容**（Content）：元素的内容，本例中就是所输入的文本本身。
+  - **元素**（Element）：开始标签、结束标签与内容相结合，便是一个完整的元素。
 
-  - `<!DOCTYPE html>` — 文档类型。混沌初分，HTML 尚在襁褓（大约是 1991/92 年）之时，`DOCTYPE` 用来链接一些 HTML 编写守则，比如自动查错之类。`DOCTYPE` 在当今作用有限，仅用于保证文档正常读取。现在知道这些就足够了。
-  - `<html></html>` — [`html`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/html) 元素。该元素包含整个页面的内容，也称作根元素。
-  - `<head></head>` — [`head`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/head) 元素。该元素的内容对用户不可见，其中包含例如面向搜索引擎的搜索关键字（[keywords](https://developer.mozilla.org/zh-CN/docs/Glossary/Keyword)）、页面描述、CSS 样式表和字符编码声明等。
-  - `<meta charset="utf-8">` — 该元素指定文档使用 UTF-8 字符编码，UTF-8 包括绝大多数人类已知语言的字符。基本上 UTF-8 可以处理任何文本内容，还可以避免以后出现某些问题，没有理由再选用其他编码。
-  - `<title></title>` — [`title`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/title) 元素。该元素设置页面的标题，显示在浏览器标签页上，也作为收藏网页的描述文字。
-  - `<body></body>` — [`body`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/body) 元素。该元素包含期望让用户在访问页面时看到的内容，包括文本、图像、视频、游戏、可播放的音轨或其他内容。
-  - 我的理解：不同元素以一定的嵌套规则，组合形成完整页面
-  
+- 元素也可以有属性（Attribute）：
+
+  ```html
+  <p class="editor-note">My cat is very grumpy</p>
+  ```
+
+  - 属性包含了关于元素的一些额外信息，这些信息本身不应显现在内容中。本例中，`class` 是属性名称，`editor-note` 是属性的值。`class` 属性可为元素提供一个标识名称，以便进一步为元素指定样式或进行其他操作时使用。
+  - 属性应该包含：
+    1. 在属性与元素名称（或上一个属性，如果有超过一个属性的话）之间的空格符。
+    2. 属性的名称，并接上一个等号。
+    3. 由引号所包围的属性值。
+
+- 我的理解：不同的标签包裹内容，形成不同的元素，表示不同含义的文本或内容
+
+#### 嵌套元素
+
+- 也可以将一个元素置于其他元素之中 —— 称作**嵌套**。
+- 元素必须正确地开始和结束，才能清楚地显示出正确的嵌套层次。否则浏览器就得自己猜测，虽然它会竭尽全力，但很大程度不会给你期望的结果。所以一定要避免！
+- 我的理解：嵌套元素增强了语义的表达能力
+
+#### 块和行内元素
+
+在 HTML 中有两种你需要知道的重要元素类别，块级元素和内联元素。
+
+- 块元素（block element）
+
+  - 详解：[块级元素 - HTML（超文本标记语言） | MDN (mozilla.org)](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Block-level_elements)
+  - 块级元素在页面中以块的形式展现 —— 相对于其前面的内容它会出现在新的一行，其后的内容也会被挤到下一行展现。块级元素通常用于展示页面上结构化的内容，例如段落、列表、导航菜单、页脚等等。一个以 block 形式展现的块级元素不会被嵌套进内联元素中，但可以嵌套在其它块级元素中。
+
+  - 占满整行，元素宽高边距等可设置
+  - 在网页中，一般通过块元素来进行布局
+
+- 行内元素（inline element）
+
+  - 内联元素通常出现在块级元素中并环绕文档内容的一小部分，而不是一整个段落或者一组内容。内联元素不会导致文本换行：它通常出现在一堆文字之间。
+  - 不占满整行，宽高、上下边距等不可直接设置
+  - 行内元素可以直接设置左右内外边距，无法直接设置上下内外边距
+  - 行内元素主要用来包裹文字
+  - 一般情况下会在块元素中放行内元素，而不会在行内元素中放块元素
+  - 块元素中基本上什么都能放
+  - p元素中不能放任何的块元素
+
+
+
+- 行内块元素
+  - 不占满整行，元素宽高边距等可设置
+
+> **备注：** HTML5 重新定义了元素的类别：见 [元素内容分类](https://html.spec.whatwg.org/multipage/indices.html#element-content-categories)([译文](https://developer.mozilla.org/zh-CN/docs/Web/Guide/HTML/Content_categories))。尽管这些新的定义更精确，但却比上述的“块级元素”和“内联元素”更难理解，因此在之后的讨论中仍使用旧的定义。
+
+> **备注：** 在这篇文章中提到的“块”和“内联”，不应该与 [the types of CSS boxes](https://developer.mozilla.org/en-US/docs/Learn/CSS/Building_blocks/The_box_model#types_of_css_boxes) 中的同名术语相混淆。尽管他们默认是相关的，但改变 CSS 显示类型并不会改变元素的分类，也不会影响它可以包含和被包含于哪些元素。防止这种混淆也是 HTML5 摒弃这些术语的原因之一。
+
+> **备注：** 你可以查阅包含了块级元素和内联元素列表的参考页面—see [Block-level elements](https://developer.mozilla.org/en-US/docs/Web/HTML/Block-level_elements) and [Inline elements](https://developer.mozilla.org/en-US/docs/Web/HTML/Inline_elements).
+
+##### 块元素
+
+HTML（超文本标记语言）中元素大多数都是“块级”元素或[行内元素](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Inline_elements)。块级元素占据其父元素（容器）的整个水平空间，垂直空间等于其内容高度，因此创建了一个“块”。这篇文章帮助解释这个概念。
+
+通常浏览器会在块级元素前后另起一个新行。
+
+块级元素只能出现在`<body>` 元素内。
+
+块级元素与行内元素有几个关键区别：
+
+- 格式
+
+  默认情况下，块级元素会新起一行。
+
+- 内容模型
+
+  一般块级元素可以包含行内元素和其他块级元素。这种结构上的包含继承区别可以使块级元素创建比行内元素更”大型“的结构。
+
+HTML 标准中块级元素和行内元素的区别至高出现在 4.01 标准中。在 HTML5，这种区别被一个更复杂的[内容类别 (en-US)](https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Content_categories)代替。”块级“类别大致相当于 HTML5 中的[流内容 (en-US)](https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Content_categories#flow_content)类别，而”行内“类别相当于 HTML5 中的[措辞内容 (en-US)](https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Content_categories#phrasing_content)类别，不过除了这两个还有其他类别。
+
+以下是 HTML 中所有的块级元素列表（虽然”块级“在新的 HTML5 元素中没有明确定义）
+
+```html
+<div>
+文档分区。
+    
+<address>
+联系方式信息。
+
+<article>
+文章内容。
+
+<aside>
+伴随内容。
+
+<blockquote>
+块引用。
+
+<dd>
+定义列表中定义条目描述。
+
+<dl>
+定义列表。
+
+<fieldset>
+表单元素分组。
+
+<figcaption>
+图文信息组标题
+
+<figure>
+图文信息组 (参照 <figcaption>)。
+
+<footer>
+区段尾或页尾。
+
+<form>
+表单。
+
+<h1> (en-US), <h2> (en-US), <h3> (en-US), <h4> (en-US), <h5> (en-US), <h6> (en-US)
+标题级别 1-6.
+
+<header>
+区段头或页头。
+
+<hgroup>
+标题组。
+
+<hr>
+水平分割线。
+
+<ol>
+有序列表。
+
+<p>
+行。
+
+<pre>
+预格式化文本。
+
+<section>
+一个页面区段。
+
+<table>
+表格。
+
+<ul>
+无序列表。
+```
+
+##### 行内元素
+
+一个行内元素只占据它对应标签的边框所包含的空间。
+
+行内元素与块级元素对比：
+
+内容
+
+一般情况下，行内元素只能包含数据和其他行内元素。 而块级元素可以包含行内元素和其他块级元素。这种结构上的包含继承区别可以使块级元素创建比行内元素更”大型“的结构。
+
+格式
+
+默认情况下，行内元素不会以新行开始，而块级元素会新起一行。
+
+下面的元素都是行内元素：
+
+- [b](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/b), [big](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/big), [i](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/i), [small](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/small), [tt](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/tt)
+- [abbr](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/abbr), [acronym](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/acronym), [cite](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/cite), [code](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/code), [dfn](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/dfn), [em](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/em), [kbd](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/kbd), [strong](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/strong), [samp](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/samp), [var](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/var)
+- [a](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/a), [bdo](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/bdo), [br](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/br), [img](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/img), [map](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/map), [object](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/object), [q](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/q), [script](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/script), [span](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/span), [sub](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/sub), [sup](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/sup)
+- [button](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/button), [input](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/Input), [label](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/label), [select](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/select), [textarea](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/textarea)
+
+##### 小结
+
+`HTML4`及之前的元素类型的概念，和`CSS`盒子类型的概念相关联。块级元素等价于块级盒子，内联元素等价于内联盒子。使用`display`属性更改了盒子的外部显示类型，将`block`改为`inline`，只能说它的`CSS`盒子类型变了，但本身的元素类型还是`block`
+
+为了避免这种混淆，`HTML5`中重新定义了元素的类型：https://html.spec.whatwg.org/multipage/indices.html#element-content-categories
+
+![image-20220831100931309](image-20220831100931309.png)
+
+值得一提的是，`HTML5`对元素类型的新定义，截止2022年8月31日还是非规范性的，了解一下即可
+
+![image-20220831101359740](image-20220831101359740.png)
+
+#### 空元素
+
+- 不包含任何内容的元素称为空元素。比如 `img` 元素：
+
+  ```html
+  <img src="images/firefox-icon.png" alt="My test image">
+  ```
+
+  本元素包含两个属性，但是并没有 `</img>` 结束标签，元素里也没有内容。
+
+  这是因为图像元素不需要通过内容来产生效果，它的作用是向其所在的位置嵌入一个图像。
+
+  - 该元素通过包含图像文件路径的地址属性 `src`，可在所在位置嵌入图像。
+  - `alt` 属性的关键字即“描述文本”。`alt` 文本应向用户完整地传递图像要表达的意思。用 "测试图片" 来描述 Firefox 标志并不合适，修改成 "Firefox 标志：一只盘旋在地球上的火狐" 就好多了。
+
+#### 属性
+
+元素也可以拥有属性，如下：
+
+![我的猫咪脾气爆](grumpy-cat-attribute-small.png)
+
+属性包含元素的额外信息，这些信息不会出现在实际的内容中。
+
+在上述例子中，这个 class 属性给元素赋了一个识别的名字（id），这个名字此后可以被用来识别此元素的样式信息和其他信息。
+
+一个属性必须包含如下内容：
+
+1. 一个空格，在属性和元素名称之间。(如果已经有一个或多个属性，就与前一个属性之间有一个空格。)
+2. 属性名称，后面跟着一个等于号。
+3. 一个属性值，由一对引号“ ”引起来。
+
+##### 布尔属性
+
+有时你会看到没有值的属性，它是合法的。这些属性被称为布尔属性，他们只能有跟它的属性名一样的属性值。例如[`disabled`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/Input#attr-disabled) 属性，他们可以标记表单输入使之变为不可用 (变灰色)，此时用户不能向他们输入任何数据。
+
+```html
+<input type="text" disabled="disabled">
+
+```
+
+方便起见，我们完全可以将其写成以下形式 (我们还提供了一个非禁止输入的表单元素供您参考，以作为对比)：
+
+```html
+<!-- 使用 disabled 属性来防止终端用户输入文本到输入框中 -->
+<input type="text" disabled>
+
+<!-- 下面这个输入框没有 disabled 属性，所以用户可以向其中输入 -->
+<input type="text">
+
+```
+
+##### 省略包围属性值的引号
+
+我们建议始终添加引号——这样可以避免很多问题，并且使代码更易读。
+
+##### 单引号或者双引号？
+
+在目前为止，本章内容所有的属性都是由双引号来包裹。也许在一些 HTML 中，你以前也见过单引号。这只是风格的问题，你可以从中选择一个你喜欢的。以下两种情况都可以：
+
+```html
+<a href="http://www.example.com">示例站点链接</a>
+
+<a href='http://www.example.com'>示例站点链接</a>
+
+```
+
+但你应该注意单引号和双引号不能在一个属性值里面混用。下面的语法是错误的：
+
+```html
+<a href="http://www.example.com'>示例站点链接</a>
+```
+
+在一个 HTML 中已使用一种引号，你可以在此引号中嵌套另外一种引号：
+
+```html
+<a href="http://www.example.com" title="你觉得'好玩吗'？">示例站点链接</a>
+```
+
+如果你想将引号当作文本显示在 html 中，你就必须使用[实体引用](https://developer.mozilla.org/zh-CN/docs/Learn/HTML/Introduction_to_HTML/Getting_started#实体引用：_在html中包含特殊字符)。
+
+### `HTML`文档详解
+
+以上介绍了一些基本的 HTML 元素，但孤木不成林。现在来看看单个元素如何彼此协同构成一个完整的 HTML 页面。
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>My test page</title>
+  </head>
+  <body>
+    <img src="images/firefox-icon.png" alt="My test image">
+  </body>
+</html>
+```
+
+这里有：
+
+- `<!DOCTYPE html>` — 文档类型。混沌初分，HTML 尚在襁褓（大约是 1991/92 年）之时，`DOCTYPE` 用来链接一些 HTML 编写守则，比如自动查错之类。`DOCTYPE` 在当今作用有限，仅用于保证文档正常读取。现在知道这些就足够了。
+- `<html></html>` — [`html`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/html) 元素。该元素包含整个页面的内容，也称作根元素。
+- `<head></head>` — [`head`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/head) 元素。该元素的内容对用户不可见，其中包含例如面向搜索引擎的搜索关键字（[keywords](https://developer.mozilla.org/zh-CN/docs/Glossary/Keyword)）、页面描述、CSS 样式表和字符编码声明等。
+- `<meta charset="utf-8">` — 该元素指定文档使用 UTF-8 字符编码，UTF-8 包括绝大多数人类已知语言的字符。基本上 UTF-8 可以处理任何文本内容，还可以避免以后出现某些问题，没有理由再选用其他编码。
+- `<title></title>` — [`title`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/title) 元素。该元素设置页面的标题，显示在浏览器标签页上，也作为收藏网页的描述文字。
+- `<body></body>` — [`body`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/body) 元素。该元素包含期望让用户在访问页面时看到的内容，包括文本、图像、视频、游戏、可播放的音轨或其他内容。
+- 我的理解：不同元素以一定的嵌套规则，组合形成完整页面
+
 - 备注：国内一般都把元素（`element`），叫做标签（`tag`）
 
-## 常用的`HTML`标签
+#### HTML 中的空白
 
-### 面试题：`HTML`中有哪些标签？
+无论你在 HTML 元素的内容中使用多少空格 (包括空白字符，包括换行)，当渲染这些代码的时候，HTML 解释器会将连续出现的空白字符减少为一个单独的空格符。
+
+那么为什么我们会在 HTML 元素的嵌套中使用那么多的空白呢？
+
+答案就是为了可读性 —— 如果你的代码被很好地进行格式化，那么就很容易理解你的代码是怎么回事，反之就只有聚做一团的混乱.。在我们的 HTML 代码中，我们让每一个嵌套的元素以两个空格缩进。你使用什么风格来格式化你的代码取决于你 (比如所对于每层缩进使用多少个空格)，但是你应该坚持使用某种风格。
+
+#### 实体引用：在 HTML 中包含特殊字符
+
+[https://www.w3school.com.cn/html/html_entities.asp](https://www.w3school.com.cn/html/html_entities.asp)
+
+在 HTML 中，字符 `<`, `>`,`"`,`'` 和 `&` 是特殊字符。它们是 HTML 语法自身的一部分，那么你如何将这些字符包含进你的文本中呢，比如说如果你真的想要在文本中使用符号&或者小于号，而不想让它们被浏览器视为代码并被解释？
+
+我们必须使用字符引用 —— 表示字符的特殊编码，它们可以在那些情况下使用。每个字符引用以符号&开始，以分号 (;) 结束。
+
+| 显示结果 | 描述   | 实体名称 |
+| -------- | ------ | -------- |
+|          | 空格   | &nbsp ;  |
+| <        | 小于号 | &lt ;    |
+| >        | 大于号 | &gt ;    |
+
+完整的实体参考表：[HTML ISO-8859-1 参考手册 ](https://www.w3school.com.cn/charsets/ref_html_8859.asp)
+
+### HTML 注释
+
+```html
+<p>我在注释外！</p>
+
+<!-- <p>我在注释内！</p> -->
+
+```
+
+### 小结
+
+你已经来到了这篇文章的结尾 —— 希望你享受你的基础的 HTML 学习的旅程。
+
+在这里你应该可以理解 HTML 语言的全貌，它在基础的级别是如何工作，而且可以使用一些元素和属性。在这个模块的后续文章中，我们会深入一些你已经见过的东西的细节，并且介绍一些新的 HTML 的特性。未完待续！
+
+## `head`标签里面有什么？`HTML` 中的元数据
+
+在页面加载完成的时候，head 标签里的内容，是不会在页面中显示出来的。它包含了诸如页面的 `<title>`（标题）、指向 CSS 的链接（如果你选择用 CSS 来为 HTML 内容添加样式）、指向自定义图标的链接和其它的元数据（描述 HTML 的数据，比如，作者和描述文档的重要关键词）等信息。本文将涵盖上述内容并拓展，为您对标记的使用打下一个良好的基础。
+
+### 什么是 `HTML <head> `标签
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>我的测试页面</title>
+  </head>
+  <body>
+    <p>这是我的页面</p>
+  </body>
+</html>
+
+```
+
+HTML `<head>` 元素与 `<body>` 元素不同，它的内容不会在浏览器中显示，它的作用是保存页面的一些元数据。上述示例的 head 元素非常简短：
+
+```html
+<head>
+  <meta charset="utf-8">
+  <title>我的测试页面</title>
+</head>
+
+```
+
+然而，大型页面的 head 会包含很多元数据。可以用[开发者工具](https://developer.mozilla.org/zh-CN/docs/Learn/Common_questions/What_are_browser_developer_tools)查看网页的 head 信息。本节并不打算面面俱到地讲述 head，只是初步介绍几项 head 中重要的常用元素，让我们开始吧。
+
+### 添加标题
+
+之前已经讲过 `<title>` 元素，它可以为文档添加标题。但别和 `<h1>`元素搞混了，`<h1>`是为 body 添加标题的。有时候 `<h1>`也叫作网页标题。但是二者并不相同。
+
+- [`<h1>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/Heading_Elements) 元素在页面加载完毕时显示在页面中，通常只出现一次，用来标记页面内容的标题（故事名称、新闻摘要，等等）。
+- [`<title>`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/title) 元素是一项元数据，用于表示整个 HTML 文档的标题（而不是文档内容）。
+
+![demo](title-example.png)
+
+现在很明显的可以看到 `<h1>` 出现的地方，和 `<title>` 出现的地方！
+
+`<title>` 元素也被以其他的方式使用着。比如说，如果你尝试为某个页面添加书签，（在火狐浏览器中：点击*书签 > 将当前标签页添加到书签*，或点击地址栏末尾的星标），你会看到 `<title>` 的内容被作为建议的书签名。
+
+![bookmark ](bookmark-example.png)
+
+`<title>` 元素的内容也被用在搜索的结果中，正如你即将在下面看到的。
+
+### 元数据：`<meta>` 元素
+
+元数据就是描述数据的数据，而 HTML 有一个“官方的”方式来为一个文档添加元数据——`<meta>` 元素。
+
+当然，其它的在这篇文章中提到的东西也可以被当作元数据。有很多不同种类的 `<meta>` 元素可以被包含进你的页面的 `<head>` 元素，但是现在我们还不会尝试去解释所有类型，这只会引起混乱。我们会解释一些你常会看到的类型，先让你有个概念。
+
+#### 指定你的文档中字符的编码
+
+```html
+<meta charset="utf-8">
+
+```
+
+这个元素简单的指定了文档的字符编码——在这个文档中被允许使用的字符集。`utf-8` 是一个通用的字符集，它包含了任何人类语言中的大部分的字符。意味着该 web 页面可以显示任意的语言；所以对于你的每一个页面都使用这个设置会是一个好主意！比如说，你的页面可以很好的处理英文和日文：
+
+![a web page containing English and Japanese characters, with the character encoding set to universal, or utf-8. Both languages display fine,](correct-encoding.png)
+
+比如说，如果你将你的字符集设置为 `ISO-8859-1`，那么页面将出现乱码：
+
+![a web page containing English and Japanese characters, with the character encoding set to latin. The Japanese characters don't display correctly](bad-encoding.png)
+
+> **备注：** 一些浏览器（比如 Chrome）会自动修正错误的编码，所以取决于你所使用的浏览器，你或许不会看到这个问题。无论如何，你仍然应该为你的页面手动设置编码为 `utf-8`，来避免在其他浏览器中可能出现的潜在问题。
+
+#### 添加作者和描述
+
+许多 `<meta>` 元素包含了 `name` 和 `content` 属性：
+
+- `name` 指定了 meta 元素的类型；说明该元素包含了什么类型的信息。
+- `content` 指定了实际的元数据内容
+
+这两个 meta 元素对于定义你的页面的作者和提供页面的简要描述是很有用的。让我们看一个例子：
+
+```html
+<meta name="author" content="Chris Mills">
+<meta name="description" content="The MDN Web Docs Learning Area aims to provide
+complete beginners to the Web with all they need to know to get
+started with developing web sites and applications.">
+
+```
+
+指定作者在某些情况下是很有用的：如果你需要联系页面的作者，问一些关于页面内容的问题。一些内容管理系统能够自动获取页面作者的信息，然后用于某些用途。
+
+指定包含关于页面内容的关键字的页面内容的描述是很有用的，因为它可能或让你的页面在搜索引擎的相关的搜索出现得更多（这些行为在术语上被称为：[搜索引擎优化](https://developer.mozilla.org/zh-CN/docs/Glossary/SEO)，或 [SEO](https://developer.mozilla.org/zh-CN/docs/Glossary/SEO)。）
+
+在你喜欢的搜索引擎里搜索“MDN Web Docs”（下图展示的是在谷歌搜索里的情况）。你会看到 description `<meta>` 和 `<title>` 元素如何在搜索结果里显示——很值得这样做哦！
+
+![A Yahoo search result for "Mozilla Developer Network"](mdn-search-result.png)
+
+> **备注：** 在谷歌搜索里，在主页面链接下面，你将看到一些相关子页面——这些是站点链接，可以在 [Google's webmaster tools](https://search.google.com/search-console/about) 配置——一种可以使你的站点对搜索引擎更友好的方式。
+
+> **备注：** 许多 `<meta>` 特性已经不再使用。例如，keyword `<meta>` 元素（`<meta name="keywords" content="fill, in, your, keywords, here">`）——提供关键词给搜索引擎，根据不同的搜索词，查找到相关的网站——已经被搜索引擎忽略了，因为作弊者填充了大量关键词到 keyword，错误地引导搜索结果。
+
+#### 其他类型的元数据
+
+当你在网站上查看源码时，你也会发现其它类型的元数据。你在网站上看到的许多功能都是专有创作，旨在向某些网站（如社交网站）提供可使用的特定信息。
+
+例如，Facebook 编写的元数据协议 [Open Graph Data](https://ogp.me/) 为网站提供了更丰富的元数据。在 MDN Web 文档源代码中，你会发现：
+
+```html
+<meta property="og:image" content="https://developer.mozilla.org/static/img/opengraph-logo.png">
+<meta property="og:description" content="The Mozilla Developer Network (MDN) provides
+information about Open Web technologies including HTML, CSS, and APIs for both Web sites
+and HTML5 Apps. It also documents Mozilla products, like Firefox OS.">
+<meta property="og:title" content="Mozilla Developer Network">
+
+```
+
+上面代码展现的一个效果就是，当你在 Facebook 上链接到 MDN 时，该链接将显示一个图像和描述：这为用户提供更丰富的体验。
+
+![Open graph protocol data from the MDN homepage as displayed on facebook, showing an image, title, and description.](facebook-output.png)
+
+Twitter 还拥有自己的类型的专有元数据协议（称为：[Twitter Cards](https://developer.twitter.com/en/docs/tweets/optimize-with-cards/overview/abouts-cards)），当网站的 URL 显示在 twitter.com 上时，它具有相似的效果。例如下面：
+
+```html
+<meta name="twitter:title" content="Mozilla Developer Network">
+
+```
+
+### 增加自定义图标
+
+为了进一步丰富你的网站设计，你可以在元数据中添加对自定义图标（**favicon**，为“favorites icon”的缩写）的引用，这些将在特定的场合（浏览器的收藏，或书签列表）中显示。
+
+这个不起眼的图标已经存在很多很多年了，16x16 像素是这种图标的第一种类型。你可以看见这些图标出现在浏览器每一个打开的标签页中以及书签页中。
+
+页面添加图标的方式有：
+
+1. 将其保存在与网站的索引页面相同的目录中，以 `.ico` 格式保存（大多数浏览器将支持更通用的格式，如 `.gif` 或 `.png`，但使用 ICO 格式将确保它能在如 Internet Explorer 6 那样古老的浏览器显示）
+
+2. 将以下行添加到 HTML 的 `<head>` 中以引用它：
+
+   ```html
+   <link rel="icon" href="favicon.ico" type="image/x-icon">
+   
+   ```
+
+如今还有很多其他的图标类型可以考虑。例如，你可以在 MDN Web 文档的源代码中找到它：
+
+```html
+<!-- third-generation iPad with high-resolution Retina display: -->
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://developer.mozilla.org/static/img/favicon144.png">
+<!-- iPhone with high-resolution Retina display: -->
+<link rel="apple-touch-icon-precomposed" sizes="114x114" href="https://developer.mozilla.org/static/img/favicon114.png">
+<!-- first- and second-generation iPad: -->
+<link rel="apple-touch-icon-precomposed" sizes="72x72" href="https://developer.mozilla.org/static/img/favicon72.png">
+<!-- non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
+<link rel="apple-touch-icon-precomposed" href="https://developer.mozilla.org/static/img/favicon57.png">
+<!-- basic favicon -->
+<link rel="icon" href="https://developer.mozilla.org/static/img/favicon32.png">
+
+```
+
+这些注释解释了每个图标的用途——这些元素涵盖的东西提供一个高分辨率图标，这些高分辨率图标当网站保存到 iPad 的主屏幕时使用。
+
+不用担心现在实现所有这些类型的图标——这是一个相当先进的功能，你将不会被要求在这个课堂上学习这个知识点。这里的主要目的是让你提前了解有这一样东西以防当你浏览其他网站的源代码时不理解源代码的含义。
+
+> **备注：** 如果你的网站使用了内容安全策略（Content Security Policy，CSP）来增加安全性，这个策略会应用在图标上。如果你遇到了图标没有被加载的问题，你需要确认 [`Content-Security-Policy`](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Content-Security-Policy) 响应头的 [img-src 指令)](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/img-src) 没有禁止访问图标。
+
+### 在 HTML 中应用 CSS 和 JavaScript
+
+如今，几乎你使用的所有网站都会使用 CSS 来让网页更加炫酷，并使用 JavaScript 来让网页有交互功能，比如视频播放器、地图、游戏以及更多功能。这些应用在网页中很常见，它们分别使用 `<link>` 元素以及 `<script>` 元素。
+
+`<link>` 元素经常位于文档的头部。这个 link 元素有 2 个属性，`rel="stylesheet"` 表明这是文档的样式表，而 `href` 包含了样式表文件的路径：
+
+```html
+<link rel="stylesheet" href="my-css-file.css">
+
+```
+
+`<script>` 元素没必要非要放在文档的 `<head>` 中，并包含 src 属性来指向需要加载的 JavaScript 文件路径，同时最好加上 `defer` 以告诉浏览器在解析完成 HTML 后再加载 JavaScript。这样可以确保在加载脚本之前浏览器已经解析了所有的 HTML 内容（如果脚本尝试访问某个不存在的元素，浏览器会报错）。实际上还有很多方法可用于处理加载 JavaScript 的问题，但这是现代浏览器中最可靠的一种方法。
+
+```html
+<script src="my-js-file.js" defer></script>
+
+```
+
+### 为文档设定主语言
+
+最后，值得一提的是可以（而且有必要）为站点设定语言，这个可以通过添加 [`lang` 属性](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Global_attributes/lang)到 HTML 开始的标签中来实现（参考 [meta-example.html](https://github.com/mdn/learning-area/blob/main/html/introduction-to-html/the-html-head/meta-example.html)），如下所示：
+
+```html
+<html lang="zh-CN">
+
+```
+
+这在很多方面都很有用。如果你的 HTML 文档的语言设置好了，那么你的 HTML 文档就会被搜索引擎更有效地索引（例如，允许它在特定于语言的结果中正确显示），对于那些使用屏幕阅读器的视障人士也很有用（例如，法语和英语中都有“six”这个单词，但是发音却完全不同）。
+
+你还可以将文档的分段设置为不同的语言。例如，我们可以把日语部分设置为日语，如下所示：
+
+```html
+<p>Japanese example: <span lang="ja">ご飯が熱い。</span>.</p>
+
+```
+
+这些代码是根据 [ISO 639-1](https://zh.wikipedia.org/wiki/ISO_639-1) 标准定义的。你可以在 [Language tags in HTML and XML](https://www.w3.org/International/articles/language-tags/) 找到更多相关内容。
+
+### 小结
+
+已经到了我们快速学习 HTML head 标签的尾声——你还能学到更多的相关的，但是现阶段详尽的讲的太多会令人无聊且困惑，我们只希望你现在在这学到最基本的概念！下一篇我们将要学习 [HTML 文字处理基础](https://developer.mozilla.org/zh-CN/docs/Learn/HTML/Introduction_to_HTML/HTML_text_fundamentals)。
+
+## HTML 文字处理基础
+
+HTML 的主要工作是编辑文本结构和文本内容（也称为语义[semantics](https://developer.mozilla.org/zh-CN/docs/Glossary/Semantics)），以便浏览器能正确的显示。本文介绍了 [HTML](https://developer.mozilla.org/zh-CN/docs/Glossary/HTML)的使用方法：在一段文本中添加标题和段落，强调语句，创建列表等等。
+
+### 基础：标题和段落
+
+大部分的文本结构由标题和段落组成。不管是小说、报刊、教科书还是杂志等。
+
+内容结构化会使读者的阅读体验更轻松，更愉快。
+
+在 HTML 中，每个段落是通过 `<p>` 元素标签进行定义的，每个标题（Heading）是通过“标题标签”进行定义的，这里有六个标题元素标签 —— `<h1>`、`<h2>`、`<h3>`、`<h4>`、`<h5>`、`<h6>`。每个元素代表文档中不同级别的内容; `<h1>` 表示主标题（the main heading），`<h2>` 表示二级子标题（subheadings），`<h3>` 表示三级子标题（sub-subheadings），等等。
+
+#### 编辑结构层次
+
+这里举一个例子。在一个故事中，`<h1>`表示故事的名字，`<h2>`表示每个章节的标题， `<h3>`表示每个章节下的子标题，以此类推。
+
+```html
+<h1>三国演义</h1>
+
+<p>罗贯中</p>
+
+<h2>第一回 宴桃园豪杰三结义 斩黄巾英雄首立功</h2>
+
+<p>话说天下大势，分久必合，合久必分。周末七国分争，并入于秦。及秦灭之后，楚、汉分争，又并入于汉……</p>
+
+<h2>第二回 张翼德怒鞭督邮 何国舅谋诛宦竖</h2>
+
+<p>且说董卓字仲颖，陇西临洮人也，官拜河东太守，自来骄傲。当日怠慢了玄德，张飞性发，便欲杀之……</p>
+
+<h3>却说张飞</h3>
+
+<p>却说张飞饮了数杯闷酒，乘马从馆驿前过，见五六十个老人，皆在门前痛哭。飞问其故，众老人答曰：“督邮逼勒县吏，欲害刘公；我等皆来苦告，不得放入，反遭把门人赶打！”……</p>
+
+```
+
+所涉及的元素具体代表什么，完全取决于作者编辑的内容，只要层次结构是合理的。在创建此类结构时，您只需要记住一些最佳实践：
+
+- 您应该最好只对每个页面使用一次`<h1>` — 这是顶级标题，所有其他标题位于层次结构中的下方。
+- 请确保在层次结构中以正确的顺序使用标题。不要使用`<h3>`来表示副标题，后面跟`<h2>`来表示副副标题 - 这是没有意义的，会导致奇怪的结果。
+- 在可用的六个标题级别中，您应该只在每页使用不超过三个，除非您认为有必要使用更多。具有许多级别的文档（即，较深的标题层次结构）变得难以操作并且难以导航。在这种情况下，如果可能，建议将内容分散在多个页面上。
+
+
+
+#### 为什么我们需要结构化？
+
+回答这个问题前，让我们先来看一段文档示例“[text-start.html](https://github.com/mdn/learning-area/blob/master/html/introduction-to-html/html-text-formatting/text-start.html)” — 并从运行这段文档示例（美味的豆沙食谱）开始。首先，您可以复制一份并保存到本地机器上，在之后的练习中您将用到它。在这个文档的主体（body）中包含了多个内容 — 这些内容没有做任何标记，但是编辑时使用了换行 (输入回车/换行跳转到下一行) 处理。
+
+然而，当您在浏览器中打开文档时，您会看到文本显示为一整块！
+
+![A webpage that shows a wall of unformatted text, because there are no elements on the page to structure it.](screen_shot_2017-03-29_at_09.20.35.png)
+
+这是因为没有元素给内容结构，所以浏览器不知道什么是标题，什么是段落。此外：
+
+- 用户在阅读网页时，往往会快速浏览以查找相关内容，经常只是阅读开头的标题（我们通常在一个网页上会花费很少的时间 [spend a very short time on a web page](http://www.nngroup.com/articles/how-long-do-users-stay-on-web-pages/))。如果用户不能在几秒内看到一些有用的内容，他们很可能会感到沮丧并离开。
+- 对您的网页建立索引的搜索引擎将标题的内容视为影响网页搜索排名的重要关键字。没有标题，您的网页在[SEO](https://developer.mozilla.org/zh-CN/docs/Glossary/SEO)（搜索引擎优化）方面效果不佳。
+- 严重视力障碍者通常不会阅读网页；他们用听力来代替。完成这项工作的软件叫做屏幕阅读器（[screen reader](http://en.wikipedia.org/wiki/Screen_reader)）。该软件提供了快速访问给定文本内容的方法。在使用的各种技术中，它们通过朗读标题来提供文档的概述，让用户能快速找到他们需要的信息。如果标题不可用，用户将被迫听到整个文档的大声朗读。
+- 使用[CSS](https://developer.mozilla.org/zh-CN/docs/Glossary/CSS)样式化内容，或者使用[JavaScript](https://developer.mozilla.org/zh-CN/docs/Glossary/JavaScript)做一些有趣的事情，你需要包含相关内容的元素，所以 CSS / JavaScript 可以有效地定位它。
+
+
+
+因此，我们需要给我们的内容结构标记。
+
+#### 为什么我们需要语义？
+
+在我们身边的任何地方都要依赖语义学 — 我们依靠以前的经验就知道日常事物都代表什么；当我们看到什么，我们就会知道它代表什么。举个例子，我们知道红色交通灯表示“停止”，绿色交通灯表示”通行“。如果运用了错误的语义，事情会迅速地变得非常棘手 (难道有某个国家使用红色代表通行？我不希望如此)
+
+同样的道理，我们需要确保使用了正确的元素来给予内容正确的意思、作用以及外形。在这里，`<h1>` 元素也是一个语义元素，它给出了包裹在您的页面上用来表示顶级标题的角色（或意义）的文本。
+
+```html
+<h1>这是一个顶级标题</h1>
+```
+
+
+
+一般来说，浏览器会给它一个更大的字形来让它看上去像个标题（虽然你可以使用 CSS 让它变成任何你想要的样式。更重要的是，它的语义值将以多种方式被使用，比如通过搜索引擎和屏幕阅读器（上文提到过的）。
+
+在另一方面，你可以让任一元素看起来像一个顶级标题，如下：
+
+```html
+<span style="font-size: 32px; margin: 21px 0;">这是顶级标题吗？</span>
+
+```
+
+这是一个 `<span>` 元素，它没有语义。当您想要对它用 CSS（或者 JS）时，您可以用它包裹内容，且不需要附加任何额外的意义（在未来的课程中你会发现更多这类元素）。我们已经对它使用了 CSS 来让它看起来像一个顶级标题。然而，由于它没有语义值，所以它不会有任何上文提到的帮助。最好的方法是使用相关的 HTML 元素来标记这个元素。
+
+### 列表
+
+现在，让我们学习一下列表。列表在生活中随处可见——从购物清单到回家的路线方案，再到本教程的说明列表。在网络上，列表也随处可见，大致包含了三种不同类型的列表。
+
+#### 无序 Unordered
+
+无序列表用于标记列表项目顺序无关紧要的列表 — 让我们以早点清单为例。
+
+```html
+豆浆
+油条
+豆汁
+焦圈
+```
+
+每份无序的清单从` <ul>` 元素开始——需要包裹清单上所有被列出的项目：
+
+```html
+<ul>
+豆浆
+油条
+豆汁
+焦圈
+</ul>
+
+```
+
+然后就是用 `<li>` 元素把每个列出的项目单独包裹起来：
+
+```html
+<ul>
+  <li>豆浆</li>
+  <li>油条</li>
+  <li>豆汁</li>
+  <li>焦圈</li>
+</ul>
+
+```
+
+#### 有序 Ordered
+
+有序列表需要按照项目的顺序列出来——让我们以一组方向为例：
+
+```html
+沿着条路走到头
+右转
+直行穿过第一个十字路口
+在第三个十字路口处左转
+继续走 300 米，学校就在你的右手边
+```
+
+这个标记的结构和无序列表一样，除了需要用`<ol>` 元素将所有项目包裹，而不是`<ul>`：
+
+```html
+<ol>
+  <li>沿着条路走到头</li>
+  <li>右转</li>
+  <li>直行穿过第一个十字路口</li>
+  <li>在第三个十字路口处左转</li>
+  <li>继续走 300 米，学校就在你的右手边</li>
+</ol>
+
+```
+
+#### 嵌套列表 Nesting lists
+
+将一个列表嵌入到另一个列表是完全可以的。你可能想让一些子项目列在首项目之下。
+
+由于最后两项与它们的前一项非常密切相关（它们看起来更像该项的子项或选项），将它们编辑成无序列表，并嵌套在该项的子项中可能更合理。就像下面这样：
+
+```html
+<ol>
+  <li>先用蛋白一个、盐半茶匙及淀粉两大匙搅拌均匀，调成“腌料”，鸡胸肉切成约一厘米见方的碎丁并用“腌料”搅拌均匀，腌渍半小时。</li>
+  <li>用酱油一大匙、淀粉水一大匙、糖半茶匙、盐四分之一茶匙、白醋一茶匙、蒜末半茶匙调拌均匀，调成“综合调味料”。</li>
+  <li>鸡丁腌好以后，色拉油下锅烧热，先将鸡丁倒入锅内，用大火快炸半分钟，炸到变色之后，捞出来沥干油汁备用。</li>
+  <li>在锅里留下约两大匙油，烧热后将切好的干辣椒下锅，用小火炒香后，再放入花椒粒和葱段一起爆香。随后鸡丁重新下锅，用大火快炒片刻后，再倒入“综合调味料”继续快炒。
+    <ul>
+      <li>如果你采用正宗川菜做法，最后只需加入花生米，炒拌几下就可以起锅了。</li>
+      <li>如果你在北方，可加入黄瓜丁、胡萝卜丁和花生米，翻炒后起锅。</li>
+    </ul>
+  </li>
+</ol>
+
+```
+
+### 重点强调
+
+在日常用语中，我们常常会加重某个字的读音，或者用加粗等方式突出某句话的重点。与此类似，HTML 也提供了相应的标签，用于标记某些文本，使其具有加粗、倾斜、下划线等效果。下面，我们将学习一些最常见的标签。
+
+#### 强调
+
+在口语表达中，我们有时会强调某些字，用来改变这句话的意思。同样地，在书面用语中，我们可以使用斜体字来达到同样的效果。例如，下面两个句子便有不同的意思：
+
+I am glad you weren't late.
+
+I am *glad* you weren't *late*. (ps: 此句中"*glad"*和"late"为斜体字体)
+
+第一句话听起来真的像松了一口气因为没有迟到。相反，第二句话听起来具有讽刺性而且有隐含的攻击性，表达对一个人迟到的恼怒。
+
+在 HTML 中我们用`<em>`（emphasis）元素来标记这样的情况。这样做既可以让文档读起来更有趣，也可以被屏幕阅读器识别出来，并以不同的语调发出。浏览器默认风格为斜体，但你不应该纯粹使用这个标签来获得斜体风格，为了获得斜体风格，你应该使用`<span>`元素和一些 CSS，或者是`<i>`元素（见下文）。
+
+```html
+<p>I am <em>glad</em> you weren't <em>late</em>.</p>
+
+```
+
+#### 非常重要
+
+为了强调重要的词，在口语方面我们往往用重音强调，在文字方面则是用粗体字来达到强调的效果。例如下面这段：
+
+This liquid is **highly toxic**.
+
+I am counting on you. **Do not** be late!
+
+在 HTML 中我们用`<strong>` (strong importance) 元素来标记这样的情况。这样做既可以让文档更加地有用，也可以被屏幕阅读器识别出来，并以不同的语调发出。浏览器默认风格为粗体，但你不应该纯粹使用这个标签来获得粗体风格，为了获得粗体风格，你应该使用`<span>`元素和一些 CSS，或者是`<b>` 元素 (见下文)。
+
+```html
+<p>This liquid is <strong>highly toxic</strong>.</p>
+
+<p>I am counting on you. <strong>Do not</strong> be late!</p>
+
+```
+
+#### 斜体字、粗体字、下划线...
+
+迄今为止我们已经讨论的元素都是意义清楚的语义元素。`<b>`, `<i>`, 和 `<u>` 的情况却有点复杂。它们出现于人们要在文本中使用粗体、斜体、下划线但 CSS 仍然不被完全支持的时期。像这样的元素，仅仅影响表象而且没有语义，被称为**表象元素（presentational elements）**并且不应该再被使用。因为正如我们在之前看到的，语义对无障碍，SEO（搜索引擎优化）等非常重要。
+
+HTML5 用新的语义规则重新定义了`<b>`,`<i>`和`<u>`,使得它们的语言显得稍微有点混乱。
+
+这里是最好的经验法则：如果没有更合适的元素，那么使用 `<b>`、`<i>` 或 `<u>` 来表达传统上的粗体、斜体或下划线表达的意思是合适的。然而，始终拥有[无障碍](https://developer.mozilla.org/zh-CN/docs/Learn/Accessibility)的思维模式是至关重要的。斜体的概念对人们使用屏幕阅读器是没有帮助的，对使用其他书写系统而不是拉丁文书写系统的人们也是没有帮助的。
+
+- `<i>` 被用来传达传统上用斜体表达的意义：外国文字，分类名称，技术术语，一种思想……
+- `<b>` 被用来传达传统上用粗体表达的意义：关键字，产品名称，引导句……
+- `<u>` 被用来传达传统上用下划线表达的意义：专有名词，拼写错误……
+
+#### 小结
+
+至此，本文应该给您做了一个很好的了解，如何开始在 HTML 中标记文本，并介绍了一些最重要的元素。在这一领域还有许多语义元素，我们将在后面的“更多语义元素”文章中看到更多的语义元素。在下一篇文章中，我们将详细介绍如何创建超链接（[create hyperlinks](https://developer.mozilla.org/en-US/docs/Learn/HTML/Introduction_to_HTML/Creating_hyperlinks)），它可能是 Web 上最重要的元素。
+
+### 创建超链接
+
+超链接非常重要 ——它们使互联网成为一个互联的网络。本文介绍了创建链接所需的语法，并且讨论了链接的最佳实现方法。
+
+#### 什么是超链接？
+
+超链接是互联网提供的最令人兴奋的创新之一，它们从一开始就一直是互联网的一个特性，使互联网成为互联的网络。超链接使我们能够将我们的文档链接到任何其他文档（或其他资源），也可以链接到文档的指定部分，我们可以在一个简单的网址上提供应用程序（与必须先安装的本地应用程序或其他东西相比）。几乎任何网络内容都可以转换为链接，点击（或激活）超链接将使网络浏览器转到另一个网址（[URL](https://developer.mozilla.org/zh-CN/docs/Glossary/URL)）。
+
+> **备注：** URL 可以指向 HTML 文件、文本文件、图像、文本文档、视频和音频文件以及可以在网络上保存的任何其他内容。如果浏览器不知道如何显示或处理文件，它会询问你是否要打开文件（需要选择合适的本地应用来打开或处理文件）或下载文件（以后处理它）。
+
+#### 链接的解析
+
+通过将文本（或其它内容，见块级链接) 包裹在 `<a>` 元素内，并给它一个 `href` 属性（也称为超文本引用或目标，它将包含一个网址）来创建一个基本链接。
+
+```html
+<p>我创建了一个指向
+<a href="https://www.mozilla.org/zh-CN/">Mozilla 主页</a>的超链接。
+</p>
+
+```
+
+结果如下所示：
+
+我创建了一个指向 [Mozilla 主页](https://www.mozilla.org/zh-CN/)的超链接。
+
+##### 使用 title 属性添加支持信息
+
+你可能要添加到你的链接的另一个属性是 `title`（标题）；这旨在包含关于链接的补充信息，例如页面包含什么样的信息或需要注意的事情。
+
+```html
+<p>我创建了一个指向<a href="https://www.mozilla.org/en-US/"
+   title="了解 Mozilla 使命以及如何参与贡献的最佳站点。">Mozilla 主页</a
+   >的超链接。
+</p>
+
+```
+
+> **备注：** 链接的标题仅当鼠标悬停在其上时才会显示，这意味着使用键盘来导航网页的人很难获取到标题信息。如果标题信息对于页面非常重要，你应该使用所有用户能都方便获取的方式来呈现，例如放在常规文本中。
+
+##### 块级链接
+
+如上所述，你可以将一些内容转换为链接，甚至是块级元素。例如你想要将一个图像转换为链接，你只需把引用了图像文件的` <img>` 元素放到 `<a>` 标签内。
+
+```html
+<a href="https://www.mozilla.org/zh-CN/">
+  <img src="mozilla-image.png" alt="链接至 Mozilla 主页的 Mozilla 标志">
+</a>
+
+```
+
+#### 统一资源定位符（URL）与路径（path）快速入门
+
+要全面地了解链接目标，你需要了解统一资源定位符和文件路径。本小节将介绍相关的信息。
+
+统一资源定位符（英文：**U**niform **R**esource **L**ocator，简写：URL）是一个定义了在网络上的位置的一个文本字符串。例如 Mozilla 的中文主页定位在 `https://www.mozilla.org/zh-CN/`.
+
+URL 使用路径查找文件。路径指定文件系统中你感兴趣的文件所在的位置。
+
+![A simple directory structure. The parent directory is called creating-hyperlinks and contains two files called index.html and contacts.html, and two directories called projects and pdfs, which contain an index.html and a project-brief.pdf file, respectively](simple-directory.png)
+
+此目录结构的**根目录**称为 `creating-hyperlinks`。当在网站上工作时，你会有一个包含整个网站的目录。在根目录，我们有一个 `index.html` 和一个 `contacts.html` 文件。在真实的网站上，`index.html` 将会成为我们的主页或登录页面（作为网站或网站特定部分的入口的网页）。
+
+我们的根目录还有两个目录——`pdfs` 和 `projects`，它们分别包含一个 PDF（`project-brief.pdf`）文件和一个 `index.html` 文件。请注意你可以有两个 `index.html` 文件，前提是他们在不同的目录下，许多网站就是如此。第二个 `index.html` 或许是项目相关信息的主登录界面。
+
+- **指向当前目录**：如果 `index.html`（目录顶层的 `index.html`）想要包含一个超链接指向 `contacts.html`，你只需要指定想要链接的文件名，因为它与当前文件是在同一个目录的。所以你应该使用的 URL 是 `contacts.html`:
+
+  ```html
+  <p>要联系某位工作人员，请访问我们的<a
+   href="contacts.html">联系人页面</a>。</p>
+  ```
+
+- **指向子目录**：如果 `index.html` （目录顶层 `index.html`）想要包含一个超链接指向 `projects/index.html`，你需要先进入 `projects` 项目目录，然后指明要链接到的文件 `index.html`。 通过指定目录的名称，然后是正斜杠，然后是文件的名称。因此你要使用的 URL 是 `projects/index.html`：
+
+  ```html
+  <p>请访问<a href="projects/index.html">项目页面</a>。</p>
+  
+  ```
+
+- **指向上级目录**：如果你想在 `projects/index.html` 中包含一个指向 `pdfs/project-brief.pdf` 的超链接，你必须先返回上级目录，然后再回到 `pdf` 目录。“返回上一个目录级”使用两个英文点号表示（`..`），所以你应该使用的 URL 是 `../pdfs/project-brief.pdf`：
+
+  ```html
+  <p>点击打开<a href="../pdfs/project-brief.pdf">项目简介</a>。</p>
+  
+  ```
+
+##### 文档片段
+
+超链接除了可以链接到文档外，也可以链接到 HTML 文档的特定部分（被称为**文档片段**）。要做到这一点，你必须首先给要链接到的元素分配一个 [`id`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Global_attributes#attr-id) 属性。例如，如果你想链接到一个特定的标题，可以这样做：
+
+```html
+<h2 id="Mailing_address">邮寄地址</h2>
+
+```
+
+然后链接到那个特定的 `id`，你可以在 URL 的结尾使用一个井号指向它，例如：
+
+```html
+<p>要提供意见和建议，请将信件邮寄至<a href="contacts.html#Mailing_address">我们的地址</a>。</p>
+
+```
+
+你甚至可以在同一份文档下，通过链接文档片段，来链接到同一份文档的另一部分：
+
+```html
+<p>本页面底部可以找到<a href="#Mailing_address">公司邮寄地址</a>。</p>
+
+```
+
+##### 绝对 URL 和相对 URL
+
+你可能会在网络上遇到两个术语，**绝对 URL** 和**相对 URL**（或者称为，**绝对链接**和**相对链接**）
+
+**绝对 URL**：指向由其在 Web 上的绝对位置定义的位置，包括[协议](https://developer.mozilla.org/zh-CN/docs/Glossary/Protocol)和[域名](https://developer.mozilla.org/zh-CN/docs/Glossary/Domain_name)。像下面的例子，如果 `index.html` 页面上传到了 `projects` 这一个目录。并且 `projects` 目录位于 web 服务站点的根目录，web 站点的域名为 `http://www.example.com`，那么这个页面就可以通过 `http://www.example.com/projects/index.html` 访问（或者通过 `http://www.example.com/projects/` 来访问，因为在没有指定特定的 URL 的情况下，大多数 web 服务器会默认访问加载 `index.html` 这类页面）
+
+不管绝对 URL 在哪里使用，它总是指向确定的相同位置。
+
+**相对 URL**：指向与你链接的文件相关的位置，更像我们在前面一节中所看到的位置。例如，如果我们想从示例文件链接 `http://www.example.com/projects/index.html` 转到相同目录下的一个 PDF 文件，URL 就是文件名（例如 `project-brief.pdf`），没有其他的信息要求。如果 PDF 文件能够在 `projects` 的子目录 `pdfs` 中访问到，相对路径就是 `pdfs/project-brief.pdf`（对应的绝对 URL 是 `http://www.example.com/projects/pdfs/project-brief.pdf`）
+
+一个相对 URL 将指向不同的位置，这取决于它所在的文件所在的位置——例如，如果我们把 `index.html` 文件从 `projects` 目录移动到 Web 站点的根目录（最高级别，而不是任何目录中），里面的 `pdfs/project-brief.pdf` 相对 URL 将会指向 `http://www.example.com/pdfs/project-brief.pdf`，而不是 `http://www.example.com/projects/pdfs/project-brief.pdf`
+
+当然，`project-brief.pdf` 文件和 `pdfs` 文件夹的位置不会因为你移动了 `index.html` 文件而突然发生变化——这将使你的链接指向错误的位置，因此如果单击它，它将无法工作。你得小心点！
+
+#### 链接最佳实践
+
+下面是一些在编写链接元素时可以遵循的最佳实践。
+
+##### 使用清晰的链接措辞
+
+把链接放在你的页面上很容易。这还不够。我们需要让所有的读者都可以使用链接，不管他们当前的环境和哪些工具。例如：
+
+- 使用屏幕阅读器的用户喜欢从页面上的一个链接跳到另一个链接，并且脱离上下文来阅读链接。
+- 搜索引擎使用链接文本来索引目标文件，所以在链接文本中包含关键词是一个很好的主意，以有效地描述与之相关的信息。
+- 读者往往会浏览页面而不是阅读每一个字，他们的眼睛会被页面的特征所吸引，比如链接。他们会找到描述性的链接。
+
+**好的**链接文本：[下载 Firefox](https://www.mozilla.org/firefox/)
+
+```html
+<p><a href="https://www.mozilla.org/firefox/">
+ 下载 Firefox
+</a></p>
+```
+
+**不好的**链接文本：[点击这里](https://www.mozilla.org/firefox/)下载 Firefox
+
+```html
+<p><a href="https://www.mozilla.org/firefox/">
+  点击这里
+</a>下载 Firefox</p>
+```
+
+其他提示：
+
+- 不要重复 URL 作为链接文本的一部分——URL 看起来很丑，当屏幕阅读器一个字母一个字母的读出来的时候听起来就更丑了。
+- 不要在链接文本中说“链接”或“链接到”——它只是无用的内容。屏幕阅读器告诉人们有一个链接。可视化用户也会知道有一个链接，因为链接通常是用不同的颜色设计的，并且存在下划线（这个惯例一般不应该被打破，因为用户习惯了它。）
+- 保持你的链接标签尽可能短——这非常重要，因为屏幕阅读器需要解释整个链接文本。
+- 尽量减少相同文本的多个副本链接到不同地方的情况。如果存在标记为“单击此处”、“单击此处”、“单击此处”这样脱离上下文的链接文本，容易对使用屏幕阅读器的用户带来问题。
+
+##### 链接到非 HTML 资源——留下清晰的指示
+
+当链接到一个需要下载的资源（如 PDF 或 Word 文档）或流媒体（如视频或音频）或有另一个潜在的意想不到的效果（打开一个弹出窗口，或加载 Flash 电影），你应该添加明确的措辞，以减少混乱。
+
+如下的例子会让人反感：
+
+- 你在使用低带宽连接的情况下，点击一个链接，然后就开始下载大文件。
+- 你没有安装 Flash 播放器，点击一个链接，然后突然被带到一个需要 Flash 的页面。
+
+让我们看看一些例子，看看在这里可以使用什么样的文本：
+
+```html
+<p><a href="https://www.example.com/large-report.pdf">
+  下载销售报告（PDF, 10MB）
+</a></p>
+
+<p><a href="https://www.example.com/video-stream/" target="_blank">
+  观看视频（将在新标签页中播放，HD 画质）
+</a></p>
+
+<p><a href="https://www.example.com/car-game">
+  进入汽车游戏（需要 Flash 插件）
+</a></p>
+
+```
+
+##### 在下载链接时使用 download 属性
+
+当你链接到要下载的资源而不是在浏览器中打开时，你可以使用 download 属性来提供一个默认的保存文件名。下面是一个 Firefox 的 Windows 最新版本下载链接的示例：
+
+```html
+<a href="https://download.mozilla.org/?product=firefox-latest-ssl&os=win64&lang=zh-CN"
+   download="firefox-latest-64bit-installer.exe">
+  下载最新的 Firefox 中文版 - Windows（64位）
+</a>
+
+```
+
+
+
+#### 电子邮件链接
+
+当点击一个链接或按钮时，打开一个新的电子邮件发送信息而不是连接到一个资源或页面，这种情况是可能做到的。这样做是使用 `<a>` 元素和 `mailto:URL` 的方案。
+
+其最基本和最常用的使用形式为一个 `mailto:` 链接，链接指明收件人的电子邮件地址。例如：
+
+```html
+<a href="mailto:nowhere@mozilla.org">向 nowhere 发邮件</a>
+
+```
+
+这会创建一个链接，看起来像这样：[向 nowhere 发邮件](mailto:nowhere@mozilla.org)。
+
+实际上，电子邮件地址是可选的。如果你忘记了（也就是说，你的 [`href`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/a#attr-href) 仅仅只是简单的“mailto”），一个新的发送电子邮件的窗口也会被用户的邮件客户端打开，只是没有收件人的地址信息，这通常在“分享”链接是很有用的，用户可以给他们选择的地址发送邮件。
+
+##### 指定详细信息
+
+除了电子邮件地址，你还可以提供其他信息。事实上，任何标准的邮件头字段可以被添加到你提供的 `mailto` URL 中。其中最常用的是主题（subject）、抄送（cc）和主体（body）（这不是一个真正的标头字段，但允许你为新邮件指定一个简短的内容消息）。 每个字段及其值被指定为查询项。
+
+下面是一个包含 cc、bcc、主题和主体的示例：
+
+```html
+<a href="mailto:nowhere@mozilla.org?cc=name2@rapidtables.com&bcc=name3@rapidtables.com&subject=The%20subject%20of%20the%20email&body=The%20body%20of%20the%20email">
+  Send mail with cc, bcc, subject and body
+</a>
+
+```
+
+> **备注：** 每个字段的值必须是使用 URL 编码的，即使用[百分号转义的](https://zh.wikipedia.org/wiki/百分号编码)非打印字符（不可见字符比如制表符、换行符、分页符）和空格。同时注意使用问号（`?`）来分隔主 URL 与参数值，以及使用 & 符来分隔 `mailto:` URL 中的各个参数。 这是标准的 URL 查询标记方法。阅读 [GET 方法](https://developer.mozilla.org/zh-CN/docs/Learn/Forms/Sending_and_retrieving_form_data#get_方法)以了解哪种 URL 查询标记方法是更常用的。
+
+这里有一些其他的示例 `mailto` 链接：
+
+- `mailto:`
+- `mailto:nowhere@mozilla.org`
+- `mailto:nowhere@mozilla.org,nobody@mozilla.org`
+- `mailto:nowhere@mozilla.org?cc=nobody@mozilla.org`
+- `mailto:nowhere@mozilla.org?cc=nobody@mozilla.org&subject=This%20is%20the%20subject`
+
+
+
+### 高阶文字排版
+
+
+
+### 文档与网站架构
+
+
+
+### HTML 调试
+
+
+
+## 多媒体与嵌入
+
+### HTML 中的图片
+
+
+
+### 视频和音频内容
+
+
+
+### 从对象到 `iframe` - 其他嵌入技术
+
+
+
+### 在网页中添加矢量图形
+
+
+
+### 在网页中添加矢量图形
+
+## 面试题：`HTML`中有哪些标签？
 
 不要直接说标签，先进行分类
 
@@ -197,7 +1157,7 @@ categories: 'HTML'
 - `article` 表示一个独立的文章
 - `section` 表示一个独立的区块，上面的标签都不能表示时，用section
 
-### meta标签
+### `meta`标签
 
 - `charset` 指定网页的字符集
 
@@ -351,37 +1311,13 @@ audio标签用来向页面引入一个外部的音频文件，默认不允许用
 
 
 
-# HTML基础
-
-## 实体
-
-[https://www.w3school.com.cn/html/html_entities.asp](https://www.w3school.com.cn/html/html_entities.asp)
-
-| 显示结果 | 描述   | 实体名称 |
-| -------- | ------ | -------- |
-|          | 空格   | &nbsp ;  |
-| <        | 小于号 | &lt ;    |
-| >        | 大于号 | &gt ;    |
-
-## 块和行内
-
-- 块元素（block element）
-  - 占满整行，元素宽高边距等可设置
-  - 在网页中，一般通过块元素来进行布局
-
-- 行内元素（inline element）
-  - 不占满整行，宽高、上下边距等不可直接设置
-  - 行内元素可以直接设置左右内外边距，无法直接设置上下内外边距
-  - 行内元素主要用来包裹文字
-  - 一般情况下会在块元素中放行内元素，而不会在行内元素中放块元素
-  - 块元素中基本上什么都能放
-  - p元素中不能放任何的块元素
 
 
-- 行内块元素
-  - 不占满整行，元素宽高边距等可设置
+## 其他
 
-## 内联框架
+
+
+### 内联框架
 
 用于向当前页面中引入一个其他页面
 
