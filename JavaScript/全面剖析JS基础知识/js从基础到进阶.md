@@ -262,6 +262,11 @@ Canvas:一些公司要求会可视化，需要掌握canvas/webGI/d3等,这个对
 - 学而不思则罔 ,思而不学则殆
 - 实战很重要:薪资和你敲过的代码成正比
 - 多读书:致其知、 诚其意、正其心、修其身，然后家齐 ,国治,而后天下平
+- 学习，学前端，什么比较重要呢？是编程（思想）比较重要？基础知识比较重要？还是原理比较重要？还是实战比较重要？都重要。确实也是都重要，但是自己不要把它们区分开，因为都是相辅相成的。只有你的基础知识扎实，你才能够玩得懂源码（原理）；只有基础知识扎实，原理玩透了，你慢慢才能养成编程思想；编程思想再不断去练习，你才能够去做出案例。这是一个相辅相成的过程，只有案例做多了，你才有组件、插件封装的思想，才能够有写底层、写核心，给别人用的这样一个能力；在练习这个能力的时候，又是不断的在巩固基础知识和深入理解的过程。
+- 那么什么样才是基础知识扎实呢？
+  - 笔记+复习，每天抽出两到三小时
+  - 随便给两个点，都可以在三句话之内，不牵强的 说出它们之间的关联（要有整个知识脉络的体系）
+
 
 ## 前端开发需要掌握的IDE
 
@@ -729,6 +734,8 @@ null和undefined都代表的是没有
   // console.log(person.1) // Uncaught SyntaxError: missing ) after argument list 
   ```
 
+  - 变量和属性名的区别
+
 - 设置属性名属性值
 
   ```js
@@ -752,6 +759,101 @@ null和undefined都代表的是没有
   person.weight = null
   console.log(person) // {name: 'akira', age: 18, height: '185CM', weight: null, GF: 'igo'}
   ```
+
+##### 变量名和属性名区别
+
+```js
+var name = 10;
+var obj = {
+    name: 'sai',
+    [12]: 120,
+    true: 'true123',
+    null: 'null123',
+    undefined: 'undefined123'
+}
+
+// 获取obj这个对象的name属性对应的值
+console.log(obj.name) // sai
+
+// 一个对象的属性名只有两种格式：数字或者字符串
+console.log(obj['name']) // sai
+// console.log(obj.12) // 报错
+console.log(obj[12], obj.true, obj.null, obj['undefined']) // 12 'true123' 'null123' 'undefined123'，就当做是数字或者字符串就可以了
+
+console.log(obj[name]) // 等价于obj[10]，结果为undefined
+```
+
+值与变量
+
+```js
+'age' 值，代表本身
+age 变量，代表它存储的值
+
+console.log(obj[name]) // 输出name变量存储的值，等价于obj[10]，结果为undefined
+
+function fn() {
+    var a = 100
+    return a // 把变量a存储的值返回，return 100
+}
+
+// 通过点获取时，只能是ojb.属性名，obj.name
+console.log(obj.name)
+// 通过中括号获取时，中括号里的内容加上引号才代表属性名，否则是变量
+console.log(obj['name'], obj[name])
+    
+```
+
+要理解的一个事实是，操作一个对象只有两种方式（不考虑使用方法操作）
+
+- 使用点的形式、使用中括号的形式
+- 这两种操作符只能跟属性名
+  - 对于点，不加引号的就是属性名，纯数字的属性名无法操作
+  - 对于中括号，加引号的就是属性名，同时可以操作数字；不加引号，获取的则是变量存储的值（需要做一步转化）
+  - obj.key相当于obj['key']
+
+```js
+var obj = {
+    name: 'sai'
+}
+
+var name2 = 'sai2'
+var obj2 = {
+    // 属性名：属性值（属性值是变量，也是把变量存储的值拿过来，做属性值）
+    name2: name2,
+    //name2, // ES6的语法糖（合并属性和属性值的写法）
+    age: 1 === 1 ? 100 : 20 // 属性值只能放值，这里最终放的也是这个表达式的值
+}
+
+```
+
+##### for in 循环
+
+用来循环遍历对象的键值对的（continue和break同样适用）
+
+```js
+var obj = {
+    name: 'sai',
+    age: 18,
+    friends: 'hikaru, akira',
+    1: 20,
+    null: 30,
+    [3]: 40
+}
+
+// for(var 变量 in 对象)
+// 对象中有多少组键值对，循环就执行几次（除非break）结束
+for( var key in obj) {
+    // 每一次循环时，key变量存储的值是当前对象的属性名
+    // 获取属性值：obj[属性名] => obj[key]
+    console.log(key) // 打印对象所有的属性名
+    // 不能通过obj.key的形式获取，获取的结果是undefined
+    console.log(`属性名是${key}，属性值是${obj[key]}`)
+
+    // for in 循环遍历时，会有一个优先级，优先遍历数字类型的属性名，并按照从小到大的顺序
+}
+```
+
+
 
 #### 特殊对象
 
@@ -788,7 +890,39 @@ console.log(arr)
   console.log(arr) // [12, 'haha', true, 13, 100]
   ```
 
+#### 元素对象
 
+`let box = document. getElementById('box');`
+通过方法获取的元素是对象数据类型的值
+`console.log(typeof box); //=>"object"`
+基于`.dir`可以看到一个对象的详细信息
+
+- id:操作元素的ID值
+- className:获取或者操作元素的CLASS样式类的值
+- innerHTML:获取或者操作的元素的内容(可以识别标签)
+- innerText:和innerHTML 的区别是不能识别标签
+- style:操作元素的**行内样式**，属性值也是一个对象（CSSStyleDeclaration）
+- tagName:获取元素的标签名(一般大写)
+
+实际学习的时候，每次都打印输出一下，对比每个元素（h1、div）都有什么属性及有哪些不同的地方，不断的夯实基础；这部分没有什么系统的理论，每次用到的时候，打印输出一下，然后对比已经掌握的进行学习
+
+
+
+![image-20221008222740822](image-20221008222740822.png)
+
+```js
+box.style.backgroundColor = 'red'
+// 修改的是堆内存中的值(只要堆内存中的值被修改,浏览器会基于DOM映射机制把页面中的元素进行重新渲染)
+
+let AA = box.style;
+AA.backgroundColor = 'blue'; // 修改堆中的信息,有效果
+
+let BB = box.style.backgroundColor;
+BB = 'green'; // 修改不是堆中信息,不起作用
+
+```
+
+基础知识没什么好说的，背下来记熟了，脑子里面有东西了，慢慢的自己就能悟透了
 
 ## 数据类型堆栈底层机制
 
@@ -854,9 +988,232 @@ n[2] = 400; // [100, 20, 400]
 console.log(n, m, x) // [100, 20, 400], [200, 300], [200, 300]
 ```
 
-# 面试题
+## 数据类型检测
 
-## 数据类型面试题
+> - typeof [val]: 用来检测数据类型的运算符 
+> - instanceof :用来检测当前实例是否率属于某个类
+> - constructor :基于构造函数检测数据类型(也是基于类的方式)
+> - object.prototype.toString.call() :检测数据类型最好的办法
+
+### typeof
+
+基于typeof检测出来的结果：
+
+1.首先是一个字符串
+
+2.字符串中包含对应的类型
+
+```js
+console.log(typeof 1) // 'number'
+let a = NaN
+console.log(typeof a) // 检测值，'number'
+console.log(typeof 'a') // 'string'
+console.log(typeof undefined) // 'undefined'
+console.log(typeof function () { }) // 'function'
+
+console.log(typeof null) // 'object'
+console.log(typeof []) // 'object'
+console.log(typeof {}) // 'object'
+console.log(typeof /^/) // 'object'
+```
+
+局限性
+
+1.`typeof null => "object"`，但是null并不是对象
+
+2.基于typeof无法细分出当前值是普通对象还是数组对象等，因为只要是对象数据类型，返回的结果都是"object"
+
+```js
+console.log(typeof typeof typeof []) // 'string'，注意用引号区分出字符串
+```
+
+因为typeof检测的结果都是字符串，所以只要两个及以上同时检测，最后结果必然是"string"
+
+### instanceof
+
+
+
+## 流程控制
+
+### 判断
+
+> 条件成立做什么?不成立做什么?
+>
+> - if/else if/else
+> - 三元运算符
+> - switch case
+
+#### 三元运算符
+
+三元运算符:简单IF/ELSE的特殊处理方式
+
+条件?条件成立处理的事情:不成立处理的事情;
+
+1.如果处理的事情比较多，我们用括号包起来，每一-件事情用逗号分隔
+
+2.如果不需要处理事情，可以使用null/undefined占位
+
+#### switch case
+
+> 1.每一-种CASE情况结束后最好都加上break
+>
+> 2.default等价于else，以上都不成立干的事情
+>
+> 3.每一种case情况的比较用的都是===绝对相等
+
+```js
+let a = 10
+switch (a) {
+    case 10:
+        console.log(10) // 10
+        break
+    case 11:
+        console.log(11)
+        break
+    default:
+        console.log(12)
+}
+```
+
+没加break的影响：不管后面的条件成不成立，都会被执行，直到遇到break为止
+
+```js
+let a = 10
+switch (a) {
+    case 10:
+        console.log(10) // 10
+    case 11:
+        console.log(11) // 11
+    default:
+        console.log(12) // 12
+}
+```
+
+应用场景，不加break可以实现变量在某些值的情况下做相同的事情：
+
+```js
+let a = 10
+switch (a) {
+    case 10:
+    case 11:
+        console.log('10, 11') // 不加break可以实现变量在某些值的情况下做相同的事情
+    default:
+        console.log(12)
+}
+```
+
+#### == VS ===
+
+==:相等(如果左右两边数据值类型不同，是默认先转换为相同的类型，然后比较)
+'5'==5 =>TRUE
+===:绝对相等(如果类型不一一样，肯定不相等)
+'5'===5 =>FALSE
+
+项目中为了保证业务的严谨，推荐使用===
+
+### 循环
+
+> 重复做某些事情就是循环
+>
+> - for循环
+> - for in循环
+> - for of循环( ES6新增)
+> - while循环
+> - do while循环
+
+1.创建循环初始值
+
+2.设置(验证)循环执行的条件
+
+3.条件成立执行循环体中的内容
+
+4.当前循环结束执行步长累计操作
+
+循环体中的两个关键词
+
+- continue: 结束当前这轮循环(continue后面的代码不再执行)，继续执行下一轮循环
+- break: 强制结束整个循环( break后面代码也不再执行)，而且整个循环啥也不干直接结束
+
+```js
+for (var i = 0; i < 10; i++) {
+    if (i > 2) {
+        i += 2
+        continue
+    }
+    if (i >= 6) {
+        i--
+        break
+    }
+    i++
+    console.log(i) // 1 3
+}
+console.log(i) // 10
+
+```
+
+## 函数的基础概念
+
+>函数就是一个方法或者一个功能体，函数就是把实现某个功能的代码放到一-起进行封装，以后想要操作实现这个功能，只需要把函数执行即可=>“封装”: 减少页面中的冗余代码，提高代码重复使用率(低耦合高内聚)
+
+### 函数的创建
+
+```js
+//=>ES5老方式
+function [函数名]([形参变量1]...){
+    //函数体:基于JS完成需要实现的功能，
+    return [处理后的结果];
+}
+
+[函数名]([实参1]....);
+
+```
+
+### 函数参数
+
+```js
+// 求两个数的和， 算完和后乘以10，然后在除以2...
+// =>sum是函数名，代表这个函数，
+// =>n/m是形参，是变量，用来存储执行函数时传递的实参
+function sum(n, m) {
+    let result=n+m;
+    result *= 10;
+    result /= 2;
+    console. log(result);
+}
+
+console. log(sum);
+sum(10, 20);|
+
+//形参的细节
+//创建函数的时候我们设置了形参变量，但如果执行的时候并没有给传递对应的实参值，那么形参变量默认的值是: undefined
+
+```
+
+### 函数返回值
+
+```js
+// 函数执行的时候，函数体内部创建的变量我们是无法获取和操作的，如果要想获取内部的信息，我们需要基于RETURN返回值机制，把信息返回才可以
+// RETURN的一定是值:此处是把RESULT变量存储的值返回给外面
+// 没有写RETURN，函数默认返回值是undefined
+
+```
+
+### 匿名函数
+
+```js
+//匿名函数之函数表达式:把一个匿名函数本身作为值赋值给其它东西，这种函数一般不是手动触发执行，而且靠其它程序驱动触发执行(例如:触发某个事件的时候把它执行等)
+document. body. onclick = function () {}
+setTimeout( function(){}, 1000); //=>设置定时器，1000MS后执行匿名函数
+
+//匿名函数之自执行函数:创建完-一个匿名函数，紧接着就把当前函数加小括号执行
+(function(n){
+	n=>100
+})(100);
+```
+
+# 案例训练
+
+## 数据类型
 
 ```js
 let a = {
@@ -883,7 +1240,202 @@ var c = 100 + true + 21.2 + null + undefined + "Tencent" + [] + null + 9 + false
 console.log(a, b, c)
 ```
 
+## 判断逻辑
 
+### 判断数字正负
+
+```js
+const myinput = document.querySelector('.myinput'),
+    btn = document.querySelector('.calc'),
+    res = document.querySelector('.value')
+
+
+// const inputValue = Number(myinput.value)
+
+const validateNumber = function validateNumber() {
+        const inputValue = myinput.value
+        if(inputValue === '') {
+            res.innerHTML = '请输入'
+            return
+        }
+    
+        const numberValue = Number(inputValue)
+        // if(String(numberValue) === 'NaN') {
+        //     res.innerHTML = `输入为：${inputValue}，请输入有效数字`
+    
+        // } else if(numberValue === 0) {
+        //     res.innerHTML = `输入为：${inputValue}`
+        // } else {
+        //     res.innerHTML = numberValue > 0 ? `结果为：${numberValue}，正数` : `结果为：${numberValue}，负数`
+        // }
+        if(!isNaN(numberValue)) {
+            if(numberValue === 0) {
+                    res.innerHTML = `输入为：${inputValue}`
+            } else {
+                res.innerHTML = numberValue > 0 ? `结果为：${numberValue}，正数` : `结果为：${numberValue}，负数`
+            }
+        } else {
+            res.innerHTML = `输入为：${inputValue}，请输入有效数字`
+        }
+}
+btn.addEventListener('click', validateNumber)
+
+myinput.addEventListener('keydown', function(event) {
+    if(event.keyCode === 13) {
+        validateNumber()
+    }
+})
+
+```
+
+
+
+
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>判断数字输入正负</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+    <h1>判断数字输入正负</h1>
+    <div class="container">
+        <input type="text" class="myinput">
+        <button class="calc">点击计算</button>
+        <div class="value">结果为：</div>
+    </div>
+    <script src="./index.js"></script>
+</body>
+
+</html>
+```
+
+
+
+```css
+* {
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+}
+
+.myinput {
+    width: 200px;
+    height: 38px;
+    padding: 0 6px;
+    border-radius: 6px;
+    border: 1px solid rgb(99, 99, 99);
+    outline: none;
+    letter-spacing: 1px;
+    font-size: 18px;
+
+}
+
+input.myinput:focus {
+    outline: 1px solid rgb(71, 197, 255);
+}
+
+button.calc {
+    width: 80px;
+    height: 38px;
+    border-radius: 10px;
+    border: 1px solid grey;
+    cursor: pointer;
+}
+
+div.value {
+    width: 290px;
+    height: 200px;
+    margin-top: 10px;
+
+}
+```
+
+### 奇偶判定
+
+判断输入的数字是偶数还是奇数
+
+偶数条件:能被2整除(或者除以2余数为0 => N%2是取余数)
+
+### 成绩判定
+
+根据输入的分数,判定成绩等级
+
+说明: 90分及以上“优秀”80分及以 上"中等”70分及以 上”及格”70分以下”不及格”
+
+### 年终奖发放判定
+
+某个公司要给员工发年终奖,为了奖励老员工,所以工作时间越长,发的越多,规则如下:
+
+工作满0年，发月薪的1倍月薪年终奖,如果月薪大于8000 ,那么就是发1.2倍
+工作满1年，发月薪的1.5倍月薪年终奖,如果月薪大于10000 ,那么就是发1.7倍
+工作满2年甚至更多，发月薪的3倍月薪年终奖,如果月薪大于12000,那么就是发3.2倍
+编写JS程序,当用户输入自己的工作年限和薪资后,计算并且输出应得的年终奖~~
+
+### 加油优惠
+
+一个加油站为了鼓励车主多加油,所以加的多有优惠。
+
+92号汽油，每升6元;如果大于等于20升,那么每升5.9元.
+97号汽油，每升7元;如果大于等于30升,那么每升6.95元
+编写JS程序,用户输入自己的汽油编号,然后输入自己加多少升,计算并且输出应付价格~~
+
+### 奇偶行变色
+
+同时，鼠标滑过的时候，实现变色
+
+## 选项卡案例
+
+拥有active选中样式类的显示
+
+- 循环li时，使用var声明i时的解决方案：
+
+  - 增加自定义属性
+
+    ```js
+    for(var i = 0; i <navList.length; i++) {
+    	navList[i].myIndex = i
+        navList.onclick = function() {
+            changeTab(this.myIndex)
+        }
+    }
+    ```
+
+  - 使用闭包
+
+    ```js
+    for(var i = 0; i <navList.length; i++) {
+        navList[i].onclick = (function(i) {
+            return function() {
+                changeTab(i)
+            }
+        })(i)
+    }
+    ```
+
+- 当然了，可以使用let关键字，有自己的块级作用域
+
+## 扩展题
+
+1.浏览器常用的输出方式，除了 `console.log`还有哪些 ?
+
+2.`< script >`标签放到页面头部和尾部的区别，以及解决办法?
 
 
 
