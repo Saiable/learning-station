@@ -1211,6 +1211,66 @@ setTimeout( function(){}, 1000); //=>设置定时器，1000MS后执行匿名函�
 })(100);
 ```
 
+### 函数的底层运行机制
+
+```js
+// 创建函数
+function fn(n, m) {
+    var res = null
+    res = n + m
+    return res
+}
+
+// 执行函数
+var AA = fn(10, 20)
+console.log(AA)
+```
+
+创建函数，开辟的堆内存中存储的是函数体中的代码，但是是按照字符串存储的
+
+执行函数，先把fn函数执行，再把执行后的返回结果和变量AA关联在一起，函数的返回值只看return，有return，后面是啥返回值就是啥，没有就是undefined
+
+每一次函数执行的目的，都是把函数体中的代码（先从字符串变为代码）执行 => 形成一个全新的私有内存栈（[JS编译过程，VO，AO ](https://www.jianshu.com/p/edb2be5866eb)）
+
+### 函数的arguments
+
+任意数求和：
+
+- 传递实参的个数不定
+- 传递的值是否为有效数字不定
+
+把传递的有效数字进行相加求和
+
+箭头函数
+
+arguments：函数内置的实参集合
+
+- 类数组集合，集合中存储所有函数执行时，传递的实参信息
+- 不论是否设置形参，arguments都存在
+- 不论是否传递实参，arguments都存在
+
+- arguments.callee：存储的是当前函数本身（一般不用，JS严格模式下禁止使用这些属性）
+
+```js
+function sum() {
+    console.log(arguments)
+    let total = null
+    for (let i = 0; i <arguments.length; i++) {
+        let item = Number(arguments[i])
+        if(isNaN(item)) {
+            continue
+        }
+        total += item;
+    }
+    return total
+}
+
+let total = sum(1, 3, '5a')
+console.log(total)
+```
+
+
+
 # 案例训练
 
 ## 数据类型
@@ -1399,6 +1459,109 @@ div.value {
 ### 奇偶行变色
 
 同时，鼠标滑过的时候，实现变色
+
+```js
+let ulEle = document.querySelector('.container'),
+    liEle = document.querySelectorAll('.item')
+
+for(let i = 0; i < liEle.length; i++) {
+    let liItem = liEle[i]
+    liItem.style.backgroundColor = i % 2 === 0 ? '#ddd' : '#fff' // 初始化背景颜色
+    // let currentBgc = liItem.style.backgroundColor // 记录初始背景颜色
+    // 使用自定义属性，存储背景颜色
+    // 自定义属性编程思想：前期把一些值存储到元素的自定义属性上，后期需要用到的时候，直接从属性上获取到这些值即可
+    liItem.myOriginBg = liItem.style.backgroundColor
+
+    liItem.onmouseover = function() { // 鼠标滑过改变背景颜色
+        this.style.backgroundColor = 'lightblue'
+    }
+
+    liItem.onmouseout = function() { // 鼠标移出恢复背景颜色
+        this.style.backgroundColor = this.myOriginBg
+    }
+}
+```
+
+
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>奇偶行变色</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+    <h1>奇偶行变色</h1>
+    <ul class="container">
+        <li class="item">我是item001</li>
+        <li class="item">我是item002</li>
+        <li class="item">我是item003</li>
+        <li class="item">我是item004</li>
+        <li class="item">我是item005</li>
+    </ul>
+    <script src="./index.js"></script>
+</body>
+
+</html>
+```
+
+
+
+```css
+* {
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+}
+
+ul.container {
+    width: 500px;
+    height: 300px;
+    border: 1px solid skyblue;
+}
+
+li.item {
+    width: 100%;
+    height: 50px;
+    list-style: none;
+    border-bottom: 1px dashed grey;
+    line-height: 50px;
+}
+
+li.item:first-child {
+    margin-top: 10px;
+}
+
+li.item:last-child {
+    border-bottom: none;
+}
+
+/* 真实项目css实现更方便一点，为了练习使用js实现 */
+/* li.item:nth-child(2n) {
+    background-color: rgb(100, 100, 100);
+}
+
+li.item:hover {
+    background-color: rgb(56, 63, 70);
+} */
+```
+
+
 
 ## 选项卡案例
 
