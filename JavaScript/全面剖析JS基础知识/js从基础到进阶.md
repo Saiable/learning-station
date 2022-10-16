@@ -620,7 +620,7 @@ let n = Symbol(100)
 
 只有两个值：true / false
 
-- 把其它类型值转换为布尔类型：只有0、NaN、''、null、undefined 五个值转换为FALSE，其余都转换为TRUE（而且没有任何的特殊情况）
+- 把其它类型值转换为布尔类型：只有0、NaN、''、null、undefined 五个值转换为FALSE，其余都转换为TRUE（而且没有任何的特殊情况，空对象转换成布尔值也是true）
 
   > Boolean([val])
   >
