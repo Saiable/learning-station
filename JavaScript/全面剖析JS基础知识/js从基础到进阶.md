@@ -396,6 +396,8 @@ let n = Symbol(100)
 
 ## 数据类型
 
+### 基本数据类型
+
 > - 基本数据类型(值类型) ：数字number、字符串string、 布尔boolean、null、 undefined
 >
 > - 引用数据类型：object (数组、对象、正则... )、function
@@ -429,7 +431,7 @@ let n = Symbol(100)
 
 - 函数数据类型function
 
-### 数字number
+#### 数字number
 
 - 常规数字
 
@@ -549,7 +551,7 @@ let n = Symbol(100)
     ```
 
 
-### 字符串string
+#### 字符串string
 
 所有用单引号、双引号、反引号(撇 ES6模板字符串)包起来的都是字符串
 
@@ -616,7 +618,7 @@ let n = Symbol(100)
 
 
 
-### 布尔boolean
+#### 布尔boolean
 
 只有两个值：true / false
 
@@ -672,7 +674,7 @@ let n = Symbol(100)
 
 
 
-### null & undefined
+#### null & undefined
 
 null和undefined都代表的是没有
 
@@ -949,7 +951,7 @@ console.log(n.name); // sai2
 - 执行代码、存储变量和基本类型值
 - js中的赋值，是关联引用模式，而不是拷贝模式
 
-2.分配一个主线程用来自上而下执行JS代码
+2.分配一个主线程用来自上而下执行js代码
 
 
 

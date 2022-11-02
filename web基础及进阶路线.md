@@ -17,12 +17,6 @@ typora-root-url: ./
 
 # 前端发展历史进程
 
-[前端发展历史 | mindcons.cn](https://mindcons.cn/sai/21175/)
-
-- 浏览器的发展历史
-- 项目技术的发展历程
-- 项目打包上线流程
-
 # 前端开发工具
 
 ## `vscode`常用插件及设置
@@ -31,43 +25,17 @@ typora-root-url: ./
 
 ## 掌握谷歌浏览器控制台的调试技巧
 
-- 控制面板调试代码技巧
-- 介绍`F12`控制面板的使用
-
 # HTML
 
 ## `HTML`核心
-
-[HTML核心 | mindcons.cn](https://mindcons.cn/sai/18839/)
-
-- `HTML`到底是什么
-- 常用的文本标记`HTML`元素
-- `HTML`标签分类
-
-- `HTML`标签语义化及嵌套规范
 
 ### `HTML`语义：学会如何写出更优`html`
 
 ### `HTML`及扩展
 
-- `Doctype`
-- `Meta`
-- `DTD`
-- `Entity`
-- `XML`
-- `namespace`
-- `SVG`
-
 # `CSS`
 
 ## `CSS核心`
-
-[CSS核心 | mindcons.cn](https://mindcons.cn/sai/50833/)
-
-- `CSS`第一步
-- `CSS`构建基础
-- 样式化文本
-- `CSS`排版
 
 ### `CSS`样式之颜色、文字、文本设置
 

@@ -6885,10 +6885,44 @@ article:nth-of-type(3) {
 [`flex`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/flex) 是一个可以指定最多三个不同值的缩写属性：
 
 - 第一个就是上面所讨论过的无单位比例。可以单独指定全写 [`flex-grow`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/flex-grow) 属性的值。
+  - 表示可拉伸
+
 - 第二个无单位比例 — [`flex-shrink`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/flex-shrink) — 一般用于溢出容器的 flex 项。这指定了从每个 flex 项中取出多少溢出量，以阻止它们溢出它们的容器。这是一个相当高级的弹性盒子功能，我们不会在本文中进一步说明。
+  - 表示可压缩
+
 - 第三个是上面讨论的最小值。可以单独指定全写 [`flex-basis`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/flex-basis) 属性的值。
+  - 表示当前元素的宽度
+
 
 我们建议不要使用全写属性，除非你真的需要（比如要去覆盖之前写的）。使用全写会多写很多的代码，它们也可能有点让人困惑。
+
+`flex`默认值：
+
+- 不允许被拉伸，但可以被压缩，以剩余空间为基准
+
+```css
+flex-grow: 0;
+flex-shrink: 1;
+flex-basis: auto;
+```
+
+`flex: 1;`，同时会导致父元素宽度自动为100%
+
+- 不以自身大小为基准，以剩余空间为基准
+
+```css
+flex-grow: 1;
+flex-shrink: 1;
+flex-basis: 0%;
+```
+
+`flex: auto;`
+
+```css
+flex-grow: 1;
+flex-shrink: 1;
+flex-basis: auto;
+```
 
 ### 水平和垂直对齐
 
