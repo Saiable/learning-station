@@ -19,89 +19,111 @@ typora-root-url: ./
 
 # 前端开发工具
 
-## `vscode`常用插件及设置
+- `vscode`常用插件及设置
 
-## `markdown`语法笔记工具及使用
+- `markdown`语法笔记工具及使用
 
-## 掌握谷歌浏览器控制台的调试技巧
+- 掌握谷歌浏览器控制台的调试技巧
 
 # HTML
 
-## `HTML`核心
+- `HTML`核心
 
-### `HTML`语义：学会如何写出更优`html`
+- `HTML`语义：学会如何写出更优`html`
 
-### `HTML`及扩展
+- `HTML`及扩展
 
 # `CSS`
 
 ## `CSS核心`
 
-### `CSS`样式之颜色、文字、文本设置
+- `CSS`样式之颜色、文字、文本设置
 
-### `CSS`三大特性：层叠性、继承性、优先级
+- `CSS`三大特性：层叠性、继承性、优先级
 
-### 盒子模型及使用技巧
+- 盒子模型及使用技巧
 
-- 视觉格式化模型
-
-- 盒子模型的计算
-- `box-sizing: content-box/border-box`
-- `margin`负值技巧
-- `border`使用技三角形制作
-
-### 掌握`ps`及雪碧图的处理
-
-- 背景`background`属性
-- 雪碧图的制作和使用
-
-### 表单处理及实践
-
-- 常用表单元素
-- 表单元素属性
-
-### `CSS`高级常见技巧汇总
+  - 视觉格式化模型
 
 
+  - 盒子模型的计算
 
-### `CSS`高级属性绘制技巧
+  - `box-sizing: content-box/border-box`
+
+  - `margin`负值技巧
+
+  - `border`使用技三角形制作
 
 
+- 掌握`ps`及雪碧图的处理
 
-### `CSS`绘制
+  - 背景`background`属性
 
-- `linear-gradient`
-- `radial-gradient`
-- `background`
-- `box-shadow`
-- `text-shadow`
-- `border-radius`
-- `filter`
-- `clip-path`
-- `counter`
-- 等
+  - 雪碧图的制作和使用
 
-### `CSS`机制`at-rule`
 
-- `@charset`
-- `@import`
-- `@namespace`
-- `@document`
-- `@fontface`
-- `@keyframe`
-- `@media`
-- `@page`
-- `@supports`
+- 表单处理及实践
 
-### `CSS`变量
+  - 常用表单元素
+
+  - 表单元素属性
+
+
+- `CSS`高级常见技巧汇总
+
+- `CSS`高级属性绘制技巧
+
+- `CSS`绘制
+
+  - `linear-gradient`
+
+  - `radial-gradient`
+
+  - `background`
+
+  - `box-shadow`
+
+  - `text-shadow`
+
+  - `border-radius`
+
+  - `filter`
+
+  - `clip-path`
+
+  - `counter`
+
+  - 等
+
+
+- `CSS`机制`at-rule`
+
+  - `@charset`
+
+  - `@import`
+
+  - `@namespace`
+
+  - `@document`
+
+  - `@fontface`
+
+  - `@keyframe`
+
+  - `@media`
+
+  - `@page`
+
+  - `@supports`
+
+
+- `CSS`变量
 
 ## `CSS`选择器深度剖析
 
-### `CSS`选择器汇总
+- `CSS`选择器汇总
 
-
-
-### 选择器的权重优先级
+- 选择器的权重优先级
 
 
 
@@ -401,56 +423,38 @@ https://juejin.cn/post/6844903519359598599
 
 ## 全面剖析`JS`基础知识
 
-### `ECMAScript`的发展历程和重大变革
+- `ECMAScript`的发展历程和重大变革
 
+- 声明变量的5种方案
 
+- 操作语句中的3种循环和3种判断
 
-### 声明变量的5种方案
+- 9种数据类型及详细剖析
 
+- 数据类型检测和相互转换详解
 
+- 函数详解：形参/实参/返回值/`arguments`
 
-### 操作语句中的3种循环和3种判断
+- 对象`object`详解
 
+  - `object`中关于属性的增删改查
 
+  - 原始值类型和对象类型的区别
 
-### 9种数据类型及详细剖析
-
-
-
-### 数据类型检测和相互转换详解
-
-
-
-### 函数详解：形参/实参/返回值/`arguments`
-
-### 对象`object`详解
-
-- `object`中关于属性的增删改查
-- 原始值类型和对象类型的区别
 
 ## `String/Math/Array/Object`常用`API`
 
-### `String`字符串中常见的15种方法
+- `String`字符串中常见的15种方法
 
+- `Math`数学函数中的常用的10种方法
 
+- `Array`数组中常用的20中方法
 
-### `Math`数学函数中的常用的10种方法
+- `Object`对象中常用的10种方法
 
+- 面试必考：`queryURLParams`地址参数解析
 
-
-### `Array`数组中常用的20中方法
-
-
-
-### `Object`对象中常用的10种方法
-
-
-
-### 面试必考：`queryURLParams`地址参数解析
-
-
-
-### 案例剖析：随机验证码的实现原理
+- 案例剖析：随机验证码的实现原理
 
 
 

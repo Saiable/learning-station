@@ -1,6 +1,6 @@
 ---
 title: 'HTML核心'
-date: 2022-8-10 09:03:02
+date: 2022-08-10 09:03:02
 cover: false
 tags:
 - HTML
@@ -14,7 +14,7 @@ typora-root-url: HTML核心
 
 # `HTML`介绍
 
-## 开始学习`HTML`
+## `HTML`基本概念
 
 > `HTML`通过各种各样的标记，将纯文本语义化；
 >
@@ -371,11 +371,11 @@ HTML 标准中块级元素和行内元素的区别至高出现在 4.01 标准中
 
 在这里你应该可以理解 HTML 语言的全貌，它在基础的级别是如何工作，而且可以使用一些元素和属性。在这个模块的后续文章中，我们会深入一些你已经见过的东西的细节，并且介绍一些新的 HTML 的特性。未完待续！
 
-## `head`标签里面有什么？`HTML` 中的元数据
+## `head`标签与元数据
 
 在页面加载完成的时候，head 标签里的内容，是不会在页面中显示出来的。它包含了诸如页面的 `<title>`（标题）、指向 CSS 的链接（如果你选择用 CSS 来为 HTML 内容添加样式）、指向自定义图标的链接和其它的元数据（描述 HTML 的数据，比如，作者和描述文档的重要关键词）等信息。本文将涵盖上述内容并拓展，为您对标记的使用打下一个良好的基础。
 
-### 什么是 `HTML <head> `标签
+### `<head> `标签
 
 ```html
 <!DOCTYPE html>
@@ -420,7 +420,7 @@ HTML `<head>` 元素与 `<body>` 元素不同，它的内容不会在浏览器�
 
 `<title>` 元素的内容也被用在搜索的结果中，正如你即将在下面看到的。
 
-### 元数据：`<meta>` 元素
+### 元数据
 
 元数据就是描述数据的数据，而 HTML 有一个“官方的”方式来为一个文档添加元数据——`<meta>` 元素。
 
@@ -537,7 +537,7 @@ Twitter 还拥有自己的类型的专有元数据协议（称为：[Twitter Car
 
 > **备注：** 如果你的网站使用了内容安全策略（Content Security Policy，CSP）来增加安全性，这个策略会应用在图标上。如果你遇到了图标没有被加载的问题，你需要确认 [`Content-Security-Policy`](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Content-Security-Policy) 响应头的 [img-src 指令)](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/img-src) 没有禁止访问图标。
 
-### 在 HTML 中应用 CSS 和 JavaScript
+### 应用 CSS 和 JavaScript
 
 如今，几乎你使用的所有网站都会使用 CSS 来让网页更加炫酷，并使用 JavaScript 来让网页有交互功能，比如视频播放器、地图、游戏以及更多功能。这些应用在网页中很常见，它们分别使用 `<link>` 元素以及 `<script>` 元素。
 
@@ -575,15 +575,13 @@ Twitter 还拥有自己的类型的专有元数据协议（称为：[Twitter Car
 
 这些代码是根据 [ISO 639-1](https://zh.wikipedia.org/wiki/ISO_639-1) 标准定义的。你可以在 [Language tags in HTML and XML](https://www.w3.org/International/articles/language-tags/) 找到更多相关内容。
 
-### 小结
 
-已经到了我们快速学习 HTML head 标签的尾声——你还能学到更多的相关的，但是现阶段详尽的讲的太多会令人无聊且困惑，我们只希望你现在在这学到最基本的概念！下一篇我们将要学习 [HTML 文字处理基础](https://developer.mozilla.org/zh-CN/docs/Learn/HTML/Introduction_to_HTML/HTML_text_fundamentals)。
 
-## HTML 文字处理基础
+## 文字处理
 
 HTML 的主要工作是编辑文本结构和文本内容（也称为语义[semantics](https://developer.mozilla.org/zh-CN/docs/Glossary/Semantics)），以便浏览器能正确的显示。本文介绍了 [HTML](https://developer.mozilla.org/zh-CN/docs/Glossary/HTML)的使用方法：在一段文本中添加标题和段落，强调语句，创建列表等等。
 
-### 基础：标题和段落
+### 标题和段落
 
 大部分的文本结构由标题和段落组成。不管是小说、报刊、教科书还是杂志等。
 
@@ -799,11 +797,9 @@ HTML5 用新的语义规则重新定义了`<b>`,`<i>`和`<u>`,使得它们的语
 - `<b>` 被用来传达传统上用粗体表达的意义：关键字，产品名称，引导句……
 - `<u>` 被用来传达传统上用下划线表达的意义：专有名词，拼写错误……
 
-#### 小结
 
-至此，本文应该给您做了一个很好的了解，如何开始在 HTML 中标记文本，并介绍了一些最重要的元素。在这一领域还有许多语义元素，我们将在后面的“更多语义元素”文章中看到更多的语义元素。在下一篇文章中，我们将详细介绍如何创建超链接（[create hyperlinks](https://developer.mozilla.org/en-US/docs/Learn/HTML/Introduction_to_HTML/Creating_hyperlinks)），它可能是 Web 上最重要的元素。
 
-### 创建超链接
+### 超链接
 
 超链接非常重要 ——它们使互联网成为一个互联的网络。本文介绍了创建链接所需的语法，并且讨论了链接的最佳实现方法。
 
@@ -828,7 +824,7 @@ HTML5 用新的语义规则重新定义了`<b>`,`<i>`和`<u>`,使得它们的语
 
 我创建了一个指向 [Mozilla 主页](https://www.mozilla.org/zh-CN/)的超链接。
 
-##### 使用 title 属性添加支持信息
+##### title 属性
 
 你可能要添加到你的链接的另一个属性是 `title`（标题）；这旨在包含关于链接的补充信息，例如页面包含什么样的信息或需要注意的事情。
 
@@ -853,7 +849,7 @@ HTML5 用新的语义规则重新定义了`<b>`,`<i>`和`<u>`,使得它们的语
 
 ```
 
-#### 统一资源定位符（URL）与路径（path）快速入门
+#### URL与path
 
 要全面地了解链接目标，你需要了解统一资源定位符和文件路径。本小节将介绍相关的信息。
 
@@ -1042,11 +1038,244 @@ URL 使用路径查找文件。路径指定文件系统中你感兴趣的文件�
 
 ### 高阶文字排版
 
+#### 描述列表
+
+描述列表使用与其他列表类型不同的闭合标签— `<dl>`; 
+
+此外，每一项都用` <dt>` (description term) 元素闭合。每个描述都用 `<dd>` (description definition) 元素闭合。
+
+```html
+<dl>
+  <dt>内心独白</dt>
+    <dd>戏剧中，某个角色对自己的内心活动或感受进行念白表演，这些台词只面向观众，而其他角色不会听到。</dd>
+  <dt>语言独白</dt>
+    <dd>戏剧中，某个角色把自己的想法直接进行念白表演，观众和其他角色都可以听到。</dd>
+  <dt>旁白</dt>
+    <dd>戏剧中，为渲染幽默或戏剧性效果而进行的场景之外的补充注释念白，只面向观众，内容一般都是角色的感受、想法、以及一些背景信息等。</dd>
+</dl>
+
+```
+
+一个术语 `<dt>` 可以同时有多个描述 `<dd>`
+
+#### 引用
+
+##### 块引用
+
+如果一个块级内容（一个段落、多个段落、一个列表等）从其他地方被引用，你应该把它用`<blockquote>`元素包裹起来表示，并且在cite属性里用 URL 来指向引用的资源。
+
+```html
+<blockquote cite="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/blockquote">
+  <p>The <strong>HTML <code>&lt;blockquote&gt;</code> Element</strong> (or <em>HTML Block
+  Quotation Element</em>) indicates that the enclosed text is an extended quotation.</p>
+</blockquote>
+
+```
+
+浏览器在渲染块引用时默认会增加缩进，作为引用的一个指示符；MDN 是这样做的，但是也增加了额外的样式：
+
+![image-20221115210557933](image-20221115210557933.png)
+
+##### 行内引用
+
+行内元素用同样的方式工作，除了使用`<q>`元素。例如，下面的标记包含了从 MDN`<q>`页面的引用：
+
+```html
+<p>The quote element — <code>&lt;q&gt;</code> — is <q cite="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/q">intended
+for short quotations that don't require paragraph breaks.</q></p>
+
+```
+
+![image-20221115210722695](image-20221115210722695.png)
+
+##### 引文
+
+cite属性内容不会被浏览器显示、屏幕阅读器阅读，需使用 JavaScript 或 CSS，浏览器才会显示cite的内容。如果你想要确保引用的来源在页面上是可显示的，更好的方法是为`<cite>`元素附上链接：
+
+引文默认的字体样式为斜体
+
+```html
+<p>According to the <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/blockquote">
+<cite>MDN blockquote page</cite></a>:
+</p>
+
+<blockquote cite="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/blockquote">
+  <p>The <strong>HTML <code>&lt;blockquote&gt;</code> Element</strong> (or <em>HTML Block
+  Quotation Element</em>) indicates that the enclosed text is an extended quotation.</p>
+</blockquote>
+
+<p>The quote element — <code>&lt;q&gt;</code> — is <q cite="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/q">intended
+for short quotations that don't require paragraph breaks.</q> -- <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/q">
+<cite>MDN q page</cite></a>.</p>
+
+```
+
+![image-20221115211023728](image-20221115211023728.png)
+
+#### 缩略语
+
+`<abbr>`——它常被用来包裹一个缩略语或缩写，并且提供缩写的解释（包含在title属性中）
+
+```html
+<p>我们使用 <abbr title="超文本标记语言（Hyper text Markup Language）">HTML</abbr> 来组织网页文档。</p>
+
+<p>第 33 届 <abbr title="夏季奥林匹克运动会">奥运会</abbr> 将于 2024 年 8 月在法国巴黎举行。</p>
+
+```
+
+![image-20221115211247068](image-20221115211247068.png)
+
+#### 标记联系方式
+
+`<address>`，它仅仅包含你的联系方式
+
+```html
+<address>
+  <p>Chris Mills, Manchester, The Grim North, UK</p>
+</address>
+
+<address>
+  <p>Page written by <a href="../authors/chris-mills/">Chris Mills</a>.</p>
+</address>
+
+```
+
+![image-20221115211500656](image-20221115211500656.png)
+
+#### 上标和下标
+
+当你使用日期、化学方程式、和数学方程式时会偶尔使用上标和下标。`<sup>` 和`<sub>`元素可以解决这样的问题
+
+```html
+<p>咖啡因的化学方程式是 C<sub>8</sub>H<sub>10</sub>N<sub>4</sub>O<sub>2</sub>。</p>
+<p>如果 x<sup>2</sup> 的值为 9，那么 x 的值必为 3 或 -3。</p>
+
+```
+
+![image-20221115211623019](image-20221115211623019.png)
+
+#### 展示计算机代码
+
+有大量的 HTML 元素可以来标记计算机代码：
+
+- `<code>`：用于标记计算机通用代码。
+- `<pre>`：用于保留空白字符（通常用于代码块）——如果您在文本中使用缩进或多余的空白，浏览器将忽略它，您将不会在呈现的页面上看到它。但是，如果您将文本包含在`<pre></pre>`标签中，那么空白将会以与你在文本编辑器中看到的相同的方式渲染出来。
+- `<var>`： 用于标记具体变量名。
+- `<kbd>`：用于标记输入电脑的键盘（或其他类型）输入。
+- `<samp>`：用于标记计算机程序的输出。
+
+```html
+    <pre>
+        <code>const para = document.querySelector('p');
+
+        para.onclick = function() {
+          alert('噢，噢，噢，别点我了。');
+        }</code>
+    </pre>
+        
+    <p>请不要使用 <code>&lt;font&gt;</code> 、 <code>&lt;center&gt;</code> 等表象元素。</p>
+    
+    <p>在上述的 JavaScript 示例中，<var>para</var> 表示一个段落元素。</p>
+    
+    
+    <p>按 <kbd>Ctrl</kbd>/<kbd>Cmd</kbd> + <kbd>A</kbd> 选择全部内容。</p>
+    
+    <pre>
+        $ <kbd>ping mozilla.org</kbd>
+        <samp>PING mozilla.org (63.245.215.20): 56 data bytes 64 bytes from 63.245.215.20: icmp_seq=0 ttl=40 time=158.233 ms</samp>
+    </pre>
+```
+
+![image-20221115212227872](image-20221115212227872.png)
+
+#### 标记时间和日期
+
+HTML 还支持将时间和日期标记为可供机器识别的格式的` <time> `元素
+
+```html
+<time datetime="2016-01-20">2016 年 1 月 20 日</time>
+
+```
+
+为什么需要这样做？因为世界上有许多种书写日期的格式，上边的日期可能被写成：
+
+- 20 January 2016
+- 20th January 2016
+- Jan 20 2016
+- 20/06/16
+- 06/20/16
+- The 20th of next month
+- 20e Janvier 2016
+- 2016 年 1 月 20 日
+- And so on
+
+但是这些不同的格式不容易被电脑识别 — 假如你想自动抓取页面上所有事件的日期并将它们插入到日历中，` <time> `元素允许你附上清晰的、可被机器识别的 时间/日期来实现这种需求。
+
+上述基本的例子仅仅提供了一种简单的可被机器识别的日期格式，这里还有许多其他支持的格式，例如：
+
+```html
+<!-- 标准简单日期 -->
+<time datetime="2016-01-20">20 January 2016</time>
+<!-- 只包含年份和月份-->
+<time datetime="2016-01">January 2016</time>
+<!-- 只包含月份和日期 -->
+<time datetime="01-20">20 January</time>
+<!-- 只包含时间，小时和分钟数 -->
+<time datetime="19:30">19:30</time>
+<!-- 还可包含秒和毫秒 -->
+<time datetime="19:30:01.856">19:30:01.856</time>
+<!-- 日期和时间 -->
+<time datetime="2016-01-20T19:30">7.30pm, 20 January 2016</time>
+<!-- 含有时区偏移值的日期时间 -->
+<time datetime="2016-01-20T19:30+01:00">7.30pm, 20 January 2016 is 8.30pm in France</time>
+<!-- 调用特定的周 -->
+<time datetime="2016-W04">The fourth week of 2016</time>
+
+```
+
 
 
 ### 文档与网站架构
 
+#### 文档的基本组成部分
 
+网页的外观多种多样，但是除了全屏视频或游戏，或艺术作品页面，或只是结构不当的页面以外，都倾向于使用类似的标准组件：
+
+- 页眉
+
+  通常横跨于整个页面顶部有一个大标题 和/或 一个标志。这是网站的主要一般信息，通常存在于所有网页。
+
+- 导航栏
+
+  指向网站各个主要区段的超链接。通常用菜单按钮、链接或标签页表示。类似于标题栏，导航栏通常应在所有网页之间保持一致，否则会让用户感到疑惑，甚至无所适从。许多 web 设计人员认为导航栏是标题栏的一部分，而不是独立的组件，但这并非绝对；还有人认为，两者独立可以提供更好的 [无障碍访问特性](https://developer.mozilla.org/zh-CN/docs/Learn/Accessibility)，因为屏幕阅读器可以更清晰地分辨二者。
+
+- 主内容
+
+  中心的大部分区域是当前网页大多数的独有内容，例如视频、文章、地图、新闻等。这些内容是网站的一部分，且会因页面而异。
+
+- 侧边栏
+
+  一些外围信息、链接、引用、广告等。通常与主内容相关（例如一个新闻页面上，侧边栏可能包含作者信息或相关文章链接），还可能存在其他的重复元素，如辅助导航系统。
+
+- 页脚
+
+  横跨页面底部的狭长区域。和标题一样，页脚是放置公共信息（比如版权声明或联系方式）的，一般使用较小字体，且通常为次要内容。还可以通过提供快速访问链接来进行 [SEO](https://developer.mozilla.org/zh-CN/docs/Glossary/SEO)。
+
+一个“典型的网站”可能会这样布局：
+
+![一个简单站点首页截图](sample-website.png)
+
+#### 构建内容的`HTML`
+
+HTML 代码中可根据功能来为区段添加标记。可使用元素来无歧义地表示上文所讲的内容区段，屏幕阅读器等辅助技术可以识别这些元素，并帮助执行“找到主导航“或”找到主内容“等任务。参见前文所讲的 [页面中元素结构和语义不佳所带来的后果](https://developer.mozilla.org/zh-CN/docs/Learn/HTML/Introduction_to_HTML/HTML_text_fundamentals#为什么我们需要结构化)。
+
+为了实现语义化标记，HTML 提供了明确这些区段的专用标签，例如：
+
+- `<header>`：页眉。
+- `<nav>`：导航栏。
+- `<main>`主内容。主内容中还可以有各种子内容区段，可用`<article>`、`<section>` 和 `<div>` 等元素表示。
+- `<aside>`：侧边栏，经常嵌套在 `<main>` 中。
+- `<footer>`：页脚。
 
 ### HTML 调试
 
@@ -1072,7 +1301,9 @@ URL 使用路径查找文件。路径指定文件系统中你感兴趣的文件�
 
 ### 在网页中添加矢量图形
 
-## 面试题：`HTML`中有哪些标签？
+## 面试题
+
+### `HTML`中有哪些标签？
 
 不要直接说标签，先进行分类
 
@@ -1137,7 +1368,7 @@ URL 使用路径查找文件。路径指定文件系统中你感兴趣的文件�
 
 所谓编程思想，所谓各种各样的思想，一定是基础知识非常扎实的情况下，把一件件事做好后，再去讨论的
 
-### 基本标签
+#### 基本标签
 
 - `em` 表示语音语调的一个加重
 - `strong` 表示强调，重要内容
@@ -1147,7 +1378,7 @@ URL 使用路径查找文件。路径指定文件系统中你感兴趣的文件�
 - `div` 没有语义，就用来表示一个区块，是用来布局的元素
 - `span` 没有语义
 
-### 结构语义化标签
+#### 结构语义化标签
 
 - `header` 表示网页的头部
 - `main` 表示网页中的主体部分，一般只有一个
@@ -1157,7 +1388,7 @@ URL 使用路径查找文件。路径指定文件系统中你感兴趣的文件�
 - `article` 表示一个独立的文章
 - `section` 表示一个独立的区块，上面的标签都不能表示时，用section
 
-### `meta`标签
+#### `meta`标签
 
 - `charset` 指定网页的字符集
 
@@ -1183,7 +1414,7 @@ URL 使用路径查找文件。路径指定文件系统中你感兴趣的文件�
   <meta http-equiv="refresh" content="3;url=https://www.baidu.com"
   ```
 
-### 列表
+#### 列表
 
 - 有序列表 `ol`
 
@@ -1204,9 +1435,9 @@ URL 使用路径查找文件。路径指定文件系统中你感兴趣的文件�
 
 列表之间可以互相嵌套
 
-### 图片标签
+#### 图片标签
 
-#### 图片的属性
+##### 图片的属性
 
 `img`元素属于替换元素（块和行内元素之间，具有两种元素的特点）
 
@@ -1216,7 +1447,7 @@ URL 使用路径查找文件。路径指定文件系统中你感兴趣的文件�
 - `height`：图片的高度（px）；宽度和高度如果只修改了一个，则另一个会等比缩放
   - 注意：一般在pc端，需要多大的图片就做多大的图，在移动端，一般会大图缩小
 
-#### 图片的格式
+##### 图片的格式
 
 - `jpeg(jpg)`
   - 支持的颜色比较丰富，不支持透明效果，不支持动图
@@ -1241,7 +1472,7 @@ URL 使用路径查找文件。路径指定文件系统中你感兴趣的文件�
 - 效果一样，用文件小的
 - 效果不一样，用效果好的
 
-### 超链接和路径
+#### 超链接和路径
 
 - ./ 表示当前文件所在的目录
 
@@ -1265,7 +1496,7 @@ URL 使用路径查找文件。路径指定文件系统中你感兴趣的文件�
 - id 每一个标签都可以添加id属性，id属性就是元素的唯一标识，同一个页面中不能出现重复的id属性
   跳转到页面指定位置
 
-### 音视频标签
+#### 音视频标签
 
 audio标签用来向页面引入一个外部的音频文件，默认不允许用户自己控制播放停止
 
@@ -1327,6 +1558,224 @@ audio标签用来向页面引入一个外部的音频文件，默认不允许用
 ```html
 <iframe src="https://www.qq.com" width="800" height="600" frameborder="1"></iframe>
 ```
+
+
+
+# H5
+
+[教程参考](https://www.runoob.com/html/html5-intro.html)
+
+### Canvas绘图
+
+#### Canvas - 文本
+
+使用 canvas 绘制文本，重要的属性和方法如下：
+
+- font - 定义字体
+- fillText(text,x,y) - 在 canvas 上绘制实心的文本
+- strokeText(text,x,y) - 在 canvas 上绘制空心的文本
+
+#### Canvas - 渐变
+
+- 线性渐变
+- 径向渐变
+
+### HTML5 内联 SVG
+
+### HTML5 MathML
+
+### HTML5 拖放（Drag 和 Drop）
+
+### HTML5 Geolocation（地理定位）
+
+### HTML5 Video(视频)
+
+### HTML5 Audio(音频)
+
+### HTML5 新的 Input 类型
+
+### HTML5 表单元素
+
+### HTML5 表单属性
+
+### HTML5 语义元素
+
+### HTML5 Web 存储
+
+HTML5 web 存储,一个比cookie更好的本地存储方式。
+
+### HTML5 Web SQL 数据库
+
+### HTML5 Web Workers
+
+### HTML5 服务器发送事件(Server-Sent Events)
+
+### HTML5 WebSocket
+
+### HTML(5) 代码规范
+
+
+
+[视频教程来源]()
+
+
+
+### attr&prop
+
+在JS中打断点
+
+JS原生对象的属性，称为property
+
+每一个预定义的attribute都会有一个property与之对应
+
+ 非布尔值属性，property和attribute都会同步
+
+布尔值属性，property和attribute的同步问题
+
+- 1.改变property时，不会同步attribute
+- 2.在没有动过property时
+  - attribute会同步property
+
+- 一旦动过property
+  - attribute不会同步property
+
+#### 什么是attribute，什么是property
+
+html标签的预定义和自定义属性我们统称为attribute
+
+js原生对象的直接属性，我们统称为property
+
+#### 什么是布尔值属性，什么是非布尔值属性
+
+property的属性值为布尔类型的，我们统称为布尔值属性
+
+property的属性为非布尔类型的，我们统称为非布尔值属性
+
+#### attribute和property的同步关系
+
+非布尔值属性：实时同步
+
+布尔值属性：
+
+​	property永远都不会同步attribute
+
+​	在没有动过property的情况下
+
+​		attribute会同步property
+
+​	在动过property的情况下
+
+​		attribute不会同步property
+
+#### 用户操作的是property
+
+#### 浏览器认的是property
+
+操作布尔值属性，推荐使用prop方法，操作非布尔值属性，推荐使用attr方法
+
+### H5中的小功能
+
+classList.add() 自定义添加class
+
+classList.remove()自定义删除类
+
+classList.toggle()
+
+
+
+自定义属性
+
+```javascript
+<body>
+    <div id="test" data-atguigu-qhf = 'qhf'>
+
+    </div>
+    <script>
+        var testNode = document.querySelector("#test")
+        console.log(testNode.dataset.atguiguQhf)
+        // testNode.dataset.atguiguQhf='111'
+        // testNode.dataset.atguiguQhf.add('222')
+    </script>
+</body>
+```
+
+
+
+contenteditable = 'true'
+
+### H5和H4的区别
+
+H5的优势
+
+- 跨平台（浏览器）
+- 快速迭代
+- 降低成本
+- 导流入口多
+- 分发效率高
+
+
+
+H5
+
+1.DOCTYPE和浏览器渲染模式
+
+### 语义化标签
+
+### Canvas基本用法
+
+#### 1.浏览器兼容
+
+```javascript
+<canvas id="myCanvas" width="300px" height="300px">
+    <span>你的浏览器不支持画布元素，请下载谷歌浏览器</span>
+</canvas>
+```
+
+#### 2.基本用法
+
+```javascript
+window.onload = function() {
+    //querySelector身上有坑
+    var testNode = document.querySelector("#myCanvas")
+    if(testNode.getContext){
+        var ctx = testNode.getContext("2d")
+        }
+}
+```
+
+#### 3.绘制矩形
+
+1.绘制矩形
+
+canvas提供了3中绘制矩形的方式：
+
+- 绘制一个填充的矩形（填充默认为黑色）
+
+  `fillRect(x,y,width,height)`
+
+- 绘制一个矩形的边框（默认边框为：一像素实习黑色）
+
+  `strokeRect(x,y,width,height)`
+
+- 清除指定矩形区域，让清除部分完全透明
+
+  `clearRect(x,y,width,height)`
+
+x与y制定了canvas画布上所绘制的矩形的左上角（相对于原点）的坐标。
+
+width和height设置矩形的尺寸。（存在边框会在width上占据一个边框的宽度，height同理）
+
+2.strokeRect时，边框像素渲染问题
+
+按理渲染出的边框应该是1px的，
+
+canvas在渲染矩形边框时，边框宽度是平均分在偏移位置两侧。
+
+- content.strokeRect(10,10,50,50)
+  - 边框会渲染在10.5和9.5之间，浏览器是不会让一个像素只用自己的一半的
+  - 相当于边框会渲染在9到11之间
+- context.strokeRect(10.5,10.5,50,50).
+  - 边框会渲染在10到11之间
 
 
 
