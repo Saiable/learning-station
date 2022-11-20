@@ -26,13 +26,13 @@ typora-root-url: HTML核心
 
 ### 什么是`HTML`
 
+> `HTML`通过各种各样的标记，将纯文本文字进行结构化和语义化
+
 超文本标记语言 (英语：**H**yper**t**ext **M**arkup **L**anguage，简称：HTML ) 是一种用来结构化 Web 网页及其内容的标记语言。网页内容可以是：一组段落、一个重点信息列表、也可以含有图片和数据表。
 
 HTML 不是一门编程语言，而是一种用于**定义内容结构**的标记语言。
 
 HTML 由一系列的**元素**（elements）组成，这些元素可以用来包围不同部分的内容，使其以某种方式呈现或者工作。一对标签（ tags）可以为一段文字或者一张图片添加超链接，将文字设置为斜体，改变字号，等等。
-
-我的理解：`HTML`通过各种各样的标记，将纯文本文字进行结构化和语义化
 
 ### `HTML`元素详解
 
@@ -71,15 +71,15 @@ HTML 由一系列的**元素**（elements）组成，这些元素可以用来包
 
 在 HTML 中有两种你需要知道的重要元素类别，块级元素和内联元素。
 
-- 块元素（block element）
+- 块元素（`block element`）
 
-  - 详解：[块级元素 - HTML（超文本标记语言） | MDN (mozilla.org)](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Block-level_elements)
-  - 块级元素在页面中以块的形式展现 —— 相对于其前面的内容它会出现在新的一行，其后的内容也会被挤到下一行展现。块级元素通常用于展示页面上结构化的内容，例如段落、列表、导航菜单、页脚等等。一个以 block 形式展现的块级元素不会被嵌套进内联元素中，但可以嵌套在其它块级元素中。
+  - 详解：[块级元素 - HTML（超文本标记语言）](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Block-level_elements)
+  - 块级元素在页面中以块的形式展现 —— 相对于其前面的内容它会出现在新的一行，其后的内容也会被挤到下一行展现（独占一行）。块级元素通常用于展示页面上结构化的内容，例如段落、列表、导航菜单、页脚等等。一个以 `block` 形式展现的块级元素不会被嵌套进内联元素中，但可以嵌套在其它块级元素中。
 
   - 占满整行，元素宽高边距等可设置
   - 在网页中，一般通过块元素来进行布局
 
-- 行内元素（inline element）
+- 行内元素（`inline element`）
 
   - 内联元素通常出现在块级元素中并环绕文档内容的一小部分，而不是一整个段落或者一组内容。内联元素不会导致文本换行：它通常出现在一堆文字之间。
   - 不占满整行，宽高、上下边距等不可直接设置
@@ -88,8 +88,6 @@ HTML 由一系列的**元素**（elements）组成，这些元素可以用来包
   - 一般情况下会在块元素中放行内元素，而不会在行内元素中放块元素
   - 块元素中基本上什么都能放
   - p元素中不能放任何的块元素
-
-
 
 - 行内块元素
   - 不占满整行，元素宽高边距等可设置
@@ -125,67 +123,46 @@ HTML 标准中块级元素和行内元素的区别至高出现在 4.01 标准中
 ```html
 <div>
 文档分区。
-    
 <address>
 联系方式信息。
-
 <article>
 文章内容。
-
 <aside>
 伴随内容。
-
 <blockquote>
 块引用。
-
 <dd>
 定义列表中定义条目描述。
-
 <dl>
 定义列表。
-
 <fieldset>
 表单元素分组。
-
 <figcaption>
 图文信息组标题
-
 <figure>
 图文信息组 (参照 <figcaption>)。
-
 <footer>
 区段尾或页尾。
-
 <form>
 表单。
-
 <h1> (en-US), <h2> (en-US), <h3> (en-US), <h4> (en-US), <h5> (en-US), <h6> (en-US)
 标题级别 1-6.
-
 <header>
 区段头或页头。
-
 <hgroup>
 标题组。
-
 <hr>
 水平分割线。
-
 <ol>
 有序列表。
-
 <p>
 行。
-
 <pre>
 预格式化文本。
-
 <section>
 一个页面区段。
-
 <table>
 表格。
-
 <ul>
 无序列表。
 ```
@@ -260,7 +237,6 @@ HTML 标准中块级元素和行内元素的区别至高出现在 4.01 标准中
 
 ```html
 <input type="text" disabled="disabled">
-
 ```
 
 方便起见，我们完全可以将其写成以下形式 (我们还提供了一个非禁止输入的表单元素供您参考，以作为对比)：
@@ -271,7 +247,6 @@ HTML 标准中块级元素和行内元素的区别至高出现在 4.01 标准中
 
 <!-- 下面这个输入框没有 disabled 属性，所以用户可以向其中输入 -->
 <input type="text">
-
 ```
 
 ##### 省略包围属性值的引号
@@ -286,7 +261,6 @@ HTML 标准中块级元素和行内元素的区别至高出现在 4.01 标准中
 <a href="http://www.example.com">示例站点链接</a>
 
 <a href='http://www.example.com'>示例站点链接</a>
-
 ```
 
 但你应该注意单引号和双引号不能在一个属性值里面混用。下面的语法是错误的：
@@ -364,12 +338,6 @@ HTML 标准中块级元素和行内元素的区别至高出现在 4.01 标准中
 <!-- <p>我在注释内！</p> -->
 
 ```
-
-### 小结
-
-你已经来到了这篇文章的结尾 —— 希望你享受你的基础的 HTML 学习的旅程。
-
-在这里你应该可以理解 HTML 语言的全貌，它在基础的级别是如何工作，而且可以使用一些元素和属性。在这个模块的后续文章中，我们会深入一些你已经见过的东西的细节，并且介绍一些新的 HTML 的特性。未完待续！
 
 ## `head`标签与元数据
 
@@ -512,7 +480,6 @@ Twitter 还拥有自己的类型的专有元数据协议（称为：[Twitter Car
 
    ```html
    <link rel="icon" href="favicon.ico" type="image/x-icon">
-   
    ```
 
 如今还有很多其他的图标类型可以考虑。例如，你可以在 MDN Web 文档的源代码中找到它：
@@ -545,14 +512,12 @@ Twitter 还拥有自己的类型的专有元数据协议（称为：[Twitter Car
 
 ```html
 <link rel="stylesheet" href="my-css-file.css">
-
 ```
 
 `<script>` 元素没必要非要放在文档的 `<head>` 中，并包含 src 属性来指向需要加载的 JavaScript 文件路径，同时最好加上 `defer` 以告诉浏览器在解析完成 HTML 后再加载 JavaScript。这样可以确保在加载脚本之前浏览器已经解析了所有的 HTML 内容（如果脚本尝试访问某个不存在的元素，浏览器会报错）。实际上还有很多方法可用于处理加载 JavaScript 的问题，但这是现代浏览器中最可靠的一种方法。
 
 ```html
 <script src="my-js-file.js" defer></script>
-
 ```
 
 ### 为文档设定主语言
@@ -561,7 +526,6 @@ Twitter 还拥有自己的类型的专有元数据协议（称为：[Twitter Car
 
 ```html
 <html lang="zh-CN">
-
 ```
 
 这在很多方面都很有用。如果你的 HTML 文档的语言设置好了，那么你的 HTML 文档就会被搜索引擎更有效地索引（例如，允许它在特定于语言的结果中正确显示），对于那些使用屏幕阅读器的视障人士也很有用（例如，法语和英语中都有“six”这个单词，但是发音却完全不同）。
@@ -1277,29 +1241,921 @@ HTML 代码中可根据功能来为区段添加标记。可使用元素来无歧
 - `<aside>`：侧边栏，经常嵌套在 `<main>` 中。
 - `<footer>`：页脚。
 
-### HTML 调试
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>二次元俱乐部</title>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300|Sonsie+One" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=ZCOOL+KuaiLe" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+  </head>
 
+  <body>
+    <header> <!-- 本站所有网页的统一主标题 -->
+      <h1>聆听电子天籁之音</h1>
+    </header>
 
+    <nav> <!-- 本站统一的导航栏 -->
+      <ul>
+        <li><a href="#">主页</a></li>
+        <!-- 共 n 个导航栏项目，省略…… -->
+      </ul>
+
+      <form> <!-- 搜索栏是站点内导航的一个非线性的方式。 -->
+        <input type="search" name="q" placeholder="要搜索的内容">
+        <input type="submit" value="搜索">
+      </form>
+    </nav>
+
+    <main> <!-- 网页主体内容 -->
+      <article>
+        <!-- 此处包含一个 article（一篇文章），内容略…… -->
+      </article>
+
+      <aside> <!-- 侧边栏在主内容右侧 -->
+        <h2>相关链接</h2>
+        <ul>
+          <li><a href="#">这是一个超链接</a></li>
+          <!-- 侧边栏有 n 个超链接，略略略…… -->
+        </ul>
+      </aside>
+    </main>
+
+    <footer> <!-- 本站所有网页的统一页脚 -->
+      <p>© 2050 某某保留所有权利</p>
+    </footer>
+  </body>
+</html>
+```
+
+#### 布局元素细节
+
+理解所有 HTML 区段元素具体含义是很有益处的，这一点将随着个人 web 开发经验的逐渐丰富日趋显现。更多细节请查阅 [HTML 元素参考](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element)。现在，你只需要理解以下主要元素的意义：
+
+- `<main>`存放每个页面独有的内容。每个页面上只能用一次 `<main>`，且直接位于 [``](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/body) 中。最好不要把它嵌套进其它元素。
+- `<article>`包围的内容即一篇文章，与页面其它部分无关（比如一篇博文）。
+- `<section>`与 `<article>` 类似，但 `<section>` 更适用于组织页面使其按功能（比如迷你地图、一组文章标题和摘要）分块。
+  - 一般的最佳用法是：以 [标题](https://developer.mozilla.org/zh-CN/docs/Learn/HTML/Howto/Set_up_a_proper_title_hierarchy) 作为开头；也可以把一篇 `<article>` 分成若干部分并分别置于不同的 `<section>` 中，也可以把一个区段 `<section>` 分成若干部分并分别置于不同的 `<article>` 中，取决于上下文。
+- `<header>`是简介形式的内容。如果它是 `<body>` 的子元素，那么就是网站的全局页眉。如果它是 `<article>` 或`<section>` 的子元素，那么它是这些部分特有的页眉（此 `<header>` 非彼 标题）。
+-  `<nav>` 包含页面主导航功能。其中不应包含二级链接等内容。
+-  `<footer>` 包含了页面的页脚部分。
+
+#### 无语义元素
+
+对于一些要组织的项目或要包装的内容，现有的语义元素均不能很好对应。有时候你可能只想将一组元素作为一个单独的实体来修饰来响应单一的用 CSS 或 JavaScript。
+
+为了应对这种情况，HTML 提供了` <div> `和 `<span>` 元素。应配合使用 class 属性提供一些标签，使这些元素能易于查询。
+
+#### 规划一个简单的网站
+
+在完成页面内容的规划后，一般应按部就班地规划整个网站的内容，要可能带给用户最好的体验，需要哪些页面、如何排列组合这些页面、如何互相链接等问题不可忽略。这些工作称为[信息架构](https://developer.mozilla.org/zh-CN/docs/Glossary/Information_architecture)。在大型网站中，大多数规划工作都可以归结于此，而对于一个只有几个页面的简单网站，规划设计过程可以更简单，更有趣！
+
+1.时刻记住，大多数（不是全部）页面会使用一些相同的元素，例如导航菜单以及页脚内容。若网站为商业站点，不妨在所有页面的页脚都加上联系方式。请记录这些对所有页面都通用的内容：
+
+![所有页面共有的内容，包括：站点标题、Logo、联系方式、版权声明、语言等信息。](common-features.png)
+
+2。时刻记住，大多数（不是全部）页面会使用一些相同的元素，例如导航菜单以及页脚内容。若网站为商业站点，不妨在所有页面的页脚都加上联系方式。请记录这些对所有页面都通用的内容：
+
+![简单的页面布局示意图，有页眉、页脚、主内容、侧边栏。](site-structure.png)
+
+3.下面，对于期望添加进站点的所有其它（通用内容以外的）内容展开头脑风暴，直接罗列出来。
+
+![把假日旅行站点的所有功能罗列到一个列表中](feature-list.png)
+
+4.下一步，试着对这些内容进行分组，这样可以让你了解哪些内容可以放在同一个页面。这种做法和 [卡片分类法](https://developer.mozilla.org/zh-CN/docs/Glossary/Card_sorting) 非常相似。
+
+![假日网站的页面应分 5 类：搜索、特别提供、具体国家信息、搜索结果、购物。](card-sorting.png)
+
+5.接下来，试着绘制一个站点地图的草图，使用一个气泡代表网站的一个页面，并绘制连线来表示页面间的一般工作流。主页面一般置于中心，且链接到其他大多数页面；小型网站的大多数页面都可以从主页的导航栏中链接跳转。也可记录下内容的显示方式。
+
+![img](site-map.png)
 
 ## 多媒体与嵌入
 
+本模块要探索怎样用 HTML 来让你的网页包含多媒体，包括可以包含图像的不同方式，以及怎样嵌入视频，甚至是整个其他的网页。
+
 ### HTML 中的图片
 
+在这篇文章中，我们将看到怎样深入的使用它，包括基本的用[``](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/figure)来添加说明文字，以及怎样把它和 CSS 背景图片链接起来。
 
+#### 怎样将图片放在网页上？
+
+我们可以用`<img>` 元素来把图片放到网页上。
+
+它是一个空元素（它不需要包含文本内容或闭合标签），最少只需要一个` src` （一般读作其全称 source）来使其生效。
+
+`src` 属性包含了指向我们想要引入的图片的路径，可以是相对路径或绝对 URL，就像` <a>` 元素的 href 属性一样。
+
+
+
+如果这张图片存储在和 HTML 页面同路径的 `images` 文件夹下（这也是 Google 推荐的做法，利于[SEO](https://developer.mozilla.org/zh-CN/docs/Glossary/SEO)/索引），那么你可以采用如下形式
+
+> **备注：** 搜索引擎也读取图像的文件名并把它们计入 `SEO`。因此你应该给你的图片取一个描述性的文件名：`dinosaur.jpg` 比 `img835.png` 要好。
+
+```html
+<img src="images/dinosaur.jpg">
+```
+
+
+
+你也可以像下面这样使用绝对路径：
+
+```html
+<img src="https://www.example.com/images/dinosaur.jpg">
+```
+
+但是这种方式是不被推荐的，这样做只会使浏览器做更多的工作，例如重新通过 `DNS` 再去寻找` IP` 地址。通常我们都会把图片和 HTML 放在同一个服务器上。
+
+
+
+> 备注： 像`<img>`和`<video>`这样的元素有时被称之为替换元素，因为这样的元素的内容和尺寸由外部资源（像是一个图片或视频文件）所定义，而不是元素自身。
+
+##### 备选文本
+
+属性 `alt` ，它的值应该是对图片的文字描述，用于在图片无法显示或不能被看到的情况。例如，上面的例子可以做如下改进：
+
+```html
+<img src="images/dinosaur.jpg"
+     alt="The head and torso of a dinosaur skeleton;
+          it has a large head with long sharp teeth">
+```
+
+本质上，关键在于在图片无法被看见时也提供一个可用的体验，这确保了所有人都不会错失一部分内容。尝试在浏览器中使图片不可见然后看看网页变成什么样了，你会很快意识到在图片无法显示时备选文本能帮上多大忙。
+
+##### 宽度和高度
+
+**备注：** 如果你需要改变图片的尺寸，你应该使用[CSS](https://developer.mozilla.org/zh-CN/docs/Learn/CSS)而不是 HTML。
+
+##### 图片标题
+
+类似于[超链接](https://developer.mozilla.org/zh-CN/docs/Learn/HTML/Introduction_to_HTML/Creating_hyperlinks#使用添加支持信息)，你可以给图片增加`title`属性来提供需要更进一步的支持信息。
+
+```html
+<img src="images/dinosaur.jpg"
+     alt="一只恐龙头部和躯干的骨架，它有一个巨大的头，长着锋利的牙齿。"
+     width="400"
+     height="341"
+     title="A T-Rex on display in the Manchester University Museum">
+```
+
+图片标题并不必须要包含有意义的信息，通常来说，将这样的支持信息放到主要文本中而不是附着于图片会更好。不过，在有些环境中这样做更有用，比如当没有空间显示提示时，也就是在图片栏中。
+
+#### 为图片搭配说明文字
+
+说到说明文字，这里有很多种方法让你添加一段说明文字来搭配图片。比如，没有人会阻止你这么做：
+
+```html
+<div class="figure">
+  <img src="/images/dinosaur_small.jpg"
+     alt="一只恐龙头部和躯干的骨架，它有一个巨大的头，长着锋利的牙齿。"
+     width="400"
+     height="341">
+  <p>曼彻斯特大学博物馆展出的一只霸王龙的化石</p>
+</div>
+```
+
+有一个更好的做法是使用 HTML5 的 `<figure>` 和 `<figcaption>` 元素，它正是为此而被创造出来的：为图片提供一个语义容器，在标题和图片之间建立清晰的关联。我们之前的例子可以重写为：
+
+```html
+<figure>
+  <img src="https://raw.githubusercontent.com/mdn/learning-area/master/html/multimedia-and-embedding/images-in-html/dinosaur_small.jpg"
+      alt="一只恐龙头部和躯干的骨架，它有一个巨大的头，长着锋利的牙齿。"
+      width="400"
+      height="341">
+  <figcaption>曼彻斯特大学博物馆展出的一只霸王龙的化石</figcaption>
+</figure>
+```
+
+> **备注：** 从无障碍的角度来说，说明文字和 [`alt`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/img#attr-alt) 文本扮演着不同的角色。看得见图片的人们同样可以受益于说明文字，而 [`alt`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/img#attr-alt) 文字只有在图片无法显示时才这样。所以，说明文字和 `alt` 的内容不应该一样，因为当图片无法显示时，它们会同时出现。
+
+`<figure>` 可以是几张图片、一段代码、音视频、方程、表格或别的。
+
+#### `CSS`背景图片
+
+CSS 属性 [`background-image`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/background-image) 和另其他 `background-*` 属性是用来放置背景图片的。比如，为页面中的所有段落设置一个背景图片，你可以这样做：
+
+```css
+p {
+  background-image: url("images/dinosaur.jpg");
+}
+```
+
+按理说，这种做法相对于 HTML 中插入图片的做法，可以更好地控制图片和设置图片的位置，那么为什么我们还要使用 HTML 图片呢？如上所述，CSS 背景图片只是为了装饰 — 如果你只是想要在你的页面上添加一些漂亮的东西，来提升视觉效果，那 CSS 的做法是可以的。但是这样插入的图片完全没有语义上的意义，它们不能有任何备选文本，也不能被屏幕阅读器识别。这就是 HTML 图片有用的地方了。
+
+总而言之，如果图像对您的内容里有意义，则应使用 HTML 图像。如果图像纯粹是装饰，则应使用 CSS 背景图片。
 
 ### 视频和音频内容
 
+在这篇文章中，我们会使用 `<video>` 和 `<audio>` 元素来做到这件事；然后我们还会看看如何为你的视频添加字幕。
 
+#### `<video>` 
+
+```html
+<video src="rabbit320.webm" controls>
+  <p>你的浏览器不支持 HTML5 视频。可点击<a href="rabbit320.mp4">此链接</a>观看</p>
+</video>
+```
+
+`src`
+
+- 同 `<img>` 标签使用方式相同，src 属性指向你想要嵌入网页当中的视频资源，他们的使用方式完全相同。
+
+`controls`
+
+- 用户必须能够控制视频和音频的回放功能。你可以使用 `controls` 来包含浏览器提供的控件界面，同时你也可以使用合适的 [JavaScript API](https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLMediaElement) 创建自己的界面。界面中至少要包含开始、停止以及调整音量的功能。
+
+`<video>` 标签内的内容
+
+- 这个叫做**后备内容** — 当浏览器不支持 `<video>` 标签的时候，就会显示这段内容，这使得我们能够对旧的浏览器提供回退内容。你可以添加任何后备内容，在这个例子中我们提供了一个指向这个视频文件的链接，从而使用户至少可以访问到这个文件，而不会局限于浏览器的支持。
+
+##### 使用多个播放源以提高兼容性
+
+以上的例子中有一个问题，你可能已经注意到了，如果你尝试使用像 Safari 或者 Internet Explorer 这些浏览器来访问上面的链接。视频并不会播放，这是因为不同的浏览器对视频格式的支持不同。幸运的是，你有办法防止这个问题发生。
+
+
+
+```html
+<video controls>
+  <source src="rabbit320.mp4" type="video/mp4">
+  <source src="rabbit320.webm" type="video/webm">
+  <p>你的浏览器不支持 HTML5 视频。可点击<a href="rabbit320.mp4">此链接</a>观看</p>
+</video>
+```
+
+现在我们将 src 属性从 `<video>` 标签中移除，转而将它放在几个单独的标签 `<source>` 当中。在这个例子当中，浏览器将会检查 `<source>` 标签，并且播放第一个与其自身 `codec` 相匹配的媒体。你的视频应当包括 `WebM` 和 `MP4` 两种格式，这两种在目前已经足够支持大多数平台和浏览器。
+
+每个 `<source>` 标签页含有一个 `type` 属性，这个属性是可选的，但是建议你添加上这个属性 — 它包含了视频文件的 [MIME types](https://developer.mozilla.org/zh-CN/docs/Glossary/MIME_type) ，同时浏览器也会通过检查这个属性来迅速的跳过那些不支持的格式。如果你没有添加 `type` 属性，浏览器会尝试加载每一个文件，直到找到一个能正确播放的格式，这样会消耗掉大量的时间和资源。
+
+##### 新的特性
+
+```html
+<video controls width="400" height="400"
+       autoplay loop muted
+       poster="poster.png">
+  <source src="rabbit320.mp4" type="video/mp4">
+  <source src="rabbit320.webm" type="video/webm">
+  <p>你的浏览器不支持 HTML5 视频。可点击<a href="rabbit320.mp4">此链接</a>观看</p>
+</video>
+```
+
+`width` 和 `height`
+
+- 你可以用属性控制视频的尺寸，也可以用 [CSS](https://developer.mozilla.org/zh-CN/docs/Glossary/CSS) 来控制视频尺寸。无论使用哪种方式，视频都会保持它原始的长宽比 — 也叫做**纵横比**。如果你设置的尺寸没有保持视频原始长宽比，那么视频边框将会拉伸，而未被视频内容填充的部分，将会显示默认的背景颜色。
+
+`autoplay`
+
+- 这个属性会使音频和视频内容立即播放，即使页面的其他部分还没有加载完全。建议不要应用这个属性在你的网站上，因为用户们会比较反感自动播放的媒体文件。
+
+`loop`
+
+- 这个属性可以让音频或者视频文件循环播放。同样不建议使用，除非有必要。
+
+`muted`
+
+- 这个属性会导致媒体播放时，默认关闭声音。
+
+`poster`
+
+- 这个属性指向了一个图像的 URL，这个图像会在视频播放前显示。通常用于粗略的预览或者广告。
+
+`preload`
+
+- 这个属性被用来缓冲较大的文件，有 3 个值可选：
+  - `"none"` ：不缓冲
+  - `"auto"` ：页面加载后缓存媒体文件
+  - `"metadata"` ：仅缓冲文件的元数据
+
+#### `<audio> `
+
+`<audio>` 标签与 `<video>` 标签的使用方式几乎完全相同，有一些细微的差别比如下面的边框不同，一个典型的例子如下：
+
+```html
+<audio controls>
+  <source src="viper.mp3" type="audio/mp3">
+  <source src="viper.ogg" type="audio/ogg">
+  <p>你的浏览器不支持 HTML5 音频，可点击<a href="viper.mp3">此链接</a>收听。</p>
+</audio>
+```
+
+音频播放器所占用的空间比视频播放器要小，由于它没有视觉部件 — 你只需要显示出能控制音频播放的控件。一些与 HTML5 `<video>` 的差异如下：
+
+- `<audio>` 标签不支持 `width/height` 属性 — 由于其并没有视觉部件，也就没有可以设置 width/height 的内容。
+- 同时也不支持 `poster` 属性 — 同样，没有视觉部件。
+
+除此之外，`<audio>` 标签支持所有 `<video>` 标签拥有的特性
+
+#### 重新播放媒体
+
+任何时候，你都可以在 Javascript 中调用 [`load()`](https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLMediaElement/load) 方法来重置媒体。如果有多个由 [`<source>`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/source) 标签指定的媒体来源，浏览器会从选择媒体来源开始重新加载媒体。
+
+```js
+const mediaElem = document.getElementById("my-media-element");
+mediaElem.load();
+```
+
+#### 音轨增删事件
+
+你可以监控媒体元素中的音频轨道，当音轨被添加或删除时，你可以通过监听相关事件来侦测到。
+
+具体来说，通过监听 [`AudioTrackList` ](https://developer.mozilla.org/en-US/docs/Web/API/AudioTrackList) 对象的 `addtrack` 事件（即 [`HTMLMediaElement.audioTracks`](https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLMediaElement/audioTracks) 对象），你可以及时对音轨的增加做出响应。
+
+```js
+const mediaElem = document.querySelector("video");
+mediaElem.audioTracks.onaddtrack = function(event) {
+  audioTrackAdded(event.track);
+}
+```
+
+#### 显示音轨文本
+
+有了 [WebVTT ](https://developer.mozilla.org/en-US/docs/Web/API/WebVTT_API) 格式，你可以使用 [`<track>`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/track) 标签
+
+WebVTT 是一个格式，用来编写文本文件，这个文本文件包含了众多的字符串，这些字符串会带有一些元数据，它们可以用来描述这个字符串将会在视频中显示的时间，甚至可以用来描述这些字符串的样式以及定位信息。这些字符串叫做 **cues** ，你可以根据不同的需求来显示不同的样式，最常见的如下：
+
+subtitles
+
+- 通过添加翻译字幕，来帮助那些听不懂外国语言的人们理解音频当中的内容。
+
+captions
+
+- 同步翻译对白，或是描述一些有重要信息的声音，来帮助那些不能听音频的人们理解音频中的内容。
+
+timed descriptions
+
+- 将文字转换为音频，用于服务那些有视觉障碍的人。
+
+一个典型的 WebVTT 文件如下：
+
+```
+WEBVTT
+
+1
+00:00:22.230 --> 00:00:24.606
+第一段字幕
+
+2
+00:00:30.739 --> 00:00:34.074
+第二段
+
+  ...
+```
+
+让其与 HTML 媒体一起显示，你需要做如下工作：
+
+1.以 .vtt 后缀名保存文件。
+
+2.用 `<track>` 标签链接 `.vtt` 文件， `<track>` 标签需放在 `<audio>` 或 `<video>` 标签当中，同时需要放在所有 `<source>` 标签之后。使用 kind 属性来指明是哪一种类型，如 subtitles、captions、descriptions。然后，使用 srclang 来告诉浏览器你是用什么语言来编写的 subtitles。
+
+```html
+<video controls>
+    <source src="example.mp4" type="video/mp4">
+    <source src="example.webm" type="video/webm">
+    <track kind="subtitles" src="subtitles_en.vtt" srclang="en">
+</video>
+```
+
+![Video player with stand controls such as play, stop, volume, and captions on and off. The video playing shows a scene of a man holding a spear-like weapon, and a caption reads "Esta hoja tiene pasado oscuro."](video-player-with-captions.png)
+
+如果你想了解更多细节，你可以阅读 [Adding captions and subtitles to HTML5 video](https://developer.mozilla.org/zh-CN/docs/Web/Apps/Build/Audio_and_video_delivery/Adding_captions_and_subtitles_to_HTML5_video)。在 Github 上你可以找到与本文相关的样例，他们由 Ian Devlin 编写，点击[这里](https://iandevlin.github.io/mdn/video-player-with-captions/)可以查看该样例，或者点击[这里](https://github.com/iandevlin/iandevlin.github.io/tree/master/mdn/video-player-with-captions)查看源代码。
 
 ### 从对象到 `iframe` - 其他嵌入技术
 
+让我们继续深入学习，来看一些能让你在网页中嵌入各种内容类型的元素：`<iframe>`,` <embed>` 和 `<object> `元素。
 
+`<iframe>`用于嵌入其他网页，另外两个元素则允许你嵌入 PDF，SVG，甚至 Flash — 一种正在被淘汰的技术，但你仍然会时不时的看到它。
+
+#### 嵌入的简史
+
+很久以前，很流行在网络上使用**框架**创建网站——网站的一小部分存储于单独的 HTML 页面中。这些被嵌入在一个称为**框架集**的主文档中，它允许你指定每个框架能够填充在屏幕上的区域，非常像调整表格的列和行的大小。这些做法在 90 年代中期至 90 年代后期被认为是比较酷的，有证据表明，将网页分解成较小的块，这样有利于下载速度——尤其是在那时网络连接速度太慢的情况下更为明显。然而，这些技术有很多问题，随着网络速度越来越快，这些技术带来的问题远超过它们带来的积极因素，所以你再也看不到它们被使用了。
+
+一小段时间之后（20 世纪 90 年代末，21 世纪初），插件技术变得非常受欢迎，例如 `Java Applet` 和 `Flash`——这些技术允许网络开发者将丰富的内容嵌入到网页中，例如视频和动画等，这些内容不能通过 HTML 单独实现。嵌入这些技术是通过诸如 `<object>` 和较少使用的` <embed>` 元素来实现的，当时它们非常有用。由于许多问题，包括无障碍、安全性、文件大小等，它们已经过时了; 如今，大多数移动设备不再支持这些插件，桌面端也逐渐不再支持。
+
+最后，`<iframe>` 元素出现了（连同其他嵌入内容的方式，如` <canvas>`、`<video>` 等），它提供了一种将整个 web 页嵌入到另一个网页的方法，看起来就像那个 web 页是另一个网页的一个 `<img>` 或其它元素一样。`<iframe>` 现在经常被使用。
+
+#### Iframe 详解
+
+`<iframe>` 元素旨在允许你将其他 Web 文档嵌入到当前文档中。这很适合将第三方内容嵌入你的网站，你可能无法直接控制，也不希望实现自己的版本——例如来自在线视频提供商的视频，Disqus 等评论系统，在线地图提供商，广告横幅等。你通过本课程使用的实时可编辑示例就是使用 `<iframe>` 实现的。
+
+我们会在后面提到，关于 `<iframe>` 有一些严重的[安全隐患](https://developer.mozilla.org/zh-CN/docs/Learn/HTML/Multimedia_and_embedding/Other_embedding_technologies#安全隐患)需要考虑，但这并不意味着你不应该在你的网站上使用它们——它只需要一些知识和仔细地思考。让我们更详细地探索这些代码。假设你想在其中一个网页上加入 MDN 词汇表，你可以尝试以下方式：
+
+```html
+<iframe src="https://developer.mozilla.org/zh-CN/docs/Glossary"
+        width="100%" height="500" frameborder="0"
+        allowfullscreen sandbox>
+  <p> <a href="https://developer.mozilla.org/zh-CN/docs/Glossary">
+    Fallback link for browsers that don't support iframes
+  </a> </p>
+</iframe>
+```
+
+此示例包括使用以下所需的 `<iframe>` 基本要素：
+
+`allowfullscreen`
+
+- 如果设置，`<iframe>`则可以通过[全屏 API](https://developer.mozilla.org/zh-CN/docs/Web/API/Fullscreen_API) 设置为全屏模式（稍微超出本文的范围）。
+
+`frameborder`
+
+- 如果设置为 1，则会告诉浏览器在此框架和其他框架之间绘制边框，这是默认行为。0 删除边框。不推荐这样设置，因为在 [CSS 中](https://developer.mozilla.org/zh-CN/docs/Glossary/CSS)可以更好地实现相同的效果。[`border`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border)`: none;`
+
+`src`
+
+- 该属性与 `<video>` / 元素表示文档中的图像。`<img>`一样包含指向要嵌入文档的 URL 路径。
+
+`width 和 height`
+
+- 这些属性指定你想要的 iframe 的宽度和高度。
+
+备选内容
+
+- 与 `<video>` 等其它类似元素相同，你可以在 `<iframe></iframe>` 标签之间包含备选内容，如果浏览器不支持 `<iframe>`，将会显示备选内容，这种情况下，我们已经添加了一个到该页面的链接。现在你几乎不可能遇到任何不支持 `<iframe>` 的浏览器。
+
+`sandbox`
+
+- 该属性需要在已经支持其它 `<iframe>` 功能（例如 IE 10 及更高版本）但稍微更现代的浏览器上才能工作，该属性可以提高安全性设置；我们将在下一节中更加详细地谈到。
+
+> **备注：** 为了提高速度，在主内容完成加载后，使用 JavaScript 设置 iframe 的 `src` 属性是个好主意。这使你的页面可以更快地被使用，并减少你的官方页面加载时间（重要的 [SEO](https://developer.mozilla.org/zh-CN/docs/Glossary/SEO) 指标）。
+
+#### 安全隐患
+
+浏览器制造商和 Web 开发人员了解到网络上的坏人（通常被称为**黑客**，或更准确地说是**破解者**），如果他们试图恶意修改你的网页或欺骗人们进行不想做的事情时常把 iframe 作为共同的攻击目标（官方术语：**攻击向量**），例如显示用户名和密码等敏感信息。因此，规范工程师和浏览器开发人员已经开发了各种安全机制，使`<iframe>`更加安全，这有些最佳方案值得我们考虑 - 我们将在下面介绍其中的一些。
+
+> **备注：** [单击劫持](https://en.wikipedia.org/wiki/Clickjacking)是一种常见的 iframe 攻击，黑客将隐藏的 iframe 嵌入到你的文档中（或将你的文档嵌入到他们自己的恶意网站），并使用它来捕获用户的交互。这是误导用户或窃取敏感数据的常见方式。
+
+一个快速的例子——尝试在浏览器中加载上面的例子）。你将不会看到任何内容，但如果你点击浏览器开发者工具中的控制台，你会看到一条消息，告诉你为什么没有显示内容。在 Firefox 中，你会被告知：`X-Frame-Options `拒绝加载 `https://developer.mozilla.org/zh-CN/docs/Glossary`。
+
+![image-20221116162952170](image-20221116162952170.png)
+
+这是因为构建 MDN 的开发人员已经在网站页面的服务器上设置了一个不允许被嵌入到`<iframe>`的设置。请参阅[配置 CSP 指令](https://developer.mozilla.org/zh-CN/docs/Learn/HTML/Multimedia_and_embedding/Other_embedding_technologies#配置_csp_指令)）这是有必要的——整个 MDN 页面被嵌入在其它页面中没有多大意义，除非你想要将其嵌入到你的网站上并将其声称为自己的内容，或尝试通过单击劫持来窃取数据，这都是非常糟糕的事情。此外，如果每个人都这样做，所有额外的带宽将花费 Mozilla 很多资金。
+
+##### 使用 HTTPS 
+
+[HTTPS](https://developer.mozilla.org/zh-CN/docs/Glossary/https) 是 [HTTP](https://developer.mozilla.org/zh-CN/docs/Glossary/HTTP) 的加密版本。你应该尽可能使用 HTTPS 为你的网站提供服务：
+
+1. HTTPS 减少了远程内容在传输过程中被篡改的机会，
+2. HTTPS 防止嵌入式内容访问你的父文档中的内容，反之亦然。
+
+使用 HTTPS 需要一个安全证书，这可能是昂贵的（尽管 [Let's Encrypt](https://letsencrypt.org/) 让这件事变得更容易），如果你没有，可以使用 HTTP 来为你的父文档提供服务。但是，由于 HTTPS 的第二个好处，*无论成本如何，你绝对不能使用 HTTP 嵌入第三方内容*（在最好的情况下，你的用户的 Web 浏览器会给他们一个可怕的警告）。所有有声望的公司，例如 Google Maps 或 Youtube，当你嵌入内容时，`<iframe>`将通过 HTTPS 提供 - 查看`<iframe>` `src`属性内的 URL。
+
+##### 始终使用 sandbox 属性
+
+想尽可能减少攻击者在你的网站上做坏事的机会，那么你应该给嵌入的内容仅能完成自己工作的权限。当然，这也适用于你自己的内容。一个允许包含在其里的代码以适当的方式执行或者用于测试，但不能对其他代码库（意外或恶意）造成任何损害的容器称为[沙盒](https://en.wikipedia.org/wiki/Sandbox_(computer_security))。
+
+未沙盒化（Unsandboxed）内容可以做得太多（执行 JavaScript，提交表单，弹出窗口等）默认情况下，你应该使用没有参数的 `sandbox` 属性来强制执行所有可用的限制，如我们前面的示例所示。
+
+如果绝对需要，你可以逐个添加权限（`sandbox=""`属性值内）——请参阅 [`sandbox`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/iframe#attr-sandbox) 所有可用选项的参考条目。其中重要的一点是，你*永远不*应该同时添加`allow-scripts`和`allow-same-origin`到你的`sandbox`属性中——在这种情况下，嵌入式内容可以绕过阻止站点执行脚本的同源安全策略，并使用 JavaScript 完全关闭沙盒。
+
+##### 配置 CSP 指令
+
+[CSP](https://developer.mozilla.org/zh-CN/docs/Glossary/CSP)代表**[内容安全策略](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP)**，它提供[一组 HTTP 标头 ](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy)（由 web 服务器发送时与元数据一起发送的元数据），旨在提高 HTML 文档的安全性。
+
+在`<iframe>`的安全性方面，你可以*[将服务器配置为发送适当的`X-Frame-Options` 标题。](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/X-Frame-Options)*这样做可以防止其他网站在其网页中嵌入你的内容（这将导致[点击](https://en.wikipedia.org/wiki/clickjacking)和一系列其他攻击），正如我们之前看到的那样，MDN 开发人员已经做了这些工作。
+
+#### `<embed>` 和 `<object>` 元素
+
+`<embed>`和`<object>`元素的功能不同于`<iframe>`—— 这些元素是用来嵌入多种类型的外部内容的通用嵌入工具，其中包括像 Java 小程序和 Flash，PDF（可在浏览器中显示为一个 PDF 插件）这样的插件技术，甚至像视频，SVG 和图像的内容！
+
+> **备注：** **插件**是一种对浏览器原生无法读取的内容提供访问权限的软件。
+
+然而，你不太可能使用这些元素——Applet 几年来一直没有被使用；由于许多原因，Flash 不再受欢迎（见下面的[插件案例](https://developer.mozilla.org/zh-CN/docs/Learn/HTML/Multimedia_and_embedding/Other_embedding_technologies#针对插件的情况)）；PDF 更倾向于被链接而不是被嵌入；其他内容，如图像和视频都有更优秀、更容易元素来处理。插件和这些嵌入方法真的是一种传统技术，我们提及它们主要是为了以防你在某些情况下遇到问题，比如内部网或企业项目等。
 
 ### 在网页中添加矢量图形
 
+矢量图形在很多情况下非常有用 — 它们拥有较小的文件尺寸，却高度可缩放，所以它们不会在镜头拉近或者放大图像时像素化。在这篇文章中，我们将为您呈现如何在网页中添加矢量图形。
+
+> **备注：** 本文的目的并不是教你 SVG；仅仅是告诉你它是什么，以及如何在网页中添加它。
+
+#### 什么是矢量图形？
+
+在网上，你会和两种类型的图片打交道 — 位图和矢量图：
+
+- 位图使用像素网格来定义 — 一个位图文件精确得包含了每个像素的位置和它的色彩信息。流行的位图格式包括 Bitmap (`.bmp`), PNG (`.png`), JPEG (`.jpg`), and GIF (`.gif`.)
+- 矢量图使用算法来定义 — 一个矢量图文件包含了图形和路径的定义，电脑可以根据这些定义计算出当它们在屏幕上渲染时应该呈现的样子。 [SVG](https://developer.mozilla.org/zh-CN/docs/Glossary/SVG) 格式可以让我们创造用于 Web 的精彩的矢量图形。
+
+此外，矢量图形相较于同样的位图，通常拥有更小的体积，因为它们仅需储存少量的算法，而不是逐个储存每个像素的信息。
+
+#### SVG 是什么？
+
+`SVG` 是用于描述矢量图像的`XML`语言。它基本上是像 `HTML` 一样的标记，只是你有许多不同的元素来定义要显示在图像中的形状，以及要应用于这些形状的效果。`SVG` 用于标记图形，而不是内容。非常简单，你有一些元素来创建简单图形，如`<circle>` 和`<rect>`。更高级的 SVG 功能包括 `<feColorMatrix>`（使用变换矩阵转换颜色）`<animate>` （矢量图形的动画部分）和 `<mask>`（在图像顶部应用模板）
+
+作为一个简单的例子，以下代码创建一个圆和一个矩形：
+
+```html
+<svg version="1.1"
+     baseProfile="full"
+     width="300" height="200"
+     xmlns="http://www.w3.org/2000/svg">
+  <rect width="100%" height="100%" fill="black" />
+  <circle cx="150" cy="100" r="90" fill="blue" />
+</svg>
+```
+
+![image-20221116164145241](image-20221116164145241.png)
+
+从上面的例子可以看出，SVG 很容易手工编码。是的，您可以在文本编辑器中手动编写简单的 SVG，但是对于复杂的图像，这很快就开始变得非常困难。为了创建 SVG 图像，大多数人使用矢量图形编辑器，如 [Inkscape](https://inkscape.org/en/) 或 [Illustrator](https://en.wikipedia.org/wiki/Adobe_Illustrator)。这些软件包允许您使用各种图形工具创建各种插图，并创建照片的近似值（例如 Inkscape 的跟踪位图功能）。
+
+SVG 除了迄今为止所描述的以外还有其他优点：
+
+- 矢量图像中的文本仍然可访问（这也有利于 [SEO](https://developer.mozilla.org/zh-CN/docs/Glossary/SEO)）。
+- SVG 可以很好地适应样式/脚本，因为图像的每个组件都是可以通过 CSS 或通过 JavaScript 编写的样式的元素。
+
+那么为什么会有人想使用光栅图形而不是 SVG？其实 SVG 确实有一些缺点：
+
+- SVG 非常容易变得复杂，这意味着文件大小会增加; 复杂的 SVG 也会在浏览器中占用很长的处理时间。
+- SVG 可能比栅格图像更难创建，具体取决于您尝试创建哪种图像。
+- 旧版浏览器不支持 SVG，因此如果您需要在网站上支持旧版本的 IE，则可能不适合（SVG 从 IE9 开始得到支持）。
+
+由于上述原因，光栅图形更适合照片那样复杂精密的图像
+
+#### 将 SVG 添加到页面
+
+在本节中，我们将介绍将 SVG 矢量图形添加到网页的不同方式。
+
+##### 快捷方式：`<img>`
+
+要通过 `<img>`元素嵌入 SVG，你只需要按照预期的方式在 src 属性中引用它。你将需要一个height或width属性（或者如果您的 SVG 没有固有的宽高比）。
+
+```html
+<img
+    src="equilateral.svg"
+    alt="triangle with all three sides equal"
+    height="87px"
+    width="100px" />
+```
+
+**优点**
+
+- 快速，熟悉的图像语法与`alt`属性中提供的内置文本等效。
+- 可以通过在[`<a>`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/a)元素嵌套`<img>`，使图像轻松地成为超链接。
+
+缺点
+
+- 无法使用 JavaScript 操作图像。
+- 如果要使用 CSS 控制 SVG 内容，则必须在 SVG 代码中包含内联 CSS 样式。 （从 SVG 文件调用的外部样式表不起作用）
+- 不能用 CSS 伪类来重设图像样式（如`:focus`）。
 
 
-### 在网页中添加矢量图形
+
+对于不支持 SVG（IE 8 及更低版本，Android 2.3 及更低版本）的浏览器，您可以从`src`属性引用 PNG 或 JPG，并使用[`srcset`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/img#attr-srcset)属性 只有最近的浏览器才能识别）来引用 SVG。在这种情况下，仅支持浏览器将加载 SVG - 较旧的浏览器将加载 PNG：
+
+```html
+<img src="equilateral.png" alt="triangle with equal sides" srcset="equilateral.svg">
+```
+
+您还可以使用 SVG 作为 CSS 背景图像，如下所示。在下面的代码中，旧版浏览器会坚持他们理解的 PNG，而较新的浏览器将加载 SVG：
+
+```css
+background: url("fallback.png") no-repeat center;
+background-image: url("image.svg");
+background-size: contain;
+```
+
+像上面描述的`<img>`方法一样，使用 CSS 背景图像插入 SVG 意味着它不能被 JavaScript 操作，并且也受到相同的 CSS 限制。
+
+如果 SVG 根本没有显示，可能是因为你的服务器设置不正确。如果是这个问题，[这篇文章](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/Getting_Started#a_word_on_webservers)将告诉你正确方向。
+
+##### HTML 中引入 SVG 代码
+
+你还可以在文本编辑器中打开 SVG 文件，复制 SVG 代码，并将其粘贴到 HTML 文档中 - 这有时称为将**SVG 内联**或**内联 SVG**。确保您的 SVG 代码在[``](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/svg)标签中（不要在外面添加任何内容）。这是一个非常简单的示例，您可以粘贴到文档中：
+
+```html
+<svg width="300" height="200">
+    <rect width="100%" height="100%" fill="green" />
+</svg>
+```
+
+**优点**
+
+- 将 SVG 内联减少 HTTP 请求，可以减少加载时间。
+- 您可以为 SVG 元素分配`class`和`id`，并使用 CSS 修改样式，无论是在 SVG 中，还是 HTML 文档中的 CSS 样式规则。实际上，您可以使用任何 [SVG 外观属性](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute#presentation_attributes) 作为 CSS 属性。
+- 内联 SVG 是唯一可以让您在 SVG 图像上使用 CSS 交互（如`:focus`）和 CSS 动画的方法（即使在常规样式表中）。
+- 您可以通过将 SVG 标记包在[`<a>`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/a)元素中，使其成为超链接。
+
+**缺点**
+
+- 这种方法只适用于在一个地方使用的 SVG。多次使用会导致资源密集型维护（resource-intensive maintenance）。
+- 额外的 SVG 代码会增加 HTML 文件的大小。
+- 浏览器不能像缓存普通图片一样缓存内联 SVG。
+- 您可能会在[`<foreignObject>`](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/foreignObject) 元素中包含回退，但支持 SVG 的浏览器仍然会下载任何后备图像。你需要考虑仅仅为支持过时的浏览器，而增加额外开销是否真的值得。
+
+##### 使用 `<iframe>` 嵌入 SVG
+
+您可以在浏览器中打开 SVG 图像，就像网页一样。
+
+```html
+<iframe src="triangle.svg" width="500" height="500" sandbox>
+    <img src="triangle.png" alt="Triangle with three unequal sides" />
+</iframe>
+```
+
+这绝对不是最好的方法：
+
+#### 缺点
+
+- 如你所知， `iframe`有一个回退机制，如果浏览器不支持`iframe`，则只会显示回退。
+- 此外，除非 SVG 和您当前的网页具有相同的 [origin](https://developer.mozilla.org/zh-CN/docs/Glossary/Origin)，否则你不能在主页面上使用 JavaScript 来操纵 SVG。
+
+## `HTML`表格
+
+### 什么是表格
+
+表格是由行和列组成的结构化数据集（表格数据），它让你快速简单地查找某个表示不同类型数据之间的某种关系的值。比如说，某个人和他的年龄，一天或是一周，当地游泳池的时间表。
+
+1.每一个表格的内容都包含在这两个标签中：`<table`>`</table>`。在你的 HTML 的 `<body>` 中添加这些内容。
+
+2.在表格中，最小的内容容器是单元格，是通过 `<td>` 元素创建的（其中“td”代表“table data”）。把下面的内容添加到你的表格标签中：
+
+```html
+<td>Hi, I'm your first cell.</td>
+```
+
+3.如果我们想要一行四个单元格，我们需要把这组标签拷贝三次，更新你表中的内容，让它看起来是这样的：
+
+```html
+<td>Hi, I'm your first cell.</td>
+<td>I'm your second cell.</td>
+<td>I'm your third cell.</td>
+<td>I'm your fourth cell.</td>
+```
+
+你会看到，单元格不会放置在彼此的下方，而是自动与同一行上的其他单元格对齐。每个 `<td>` 元素 创建一个单独单元格，它们共同组成了第一行。我们添加的每个单元格都使行的长度变长。
+
+![image-20221116170116672](image-20221116170116672.png)
+
+如果想让这一行停止增加，并让单元格从第二行开始，我们需要使用` <tr>` 元素（其中“tr”代表“table row”）。让我们现在来证实一下。
+
+1.把你已经创建好的 4 个单元格放入 `<tr>` 标签，就像这样：
+
+```html
+<tr>
+  <td>Hi, I'm your first cell.</td>
+  <td>I'm your second cell.</td>
+  <td>I'm your third cell.</td>
+  <td>I'm your fourth cell.</td>
+</tr>
+```
+
+2.现在你已经实现了一行，可以继续增加至两行、三行。每一行都需要一个额外的 `<tr>` 元素来包装，每个单元格的内容都应该写在 `<td>`中。
+
+```html
+<tr>
+  <td>Hi, I'm your first cell.</td>
+  <td>I'm your second cell.</td>
+  <td>I'm your third cell.</td>
+  <td>I'm your fourth cell.</td>
+</tr>
+<tr>
+  <td>Hi, I'm your fifth cell.</td>
+  <td>I'm your sixth cell.</td>
+</tr>
+```
+
+![image-20221116170304369](image-20221116170304369.png)
+
+### 使用 `<th>` 元素添加标题
+
+现在，让我们把注意力转向表格标题，表格中的标题是特殊的单元格，通常在行或列的开始处，定义行或列包含的数据类型（举个例子，看到本篇文章中第一个示例中的 "单数" 或者 "Object"）。为了说明它们为什么这么有用，来看下面这个例子，首先是源代码：
+
+```html
+<table>
+  <tr>
+    <td>&nbsp;</td>
+    <td>Knocky</td>
+    <td>Flor</td>
+    <td>Ella</td>
+    <td>Juan</td>
+  </tr>
+  <tr>
+    <td>Breed</td>
+    <td>Jack Russell</td>
+    <td>Poodle</td>
+    <td>Streetdog</td>
+    <td>Cocker Spaniel</td>
+  </tr>
+  <tr>
+    <td>Age</td>
+    <td>16</td>
+    <td>9</td>
+    <td>10</td>
+    <td>5</td>
+  </tr>
+  <tr>
+    <td>Owner</td>
+    <td>Mother-in-law</td>
+    <td>Me</td>
+    <td>Me</td>
+    <td>Sister-in-law</td>
+  </tr>
+  <tr>
+    <td>Eating Habits</td>
+    <td>Eats everyone's leftovers</td>
+    <td>Nibbles at food</td>
+    <td>Hearty eater</td>
+    <td>Will eat till he explodes</td>
+  </tr>
+</table>
+
+```
+
+![image-20221116170524950](image-20221116170524950.png)
+
+这里的问题是：虽然你可以弄清楚发生了什么，但是尽可能的交叉参考数据并不容易。如果列和行的标题以某种方式出现，那将会更好。
+
+1.为了将表格的标题在视觉上和语义上都能被识别为标题，你可以使用 `<th>` 元素（其中 'th' 代表 'table header'），用法和 `<td>`是一样的，除了它表示为标题，不是普通的单元格以外。进入你的 HTML 文件，将表格中应该是标题的 `<td>` 元素标记的内容，都改为用 `<th>` 元素标记。
+
+```html
+<table>
+  <tr>
+    <th>&nbsp;</th>
+    <th>Knocky</th>
+    <th>Flor</th>
+    <th>Ella</th>
+    <th>Juan</th>
+  </tr>
+  <tr>
+    <th>Breed</th>
+    <td>Jack Russell</td>
+    <td>Poodle</td>
+    <td>Streetdog</td>
+    <td>Cocker Spaniel</td>
+  </tr>
+  <tr>
+    <th>Age</th>
+    <td>16</td>
+    <td>9</td>
+    <td>10</td>
+    <td>5</td>
+  </tr>
+  <tr>
+    <th>Owner</th>
+    <td>Mother-in-law</td>
+    <td>Me</td>
+    <td>Me</td>
+    <td>Sister-in-law</td>
+  </tr>
+  <tr>
+    <th>Eating Habits</th>
+    <td>Eats everyone's leftovers</td>
+    <td>Nibbles at food</td>
+    <td>Hearty eater</td>
+    <td>Will eat till he explodes</td>
+  </tr>
+</table>
+
+```
+
+![image-20221116170940283](image-20221116170940283.png)
+
+当标题明显突出的时候，你可以更加简单地找到你想找的数据，设计上也会看起来更好。
+
+
+
+表格标题也有额外的好处，随着 `scope` 属性 (我们将在下一篇文章中了解到)，这个属性允许你让表格变得更加无障碍，每个标题与相同行或列中的所有数据相关联。屏幕阅读设备能一次读出一列或一行的数据，这是非常有帮助的。
+
+即使你不给表格添加你自己的样式，表格标题也会带有一些默认样式：加粗和居中，让标题可以突出显示。
+
+### 允许单元格跨越多行和列
+
+有时我们希望单元格跨越多行或多列。以下是一个简单的例子，显示了一些常见动物的名字。在某些情况下，我们要显示动物名称旁边的男性和女性的名字。有时候我们又不需要，那不需要的情况下，我们希望写着动物的名字的单元格的宽度可以是两个单元格的宽度 (因为写着名字的行会有两列，而没有写名字的行只有一列，行的宽度是不一样的)。
+
+一开始的标记写法是这样的：
+
+```html
+<table>
+  <tr>
+    <th>Animals</th>
+  </tr>
+  <tr>
+    <th>Hippopotamus</th>
+  </tr>
+  <tr>
+    <th>Horse</th>
+    <td>Mare</td>
+  </tr>
+  <tr>
+    <td>Stallion</td>
+  </tr>
+  <tr>
+    <th>Crocodile</th>
+  </tr>
+  <tr>
+    <th>Chicken</th>
+    <td>Hen</td>
+  </tr>
+  <tr>
+    <td>Rooster</td>
+  </tr>
+</table>
+
+```
+
+但是输出的结果不是我们想要的：
+
+![image-20221116200931939](image-20221116200931939.png)
+
+我们需要一个方法，让 "Animals"、"Hippopotamus" 和 "Crocodile" 的单元格的宽度变为两个单元格， "Horse" 和 "Chicken" 的高度变为两行 (因为要拥有一个男性名字和女性名字，可以先看效果图)。幸好，表格中的标题和单元格有 `colspan` 和 `rowspan` 属性，这两个属性可以帮助我们实现这些效果。这两个属性接受一个没有单位的数字值，数字决定了它们的宽度或高度是几个单元格。比如，`colspan="2"` 使一个单元格的宽度是两个单元格。
+
+1.使用 `colspan` 让 "Animals"、"Hippopotamus" 和 "Crocodile" 占 2 个单元格的宽度。
+
+2.使用 `rowspan` 让 "Horse" 和 "Chicken" 占 2 个单元格的高度。
+
+```html
+    <table>
+        <tr>
+          <th colspan="2">Animals</th>
+        </tr>
+        <tr>
+          <th colspan="2">Hippopotamus</th>
+        </tr>
+        <tr>
+          <th rowspan="2">Horse</th>
+          <td>Mare</td>
+        </tr>
+        <tr>
+          <td>Stallion</td>
+        </tr>
+        <tr>
+          <th colspan="2">Crocodile</th>
+        </tr>
+        <tr>
+          <th rowspan="2">Chicken</th>
+          <td>Hen</td>
+        </tr>
+        <tr>
+          <td>Rooster</td>
+        </tr>
+      </table>
+```
+
+![image-20221116201240095](image-20221116201240095.png)
+
+### 应用样式
+
+在我们继续介绍之前，我们将介绍本文中的最后一个功能。HTML 有一种方法可以定义整列数据的样式信息：就是 和 元素。它们存在是因为如果你想让一列中的每个数据的样式都一样，那么你就要为每个数据都添加一个样式，这样的做法是令人厌烦和低效的。你通常需要在列中的每个 `<td>` 或 `<th>` 上定义样式，或者使用一个复杂的选择器，比如 [`:nth-child()` (en-US)](https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-child)。
+
+这样不太理想，因为我们不得不在列中的每个单元格中重复那些样式信息（在真实的项目中，我们或许会设置一个 `class` 包含那三个单元格，然后在一个单独的样式表中定义样式）。为了舍弃这种做法，我们可以只定义一次，在 `<col>` 元素中。`<col>` 元素被规定包含在 `<colgroup>` 容器中，而 `<colgroup>`就在 `<table>` 标签的下方。我们可以通过如下的做法来创建与上面相同的效果：
+
+```html
+<table>
+  <colgroup>
+    <col>
+    <col style="background-color: yellow">
+  </colgroup>
+  <tr>
+    <th>Data 1</th>
+    <th>Data 2</th>
+  </tr>
+  <tr>
+    <td>Calcutta</td>
+    <td>Orange</td>
+  </tr>
+  <tr>
+    <td>Robots</td>
+    <td>Jazz</td>
+  </tr>
+</table>
+
+```
+
+![image-20221116201447676](image-20221116201447676.png)
+
+我们使用了两个 `<col>` 来定义“列的样式”，每一个 `<col>` 都会指定每列的样式，对于第一列，我们没有采取任何样式，但是我们仍然需要添加一个空的 `<col>` 元素，如果不这样做，那么我们的样式就会应用到第一列上，这和我们预想的不一样。
+
+如果你想把这种样式信息应用到每一列，我们可以只使用一个 `<col>` 元素，不过需要包含 span 属性，像这样：
+
+```html
+<colgroup>
+  <col style="background-color: yellow" span="2">
+</colgroup>
+
+```
+
+就像 `colspan` 和 `rowspan` 一样，`span` 需要一个无单位的数字值，用来指定让这个样式应用到表格中多少列。
+
+### 高级表格特性
+
+#### 增加标题
+
+你可以为你的表格增加一个标题，通过 `<caption>` 元素，再把 `<caption>` 元素放入 `<table>` 元素中。你应该把它放在`<table>` 标签的下面。
+
+```html
+<table>
+  <caption>Dinosaurs in the Jurassic period</caption>
+
+  ...
+</table>
+
+```
+
+#### 添加 `<thead>`, `<tfoot>`, 和 `<tbody>` 结构
+
+由于你的表格在结构上有点复杂，如果把它们定义得更加结构化，那会帮助我们更能了解结构。一个明确的方法是使用 `<thead>`, `<tfoot>`,和 `<tbody>`, 这些元素允许你把表格中的部分标记为表头、页脚、正文部分。
+
+- `<thead>` 需要嵌套在 table 元素中，放置在头部的位置，因为它通常代表第一行，第一行中往往都是每列的标题，但是不是每种情况都是这样的。如果你使用了 / 元素，那么 `<thead>`元素就需要放在它们的下面。
+- `<tfoot>` 需要嵌套在 table 元素中，放置在底部 (页脚) 的位置，一般是最后一行，往往是对前面所有行的总结，比如，你可以按照预想的方式将`<tfoot>`放在表格的底部，或者就放在 `<thead>` 的下面。(浏览器仍将它呈现在表格的底部)
+- `<tbody>` 需要嵌套在 table 元素中，放置在 `<thead>`的下面或者是 `<tfoot>` 的下面，这取决于你如何设计你的结构。(`<tfoot>`放在`<thead>`下面也可以生效.)
 
 ## 面试题
 
@@ -1559,7 +2415,29 @@ audio标签用来向页面引入一个外部的音频文件，默认不允许用
 <iframe src="https://www.qq.com" width="800" height="600" frameborder="1"></iframe>
 ```
 
+# 响应式设计
 
+## 基本概念
+
+综合运用了三种已有技术（**弹性网格布局**、**弹性图片/媒体**、**媒体查询**）实现了一个解决方案，就叫“响应式Web设计”。
+
+所谓响应式Web设计，就是网页内容会随着访问它的视口及设备的不同而呈现不同的样式
+
+先为小屏幕设计内容、样式，然后再向大屏幕扩展。
+
+能不能适配某个旧平台/版本不是问题，问题在于是否应该去适配它。
+
+## 第一个响应式的例子
+
+先从HTML5结构讲起
+
+浏览器中用于呈现网页的区域叫视口（viewport）。视口通常并不等于屏幕大小，特别是可以 缩放浏览器窗口的情况下。
+
+```html
+<meta name="viewport" content="width=device-width">
+```
+
+它告诉浏览器怎么渲 染网页。在这里，`<meta>`标签想表达的意思是：按照设备的宽度（device-width）来渲染网 页内容。
 
 # H5
 

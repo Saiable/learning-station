@@ -1,7 +1,12 @@
 ---
-title: 'Promise的基本使用与实现'
+title: 'Promise的使用与实现'
 date: 2022-8-8 07:15:24
 cover: false
+toc_number: false
+tags:
+- javascript
+categories: 'javascript'
+typora-root-url: Promise
 ---
 [TOC]
 
@@ -83,7 +88,7 @@ cover: false
       console.log('forEach()之后')
       ```
 
-      ![image-20220510062654337](Promise.assets/image-20220510062654337.png)
+      ![image-20220510062654337](image-20220510062654337.png)
 
     - `Promise`的`executor`函数
 
@@ -100,7 +105,7 @@ cover: false
     console.log('setTimeout()之后')
     ```
 
-    ![image-20220510062935873](Promise.assets/image-20220510062935873.png)
+    ![image-20220510062935873](image-20220510062935873.png)
 
 - 如何判断是异步还是同步的呢？
 
@@ -125,7 +130,7 @@ cover: false
     console.log('-----')
     ```
 
-    ![image-20220510063543381](Promise.assets/image-20220510063543381.png)
+    ![image-20220510063543381](image-20220510063543381.png)
 
   - `TypeError`：数据类型不正确的错误
 
@@ -136,7 +141,7 @@ cover: false
     b.xxx() // 也是类型错误
     ```
 
-    ![image-20220510085053940](Promise.assets/image-20220510085053940.png)
+    ![image-20220510085053940](image-20220510085053940.png)
 
   - `RangeError`：数据值不在其允许的范围内
 
@@ -149,7 +154,7 @@ cover: false
     
     ```
 
-    ![image-20220510085359635](Promise.assets/image-20220510085359635.png)
+    ![image-20220510085359635](image-20220510085359635.png)
 
   - `SyntaxError`：语法错误
 
@@ -157,7 +162,7 @@ cover: false
     const c = """"
     ```
 
-    ![image-20220510085459538](Promise.assets/image-20220510085459538.png)
+    ![image-20220510085459538](image-20220510085459538.png)
 
 - 错误处理（如果不处理，程序就无法向下执行）
 
@@ -175,11 +180,11 @@ cover: false
     console.log('出错之后')
     ```
 
-    ![image-20220510090339611](Promise.assets/image-20220510090339611.png)
+    ![image-20220510090339611](image-20220510090339611.png)
 
     打断点查看`error`对象
 
-    ![image-20220510090526693](Promise.assets/image-20220510090526693.png)
+    ![image-20220510090526693](image-20220510090526693.png)
 
   - 抛出错误：`throw error`
 
@@ -331,7 +336,7 @@ index.html
 
 如下图框选的`[[PromiseState]]`，表示的就是`Promise`对象`p`的`状态`，该状态会传递给`then`方法，不同的状态会传递给`then`方法不同的形参
 
-![image-20220506144353326](Promise.assets/image-20220506144353326.png)
+![image-20220506144353326](image-20220506144353326.png)
 
 ## 1.2.获取成功/失败的结果值
 
@@ -363,7 +368,7 @@ p.then((value) => {
 
 如下图框选的`[[PromiseResult]]`，表示的就是`Promise`对象`p`获取到异步操作的`结果值`，该结果值根据`状态`的不同，传递给`then`方法不同的形参
 
-![image-20220506150130082](Promise.assets/image-20220506150130082.png)
+![image-20220506150130082](image-20220506150130082.png)
 
 ## 1.3.`Promise`练习
 
@@ -698,7 +703,7 @@ myReadFile('./resource/context.txt1').then(value => {
 
 - `状态`是`Promise`实例对象的一个`属性`：`[[PromiseState]]`
 
-  ![image-20220506144353326](Promise.assets/image-20220506144353326.png)
+  ![image-20220506144353326](image-20220506144353326.png)
 
   - 该属性的可能值
 
@@ -719,7 +724,7 @@ myReadFile('./resource/context.txt1').then(value => {
 
 - `结果值`是`Promise`实例对象的一个属性：`[[PromiseResult]]`，保存着`Promise`对象`成功/失败`的`结果值`
 
-  ![image-20220506150130082](Promise.assets/image-20220506150130082.png)
+  ![image-20220506150130082](image-20220506150130082.png)
 
 - 谁可以修改这个`结果值`呢？
 
@@ -729,7 +734,7 @@ myReadFile('./resource/context.txt1').then(value => {
 
 ### 2.1.4.`Promise`执行的基本流程
 
-![image-20220507081353404](Promise.assets/image-20220507081353404.png)
+![image-20220507081353404](image-20220507081353404.png)
 
 ## 2.2.为什么要使用`Promise`？
 
@@ -758,17 +763,15 @@ myReadFile('./resource/context.txt1').then(value => {
     })
     ```
 
-    
-
 - 回调地狱的缺点
 
+  - 语法上的一层层嵌套，只是最基础的
   - 不便于阅读
   - 不便于异常处理
     - 可能会写很多重复性代码
+  - 控制反转问题（重点）
 
 - 解决方案
-
-
 
 ## 2.3.如何使用`Promise`
 
@@ -794,7 +797,7 @@ myReadFile('./resource/context.txt1').then(value => {
 
       打印结果如下：
 
-      ![image-20220507083113595](Promise.assets/image-20220507083113595.png)
+      ![image-20220507083113595](image-20220507083113595.png)
 
     - 先输出`aa`，再输出`bb`，就说明执行器函数内部的代码，和第5行的代码，是同步调用的，也就是说，执行器函数的代码，不会进入到队列中，会立即执行（后面进行封装时要注意这一点）
 
@@ -833,7 +836,7 @@ myReadFile('./resource/context.txt1').then(value => {
     })
     ```
 
-    ![image-20220507153130222](Promise.assets/image-20220507153130222.png)
+    ![image-20220507153130222](image-20220507153130222.png)
 
   - 如果`then`方法的回调函数中，返回的是非`Promise`的任意值，新`Promise`状态变为`resolved/fulfilled`，结果值`value`为返回的值
 
@@ -853,7 +856,7 @@ myReadFile('./resource/context.txt1').then(value => {
     
     ```
 
-    ![image-20220507153255634](Promise.assets/image-20220507153255634.png)
+    ![image-20220507153255634](image-20220507153255634.png)
 
   - 如果`then`方法的回调函数中，返回的是另一个新的`Promise`，此`Promise`的结果就会成为新的`Promise`的结果
 
@@ -875,7 +878,7 @@ myReadFile('./resource/context.txt1').then(value => {
     
     ```
 
-    ![image-20220507153513379](Promise.assets/image-20220507153513379.png)
+    ![image-20220507153513379](image-20220507153513379.png)
 
   - 如果`then`方法的回调函数中，即没有抛出异常，也没有`return`，则新的`Promise`对象的结果值为`undefined`
 
@@ -902,7 +905,7 @@ myReadFile('./resource/context.txt1').then(value => {
 
     打印结果如下：
 
-    ![image-20220507085159105](Promise.assets/image-20220507085159105.png)
+    ![image-20220507085159105](image-20220507085159105.png)
 
   - `catch`处理过失败的`Promise`对象后，返回的是一个成功的`Promise`对象，该对象的结果值，取决于你在实际代码中返回的值。
 
@@ -921,7 +924,7 @@ myReadFile('./resource/context.txt1').then(value => {
       console.log(p)
       ```
 
-      ![image-20220507090126462](Promise.assets/image-20220507090126462.png)
+      ![image-20220507090126462](image-20220507090126462.png)
 
     - 如果传入的参数为`Promsie`对象，则参数的结果，决定了`resolve`的结果
 
@@ -934,7 +937,7 @@ myReadFile('./resource/context.txt1').then(value => {
         console.log(p)
         ```
 
-        ![image-20220507091211503](Promise.assets/image-20220507091211503.png)
+        ![image-20220507091211503](image-20220507091211503.png)
 
       - 当参数返回失败时，得到的就是`失败`的`Promise`：
 
@@ -948,7 +951,7 @@ myReadFile('./resource/context.txt1').then(value => {
         })
         ```
 
-        ![image-20220507091337333](Promise.assets/image-20220507091337333.png)
+        ![image-20220507091337333](image-20220507091337333.png)
 
   - 返回：返回一个`成功/失败`的`Promise`对象
   - 作用：为了快速得到一个`Promise`对象，并且还能封装一个值，将这个值转化为`Promise`对象
@@ -972,7 +975,7 @@ myReadFile('./resource/context.txt1').then(value => {
       })
       ```
 
-      ![image-20220507092446179](Promise.assets/image-20220507092446179.png)
+      ![image-20220507092446179](image-20220507092446179.png)
 
     - 如果传入的参数为`失败`的`Promise`对象，返回的是`失败`的`Promise`对象
 
@@ -995,7 +998,7 @@ myReadFile('./resource/context.txt1').then(value => {
       })
       ```
 
-      ![image-20220507112525950](Promise.assets/image-20220507112525950.png)
+      ![image-20220507112525950](image-20220507112525950.png)
 
       
 
@@ -1014,7 +1017,7 @@ myReadFile('./resource/context.txt1').then(value => {
 
       
 
-    ![image-20220507092737721](Promise.assets/image-20220507092737721.png)
+    ![image-20220507092737721](image-20220507092737721.png)
 
   - 返回：始终返回一个`失败`的`Promise`对象
 
@@ -1041,7 +1044,7 @@ myReadFile('./resource/context.txt1').then(value => {
       console.log(result)
       ```
 
-      ![image-20220507105139821](Promise.assets/image-20220507105139821.png)
+      ![image-20220507105139821](image-20220507105139821.png)
 
     - 如果数组中有一个`Promise`对象状态是失败，`all`方法返回的是一个失败的`Promise`对象，该`Promise`对象失败的`结果值`，是那个失败的`Promise`对象的结果值
 
@@ -1058,7 +1061,7 @@ myReadFile('./resource/context.txt1').then(value => {
 
       返回的是一个失败的`Promise`对象
 
-      ![image-20220507105917420](Promise.assets/image-20220507105917420.png)
+      ![image-20220507105917420](image-20220507105917420.png)
 
       注意：如果我们用链式调用的方式，使用`catch`指定了失败`Promise`对象的回调，则`all`方法返回的仍是成功的`Promise`对象
 
@@ -1075,7 +1078,7 @@ myReadFile('./resource/context.txt1').then(value => {
       console.log(result)
       ```
 
-      ![image-20220507110354017](Promise.assets/image-20220507110354017.png)
+      ![image-20220507110354017](image-20220507110354017.png)
 
       因为失败的`Promise`一旦用`catch`指定失败的`回调`，其返回值是一个成功的`Promise`对象
 
@@ -1101,7 +1104,7 @@ myReadFile('./resource/context.txt1').then(value => {
       })
       ```
 
-      ![image-20220507113147000](Promise.assets/image-20220507113147000.png)
+      ![image-20220507113147000](image-20220507113147000.png)
 
       备注：如果有两个失败的`Promise`对象，则返回的`结果值`是优先失败的那个`Promise`对象的结果值，这里返回的是`p3`的结果值
 
@@ -1128,7 +1131,7 @@ myReadFile('./resource/context.txt1').then(value => {
       })
       ```
 
-      ![image-20220507113516027](Promise.assets/image-20220507113516027.png)
+      ![image-20220507113516027](image-20220507113516027.png)
 
 #### `Promise.race`方法
 
@@ -1151,7 +1154,7 @@ myReadFile('./resource/context.txt1').then(value => {
     console.log(result)
     ```
 
-    ![image-20220507114320619](Promise.assets/image-20220507114320619.png)
+    ![image-20220507114320619](image-20220507114320619.png)
 
     `p1`先完成，`race`返回的就是`p1`的状态结果
 
@@ -1179,7 +1182,7 @@ myReadFile('./resource/context.txt1').then(value => {
     })
     ```
 
-    ![image-20220507114615597](Promise.assets/image-20220507114615597.png)
+    ![image-20220507114615597](image-20220507114615597.png)
 
     `p2`先完成，`race`返回的就是`p2`的结果
 
@@ -1237,7 +1240,7 @@ myReadFile('./resource/context.txt1').then(value => {
 
     结果如下：
 
-    ![image-20220507142047652](Promise.assets/image-20220507142047652.png)
+    ![image-20220507142047652](image-20220507142047652.png)
 
     如果不调用`resolve`，则状态一直是`pending`，则回调函数也不会被调用
 
@@ -1353,7 +1356,7 @@ p.then(value => {
       })
       ```
 
-      ![image-20220507153130222](Promise.assets/image-20220507153130222.png)
+      ![image-20220507153130222](image-20220507153130222.png)
 
     - 如果`then`方法的回调函数中，返回的是非`Promise`的任意值，新`Promise`状态变为`resolved/fulfilled`，结果值`value`为返回的值
 
@@ -1373,7 +1376,7 @@ p.then(value => {
       
       ```
 
-      ![image-20220507153255634](Promise.assets/image-20220507153255634.png)
+      ![image-20220507153255634](image-20220507153255634.png)
 
     - 如果`then`方法的回调函数中，返回的是另一个新的`Promise`，此`Promise`的结果就会成为新的`Promise`的结果
 
@@ -1395,7 +1398,7 @@ p.then(value => {
       
       ```
 
-      ![image-20220507153513379](Promise.assets/image-20220507153513379.png)
+      ![image-20220507153513379](image-20220507153513379.png)
       
     - 如果`then`方法的回调函数中，即没有抛出异常，也没有`return`，则新的`Promise`对象的结果值为`undefined`
 
@@ -1422,7 +1425,7 @@ p.then(value => {
   })
   ```
 
-  ![image-20220507155355522](Promise.assets/image-20220507155355522.png)
+  ![image-20220507155355522](image-20220507155355522.png)
 
 - 通过`then()`的链式调用串联多个同步/异步任务
 
@@ -1453,7 +1456,7 @@ p.then(value => {
   })
   ```
 
-  ![image-20220507160049244](Promise.assets/image-20220507160049244.png)
+  ![image-20220507160049244](image-20220507160049244.png)
 
 - 前面任何操作出现了异常，都会传到最后失败的回调中处理
 
@@ -1509,7 +1512,7 @@ p.then(value => {
     })
     ```
 
-    ![image-20220507161804408](Promise.assets/image-20220507161804408.png)
+    ![image-20220507161804408](image-20220507161804408.png)
 
 # 3.手写`Promise`
 
@@ -1560,7 +1563,7 @@ function Promise() {
 
 报错信息如下，因为我们没有在构造函数`Promise`的显示原型属性上定义`then`方法，所以实例对象`p`的隐式原型属性上自然就没有该`then`方法
 
-![image-20220507164406093](Promise.assets/image-20220507164406093.png)
+![image-20220507164406093](image-20220507164406093.png)
 
 构造函数`Promise`的显示原型属性上，添加`then`方法，该`then`方法有两个形参：`onResolved`、`onRejected`
 
@@ -1695,7 +1698,7 @@ Promise.prototype.then = function(onResolved, onRejected) {
 
 结果如下：
 
-![image-20220507172528344](Promise.assets/image-20220507172528344.png)
+![image-20220507172528344](image-20220507172528344.png)
 
 按道理来说，`PromiseResult`应该是`OK`，`PromiseState`应该是`fulfilled`
 
@@ -1732,7 +1735,7 @@ Promise.prototype.then = function(onResolved, onRejected) {
 
 结果：
 
-![image-20220507202336185](Promise.assets/image-20220507202336185.png)
+![image-20220507202336185](image-20220507202336185.png)
 
 此时，调用`resolve`，`Promise`对象的状态和结果都发生了改变
 
@@ -1780,7 +1783,7 @@ Promise.prototype.then = function(onResolved, onRejected) {
 		</script>
 ```
 
-![image-20220507202734042](Promise.assets/image-20220507202734042.png)
+![image-20220507202734042](image-20220507202734042.png)
 
 正常来说，应该打印一个失败的`Promise`对象
 
@@ -1822,7 +1825,7 @@ Promise.prototype.then = function (onResolved, onRejected) {
 
 打印结果：
 
-![image-20220507203149432](Promise.assets/image-20220507203149432.png)
+![image-20220507203149432](image-20220507203149432.png)
 
 ## 3.5.`Promise`状态只能修改一次
 
@@ -1841,7 +1844,7 @@ Promise.prototype.then = function (onResolved, onRejected) {
 
 最终的结果（这是错误的）：
 
-![image-20220507203744855](Promise.assets/image-20220507203744855.png)
+![image-20220507203744855](image-20220507203744855.png)
 
 那么应该怎么做，可以确保状态值更改一次呢？
 
@@ -1884,7 +1887,7 @@ Promise.prototype.then = function (onResolved, onRejected) {
 
 结果如下（这个是对的）：
 
-![image-20220507204043155](Promise.assets/image-20220507204043155.png)
+![image-20220507204043155](image-20220507204043155.png)
 
 ## 3.6.`then`方法执行回调
 
@@ -1973,7 +1976,7 @@ Promise.prototype.then = function (onResolved, onRejected) {
 
 打印结果：
 
-![image-20220507205644584](Promise.assets/image-20220507205644584.png)
+![image-20220507205644584](image-20220507205644584.png)
 
 ## 3.7.异步任务回调的执行
 
@@ -2133,7 +2136,7 @@ Promise.prototype.then = function (onResolved, onRejected) {
 
 打印结果：
 
-![image-20220508102848816](Promise.assets/image-20220508102848816.png)
+![image-20220508102848816](image-20220508102848816.png)
 
 对象`p`已经有了回调函数
 
@@ -2200,7 +2203,7 @@ Promise.prototype.then = function (onResolved, onRejected) {
 
 此时再看下打印效果，一秒后，输出结果：
 
-![image-20220508103251580](Promise.assets/image-20220508103251580.png)
+![image-20220508103251580](image-20220508103251580.png)
 
 ## 3.8.指定多个回调的实现
 
@@ -2262,7 +2265,7 @@ this.callbacks = [] // 回调函数保存在实例对象的callback属性上
 
 在`then`方法后面，打印一下对象`p`
 
-![image-20220508104251121](Promise.assets/image-20220508104251121.png)
+![image-20220508104251121](image-20220508104251121.png)
 
 此时两个回调函数都被保存到了实例对象上
 
@@ -2325,7 +2328,7 @@ Promise.prototype.then = function (onResolved, onRejected) {
 
 打印结果如下：
 
-![image-20220508104703666](Promise.assets/image-20220508104703666.png)
+![image-20220508104703666](image-20220508104703666.png)
 
 两次回调函数都被执行了
 
@@ -2368,7 +2371,7 @@ index.html
 
 目前`res`是`undefined`，因为我们在`then`方法中，并没有返回任何的值
 
-![image-20220508110748669](Promise.assets/image-20220508110748669.png)
+![image-20220508110748669](image-20220508110748669.png)
 
 所以我们在`then`方法中，返回一个`Promise`对象
 
@@ -2397,7 +2400,7 @@ Promise.prototype.then = function (onResolved, onRejected) {
 
 此时`res`的结果如下：
 
-![image-20220508111143335](Promise.assets/image-20220508111143335.png)
+![image-20220508111143335](image-20220508111143335.png)
 
 有个问题，就是`then`方法返回的`Promise`对象的状态，一直是`pending`
 
@@ -2479,7 +2482,7 @@ Promise.prototype.then = function (onResolved, onRejected) {
 
 打印结果如下：
 
-![image-20220508114057606](Promise.assets/image-20220508114057606.png)
+![image-20220508114057606](image-20220508114057606.png)
 
 如果`then`方法的回调函数，返回的是`Promise`类型的对象呢？
 
@@ -2589,7 +2592,7 @@ Promise.prototype.then = function (onResolved, onRejected) {
 
 打印结果如下：
 
-![image-20220508185206461](Promise.assets/image-20220508185206461.png)
+![image-20220508185206461](image-20220508185206461.png)
 
 如果`then`方法的回调函数，抛出了异常呢？
 
@@ -2705,7 +2708,7 @@ Promise.prototype.then = function (onResolved, onRejected) {
 
 打印结果如下：
 
-![image-20220508190102202](Promise.assets/image-20220508190102202.png)
+![image-20220508190102202](image-20220508190102202.png)
 
 ## 3.10.异步任务下的`then`方法返回结果实现
 
@@ -2748,7 +2751,7 @@ Promise.prototype.then = function (onResolved, onRejected) {
 
 打印结果是`pending`状态的`Promise`：
 
-![image-20220508190707825](Promise.assets/image-20220508190707825.png)
+![image-20220508190707825](image-20220508190707825.png)
 
 由于是异步任务，对象`p`在调用`then`方法时，是一个`pending`状态，目前我们自定义的代码，对于`pending`状态 操作，仅做了一个保存回调函数的操作
 
@@ -2775,7 +2778,7 @@ Promise.prototype.then = function (onResolved, onRejected) {
 
 验证下`onResoved`函数在回调执行的时候，的确是被调用了：
 
-![image-20220508191218611](Promise.assets/image-20220508191218611.png)
+![image-20220508191218611](image-20220508191218611.png)
 
 我们真正要做的，是要执行成功的回调函数（注意`this`的指向问题）
 
@@ -2829,7 +2832,7 @@ Promise.prototype.then = function (onResolved, onRejected) {
 
 但此时返回的`Promise`对象的状态仍然是`pending`
 
-![image-20220508191813723](Promise.assets/image-20220508191813723.png)
+![image-20220508191813723](image-20220508191813723.png)
 
 和上一小节类似，要根据函数的执行结果来决定状态
 
@@ -2962,7 +2965,7 @@ Promise.prototype.then = function (onResolved, onRejected) {
 
 打印结果如下：
 
-![image-20220509064236748](Promise.assets/image-20220509064236748.png)
+![image-20220509064236748](image-20220509064236748.png)
 
 完善一下`onRejected`，同时做一下异常处理
 
@@ -3321,7 +3324,7 @@ Promise.prototype.then = function (onResolved, onRejected) {
 
 此时会报错：
 
-![image-20220509092748130](Promise.assets/image-20220509092748130.png)
+![image-20220509092748130](image-20220509092748130.png)
 
 因为我们自定义的代码中，还没有添加`catch`方法
 
@@ -3450,7 +3453,7 @@ Promise.prototype.catch = function(onRejected) {
 
 打印结果如下：
 
-![image-20220509093323199](Promise.assets/image-20220509093323199.png)
+![image-20220509093323199](image-20220509093323199.png)
 
 我们还需要实现`异常穿透`的功能
 
@@ -3492,7 +3495,7 @@ Promise.prototype.catch = function(onRejected) {
 
 打印结果如下：
 
-![image-20220509111212379](Promise.assets/image-20220509111212379.png)
+![image-20220509111212379](image-20220509111212379.png)
 
 原因：
 
@@ -3606,7 +3609,7 @@ Promise.prototype.catch = function(onRejected) {
 
 打印结果如下：
 
-![image-20220509111309652](Promise.assets/image-20220509111309652.png)
+![image-20220509111309652](image-20220509111309652.png)
 
 
 
@@ -3651,7 +3654,7 @@ Promise.prototype.catch = function(onRejected) {
 
 打印效果如下：
 
-![image-20220509111552710](Promise.assets/image-20220509111552710.png)
+![image-20220509111552710](image-20220509111552710.png)
 
 
 
@@ -3696,7 +3699,7 @@ Promise.prototype.catch = function(onRejected) {
 
 但我们自定义的是不行的，打印结果如下：
 
-![image-20220509111907939](Promise.assets/image-20220509111907939.png)
+![image-20220509111907939](image-20220509111907939.png)
 
 原因和上面一样，所以我们也要指定默认的成功回调函数
 
@@ -3800,7 +3803,7 @@ Promise.prototype.catch = function(onRejected) {
 
 打印结果正常：
 
-![image-20220509112146200](Promise.assets/image-20220509112146200.png)
+![image-20220509112146200](image-20220509112146200.png)
 
 
 
@@ -3831,7 +3834,7 @@ Promise.prototype.catch = function(onRejected) {
 
 报错：
 
-![image-20220509112536084](Promise.assets/image-20220509112536084.png)
+![image-20220509112536084](image-20220509112536084.png)
 
 因为我们自定义的代码还没有添加呢
 
@@ -3939,7 +3942,7 @@ Promise.resolve = function(value) {
 
 测试一下结果，返回的结果的确是一个`Promise`对象
 
-![image-20220509112928325](Promise.assets/image-20220509112928325.png)
+![image-20220509112928325](image-20220509112928325.png)
 
 
 
@@ -4084,7 +4087,7 @@ Promise.resolve = function(value) {
 
 打印结果如下：
 
-![image-20220509113539319](Promise.assets/image-20220509113539319.png)
+![image-20220509113539319](image-20220509113539319.png)
 
 `resolve`的嵌套调用也是支持的
 
@@ -4108,7 +4111,7 @@ Promise.resolve = function(value) {
 
 ```
 
-![image-20220509113805342](Promise.assets/image-20220509113805342.png)
+![image-20220509113805342](image-20220509113805342.png)
 
 ## 3.14.封装`reject`方法
 
@@ -4147,7 +4150,7 @@ Promise.reject = function(reason) {
 
 ```
 
-![image-20220509140815749](Promise.assets/image-20220509140815749.png)
+![image-20220509140815749](image-20220509140815749.png)
 
 
 
@@ -4216,7 +4219,7 @@ Promise.all = function(promises) {
 
 此时看下打印结果：
 
-![image-20220509143452356](Promise.assets/image-20220509143452356.png)
+![image-20220509143452356](image-20220509143452356.png)
 
 ## 3.16.封装`race`方法
 
@@ -4273,7 +4276,7 @@ Promise.race = function(promises) {
 
 结果：
 
-![image-20220509144308120](Promise.assets/image-20220509144308120.png)
+![image-20220509144308120](image-20220509144308120.png)
 
 对象`p2`先执行完，就先返回`p2`
 
@@ -4313,11 +4316,11 @@ Promise.race = function(promises) {
 
 打印结果：
 
-![image-20220509144926549](Promise.assets/image-20220509144926549.png)
+![image-20220509144926549](image-20220509144926549.png)
 
 自定义实现打印结果：
 
-![image-20220509144953671](Promise.assets/image-20220509144953671.png)
+![image-20220509144953671](image-20220509144953671.png)
 
 `then`方法的回调应该是异步执行的，我们给对应执行的代码添加定时器：
 
@@ -4367,7 +4370,7 @@ function Promise(executor) {
 
 此时的结果在表现上，就和原生的一样了：
 
-![image-20220509145555260](Promise.assets/image-20220509145555260.png)
+![image-20220509145555260](image-20220509145555260.png)
 
 ## 3.18.`Promise`完整实现
 
@@ -4755,7 +4758,7 @@ class Promise {
 
 结果正常
 
-![image-20220509150814524](Promise.assets/image-20220509150814524.png)
+![image-20220509150814524](image-20220509150814524.png)
 
 # 4.`async`与`await`
 
@@ -4791,7 +4794,7 @@ class Promise {
   
   ```
 
-  ![image-20220509151517827](Promise.assets/image-20220509151517827.png)
+  ![image-20220509151517827](image-20220509151517827.png)
 
 - `Promise`对象的结果由`async`函数执行的返回值决定
 
@@ -4822,7 +4825,7 @@ class Promise {
     
     ```
 
-    ![image-20220509151830769](Promise.assets/image-20220509151830769.png)
+    ![image-20220509151830769](image-20220509151830769.png)
 
     
 
@@ -4852,7 +4855,7 @@ class Promise {
     
     ```
 
-    ![image-20220509152329281](Promise.assets/image-20220509152329281.png)
+    ![image-20220509152329281](image-20220509152329281.png)
 
   - 如果抛出了异常，最终返回的结果就是一个失败的`Promise`对象，结果值就是抛出的结果值
 
@@ -4878,7 +4881,7 @@ class Promise {
     
     ```
 
-    ![image-20220509152606932](Promise.assets/image-20220509152606932.png)
+    ![image-20220509152606932](image-20220509152606932.png)
 
     报错是因为我们没有`catch`处理异常
 
@@ -4918,7 +4921,7 @@ class Promise {
     
     ```
 
-    ![image-20220509153639670](Promise.assets/image-20220509153639670.png)
+    ![image-20220509153639670](image-20220509153639670.png)
 
   - 如果表达式是其它的值，直接将此值作为`await`的返回值
   
@@ -4948,7 +4951,7 @@ class Promise {
     
     ```
   
-    ![image-20220509153803614](Promise.assets/image-20220509153803614.png)
+    ![image-20220509153803614](image-20220509153803614.png)
 
 
 
@@ -4972,7 +4975,7 @@ class Promise {
   
   ```
 
-  ![image-20220509153325682](Promise.assets/image-20220509153325682.png)
+  ![image-20220509153325682](image-20220509153325682.png)
 
 - 如果`await`的`Promise`对象失败了，就会抛出异常，需要使用`try catch`捕获处理
 
@@ -5005,7 +5008,7 @@ class Promise {
   
   ```
 
-  ![image-20220509154001990](Promise.assets/image-20220509154001990.png)
+  ![image-20220509154001990](image-20220509154001990.png)
 
 ## 4.5.`async`和`await`结合实践
 
@@ -5073,7 +5076,7 @@ class Promise {
 
   我们故意写错第一个路径，直接用`try catch`处理异常即可，处理异常的方式变得异常灵活
 
-  ![image-20220509155633611](Promise.assets/image-20220509155633611.png)
+  ![image-20220509155633611](image-20220509155633611.png)
 
   我们在`async`和`await`的使用中是看不到回调函数的（在`Promise`里面是有的），写起来非常的简洁，就像写同步代码一样（内部的执行是异步的）
 
@@ -5125,7 +5128,7 @@ class Promise {
 
 结果：
 
-![image-20220509160505152](Promise.assets/image-20220509160505152.png)
+![image-20220509160505152](image-20220509160505152.png)
 
 封装成`Promise`对象后，代码的书写非常的简洁
 
@@ -5146,7 +5149,7 @@ class Promise {
 
 ## 5.1.原理图
 
-![image-20220510091152445](Promise.assets/image-20220510091152445.png)
+![image-20220510091152445](image-20220510091152445.png)
 
 ## 5.2.队列分类
 
@@ -5194,7 +5197,7 @@ Promise.resolve('ok').then(
 )
 ```
 
-![image-20220510093251982](Promise.assets/image-20220510093251982.png)
+![image-20220510093251982](image-20220510093251982.png)
 
 ### 宏任务与微任务同级之间，是按次序执行的
 
@@ -5219,7 +5222,7 @@ Promise.resolve('ok').then(
 			)
 ```
 
-![image-20220510094316043](Promise.assets/image-20220510094316043.png)
+![image-20220510094316043](image-20220510094316043.png)
 
 ### 前置宏任务内部如果有微任务，后置宏任务会后执行
 
@@ -5249,7 +5252,7 @@ Promise.resolve(2).then(
 )
 ```
 
-![image-20220510095535726](Promise.assets/image-20220510095535726.png)
+![image-20220510095535726](image-20220510095535726.png)
 
 
 
@@ -5274,7 +5277,7 @@ Promise.resolve().then(
 console.log(3)
 ```
 
-![image-20220510100455204](Promise.assets/image-20220510100455204.png)
+![image-20220510100455204](image-20220510100455204.png)
 
 ### 面试题二
 
@@ -5295,7 +5298,7 @@ console.log(3)
 			console.log(5)
 ```
 
-![image-20220510100911153](Promise.assets/image-20220510100911153.png)
+![image-20220510100911153](image-20220510100911153.png)
 
 ### 面试题三
 
@@ -5326,7 +5329,7 @@ first().then((arg) => {
 console.log(4)
 ```
 
-![image-20220510102223113](Promise.assets/image-20220510102223113.png)
+![image-20220510102223113](image-20220510102223113.png)
 
 ### 面试题四
 
@@ -5367,7 +5370,7 @@ console.log(4)
 			})
 ```
 
-![image-20220510112144540](Promise.assets/image-20220510112144540.png)
+![image-20220510112144540](image-20220510112144540.png)
 
 
 

@@ -38,14 +38,6 @@ typora-root-url: CSS核心
 
 前文提到过，`CSS` 是用来指定文档如何展示给用户的一门语言——如网页的样式、布局、等等。
 
-一份**文档**是由标记语言组织起来的文本文件 —— [HTML](https://developer.mozilla.org/zh-CN/docs/Glossary/HTML) 是最常见的标记语言， 但你可能也听说过其他可标记语言，如 [SVG](https://developer.mozilla.org/zh-CN/docs/Glossary/SVG) 或 [XML](https://developer.mozilla.org/zh-CN/docs/Glossary/XML)。
-
-
-
-> **备注：** 浏览器有时候也被称为 [`user agent`](https://developer.mozilla.org/zh-CN/docs/Glossary/User_agent)，大致可以当这个程序是一个存在于计算机系统中的人。当我们讨论 `CSS` 时，浏览器是 `User agent` 的主要形式，然而它并不是唯一的一个。还有其他可用的 `user agents` — 像是那些可以把 `HTML` 和 `CSS` 文档转换为可以打印的 `PDF` 文档的软件。
-
-
-
 - `CSS` 可以用于给文档添加样式
   - 比如改变标题和链接的[颜色](https://developer.mozilla.org/zh-CN/docs/Web/CSS/color_value)及[大小](https://developer.mozilla.org/zh-CN/docs/Web/CSS/font-size)。
 
@@ -78,8 +70,6 @@ h1 {
 
   - 冒号之前是属性，冒号之后是值。不同的 `CSS` [属性 (`properties`) ](https://developer.mozilla.org/en-US/docs/Glossary/property/CSS) 对应不同的合法值。
   - 在这个例子中，我们指定了 `color` 属性，它可以接受许多[颜色值](https://developer.mozilla.org/zh-CN/docs/Learn/CSS/Building_blocks/Values_and_units#颜色)；还有 `font-size` 属性，它可以接收许多 [`size units`](https://developer.mozilla.org/zh-CN/docs/Learn/CSS/Building_blocks/Values_and_units#数字，长度和百分比) 值。
-
-在 `MDN` 上每个属性都有单独的页面，不论你是忘记了某个属性，还是想要知道一个属性还能接受什么其它的值，这些页面都可以帮助你。
 
 ### `CSS`包含哪些内容模块
 
@@ -122,11 +112,6 @@ h1 {
 
 
 在这篇文章中，我们将会拿一个简单的 HTML 文档做例子，并且在里面使用 CSS 样式
-
-目标
-
-- 理解 HTML 文档链接 CSS 文档的几个基本套路，
-- 并能运用所学的 CSS，做些文字上的格式化操作。
 
 ### `CSS`入门案例
 
@@ -428,12 +413,6 @@ body h1 + p .special {
 在我们提供的原始 HTML 文档中，与之符合的元素只有`<span class="special">`.
 
 如果你现在觉得这份代码太复杂了，别担心，一旦你开始编写更多的 CSS 代码，你很快就能找到窍门。
-
-### 小结
-
-在本教程中，我们学习了使用 CSS 为文档添加样式的几种方法。在教程的剩下部分，我们将继续这个话题。不过，你现在已经有了足够的知识为文本建立样式；根据目标元素的不同用不同的方式应用样式；在 MDN 文档中查找属性和值。
-
-在下一节中，我们将看到样式表的结构是什么样的。
 
 ## `CSS`是如何构建的
 

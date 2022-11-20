@@ -2105,7 +2105,7 @@ iterator.next();
 
 ## Promise
 
-
+> 手写Promise见《Promise》篇
 
 ### Promise介绍与基本使用
 
@@ -4081,8 +4081,6 @@ js不允许直接访问堆内存中的位置，也就是说不能直接操作对
 
 在日常的使用中，我们把对象赋值给一个变量时，通常希望得到的是一个跟原对象无关的的副本，修改新的变量不影响原对象，因此就有了浅拷贝和深拷贝
 
-
-
 ### 内存角度分析变量声明及定义
 
 `let a = 12;`
@@ -4290,46 +4288,51 @@ sayHello('Hardy'); // Hello, Hardy!
 
 作用域的使用作为每一位JavaScript开发人员的必修课，了解得深入才能在使用它的时候不再迷茫。它就像空气，存在于JavaScript的许多地方，值得我们去好好了解。
 
-
-
 ## 变量生命周期
-
-
 
 定义一个变量到这个变量被回收发生了什么
 变量和内存之间的关系，是由三个部分组成：变量名、内存绑定和内存地址
 
 ## 上下文
 
-	执行上下文
-		- 代码执行时，创建上下文
-		- 所有代码执行完成后，销毁上下文
-		- 每一个上下文，都有一个相关联的变量对象（VO：Variable Object）
-		- 当前上下文中，定义的变量和对象都存储在VO上
-	
-	全局上下文
-		- GO(Global Object)，浏览器环境下，就是window对象，GO是特殊的VO
-		- var关键字声明变量，存储在GO上，即
-		```js
-		var a;
-		console.log(window.a) // undefined
-		```
-		
-		- function关键字声明函数，存储在GO上
-		```js
-		var a;
-		console.log(window.a)
-		function aFunc() {
-			console.log(a)
-		}
-		aFunc()		
-		```
-		- js代码执行之前，浏览器首先会默认把所有带var和function关键字的变量，进行提前声明或定义(存储在GO上)
-		- 关联this到GO(window)
-	函数上下文
-		- 见函数底层执行机制>函数的执行
+执行上下文
 
+- 代码执行时，创建上下文
+- 所有代码执行完成后，销毁上下文	
+- 每一个上下文，都有一个相关联的变量对象（VO：Variable Object）
+- 当前上下文中，定义的变量和对象都存储在VO上
 
+全局上下文
+
+- GO(Global Object)，浏览器环境下，就是window对象，GO是特殊的VO
+
+- var关键字声明变量，存储在GO上（给GO对象添加属性），即
+
+  ```js
+  var a;
+  console.log(window.a) // undefined
+  ```
+
+- function关键字声明函数，存储在GO上
+
+  ```js
+  var a;
+  console.log(window.a)
+  function aFunc() {
+      console.log(a)
+  }
+  aFunc()	
+  ```
+
+- js代码执行之前，浏览器首先会默认把所有带var和function关键字的变量，进行提前声明或定义(存储在GO上)
+
+- 关联this到GO(window)
+
+- JS线程全局上下文维护着当前一次执行过程（宏任务）中，产生的微任务队列，在宏任务执行完后，会执行所有的微任务，之后GUI渲染线程才会进行渲染
+
+函数上下文
+
+- 见函数底层执行机制 > 函数的执行
 
 ## 变量提升，函数提升、浏览器解析变量的机制
 
@@ -4337,154 +4340,184 @@ sayHello('Hardy'); // Hello, Hardy!
 
 ## JS预解析
 
-1.当浏览器加载html页面的时候，首先会提供一个全局JS代码执行的环境
-	- 开启栈空间，占空间中开辟全局执行上下文
-2.预解析（变量提升，浏览器的加载机制）
-	- 在当前的作用域（上下文）中，js代码执行之前，浏览器首先会默认把所有带var和function关键字的变量，进行提前声明或定义
-		- 对于变量只是进行了变量的提前声明
-		```js
-		var num = 1;
-		// 理解声明和定义
-		// 声明（declare）： var num ==> 告诉浏览器，在全局作用域中有一个num的变量了（在GO上，新增属性num，默认属性值为undefined），声明：对于变量，就是把变量添加到当前上下文的变量对象上
-		// 定义（defined）：num = 1; ==>给变量赋值（进行值关联），定义：定于变量，就是把当前上下文的变量对象对应的属性，关联值或者内存地址
-		```
-		
+1.当浏览器加载html页面的时候，浏览器tab页的renderer进程下，开启JS线程，JS线程会先提供一个全局JS代码执行的环境
 
-		```js
-		// console.log(number) // Uncaught ReferenceError: number is not defined
-		console.log(num) // undefined，这里打断点，会看到全局window对象上，已经有num属性了，值为undefined
-		var num = 1;
-		console.log(num) // 1
-		```
-		- 对于函数是提前声明并且定义（将函数代码以字段串的形式存储起来）
-		```js
-		console.log(fn) // 打印出函数体，由于函数提升机制，此时GO（window)对象上，已经有fn属性了，值为代码块字符串
-		function fn() {
-			console.log('fn')
-		}
-		console.log(fn) // 打印出函数体（实际打印的就是window.fn，值为代码块字符串）
-	
-		```
-	- 变量和函数重名时
-	提升阶段：变量只是提前声明了，函数是声明并且定义了
-	执行阶段：变量开始定义赋值，函数不进行赋值
+ - JS线程开启栈空间，栈空间中开辟全局执行上下文（全局上下文开始执行一次宏任务，并维护着微任务队列）
+
+2.预解析（变量提升，浏览器的加载机制）
+
+在当前的作用域（上下文）中，js代码执行之前，JS线程首先会默认把所有带var和function关键字的变量，进行提前声明或定义
+- 对于变量只是进行了变量的提前声明
 	```js
-	console.log(afn) // afn(){console.log(4)}
-	function afn() {
-		console.log(2)
-	}
-	console.log(afn) // afn(){console.log(4)}  
+	var num = 1;
+	// 理解声明和定义
+	// 声明（declare）： var num ==> 告诉浏览器，在全局作用域中有一个num的变量了（在GO上，新增属性num，默认属性值为undefined），声明：对于变量，就是把变量添加到当前上下文的变量对象上
+	// 定义（defined）：num = 1; ==>给变量赋值（进行值关联），定义：定于变量，就是把当前上下文的变量对象对应的属性，关联值或者内存地址
 	
-	var afn;
-	console.log(afn) // afn(){console.log(4)}
-	
-	var afn = 3 
-	console.log(afn) // 3
-	
-	function afn() {
-		console.log(4)
-	}
-	
-	console.log(afn) // 3
+	// console.log(number) // Uncaught ReferenceError: number is not defined
+	console.log(num) // undefined，这里打断点，会看到全局window对象上，已经有num属性了，值为undefined
+	var num = 1;
+	console.log(num) // 1
 	```
-	- 函数表达式的调用，必须写到函数表达式的下面
-	```js
-	fun() // 声明定义函数之前调用， Uncaught TypeError: fun is not a function
 	
-	var fun = function() {
-		console.log(22)
-	}
-	```
-	相当于
-	```js
-	var fun;
-	fun(); // Uncaught TypeError: fun is not a function
-	fun = function() {
-		console.log(22)
-	}
-	```
-	- 预解析（变量提升和函数提升）只会发生在当前上下文中。
-		例如：开始只会对全局上下文中的变量和函数进行预解析，因为一开始就创建了全局上下文；只有函数执行的时候，才会创建函数上下文，才会对函数上下文中的变量和函数进行预解析
-		```js
-		var a = 10;
-		function afn() {
-			console.log(a) // undefined
-			var a = 11
-			console.log(a) // 11
-		}
-		afn()
-		console.log(a) // 10
-		```
-		相当于
-		```js
-		var a = 10 // GO全局对象window上的属性
-		function fn() {
-			var a; // 私有上下文对象AO上的属性，属性值为undefined
-			console.log(a) // undefined
-			var a = 11
-			console.log(a) // 11
-		} // 出栈后，私有上下文销毁
-		fn() // 进栈
-		console.log(a) // 10
-		```
+	
+	
+- 对于函数是提前声明并且定义（将函数代码以字段串的形式存储起来）
+
+  ```js
+  console.log(fn) // 打印出函数体，由于函数提升机制，此时GO（window)对象上，已经有fn属性了，值为代码块字符串
+  function fn() {
+      console.log('fn')
+  }
+  console.log(fn) // 打印出函数体（实际打印的就是window.fn，值为代码块字符串）
+  ```
+
+- 变量和函数重名时
+
+  - 提升阶段：变量只是提前声明了，函数是声明并且定义了
+  - 执行阶段：变量开始定义赋值，函数不进行赋值
+
+  ```js
+  console.log(afn) // afn(){console.log(4)}
+  function afn() {
+  	console.log(2)
+  }
+  console.log(afn) // afn(){console.log(4)}  
+  
+  var afn;
+  console.log(afn) // afn(){console.log(4)}
+  
+  var afn = 3 
+  console.log(afn) // 3
+  
+  function afn() {
+  	console.log(4)
+  }
+  
+  console.log(afn) // 3
+  ```
+
+- 函数表达式的调用，必须写到函数表达式的下面
+
+  ```js
+  fun() // 声明定义函数之前调用， Uncaught TypeError: fun is not a function
+  
+  var fun = function() {
+  	console.log(22)
+  }
+  ```
+
+  相当于
+
+  ```js
+  var fun;
+  fun(); // Uncaught TypeError: fun is not a function
+  fun = function() {
+  	console.log(22)
+  }
+  ```
+
+- 预解析（变量提升和函数提升）只会发生在当前上下文中。
+
+  例如：开始只会对全局上下文中的变量和函数进行预解析，因为一开始就创建了全局上下文；只有函数执行的时候，才会创建函数上下文，才会对函数上下文中的变量和函数进行预解析
+
+  ```js
+  var a = 10;
+  function afn() {
+      console.log(a) // undefined
+      var a = 11
+      console.log(a) // 11
+  }
+  afn()
+  console.log(a) // 10
+  ```
+
+  相当于
+
+  ```js
+  var a = 10 // GO全局对象window上的属性
+  function fn() {
+  	var a; // 私有上下文对象AO上的属性，属性值为undefined
+  	console.log(a) // undefined
+  	var a = 11
+  	console.log(a) // 11
+  } // 出栈后，私有上下文销毁
+  fn() // 进栈
+  console.log(a) // 10
+  ```
 
 ## 函数底层执行机制
 
-	1.函数的创建
-		- 创建对象时，会在堆内存中开辟一块空间来存储对象的键值对。
-		- 函数对象被创建时，存储的键值对有
-			- this
-			- prototype
-		- 函数对象除了在堆内存中存储键值对，还会存储两部分东西
-			- 创建函数时的声明作用域[[Scopes]]：
-			  - 函数在哪个上下文中创建，其[[Scopes]]就关联谁
-			  - 函数定义中使用到了哪个变量或对象，[[Scopes]]就会把该变量或者对象所有的VO添加到[[Scopes]]中，这个机制也是let关键字形成块级作用域的根本原因
-				- [[Scopes]]中存储的应该是，实际用到的变量所在的上下文对应的变量对象
-			```js
-			function aFunc() {
-				var a = 1
-				console.log(a)
-				console.log(this)
-			}
-			aFunc()
-			console.dir(aFunc) // [[Scopes]]有一个值，指向当前上下文的GO，即window对象
+>  1.函数的创建
 
+每一个上下文都有一个相关联的`VO`，当前上下文中，声明的变量和对象存储在`VO`上
 
-			function bFunc() {
-				var b = 1, c =2;
-				function bInnnerFunc() {
-					// return b // [[Scopes]]只有一个值，指向window对象
-					return b // [[Scopes]][0]为bFunc私有上下文的AO对象，{b: 1}，[[Scopes]][1]指向window对象
-					// return b + c // [[Scopes]][0]为bFunc私有上下文的AO对象，{b: 1, c: 2}，[[Scopes]][1]指向window对象
-				}
-				console.dir(bInnnerFunc) // [[Scopes]]有两个值，[[Scopes]][0]指向bFunc执行上下文的VO对象（更准确点，是bFunc私有上下文的AO对象，见下一部分），这是一个闭包;[[Scopes]][1]指向window
-			}
+创建对象时，会在堆内存中开辟一块空间来存储对象的值
+
+函数对象被创建时，存储的键值对有
+- `this`
+- `prototype`
+
+函数对象除了在堆内存中存储键值对，还会存储两部分东西
+- 创建函数时的声明作用域`[[Scopes]]`：
+  - 函数在哪个上下文中创建，其`[[Scopes]]`就关联谁
+  
+	- 函数定义中使用到了哪个变量或对象，[[Scopes]]就会把该变量或者对象所有的`VO`添加到`[[Scopes]]`中，这个机制也是let关键字形成块级作用域的根本原因
 	
-			bFunc()
-			```
-			- 函数字符串：把函数体中的代码，以字符串的形式存储起来
-				- 如果是循环4个标签，for循环是以var声明的i，按照直观上，每次click的回调函数打印的值应该不一样。事实上都是4，代码首先会循环4次，然后每次都讲i加1，for方法体的函数，仅执行了创建的过程，onclick关联的函数，此时是以字符串的形式保存在堆内存中（保存了4份），并且循环结束时，i的值已经变成了4。当我们点击元素时，onclick关联的回调函数，进栈开始执行，沿着[[Scopes]]作用域链找到GO（window）上的i值为4。
-				```js
-				var myBtn = document.querySelectorAll('.myBtn')
-				for(var i = 0; i < myBtn.length; i++) {
-					myBtn[i].onclick = function() {
-						console.log(i)
-					}
-				}
-				console.log(i)
-				```
-				将回调函数定义成具名函数，方便查看作用域链（设置断点查看）
-				```js
-				var myBtn = document.querySelectorAll('.myBtn')
-				for(var a = 0; a < myBtn.length; a++) { //定义成a，查看是在window属性的第一个
-					let innerFunc = function innerFunc() {
-						console.log(a, window.a, a === window.a)
-						console.dir(innerFunc)
-					}
-					myBtn[a].onclick = innerFunc // 不能加括号，否则就直接执行了
-				}
-				```
-	2.函数的执行
+	- `[[Scopes]]`中存储的应该是，实际用到的变量所在的上下文对应的变量对象
+	
+	  ```js
+	  function aFunc() {
+	      var a = 1
+	      console.log(a)
+	      console.log(this)
+	  }
+	  aFunc()
+	  console.dir(aFunc) // [[Scopes]]有一个值，指向当前上下文的GO，即window对象
+	  
+	  
+	  function bFunc() {
+	      var b = 1, c =2;
+	      function bInnnerFunc() {
+	          // return // [[Scopes]]只有一个值，指向window对象
+	          return b // [[Scopes]][0]为bFunc私有上下文的AO对象，{b: 1}，[[Scopes]][1]指向window对象
+	          // return b + c // [[Scopes]][0]为bFunc私有上下文的AO对象，{b: 1, c: 2}，[[Scopes]][1]指向window对象
+	      }
+	      console.dir(bInnnerFunc) // [[Scopes]]有两个值，[[Scopes]][0]指向bFunc执行上下文的VO对象（更准确点，是bFunc私有上下文的AO对象，见下一部分），这是一个闭包;[[Scopes]][1]指向window
+	  }
+	  
+	  bFunc()
+	  ```
+	
+	  
+
+- 函数字符串：把函数体中的代码，以字符串的形式存储起来
+
+     - 如果是循环4个标签，for循环是以var声明的i，按照直观上，每次click的回调函数打印的值应该不一样。事实上都是4，代码首先会循环4次，然后每次都讲i加1，for方法体的函数，仅执行了创建的过程，onclick关联的函数，此时是以字符串的形式保存在堆内存中（保存了4份），并且循环结束时，i的值已经变成了4。当我们点击元素时，onclick关联的回调函数，进栈开始执行，沿着[[Scopes]]作用域链找到GO（window）上的i值为4。
+
+       ```js
+       var myBtn = document.querySelectorAll('.myBtn')
+       for(var i = 0; i < myBtn.length; i++) {
+           myBtn[i].onclick = function() {
+               console.log(i)
+           }
+       }
+       console.log(i)
+       
+       // 将回调函数定义成具名函数，方便查看作用域链（设置断点查看）
+       var myBtn = document.querySelectorAll('.myBtn')
+       for(var a = 0; a < myBtn.length; a++) { //定义成a，查看是在window属性的第一个
+           let innerFunc = function innerFunc() {
+               console.log(a, window.a, a === window.a)
+               console.dir(innerFunc)
+           }
+           myBtn[a].onclick = innerFunc // 不能加括号，否则就直接执行了
+       }
+       ```
+
+> 函数的执行
+
+	
 		2.1.创建私有上下文
 			- 进栈：函数一旦执行，就会创建一个全新的私有上下文（函数上下文）
 				- 函数的每次执行，都是重新形成一个私有的上下文，和之前产生的上下文没有必然的联系
@@ -4870,9 +4903,334 @@ JS是按照顺序从上往下依次执行的，可以先理解为这段代码时
 
 而我们JS引擎线程只会执行执行栈中的事件，执行栈中的代码执行完毕，就会读取事件队列中的事件并添加到执行栈中继续执行，这样反反复复就是我们所谓的**事件循环(Event Loop)**
 
+![img](16fb7acab03b35fatplv-t2oaga2asx-zoom-in-crop-mark4536000.awebp)
+
+首先，执行栈开始顺序执行
+
+判断是否为同步，异步则进入异步线程，最终事件回调给事件触发线程的任务队列等待执行，同步继续执行
+
+执行栈空，询问任务队列中是否有事件回调
+
+任务队列中有事件回调则把回调加入执行栈末尾继续从第一步开始执行
+
+任务队列中没有事件回调则不停发起询问
+
+## 宏任务(macrotask) & 微任务(microtask)
+
+### 宏任务(macrotask)
+
+在ECMAScript中，`macrotask`也被称为`task`
+
+我们可以将每次执行栈执行的代码当做是一个宏任务(包括每次从事件队列中获取一个事件回调并放到执行栈中执行)， 每一个宏任务会从头到尾执行完毕，不会执行其他
+
+由于`JS引擎线程`和`GUI渲染线程`是互斥的关系，浏览器为了能够使`宏任务`和`DOM任务`有序的进行，会在一个`宏任务`执行结果后，在下一个`宏任务`执行前，`GUI渲染线程`开始工作，对页面进行渲染
+
+```
+宏任务 -> GUI渲染 -> 宏任务 -> ...
+```
+
+常见的宏任务
+
+- 主代码块
+- setTimeout
+- setInterval
+- setImmediate ()-Node
+- requestAnimationFrame ()-浏览器
+
+### 微任务(microtask)
+
+ES6新引入了Promise标准，同时浏览器实现上多了一个`microtask`微任务概念，在ECMAScript中，`microtask`也被称为`jobs`
+
+我们已经知道`宏任务`结束后，会执行渲染，然后执行下一个`宏任务`， 而微任务可以理解成在当前`宏任务`执行后立即执行的任务
+
+当一个`宏任务`执行完，会在渲染前，将执行期间所产生的所有`微任务`都执行完
+
+```
+宏任务 -> 微任务 -> GUI渲染 -> 宏任务 -> ...
+```
+
+常见微任务
+
+- process.nextTick ()-Node
+- Promise.then()
+- catch
+- finally
+- Object.observe
+- MutationObserver
+
+### 简单区分宏任务与微任务
+
+看了上述宏任务微任务的解释你可能还不太清楚，没关系，往下看，先记住那些常见的宏微任务即可
+
+我们通过几个例子来看，这几个例子思路来自掘金`云中君`的文章参考链接【14】，通过渲染背景颜色来区分宏任务和微任务，很直观，我觉得很有意思，所以这里也用这种例子
+
+找一个空白的页面，在console中输入以下代码
+
+```js
+document.body.style = 'background:black';
+document.body.style = 'background:red';
+document.body.style = 'background:blue';
+document.body.style = 'background:pink';
+```
+
+![img](16fb7c7576f1e3b1tplv-t2oaga2asx-zoom-in-crop-mark4536000.awebp)
+
+我们看到上面动图背景直接渲染了粉红色，根据上文里讲浏览器会先执行完一个宏任务，再执行当前执行栈的所有微任务，然后移交GUI渲染，上面四行代码均属于同一次宏任务，全部执行完才会执行渲染，渲染时`GUI线程`会将所有UI改动优化合并，所以视觉上，只会看到页面变成粉红色
+
+再接着看
+
+```js
+document.body.style = 'background:blue';
+setTimeout(()=>{
+    document.body.style = 'background:black'
+},200)
+```
+
+![img](16fb7c81efff6db0tplv-t2oaga2asx-zoom-in-crop-mark4536000.awebp)
+
+上述代码中，页面会先卡一下蓝色，再变成黑色背景，页面上写的是200毫秒，大家可以把它当成0毫秒，因为0毫秒的话由于浏览器渲染太快，录屏不好捕捉，我又没啥录屏慢放的工具，大家可以自行测试的，结果也是一样，最安全的方法是写一个`index.html`文件，在这个文件中插入上面的js脚本，然后浏览器打开，谷歌下使用控制台中`performance`功能查看一帧一帧的加载最为恰当，不过这样录屏不好录所以。。。
+
+回归正题，之所以会卡一下蓝色，是因为以上代码属于两次`宏任务`，第一次`宏任务`执行的代码是将背景变成蓝色，然后触发渲染，将页面变成蓝色，再触发第二次宏任务将背景变成黑色
+
+再来看
+
+```js
+document.body.style = 'background:blue'
+console.log(1);
+Promise.resolve().then(()=>{
+    console.log(2);
+    document.body.style = 'background:pink'
+});
+console.log(3);
+```
+
+![img](16fb7c909570edd9tplv-t2oaga2asx-zoom-in-crop-mark4536000.awebp)
+
+控制台输出 1 3 2 , 是因为 promise 对象的 then 方法的回调函数是异步执行，所以 2 最后输出
+
+页面的背景色直接变成粉色，没有经过蓝色的阶段，是因为，我们在宏任务中将背景设置为蓝色，但在进行渲染前执行了微任务， 在微任务中将背景变成了粉色，然后才执行的渲染
+
+### 微任务宏任务注意点
+
+- 浏览器会先执行一个宏任务，紧接着执行当前执行栈产生的微任务，再进行渲染，然后再执行下一个宏任务
+- 微任务和宏任务不在一个任务队列，不在一个任务队列
+  - 例如`setTimeout`是一个宏任务，它的事件回调在宏任务队列，`Promise.then()`是一个微任务，它的事件回调在微任务队列，二者并不是一个任务队列
+  - 以Chrome 为例，有关渲染的都是在渲染进程中执行，渲染进程中的任务（DOM树构建，js解析…等等）需要主线程执行的任务都会在主线程中执行，而浏览器维护了一套事件循环机制，主线程上的任务都会放到消息队列中执行，主线程会循环消息队列，并从头部取出任务进行执行，如果执行过程中产生其他任务需要主线程执行的，渲染进程中的其他线程会把该任务塞入到消息队列的尾部，消息队列中的任务都是宏任务
+  - 微任务是如何产生的呢？当执行到script脚本的时候，js引擎会为全局创建一个执行上下文，在该执行上下文中维护了一个微任务队列，当遇到微任务，就会把微任务回调放在微队列中，当所有的js代码执行完毕，在退出全局上下文之前引擎会去检查该队列，有回调就执行，没有就退出执行上下文，这也就是为什么微任务要早于宏任务，也是大家常说的，每个宏任务都有一个微任务队列（由于定时器是浏览器的API，所以定时器是宏任务，在js中遇到定时器会也是放入到浏览器的队列中）
+
+此时，你可能还很迷惑，没关系，请接着往下看
+
+### 图解宏任务和微任务
+
+![img](16fb7adf5afc036dtplv-t2oaga2asx-zoom-in-crop-mark4536000.awebp)
+
+首先执行一个宏任务，执行结束后判断是否存在微任务
+
+有微任务先执行所有的微任务，再渲染，没有微任务则直接渲染
+
+然后再接着执行下一个宏任务
+
+## 图解完整的Event Loop
+
+![img](16fb7ae3b678f1eatplv-t2oaga2asx-zoom-in-crop-mark4536000.awebp)
+
+首先，整体的script(作为第一个宏任务)开始执行的时候，会把所有代码分为`同步任务`、`异步任务`两部分
+
+同步任务会直接进入主线程依次执行
+
+异步任务会再分为宏任务和微任务
+
+宏任务进入到Event Table中，并在里面注册回调函数，每当指定的事件完成时，Event Table会将这个函数移到Event Queue中
+
+微任务也会进入到另一个Event Table中，并在里面注册回调函数，每当指定的事件完成时，Event Table会将这个函数移到Event Queue中
+
+当主线程内的任务执行完毕，主线程为空时，会检查微任务的Event Queue，如果有任务，就全部执行，如果没有就执行下一个宏任务
+
+上述过程会不断重复，这就是Event Loop，比较完整的事件循环
+
+## 关于Promise
+
+`new Promise(() => {}).then()` ，我们来看这样一个Promise代码
+
+前面的 `new Promise()` 这一部分是一个构造函数，这是一个同步任务
+
+后面的 `.then()` 才是一个异步微任务，这一点是非常重要的
+
+```js
+new Promise((resolve) => {
+	console.log(1)
+  resolve()
+}).then(()=>{
+	console.log(2)
+})
+console.log(3)
+```
+
+上面代码输出`1 3 2`
+
+## 关于 async/await 函数
+
+async/await本质上还是基于Promise的一些封装，而Promise是属于微任务的一种
+
+所以在使用await关键字与Promise.then效果类似
+
+```js
+setTimeout(() => console.log(4))
+
+async function test() {
+  console.log(1)
+  await Promise.resolve()
+  console.log(3)
+}
+
+test()
+
+console.log(2)
+```
+
+上述代码输出`1 2 3 4`
+
+可以理解为，`await` 以前的代码，相当于与 `new Promise` 的同步代码，`await` 以后的代码相当于 `Promise.then`的异步
+
+## 举栗印证
+
+首先给大家来一个比较直观的动图
+
+![img](16fb7d0f356a33a4tplv-t2oaga2asx-zoom-in-crop-mark4536000.awebp)
 
 
 
+之所以放这个动图，就是为了向大家推荐这篇好文，动图录屏自参考链接【1】
+
+极力推荐大家看看这篇帖子，非常nice，分步动画生动且直观，有时间的话可以自己去体验下
+
+不过在看这个帖子之前你要先了解下运行机制会更好读懂些
+
+接下来这个来自网上随意找的一个比较简单的面试题，求输出结果
+
+```js
+function test() {
+  console.log(1)
+  setTimeout(function () { 	// timer1
+    console.log(2)
+  }, 1000)
+}
+
+test();
+
+setTimeout(function () { 		// timer2
+  console.log(3)
+})
+
+new Promise(function (resolve) {
+  console.log(4)
+  setTimeout(function () { 	// timer3
+    console.log(5)
+  }, 100)
+  resolve()
+}).then(function () {
+  setTimeout(function () { 	// timer4
+    console.log(6)
+  }, 0)
+  console.log(7)
+})
+
+console.log(8)
+```
+
+结合我们上述的JS运行机制再来看这道题就简单明了的多了
+
+JS是顺序从上而下执行
+
+执行到test()，test方法为同步，直接执行，`console.log(1)`打印1
+
+test方法中setTimeout为异步宏任务，回调我们把它记做timer1放入宏任务队列
+
+接着执行，test方法下面有一个setTimeout为异步宏任务，回调我们把它记做timer2放入宏任务队列
+
+接着执行promise，new Promise是同步任务，直接执行，打印4
+
+new Promise里面的setTimeout是异步宏任务，回调我们记做timer3放到宏任务队列
+
+Promise.then是微任务，放到微任务队列
+
+console.log(8)是同步任务，直接执行，打印8
+
+主线程任务执行完毕，检查微任务队列中有Promise.then
+
+开始执行微任务，发现有setTimeout是异步宏任务，记做timer4放到宏任务队列
+
+微任务队列中的console.log(7)是同步任务，直接执行，打印7
+
+微任务执行完毕，第一次循环结束
+
+检查宏任务队列，里面有timer1、timer2、timer3、timer4，四个定时器宏任务，按照定时器延迟时间得到可以执行的顺序，即Event Queue：timer2、timer4、timer3、timer1，依次拿出放入执行栈末尾执行 **(插播一条：浏览器 event loop 的 Macrotask queue，就是宏任务队列在每次循环中只会读取一个任务)**
+
+执行timer2，console.log(3)为同步任务，直接执行，打印3
+
+检查没有微任务，第二次Event Loop结束
+
+执行timer4，console.log(6)为同步任务，直接执行，打印6
+
+检查没有微任务，第三次Event Loop结束
+
+执行timer3，console.log(5)同步任务，直接执行，打印5
+
+检查没有微任务，第四次Event Loop结束
+
+执行timer1，console.log(2)同步任务，直接执行，打印2
+
+检查没有微任务，也没有宏任务，第五次Event Loop结束
+
+结果：1，4，8，7，3，6，5，2
+
+## 提一下NodeJS中的运行机制
+
+上面的一切都是针对于浏览器的EventLoop
+
+虽然NodeJS中的JavaScript运行环境也是V8，也是单线程，但是，还是有一些与浏览器中的表现是不一样的
+
+其实nodejs与浏览器的区别，就是nodejs的宏任务分好几种类型，而这好几种又有不同的任务队列，而不同的任务队列又有顺序区别，而微任务是穿插在每一种宏任务之间的
+
+在node环境下，process.nextTick的优先级高于Promise，可以简单理解为在宏任务结束后会先执行微任务队列中的nextTickQueue部分，然后才会执行微任务中的Promise部分
+
+![img](16fb7aed8db21b8dtplv-t2oaga2asx-zoom-in-crop-mark4536000.awebp)
+
+上图来自NodeJS官网
+
+如上图所示，nodejs的宏任务分好几种类型，我们只简单介绍大体内容了解，不详细解释，不然又是啰哩啰嗦一大篇
+
+NodeJS的Event Loop相对比较麻烦
+
+```
+Node会先执行所有类型为 timers 的 MacroTask，然后执行所有的 MicroTask(NextTick例外)
+
+进入 poll 阶段，执行几乎所有 MacroTask，然后执行所有的 MicroTask
+
+再执行所有类型为 check 的 MacroTask，然后执行所有的 MicroTask
+
+再执行所有类型为 close callbacks 的 MacroTask，然后执行所有的 MicroTask
+
+至此，完成一个 Tick，回到 timers 阶段
+
+……
+
+如此反复，无穷无尽……
+```
+
+反观浏览器中Event Loop就比较容易理解
+
+```
+先执行一个 MacroTask，然后执行所有的 MicroTask
+
+再执行一个 MacroTask，然后执行所有的 MicroTask
+
+……
+
+如此反复，无穷无尽……
+```
+
+好了，关于Node中各个类型阶段的解析，这里就不过多说明了，自己查阅资料吧，这里就是简单提一下，NodeJS的Event Loop解释起来比浏览器这繁杂，这里就只做个对比
 
 # JS工具库
 
@@ -4886,7 +5244,7 @@ JS是按照顺序从上往下依次执行的，可以先理解为这段代码时
 
 ## React
 
-
+见React篇
 
 
 
