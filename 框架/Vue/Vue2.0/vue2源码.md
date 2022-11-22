@@ -1600,11 +1600,12 @@ ps：记得取消之前的注释
                 let template
                 if(!ops.template && el) { // 没有template配置项，但是有el配置项
                     let template = el.outerHTML // 就用el的配置项，outHTML返回的是匹配到自身的dom元素
-                } else { // 如果有template,就用template配置项
+                } else { // 如果既有template,又有el，就用template配置项作为模板
                     if(el) {
                         template = ops.template
                     }
                 }
+                // 其他情况的分支考虑
                 console.log(template)
             }
         }
@@ -1612,6 +1613,8 @@ ps：记得取消之前的注释
     
     
     ```
+
+这里其他分支的细节代码就不写了，如都没有的情况应该怎么处理等
 
 挂载`el`配置项：
 
@@ -1665,11 +1668,543 @@ ps：记得取消之前的注释
 
 ![image-20221122072027640](image-20221122072027640.png)
 
+这里可以多试试不同的情况
 
+整体逻辑是：先找`render`函数，没写的话就找`template`配置项，再没写的话，就用外部的`html`
+
+
+
+最终获取到`template`后，将`template`传入到自定义函数`compileToFunction`中进行渲染
+
+`init.js`
+
+```js
+Vue.prototype.$mount = function (el) {
+        const vm = this
+        el = document.querySelector(el)
+        let ops = vm.$options
+
+        if(!ops.render) { // 先查找render函数
+            let template
+            if(!ops.template && el) { // 没有template配置项，但是有el配置项
+                template = el.outerHTML // 就用el的配置项，outHTML返回的是匹配到自身的dom元素
+            } else { // // 如果既有template,又有el，就用template配置项作为模板
+                if(el) {
+                    template = ops.template
+                }
+            }
+            // 其他情况的分支考虑
+            // console.log(template)
+            // 最终如果获取到模板
+            if(template) {
+                // 这里需要对模板进行编译
+                const render = compileToFunction(template)
+                // 将编译后的结果给render函数
+                ops.render = render
+            }
+        }
+        ops.render // 有render就直接调用render
+    }
+```
+
+实际开发中可以写`jsx`，它是依赖`babel`做了编译（`vue`中有对应的`jsx-plugin`插件），如果写`jsx`相当于多了一层：将`jsx`转换成`render`函数对应的`h`方法
+
+- `script`标签引用的`vue.global.js`，这个编译过程是在浏览器运行的
+- `runtime`是不包含模板编译的，整个编译打包的时候，是通过`loader`来转义`.vue`文件中的`<template></template>`
+  - 只有`runtime`是不能写`template`配置项的
+
+
+
+新建`src/compiler/index.js`，表示编译模板
+
+`index.js`
+
+```js
+// 对模板进行编译处理
+export function compileToFunction(template) {
+    // 1.将template转化成ast抽象语法树
+
+    // 2.生成render方法（返回的结果，就是虚拟dom）
+    console.log(template)
+
+}
+```
+
+`init.js`中导入
+
+```js
+import {compileToFunction} from "./compiler" // 使用@rollup/plugin-node-resolve插件，可省略index.js
+
+// ...
+```
+
+如果想自动导入index文件，可以安装插件，`rollup`环境下安装：`npm i @rollup/plugin-node-resolve`
+
+详细使用方式：[@rollup/plugin-node-resolve - npm (npmjs.com)](https://www.npmjs.com/package/@rollup/plugin-node-resolve)
+
+样例：
+
+```js
+import { nodeResolve } from '@rollup/plugin-node-resolve';
+
+export default {
+  input: 'src/index.js',
+  output: {
+    dir: 'output',
+    format: 'cjs'
+  },
+  plugins: [nodeResolve()]
+};
+```
+
+`rollup.config.js`
+
+```js
+// rollup 默认可以导出一个对象，作为打包的配置文件
+import { nodeResolve } from '@rollup/plugin-node-resolve';
+import babel from  '@rollup/plugin-babel'
+
+export default {
+    input: './src/index.js', // 入口
+    output: {
+        file: './dist/vue.js', // 出口
+        name: 'Vue', // 在global全局上，增添一个Vue对象，我们就可以new Vue了（global.Vue）
+        format: 'umd', // options: 1.esm es6模块，相当于没有打包了 2.commonjs node中使用 3.iife 自执行函数 4.umd 兼容amd和commonjs
+        sourcemap: true // 可以调试源代码
+    },
+    plugins: [
+        // 需要新建babel的配置文件，既可以是js文件，也可以是.rc文件,
+        // 这里和视频的保持一致
+        babel({
+            exclude: 'node_modules/**', // 排除第三方模块 ，**表示任意文件夹
+            babelHelpers: 'bundled' // https://www.npmjs.com/package/@rollup/plugin-babel  搜索babelHelpers，不加这一行会有报错
+        }), // 所有的插件都是函数
+        nodeResolve()
+    ]
+}
+```
 
 #### 代码生成，实现虚拟`DOM`
 
+对于标签而言，内容有标签名、表达式、文本、属性
+
+```html
+    <div id='app'>
+        <div style='color:red' class='container'>
+            {{ name }} hello world 
+        </div>
+        <span>
+            {{ age }}
+        </span>
+    </div>
+```
+
+我们拿到这样的字符串文本后，需要开始解析
+
+怎么解析呢？
+
+要有能够匹配标签、表达式、文本、属性的能力
+
+正则：
+
+`compiler/index.js`
+
+```js
+const ncname = `[a-zA-Z_][\\-\\.0-9_a-zA-Z]*` // 匹配标签名
+const qnameCapture = `((?:${ncname}\\:)?${ncname})`
+const startTagOpen = new RegExp(`^<${qnameCapture}`)
+const endTag = new RegExp(`^<\\/${qnameCapture}[^>]*>`)
+const attribute =  /^\s*([^\s"'<>\/=]+)(?:\s*(=)\s*(?:"([^"]*)"+|'([^'])'+|([^\s"'=<>`]+)))?/
+const startTagClose = /^\s*(\/?)>/
+const defaultTagRE = /\{\{((?:.|\r?\n)+?)\}\}/g
+
+console.log(startTagOpen)
+// 对模板进行编译处理
+export function compileToFunction(template) {
+    // 1.将template转化成ast抽象语法树
+
+    // 2.生成render方法（返回的结果，就是虚拟dom）
+    console.log(template)
+
+}
+```
+
+先打印下`startTagOpen`
+
+```js
+/^<((?:[a-zA-Z_][\-\.0-9_a-zA-Z]*\:)?[a-zA-Z_][\-\.0-9_a-zA-Z]*)/
+```
+
+用可视化工具看一下，[Regexper](https://regexper.com/)
+
+![image-20221122205447489](image-20221122205447489.png)
+
+```html
+<div>
+<div:xxx> 带命名空间的标签
+<_div> 自定义标签
+
+```
+
+`startTagOpen`匹配到的分组，是一个开始标签名
+
+
+
+看下`endTag`
+
+```js
+/^<\/((?:[a-zA-Z_][\-\.0-9_a-zA-Z]*\:)?[a-zA-Z_][\-\.0-9_a-zA-Z]*)[^>]*>/
+```
+
+![image-20221122210031249](image-20221122210031249.png)
+
+`Oneof`表示`任一一个`，`Noneof`表示`除了这些`，箭头表示`可跳过`
+
+`endTag`匹配到的分组，是结束标签名
+
+
+
+看下属性
+
+```js
+/^\s*([^\s"'<>\/=]+)(?:\s*(=)\s*(?:"([^"]*)"+|'([^']*)'+|([^\s"'=<>`]+)))?/
+```
+
+![image-20221122210514120](image-20221122210514120.png)
+
+```
+color   =  'a'
+color = "a"
+color=a
+disabled
+```
+
+属性中的`key`是第一个分组，`value`是第三或者第四或者第五个分组
+
+
+
+看下`startTagClose`
+
+```js
+/^\s*(\/?)>/
+```
+
+![image-20221122211350057](image-20221122211350057.png)
+
+表示闭合标签
+
+
+
+看下`defaultTagRE`
+
+```js
+/\{\{((?:.|\r?\n)+?)\}\}/g
+```
+
+![image-20221122211528510](image-20221122211528510.png)
+
+表示小胡子语法对应的表达式变量
+
+
+
+备注：`vue3`中的这一步不是用的正则，是一个一个字符来判读，如是不是`/`，是不是`<`之类来解析的，其实效果也是一样的
+
+
+
+那么接下来怎么去解析模板呢
+
+- 每解析一个标签，就把它从字符串中删除掉
+
+`index.js`
+
+```js
+function parsetHTML(html) {// 每解析一个标签，就把它从字符串中删除掉
+    function parseStartTag() {
+        const start = html.match(startTagOpen) // 是一个数组
+        console.log(start)
+    }
+
+    while(html) {
+        // vue2中，html最开始一定是一个< 
+        // 如果textEnd为0，说明是一个开始标签或者结束标签
+        // 如果textEnd>0，说明就是文本的结束位置
+        let textEnd = html.indexOf('<') // 如果索引为0，则说明是个标签，开始标签取完了，再去取尖角号，取到的是文本结束的位置
+        if(textEnd == 0) {
+            parseStartTag()
+            break
+        }
+    }
+}
+// 对模板进行编译处理
+export function compileToFunction(template) {
+    // 1.将template转化成ast抽象语法树
+    let ast = parsetHTML(template)
+    // 2.生成render方法（返回的结果，就是虚拟dom）
+    console.log(template)
+
+}
+```
+
+`start`打印结果：
+
+![image-20221122214247328](image-20221122214247328.png)
+
+```js
+function parsetHTML(html) {// 每解析一个标签，就把它从字符串中删除掉
+    function advance(n) { // 截取
+        html = html.substring(n)
+    }
+
+    function parseStartTag() {
+        const start = html.match(startTagOpen) // 结果是一个数组
+        console.log(start)
+        if(start) {
+            // 匹配到了，把结果（数组）组成一个对象
+            const match = {
+                tagName: start[1], // 标签名
+                attrs: []
+            }
+            advance(start[0].length) // 根据匹配到的字符的长度，进行删除
+            console.log(match)
+            console.log(html)
+        }
+        return false // 不是开始标签，返回false
+    }
+
+    while(html) {
+        // vue2中，html最开始一定是一个< 
+        // 如果textEnd为0，说明是一个开始标签或者结束标签
+        // 如果textEnd>0，说明就是文本的结束位置
+        let textEnd = html.indexOf('<') // 如果索引为0，则说明是个标签，开始标签取完了，再去取尖角号，取到的是文本结束的位置
+        if(textEnd == 0) {
+            parseStartTag()
+            break
+        }
+    }
+}
+// 对模板进行编译处理
+export function compileToFunction(template) {
+    // 1.将template转化成ast抽象语法树
+    let ast = parsetHTML(template)
+    // 2.生成render方法（返回的结果，就是虚拟dom）
+    console.log(template)
+}
+```
+
+![image-20221122215009131](image-20221122215009131.png)
+
+
+
+开始标签匹配完了，接下来开始匹配属性
+
+匹配过程中，只要它不是开始标签的结束，就一直匹配
+
+```js
+function parsetHTML(html) {// 每解析一个标签，就把它从字符串中删除掉
+    function advance(n) { // 截取
+        html = html.substring(n)
+    }
+
+    function parseStartTag() {
+        const start = html.match(startTagOpen) // 结果是一个数组
+        console.log(start)
+        if(start) {
+            // 匹配到了，把结果（数组）组成一个对象
+            const match = {
+                tagName: start[1], // 标签名
+                attrs: []
+            }
+            advance(start[0].length) // 根据匹配到的字符的长度，进行删除
+            // console.log(match)
+            // console.log(html)
+        }
+        let attr
+        while(!html.match(startTagClose) && (attr = html.match(attribute))) { // 如果不是开始标签的结束，就一直匹配，并且每次匹配都把匹配到的结果存起来
+            advance(attr[0].length) // 每次匹配完，再把匹配过的字符去掉
+
+        }
+        console.log(html)
+        return false // 不是开始标签，返回false
+    }
+
+    while(html) {
+        // vue2中，html最开始一定是一个< 
+        // 如果textEnd为0，说明是一个开始标签或者结束标签
+        // 如果textEnd>0，说明就是文本的结束位置
+        let textEnd = html.indexOf('<') // 如果索引为0，则说明是个标签，开始标签取完了，再去取尖角号，取到的是文本结束的位置
+        if(textEnd == 0) {
+            parseStartTag()
+            break
+        }
+    }
+}
+```
+
+匹配处理属性的结果：
+
+![image-20221122215755848](image-20221122215755848.png)
+
+还剩一个`>`尖角号，也需要处理（把处理方法的逻辑，放在条件判断里更合理些）
+
+```js
+ function parseStartTag() {
+        const start = html.match(startTagOpen) // 结果是一个数组
+        console.log(start)
+        if(start) {
+            // 匹配到了，把结果（数组）组成一个对象
+            const match = {
+                tagName: start[1], // 标签名
+                attrs: []
+            }
+            advance(start[0].length) // 根据匹配到的字符的长度，进行删除
+            // console.log(match)
+            // console.log(html)
+            let attr, end
+            while(!(end = html.match(startTagClose)) && (attr = html.match(attribute))) { // 如果不是开始标签的结束，就一直匹配，并且每次匹配都把匹配到的结果存起来
+                advance(attr[0].length) // 每次匹配完，再把匹配过的字符去掉
+            }
+            if(end) {
+                // 如果匹配到了end，也应该删除
+                advance(end[0].length)
+            }
+        }
+        
+        console.log(html)
+        return false // 不是开始标签，返回false
+    }
+```
+
+`>`尖角号也处理完了
+
+![image-20221122220021712](image-20221122220021712.png)
+
+我们需要开始标签中的属性，解析出来，并放在attrs数组中
+
+```js
+if(start) {
+            // 匹配到了，把结果（数组）组成一个对象
+            const match = {
+                tagName: start[1], // 标签名
+                attrs: []
+            }
+            advance(start[0].length) // 根据匹配到的字符的长度，进行删除
+            // console.log(match)
+            // console.log(html)
+            let attr, end
+            while(!(end = html.match(startTagClose)) && (attr = html.match(attribute))) { // 如果不是开始标签的结束，就一直匹配，并且每次匹配都把匹配到的结果存起来
+                advance(attr[0].length) // 每次匹配完，再把匹配过的字符去掉
+                match.attrs.push(
+                    {
+                        name:attr[1], 
+                        value: attr[3] || attr[4] || attr[5] || true
+                    }
+                )
+            }
+            console.log(match)
+
+            if(end) {
+                // 如果匹配到了end，也应该删除
+                advance(end[0].length)
+            }
+            return match
+        }
+```
+
+![image-20181111100049281](image-20181111100049281.png)
+
 #### 通过虚拟`DOM`生成真实`DOM`
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # 教程二
 
@@ -1715,7 +2250,7 @@ ps：记得取消之前的注释
 
 如果你需要动态编译模版（比如：将字符串模版传递给 `template` 选项，或者通过提供一个挂载元素的方式编写 html 模版），你将需要编译器，因此需要一个完整的构建包。
 
-当你使用 `vue-loader` 或者 `vueify` 时，`*.vue` 文件中的模版在构建时会被编译为 JavaScript 的渲染函数。因此你不需要包含编译器的全量包，只需使用只包含运行时的包即可。
+当你使用 `vue-loader` 或者 `vueify` 时，`*.vue` 文件中的模版在构建时会被编译为 `JavaScript` 的渲染函数。因此你不需要包含编译器的全量包，只需使用只包含运行时的包即可。
 
 只包含运行时的包体积要比全量包的体积小 30%。因此尽量使用只包含运行时的包，如果你需要使用全量包，那么你需要进行如下配置：
 
