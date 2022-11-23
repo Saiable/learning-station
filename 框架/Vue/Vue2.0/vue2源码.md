@@ -2112,6 +2112,94 @@ if(start) {
 
 ![image-20181111100049281](image-20181111100049281.png)
 
+第一个开始标签解析完成，继续向下解析文本内容
+
+```js
+while(html) {
+        // vue2中，html最开始一定是一个< 
+        // 如果textEnd为0，说明是一个开始标签或者结束标签
+        // 如果textEnd>0，说明就是文本的结束位置
+        let textEnd = html.indexOf('<') // 如果索引为0，则说明是个标签，开始标签取完了，再去取尖角号，取到的是文本结束的位置
+        if(textEnd == 0) { 
+            const startTagMatch = parseStartTag() // 开始标签的匹配结果
+            if(startTagMatch) { // 解析到的开始标签
+                continue
+                console.log(html) // 截取完之后，可能还是开始标签
+            }
+            // break
+        }
+        if(textEnd >= 0) { // 解析到的文本
+            let text = html.substring(0, textEnd) // 文本内容
+            if(text) {
+                advance(text.length)
+                console.log(html)
+            }
+            break
+        }
+    }
+```
+
+结果：
+
+![image-20221123085745451](image-20221123085745451.png)
+
+该标签前面的空格内容被截取掉了
+
+
+
+继续解析结束标签
+
+```js
+while(html) {
+        // vue2中，html最开始一定是一个< 
+        // 如果textEnd为0，说明是一个开始标签或者结束标签
+        // 如果textEnd>0，说明就是文本的结束位置
+        let textEnd = html.indexOf('<') // 如果索引为0，则说明是个标签，开始标签取完了，再去取尖角号，取到的是文本结束的位置
+        if(textEnd == 0) { 
+            const startTagMatch = parseStartTag() // 开始标签的匹配结果
+            if(startTagMatch) { // 解析到的开始标签
+                continue
+                console.log(html) // 截取完之后，可能还是开始标签
+            }
+            //如果不是开始标签，那么就是结束标签
+            let endTagMatch = html.match(endTag)
+            if(endTagMatch) {
+                advance(endTagMatch[0].length)
+                continue
+            }
+        }
+        if(textEnd >= 0) { // 解析到的文本
+            let text = html.substring(0, textEnd) // 文本内容
+            if(text) {
+                advance(text.length)
+            }
+        }
+    }
+    console.log(html)
+```
+
+如果打印为空，说明`while`循环写的没问题
+
+
+
+我们在`while`内部打个断点，看看整个流程
+
+着重看每次循环的`html`变量以及进入的是哪个分支
+
+
+
+如果是类似`<br />`这样的自闭合标签呢？
+
+![image-20221123162047816](image-20221123162047816.png)
+
+这里先留个坑，处理的时候直接就去掉了
+
+我们在调用解析方法前，打印下获取到的`template`
+
+![image-20221123162236809](image-20221123162236809.png)
+
+自闭合标签也没了
+
 #### 通过虚拟`DOM`生成真实`DOM`
 
 
