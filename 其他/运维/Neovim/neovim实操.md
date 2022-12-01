@@ -194,3 +194,13 @@ config = {
 
 安装的话，即使是手动安装，也可以用
 
+
+
+# 自定义快捷键
+
+```lua
+-- save buffer
+map('n', '<C-s>', ':w<cr>', opt)
+map('i', '<C-s>', '<Esc>:w<cr>', opt)
+```
+

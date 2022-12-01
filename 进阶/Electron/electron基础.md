@@ -199,6 +199,8 @@ app.whenReady().then(() => {
 
 在渲染进程开始之前，给了一个机会，去调用`Node`
 
+通过`webPreferences`配置项
+
 ```js
 const path = require('path')
 const createWindow = () => {
@@ -255,7 +257,384 @@ console.log(contextBridge)
 
 ![image-20221124072426782](image-20221124072426782.png)
 
+`preload`中定义
+
+```js
+contextBridge.exposeInMainWorld('myApi', {
+    platform: process.platform
+})
+```
+
+`renderer/index.js`中使用
+
+```js
+console.log(window.myApi)
+```
+
+![image-20221124210603952](image-20221124210603952.png)
+
+通过`contextBridge`可以将`Node`中的模块及其他变量，挂载到渲染进程的`window`对象上
+
 ## 主进程与渲染进程通信
 
+主进程中注册使用`ipcMain.handle`监听一个`channel`
 
+`main.js`
+
+```js
+// 主进程中注册好事件
+ipcMain.handle('send-event', (event, msg) => {
+    console.log(msg) // 后台打印
+    retrun msg // 收到渲染进程传递的参数后，再返回回去
+})
+```
+
+预加载器中使用`ipcMain.renderer`向指定`channel`发送消息，并通过`contextBridge`挂载到渲染进程的`window`对象上
+
+`preload.js`
+
+```js
+const handleSend = (arg) => {
+    let callback = await ipcRenderer.invoke('send-event', arg)
+    console.log(callback) // 前台打印
+}
+contextBridge.exposeInMainWorld('myApi', {
+        platform: process.platform,
+        handleSend
+})
+
+```
+
+渲染进程使用暴露的方法，与主进程通信
+
+```js
+document.querySelector('#btn').addEventListener('click', () => {
+    console.log('btn')
+    const {handleSend} = myApi
+    handleSend('haha')
+})
+```
+
+# 主进程
+
+> `Electron API`有两种
+>
+> - `Main Process`（主进程）
+> - `Renderer Process`（渲染进程）
+
+## `App`
+
+### 事件
+
+#### `before-quit`
+
+> 在应用程序开始关闭之前触发
+
+```js
+app.on('before-quit', () => {
+    console.log('App is quiting')
+})
+
+```
+
+#### `browser-window-blur`
+
+> 在`browserWindow`失去焦点时触发
+
+```js
+app.on('browser-window-blur', (e) => {
+    console.log('App unfocused')
+})
+```
+
+#### `browser-window-focus`
+
+> 在`browserWindow`获得焦点时触发
+
+```js
+app.on('browser-window-focus', (e) => {
+    console.log('App focused')
+})
+
+```
+
+### 方法
+
+#### `app.quit()`
+
+```
+app.on('browser-window-blur', (e) => {
+    console.log('App unfocused')
+    setTimeout(() => {
+        app.quit()
+    }, 3000)
+})
+
+app.on('browser-window-blur', (e) => {
+    console.log('App unfocused')
+    setTimeout(app.quit, 3000)
+})
+```
+
+#### `app.getPath(name)`
+
+```js
+app.whenReady().then(() => {
+    createWindow()
+
+    // 在Mac系统下，当全部窗口关闭，点击dock图标，窗口再次打开（针对mac下关闭窗口后不能重新打开的问题）
+    app.on('active',() => {
+        if(BrowserWindow.getAllWindows().length === 0) {
+            createWindow()
+        }
+    })
+    console.log(app.getPath('desktop'))
+    console.log(app.getPath('music'))
+    console.log(app.getPath('temp'))
+    console.log(app.getPath('userData'))
+})
+```
+
+结果
+
+```bash
+C:\Users\Administrator\Desktop
+C:\Users\Administrator\Music
+C:\Users\ADMINI~1\AppData\Local\Temp
+C:\Users\Administrator\AppData\Roaming\myElectron
+```
+
+## `BrowserWindow`
+
+> `electron.BrowserWindow`：创建和控制浏览器窗口
+
+### 实例方法
+
+`win.loadURL(url[, options])`和`loadFile`互斥
+
+```js
+const createWindow = () => {
+    const win = new BrowserWindow({
+        width: 1000,
+        height: 800,
+        webPreferences: {
+            nodeIntegration: true,
+            preload: path.resolve(__dirname, './preload.js')
+        },
+    })
+    
+    // win.loadURL('https://www.mindcons.cn')
+    win.loadFile('index.html')
+
+    win.webContents.openDevTools()
+
+}
+```
+
+### 优雅的显示窗口
+
+- 使用`ready-to-show`事件
+
+  ```js
+  const createWindow = () => {
+      const win = new BrowserWindow({
+          width: 1000,
+          height: 800,
+          show: false, // 一开始不显示
+          webPreferences: {
+              nodeIntegration: true,
+              preload: path.resolve(__dirname, './preload.js')
+          },
+      })
+      win.loadURL('https://www.mindcons.cn')
+  
+      win.webContents.openDevTools()
+  
+      win.on('ready-to-show', () => { // 准备完资源后再显示，看具体情况使用
+          win.show()
+      })
+  }
+  ```
+
+- 设置窗口背景颜色，该颜色并不是通过给标签元素添加背景颜色实现的，而是设置的窗口背景颜色
+
+  ```js
+  const createWindow = () => {
+      const win = new BrowserWindow({
+          width: 1000,
+          height: 800,
+          show: false,
+          backgroundColor: 'purple',
+          webPreferences: {
+              nodeIntegration: true,
+              preload: path.resolve(__dirname, './preload.js')
+          },
+      })
+      win.loadURL('https://www.mindcons.cn')
+  
+      win.webContents.openDevTools()
+  
+      win.on('ready-to-show', () => {
+          win.show()
+      })
+  }
+  ```
+
+### 父子窗口
+
+- 窗口定义
+
+  ```js
+  const createWindow = () => {
+      const win = new BrowserWindow({
+          width: 1000,
+          height: 800,
+          show: false,
+          backgroundColor: 'purple',
+          webPreferences: {
+              nodeIntegration: true,
+              preload: path.resolve(__dirname, './preload.js')
+          },
+      })
+  
+  
+      win.loadFile('index.html')
+      win.webContents.openDevTools()
+  
+      win.on('ready-to-show', () => {
+          win.show()
+      })
+  
+      const win2 = new BrowserWindow({
+          width: 600,
+          height: 400
+      })
+      win2.loadURL('https://www.baidu.com')
+  }
+  
+  ```
+
+  
+
+- 窗口关系
+
+  ```js
+  const createWindow = () => {
+      const win = new BrowserWindow({
+          width: 1000,
+          height: 800,
+          show: false,
+          backgroundColor: 'purple',
+          webPreferences: {
+              nodeIntegration: true,
+              preload: path.resolve(__dirname, './preload.js')
+          },
+      })
+  
+  
+      win.loadFile('index.html')
+      win.webContents.openDevTools()
+  
+      win.on('ready-to-show', () => {
+          win.show()
+      })
+  
+      const win2 = new BrowserWindow({
+          width: 600,
+          height: 400,
+          parent: win, // 指定父级关联关系，父子窗口都可点击
+          modal: true, // 指定为模态窗口，只能操作win2窗口
+      })
+      win2.loadURL('https://www.baidu.com')
+  }
+  
+  ```
+
+  
+
+### 无边框窗口
+
+```js
+    const win = new BrowserWindow({
+        width: 1000,
+        height: 800,
+        show: false,
+        backgroundColor: 'purple',
+        frame: false, // 设置无边框
+        webPreferences: {
+            nodeIntegration: true,
+            preload: path.resolve(__dirname, './preload.js')
+        },
+    })
+```
+
+<img src="image-20221128211617229.png" alt="image-20221128211617229" style="zoom:50%;" />
+
+配合`CSS`实现拖拽
+
+在此之前我们用`nodemon`监听`html`等文件的变化
+
+```json
+    "start": "nodemon --exec electron . --watch ./ --ext .js, .html, .css, .vue"
+```
+
+注意由于`meta`配置的`csp`策略，不能写内部样式。另外`link`标签必须指定`rel`属性，否则引入失效，估计和渲染引擎有关
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; script-src 'self'; style-src 'self' 'unsafe-inline'">
+    <title>Document</title>
+    <link rel="stylesheet" href="./style.css"></link>
+</head>
+<body>
+    <div>Hello</div>
+    <button id="btn">send</button>
+    <script src="./renderer/index.js"></script>
+
+</body>
+</html>
+```
+
+`style.css`
+
+```css
+html {
+    height: 100%;
+
+}
+body {
+    height: 100%;
+    user-select: none;
+    -webkit-app-region: drag;/* drag/nodrag */
+}
+```
+
+
+
+显示红绿灯（最小化、最大化、关闭）
+
+```js
+    const win = new BrowserWindow({
+        width: 1000,
+        height: 800,
+        show: false,
+        backgroundColor: 'purple',
+        frame: false,
+        titleBarStyle:'hidden', // Or hiddenInset 距离红绿灯更近
+        webPreferences: {
+            nodeIntegration: true,
+            // contextIsolation: false
+            preload: path.resolve(__dirname, './preload.js')
+        },
+    })
+```
+
+实测下，`windows`并没有出现
+
+## 属性与方法
 

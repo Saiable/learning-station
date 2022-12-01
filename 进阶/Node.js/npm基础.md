@@ -65,7 +65,74 @@ categories: Node.js
 
 
 
+# 常见问题
 
+## `ENOSPC`错误
+
+```bash
+[root@VM-4-12-centos crawler]# npm run serve
+
+> crawler@0.1.0 serve
+> vue-cli-service serve
+
+ INFO  Starting development server...
+[10%] building (0/0 modules)
+node:internal/errors:464
+    ErrorCaptureStackTrace(err);
+    ^
+
+Error: ENOSPC: System limit for number of file watchers reached, watch '/home/coder/code-prac/crawlerSchedule/crawler/public'
+    at FSWatcher.<computed> (node:internal/fs/watchers:244:19)
+    at Object.watch (node:fs:2249:34)
+    at createFsWatchInstance (/home/coder/code-prac/crawlerSchedule/crawler/node_modules/chokidar/lib/nodefs-handler.js:119:15)
+    at setFsWatchListener (/home/coder/code-prac/crawlerSchedule/crawler/node_modules/chokidar/lib/nodefs-handler.js:166:15)
+    at NodeFsHandler._watchWithNodeFs (/home/coder/code-prac/crawlerSchedule/crawler/node_modules/chokidar/lib/nodefs-handler.js:331:14)
+    at NodeFsHandler._handleDir (/home/coder/code-prac/crawlerSchedule/crawler/node_modules/chokidar/lib/nodefs-handler.js:567:19)
+    at processTicksAndRejections (node:internal/process/task_queues:96:5)
+    at async NodeFsHandler._addToNodeFs (/home/coder/code-prac/crawlerSchedule/crawler/node_modules/chokidar/lib/nodefs-handler.js:617:16)
+    at async /home/coder/code-prac/crawlerSchedule/crawler/node_modules/chokidar/index.js:451:21
+    at async Promise.all (index 0)
+Emitted 'error' event on FSWatcher instance at:
+    at FSWatcher._handleError (/home/coder/code-prac/crawlerSchedule/crawler/node_modules/chokidar/index.js:647:10)
+    at NodeFsHandler._addToNodeFs (/home/coder/code-prac/crawlerSchedule/crawler/node_modules/chokidar/lib/nodefs-handler.js:645:18)
+    at processTicksAndRejections (node:internal/process/task_queues:96:5)
+    at async /home/coder/code-prac/crawlerSchedule/crawler/node_modules/chokidar/index.js:451:21
+    at async Promise.all (index 0) {
+  errno: -28,
+  syscall: 'watch',
+  code: 'ENOSPC',
+  path: '/home/coder/code-prac/crawlerSchedule/crawler/public',
+  filename: '/home/coder/code-prac/crawlerSchedule/crawler/public'
+}
+```
+
+`Error: ENOSPC: System limit for number of file watchers reached, watch'所在文件路径'`
+
+`vue`工程在 deepin15.11 系统环境中运行 `npm run serve`命令时出现如下错误：
+
+
+解决方案
+在终端按顺序执行下面两个命令即可解决问题
+
+```bash
+echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+
+sudo sysctl --system
+```
+
+是`linux`系统的限制导致这个报错了，需要设置一下：`fs.inotify.max_user_watches` 这个参数。
+
+**解决方法**
+
+执行：`vim /etc/sysctl.conf`，添加如下内容：
+
+```bash
+fs.inotify.max_user_watches=524288
+```
+
+`esc`，输入：`:wq`，保存退出
+
+在命令行执行：`sysctl -p`
 
 
 

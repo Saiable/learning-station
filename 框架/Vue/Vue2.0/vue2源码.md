@@ -2198,7 +2198,60 @@ while(html) {
 
 ![image-20221123162236809](image-20221123162236809.png)
 
-自闭合标签也没了
+获取到的`template`中的自闭合标签已经没有了
+
+
+
+上面的处理，只是把字符串删除了，并没有替换文本
+
+我们希望把文本稍作处理，需要写几个方法把各自匹配的内容，暴露出去，让外面来处理
+
+```js
+function parsetHTML(html) {
+    function start(tag, attrs) {
+        console.log('开始标签', tag, attrs)
+    }
+
+    function chars(text) {
+        console.log('文本', text)
+    }
+
+    function end(tag) {
+        console.log('结束标签', tag)
+    }
+    
+    // ...
+    while(html) {
+
+        let textEnd = html.indexOf('<')
+        if(textEnd == 0) { 
+            const startTagMatch = parseStartTag()
+            if(startTagMatch) {
+                start(startTagMatch.tagName, startTagMatch.attrs) // 把匹配到的开始标签的内容，传出去
+                continue
+            }
+
+            let endTagMatch = html.match(endTag)
+            if(endTagMatch) {
+                advance(endTagMatch[0].length)
+                end(endTagMatch[1]) // 把匹配到的结束标签，传出去
+
+                continue
+            }
+        }
+        if(textEnd >= 0) {
+            let text = html.substring(0, textEnd)
+            if(text) {
+                char(text) // 把匹配到的文本，传出去
+                advance(text.length)
+            }
+        }
+    }
+    
+}
+```
+
+
 
 #### 通过虚拟`DOM`生成真实`DOM`
 

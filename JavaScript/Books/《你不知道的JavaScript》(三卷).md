@@ -130,13 +130,79 @@ typora-root-url: 《你不知道的JavaScript》(三卷)
 
 
 
+#### `Promise.race([..])`
+
+
+
+#### `all([..])`和`race([..])`的变体
+
+
+
+#### 并发迭代
+
+
+
+### `Promise API`概述
+
+#### `new Promise()`构造器
+
+
+
+#### `Promise.resovle()`和`Promise.reject()`
+
+
+
+#### `then()`和`catch()`
+
+
+
+#### `Promise.all([...])`和`Promise.race([...])`
+
+
+
+### `Promise`局限性
+
+#### 顺序处理错误
 
 
 
 
 
+#### 单一值
+
+##### 分裂值
 
 
+
+##### 展开/传递参数
+
+
+
+#### 单决议
+
+
+
+#### 惯性
+
+
+
+#### 无法取消的`Promise`
+
+
+
+#### `Promsie`性能
+
+
+
+### 小结
+
+
+
+# 生成器
+
+
+
+## 打破完整运行
 
 
 

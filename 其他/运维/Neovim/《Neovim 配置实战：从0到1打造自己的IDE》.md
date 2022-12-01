@@ -1,7 +1,8 @@
 ---
 title: Neovim 配置实战：从0到1打造自己的IDE
 cover: false
-date: 2022/7/25 20:34:51
+date: 2022-7-25 20:34:51
+typora-root-url: 《Neovim 配置实战：从0到1打造自己的IDE》
 ---
 
 
@@ -36,7 +37,7 @@ Neovim 的配置可以不断修改和改进。我觉得学会调教 Neovim 在�
 
 这里我也展示一下自己配置的运行效果：
 
-![features2.gif](《Neovim 配置实战：从0到1打造自己的IDE》.assets/82fd07bc9d6746be9c786009a0321b71tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![features2.gif](82fd07bc9d6746be9c786009a0321b71tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 我自己已经使用 VSCode 很多年了，这次下决心转移到 Neovim，看了很多文档，参考了很多配置资料，尝试了很多插件，也走了很多弯路，终于我的 Neovim 的配置已经完全可以满足目前我对代码编辑器的需求了。所以我想写成小册，把配置方法分享出来。
 
@@ -50,7 +51,7 @@ Neovim 的配置可以不断修改和改进。我觉得学会调教 Neovim 在�
 
 在 **代码篇** 中，我们会补全程序开发相关的功能，包括如何实现代码高亮，什么是内置 LSP，如何配置 Neovim 内置 LSP，代码如何补全，如何设置自定义代码段，代码格式化，UI 可否再美化加强等。之后还会专门针对前端开发和 rust 开发所必备的插件配置介绍，一步一步帮助你将手中的 Neovim 装配成 VSCode 般的开发环境。
 
-![xmind.png](《Neovim 配置实战：从0到1打造自己的IDE》.assets/7f4e9afbfa684e25ad4c5b2b913c7623tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![xmind.png](7f4e9afbfa684e25ad4c5b2b913c7623tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 本小册适合有一点 VIM 基础的使用者（至少知道怎么编辑文件和退出 VIM 😁），有志于提升开发效率与开发体验，却被网上零散过时的 VIM 配置教程困扰的同学们。
 
@@ -66,7 +67,7 @@ Neovim 的配置可以不断修改和改进。我觉得学会调教 Neovim 在�
 
 我们假设您的系统已经成功安装 WSL 2，如果不确定是否安装过，可以打开 `cmd` 中运行 `wsl -l -v` 进行验证：
 
-![wsl2.png](《Neovim 配置实战：从0到1打造自己的IDE》.assets/3d2b4880841d45579e7677ae1095fcf0tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![wsl2.png](3d2b4880841d45579e7677ae1095fcf0tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 跟上图一致，表示安装成功，可以看到我们安装的子系统为 `Ubuntu-18.04`，也是我推荐的系统。
 
@@ -78,13 +79,13 @@ Neovim 的配置可以不断修改和改进。我觉得学会调教 Neovim 在�
 
 Windows Terminal 是微软开源的新一代终端工具，主要功能包括多个选项卡、窗格、Unicode和 UTF-8 字符支持，GPU 加速文本渲染引擎以及自定义主题、样式和配置。
 
-![terminal.jpg](《Neovim 配置实战：从0到1打造自己的IDE》.assets/9437fd75bdcd44069d6461a9f16fe532tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![terminal.jpg](9437fd75bdcd44069d6461a9f16fe532tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 推荐使用 [微软应用商店](https://link.juejin.cn/?target=https%3A%2F%2Fwww.microsoft.com%2Fzh-cn%2Fp%2Fwindows-terminal%2F) 进行安装。安装后可以在 `设置` 里进行对外观进行设置，比如我在 `外观` 中打开了`深色主题`，在 `配色方案中` 可以选择 `One Half Dark`，如果在之后发现有快捷键出现冲突，可以在这里的 `操作` 中 删除了与 VIM 冲突的快捷键。
 
 在这里最重要的设置，是字体设置，要选择包含 **Nerd fonts** 的字体。因为命令行中是不支持显示图标的，比如下图的文件夹图标，如果没有 Nerd fonts 则会显示成右边类似**乱码**的样子。
 
-![nerdfonts4.png](《Neovim 配置实战：从0到1打造自己的IDE》.assets/b9724b1008424c04b970dcd2cf1b9c0atplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![nerdfonts4.png](b9724b1008424c04b970dcd2cf1b9c0atplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 那么，什么是 Nerd fonts ？
 
@@ -92,7 +93,7 @@ Windows Terminal 是微软开源的新一代终端工具，主要功能包括多
 
 简单讲，Nerd fonts 就是把各种常见的 ‘iconic fonts’，打包到你常用的字体里，这样在命令行里就支持显示这些图标了。
 
-![nerdfonts.png](《Neovim 配置实战：从0到1打造自己的IDE》.assets/31609ce6810d4dbab0c84ce48aab6028tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![nerdfonts.png](31609ce6810d4dbab0c84ce48aab6028tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 很多 `Neovim` 插件都会使用到这里的图标，必须正确安装才可以在命令行下正确显示 icons。
 
@@ -114,13 +115,13 @@ https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/FiraCode/Regul
 
 然后回到 Terminal 中点击 **设置**，**外观**，在字体选项里，选中刚才安装的带 `NF` 结尾的字体（NF：Nerd Fonts），保存。
 
-![nerdfonts2.png](《Neovim 配置实战：从0到1打造自己的IDE》.assets/1f57f8fd18b84e9bb23eff999dcde775tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![nerdfonts2.png](1f57f8fd18b84e9bb23eff999dcde775tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 安装过后，命令行里就支持显示这些小图标了，为了测试是否成功，可以到这个网址：[www.nerdfonts.com/cheat-sheet](https://link.juejin.cn/?target=https%3A%2F%2Fwww.nerdfonts.com%2Fcheat-sheet)
 
 点击 `Show All Icons` 按钮，选择一个图标，点击右上角的 Copy Icon，然后粘贴到我们的 Terminal 命令行里。
 
-![nerdfonts3.png](《Neovim 配置实战：从0到1打造自己的IDE》.assets/41dc19d7624041089a51e32d547a130etplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![nerdfonts3.png](41dc19d7624041089a51e32d547a130etplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 看到我复制的 `github` 和 `twitter` 小图标了吗，如果可以正确显示就是成功了。 准备工作完成，可以开始安装 Neovim 了。
 
@@ -250,19 +251,19 @@ alias v='nvim'
 
 下载下来后，在windows系统上安装，然后xshell上设置一下：
 
-![image-20220425171043801](《Neovim 配置实战：从0到1打造自己的IDE》.assets/image-20220425171043801.png)
+![image-20220425171043801](image-20220425171043801.png)
 
 复制该链接上的`Icon`:https://www.nerdfonts.com/cheat-sheet
 
-![image-20220425171122978](《Neovim 配置实战：从0到1打造自己的IDE》.assets/image-20220425171122978.png)
+![image-20220425171122978](image-20220425171122978.png)
 
 粘贴到终端上测试一下，没问题的话，就会显示图标了：
 
-![image-20220425171212058](《Neovim 配置实战：从0到1打造自己的IDE》.assets/image-20220425171212058.png)
+![image-20220425171212058](image-20220425171212058.png)
 
 xhsell我还额外应用了主题，可能会合`neo-vim`的主题色冲突，建议使用默认的即可
 
-![image-20220425172548567](《Neovim 配置实战：从0到1打造自己的IDE》.assets/image-20220425172548567.png)
+![image-20220425172548567](image-20220425172548567.png)
 
 
 
@@ -343,8 +344,8 @@ vim.wo.relativenumber = true
 vim.wo.cursorline = true
 -- 显示左侧图标指示列
 vim.wo.signcolumn = "yes"
--- 右侧参考线，超过表示代码太长了，考虑换行
-vim.wo.colorcolumn = "80"
+-- 右侧参考线，超过表示代码太长了，考虑换行，可以不加，太丑了
+--- vim.wo.colorcolumn = "80"
 -- 缩进2个空格等于一个Tab
 vim.o.tabstop = 2
 vim.bo.tabstop = 2
@@ -410,6 +411,8 @@ vim.o.pumheight = 10
 vim.o.showtabline = 2
 -- 使用增强状态栏插件后不再需要 vim 的模式提示
 vim.o.showmode = false
+
+
 ```
 
 这里用到的分类有
@@ -428,11 +431,11 @@ vim.o.showmode = false
 
 默认情况下，编辑器底部会以文本方式显示当前模式如： `-- INSERT --` ， `-- VISUAL --` 等。
 
-![5.gif](《Neovim 配置实战：从0到1打造自己的IDE》.assets/b386d4d893b24b4abed50c24f789c5batplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![5.gif](b386d4d893b24b4abed50c24f789c5batplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 `vim.o.showmode = false` 表示关闭显示，这里是固定设置，因为我们后边章节会添加增强显示的插件，已经包含了其功能，如图：
 
-![6.gif](《Neovim 配置实战：从0到1打造自己的IDE》.assets/38a601a67d084e67a7abae59fe28366ftplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![6.gif](38a601a67d084e67a7abae59fe28366ftplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 同样的， `vim.o.showtabline = 2` 也是固定设置，表示永远显示 tabline，因为后边也有对应的 tabline 插件，`vim.o.hidden = true` 在使用多个 buffer的时候是必需的，表示允许隐藏被修改过的 buffer。 否则会报 E37: No write since last change 错误，强制你保存当前buffer后才允许切换到其他的 buffer。
 
@@ -473,7 +476,7 @@ vim.o.timeoutlen = 500
 
 下图演示：
 
-![4-1.gif](《Neovim 配置实战：从0到1打造自己的IDE》.assets/1dd0fbf36e6f4fbb8586891ce2bf5f4dtplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![4-1.gif](1dd0fbf36e6f4fbb8586891ce2bf5f4dtplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 这样经过简单的配置，就把窗口管理提升到了 `VSCode` 无法达到的高度，而在 `VSCode` 中想达到同样的效果，就离不开键盘和鼠标的操作了。
 
@@ -481,7 +484,7 @@ vim.o.timeoutlen = 500
 
 除了可以在 `Normal` 模式下设置快捷键，其他模式也可以设置快捷键，例如下边演示一个在 `Visual` 模式下比较实用的快捷键，选中并挪动多行代码：
 
-![4-2.gif](《Neovim 配置实战：从0到1打造自己的IDE》.assets/c20f67d37cba446497fa37496c868cedtplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![4-2.gif](c20f67d37cba446497fa37496c868cedtplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 除了上述的小技巧，我们后续要安装的大量插件也都需要快捷键设置，所以本节课除了要学习如何在 `Neovim` 中设置快捷键外，还要了解如何把所有快捷键都放在一个配置文件中管理，方便我们后续查找和修改，那么我们开始吧。
 
@@ -546,6 +549,8 @@ local opt = {noremap = true, silent = true }
 添加代码，实现篇首提到的窗口管理功能。
 
 ```lua
+-- 取消 s 默认功能
+map("n", "s", "", opt)
 -- windows 分屏快捷键
 map("n", "sv", ":vsp<CR>", opt)
 map("n", "sh", ":sp<CR>", opt)
@@ -592,7 +597,7 @@ map("t", "<A-k>", [[ <C-\><C-N><C-w>k ]], opt)
 map("t", "<A-l>", [[ <C-\><C-N><C-w>l ]], opt)
 ```
 
-![4-3.gif](《Neovim 配置实战：从0到1打造自己的IDE》.assets/075e9b3d0c404215ba3e2fe8fa84b53btplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![4-3.gif](075e9b3d0c404215ba3e2fe8fa84b53btplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 ## Visule 模式下快捷键
 
@@ -615,7 +620,7 @@ map 的第一个参数 `v` 表示 visual 模式。
 
 但是`ctrl + u` / `ctrl + d` 默认移动半屏，翻太快，一不留神就不知道翻到哪了， `j` / `k` 又移动得太慢了。这时我会设置两种不同级别的翻页距离， `Ctrl+j` / `Ctrl+k` 移动 4 行，`Ctrl+u` / `Ctrl + d` 移动 9 行
 
-![4-4.gif](《Neovim 配置实战：从0到1打造自己的IDE》.assets/e06e164f2de242dc9cf71904b8417cf3tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![4-4.gif](e06e164f2de242dc9cf71904b8417cf3tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 ```lua
 -- 上下滚动浏览
@@ -768,7 +773,7 @@ require("plugins")
 
 安装完成， 按 `q` 退出，如图演示：
 
-![5-1.gif](《Neovim 配置实战：从0到1打造自己的IDE》.assets/2d7b2baa9a4d48968ee08fc8190a5674tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![5-1.gif](2d7b2baa9a4d48968ee08fc8190a5674tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 由于我们没有增加新的插件，所以上图显示为 `Everything already up to date!`，这是因为 `Packer` 已经检查过了，并且没有发现新的插件。
 
@@ -815,7 +820,7 @@ pcall(
 
 ## 补充
 
-如果`:PackerSync`提示`Failed`，手动在`/root/.local/share/nvim/site/pack/packer/start`目录下,，使用`git clone --depth 1 路径`下载即可。
+如果`:PackerSync`提示`Failed`，手动在`/root/.local/share/nvim/site/pack/packer/start`目录下,，使用`git clone --depth 1 github路径`下载即可。
 
 # 6.Neovim 主题配色与优秀主题推荐
 
@@ -823,7 +828,7 @@ pcall(
 
 首先我们需要了解，Neovim 本身内置了一些主题配色，你可以通过 `:colorscheme Tab键` 命令来查看， 回车确认选中。 过程如下：
 
-![6-1.gif](《Neovim 配置实战：从0到1打造自己的IDE》.assets/8950f36d147643b29571387a808622d8tplv-k3u1fbpfcp-zoom-in-crop-mark1304000-165061967302327.awebp)
+![6-1.gif](8950f36d147643b29571387a808622d8tplv-k3u1fbpfcp-zoom-in-crop-mark1304000-165061967302327.awebp)
 
 这里列出的都是内置的 `colorscheme`，它们都保存在 `$VIMRUNTIME/colors/` 目录下。
 
@@ -887,7 +892,7 @@ Lua 语言中用 `..` 来连接两个字符串，上边已经声明了 `colorsch
 vim.notify("colorscheme " .. colorscheme .. " 没有找到！")
 ```
 
-![6-3.png](《Neovim 配置实战：从0到1打造自己的IDE》.assets/3feb8936a6cc4f96b52b5de2f4cdd2a8tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![6-3.png](3feb8936a6cc4f96b52b5de2f4cdd2a8tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 至此配置的部分就完成了，提示没有找到是因为 `tokyonight` 主题并不存在，如果把该值修改成已经存在的主题，比如 `ron` 就会设置成功了。
 
@@ -913,7 +918,17 @@ packer.startup({
 
 `:w` 保存，如果顺利的话，会自动安装，完成后按 `q` 退出，重启后就可以看到 `tokyonight` 主题的样子了。如图：
 
-![6-4.gif](《Neovim 配置实战：从0到1打造自己的IDE》.assets/e5a35990d60945d9b916e8c5d3970289tplv-k3u1fbpfcp-zoom-in-crop-mark1304000-16507631138653.awebp)
+![6-4.gif](e5a35990d60945d9b916e8c5d3970289tplv-k3u1fbpfcp-zoom-in-crop-mark1304000-16507631138653.awebp)
+
+补充：
+
+但通常不顺利，可以到插件目录下手动安装`git clone --depth 1 https://github.com/folke/tokyonight.nvim.git`
+
+目录：`/root/.local/share/nvim/site/pack/packer/start`
+
+![image-20221126150213983](image-20221126150213983.png)
+
+
 
 通常我们都会选择专门为 Neovim 制作的第三方主题，因为它们大多都会支持基于 `TreeSitter` 的语法高亮（后续代码高亮章节会详细说明），我认为这是考量是否应该选择一个主题最基础也是重要的事。
 
@@ -935,13 +950,13 @@ nvim-treesitter 的官方 wiki 上列出了许多支持 Treesitter 的主题，�
 
 移植自 Visual Studio Code [TokyoNight](https://link.juejin.cn/?target=https%3A%2F%2Fgithub.com%2Fenkia%2Ftokyo-night-vscode-theme) theme，我的最爱，目前 Github 上有 1.3k 星星。
 
-![tokyonight.png](《Neovim 配置实战：从0到1打造自己的IDE》.assets/1b6b2482c1d14b6b9f34ef533a2526f0tplv-k3u1fbpfcp-zoom-in-crop-mark1304000-165061967302432.awebp)
+![tokyonight.png](1b6b2482c1d14b6b9f34ef533a2526f0tplv-k3u1fbpfcp-zoom-in-crop-mark1304000-165061967302432.awebp)
 
 - OceanicNext
 
 Oceanic-Next 是受 [Oceanic Next for Sublime](https://link.juejin.cn/?target=https%3A%2F%2Fgithub.com%2Fvoronianski%2Foceanic-next-color-scheme) 启发而制作的主题，但只是用到了基础色系，并不是直接移植，同时支持 Neovim 和 Vim 8，目前在 Github 上有接近1000个星星。
 
-![oceanicNext.png](《Neovim 配置实战：从0到1打造自己的IDE》.assets/d1e2c08536324da7b90b96ab4f01bbf7tplv-k3u1fbpfcp-zoom-in-crop-mark1304000-165061967302534.awebp)
+![oceanicNext.png](d1e2c08536324da7b90b96ab4f01bbf7tplv-k3u1fbpfcp-zoom-in-crop-mark1304000-165061967302534.awebp)
 
 - gruvbox.nvim
 
@@ -959,19 +974,19 @@ Oceanic-Next 是受 [Oceanic Next for Sublime](https://link.juejin.cn/?target=ht
 
 nrod 绝对可以称得上是现代化的主题配色，官网上列出了其支持非常非常多的第三方插件配色，但颜色偏素，我不是特别的喜欢。
 
-![nord.png](《Neovim 配置实战：从0到1打造自己的IDE》.assets/3baeeb8d748f4709aff1910c74fcf53dtplv-k3u1fbpfcp-zoom-in-crop-mark1304000-165061967302538.awebp)
+![nord.png](3baeeb8d748f4709aff1910c74fcf53dtplv-k3u1fbpfcp-zoom-in-crop-mark1304000-165061967302538.awebp)
 
 - onedark
 
 onedark 这个名字不用说，任何编辑器里应该都见过，也是支持非常非常多第三方插件，以及 Treesitter 和 LSP。
 
-![onedark.png](《Neovim 配置实战：从0到1打造自己的IDE》.assets/5e6fc8efeb404f66b1ff6fa8b997e58etplv-k3u1fbpfcp-zoom-in-crop-mark1304000-165061967302540.awebp)
+![onedark.png](5e6fc8efeb404f66b1ff6fa8b997e58etplv-k3u1fbpfcp-zoom-in-crop-mark1304000-165061967302540.awebp)
 
 - nightfox
 
 一个插件包含多种配色 Nightfox / Nordfox / Dayfox / Dawnfox / Duskfox，支持非常多的第三方插件。并且有很多配置项，相对比较复杂。目前在 Github 上有600 多颗星星，是非常不错的选择。
 
-![nightfox.png](《Neovim 配置实战：从0到1打造自己的IDE》.assets/d31961d706f146ed9953e49fa7dcf784tplv-k3u1fbpfcp-zoom-in-crop-mark1304000-165061967302542.awebp)
+![nightfox.png](d31961d706f146ed9953e49fa7dcf784tplv-k3u1fbpfcp-zoom-in-crop-mark1304000-165061967302542.awebp)
 
 如果还是没有你喜欢的，你也可以到 Github 的 [neovim-colorscheme](https://link.juejin.cn/?target=https%3A%2F%2Fgithub.com%2Ftopics%2Fneovim-colorscheme) 链接下找找你的最爱。
 
@@ -1016,7 +1031,7 @@ local colorscheme = "tokyonight"
 
 可以方便地浏览目录结构，添加、删除、移动或者重命名文件，更快地打开文件。
 
-![7-4.png](《Neovim 配置实战：从0到1打造自己的IDE》.assets/d9230327232f43f1a7f4d05f27b815d7tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![7-4.png](d9230327232f43f1a7f4d05f27b815d7tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 目前 [nvim-tree.lua](https://link.juejin.cn/?target=https%3A%2F%2Fgithub.com%2Fkyazdani42%2Fnvim-tree.lua) 是最流行的全 Lua 编写的侧边栏插件，第一步安装，打开 `lua/plugins.lua`，增加：
 
@@ -1026,7 +1041,7 @@ packer.startup({
     -- Packer 可以升级自己
     use("wbthomason/packer.nvim")
     -------------------------- plugins -------------------------------------------
-    -- nvim-tree (新增)
+    -- nvim-tree (新增)，文件侧边栏
     use({ "kyazdani42/nvim-tree.lua", requires = "kyazdani42/nvim-web-devicons" })
 
 ...略
@@ -1036,13 +1051,25 @@ packer.startup({
 
 `:w` 保存，自动安装，安装完成如图，按 `q` 退出。
 
-![7-2.png](《Neovim 配置实战：从0到1打造自己的IDE》.assets/7e6f6aaefd514d2195b3dd442d93e47btplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![7-2.png](7e6f6aaefd514d2195b3dd442d93e47btplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 如果报错网络错误，可以重新运行 `:PackerSync` 。
 
 插件安装完成，只表示下载成功。并不是说就可以直接使用了，每个插件都需要单独配置。
 
 下边开始配置侧边栏。
+
+也可到插件目录下手动安装
+
+人家改名字了，但不影响（第一个我用新的名字，第二个还是用的老名字，都可以）
+
+```bash
+git clone --depth 1 https://github.com/nvim-tree/nvim-web-devicons.git
+
+git clone --depth 1 https://github.com/kyazdani42/nvim-tree.lua.git
+```
+
+
 
 ## 配置 nvim-tree
 
@@ -1144,28 +1171,43 @@ nvim-tree 初始化支持很多参数，如果想知道还有哪些其他的参�
 local pluginKeys = {}
 
 -- nvim-tree
--- alt + m 键打开关闭tree
-map("n", "<A-m>", ":NvimTreeToggle<CR>", opt)
+map("n", "<A-n>", ":NvimTreeToggle<CR>", opt)
+map("n", "<leader>n", ":NvimTreeToggle<CR>", opt)
 -- 列表快捷键
-pluginKeys.nvimTreeList = {
+pluginKeys.nvimTreeList = { 
   -- 打开文件或文件夹
   { key = {"<CR>", "o", "<2-LeftMouse>"}, action = "edit" },
-  -- 分屏打开文件
+  -- v分屏打开文件
   { key = "v", action = "vsplit" },
+  -- h分屏打开文件
   { key = "h", action = "split" },
-  -- 显示隐藏文件
-  { key = "i", action = "toggle_ignored" }, -- Ignore (node_modules)
-  { key = ".", action = "toggle_dotfiles" }, -- Hide (dotfiles)
+  -- Ignore (node_modules)
+  { key = "i", action = "toggle_ignored" },
+  -- Hide (dotfiles)
+  { key = ".", action = "toggle_dotfiles" },
+  { key = "R", action = "refresh" },
   -- 文件操作
-  { key = "<F5>", action = "refresh" },
   { key = "a", action = "create" },
   { key = "d", action = "remove" },
   { key = "r", action = "rename" },
   { key = "x", action = "cut" },
   { key = "c", action = "copy" },
   { key = "p", action = "paste" },
-  { key = "s", action = "system_open" },
+  { key = "y", action = "copy_name" },
+  { key = "Y", action = "copy_path" },
+  { key = "gy", action = "copy_absolute_path" },
+  { key = "I", action = "toggle_file_info" },
+  { key = "n", action = "tabnew" },
+  -- 进入下一级
+  { key = { "]" }, action = "cd" },
+  -- 进入上一级
+  { key = { "[" }, action = "dir_up" },
 }
+
+
+
+
+
 return pluginKeys
 ```
 
@@ -1192,7 +1234,13 @@ require("plugin-config.nvim-tree")
 
 重启 nvim 后，侧边栏就会生效了，使用 `Alt + m` 打开/关闭， `j/k` 上下移动， `Alt + h` / `Alt + l` 可以左右窗口跳转，演示如下：
 
-![7-3.gif](《Neovim 配置实战：从0到1打造自己的IDE》.assets/4c9c8866ba5a45d791f382005075be25tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![7-3.gif](4c9c8866ba5a45d791f382005075be25tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+
+注意：有的远程连接工具，如`WindTerm`它自己有`Alt + m`的快捷键，可以取消它的设置，或者设置成其他的。[windows Terminal 修改快捷键 - 简书 (jianshu.com)](https://www.jianshu.com/p/a1c067578b93)
+
+我们这里不用`alt + m`，改成`alt +n`，并注意调整连接工具的显示大小，过大的话会有多余空行
+
+![image-20221126153235138](image-20221126153235138.png)
 
 超级酷的侧边栏，下一节课继续增加顶部标签栏和底部信息显示栏。
 
@@ -1206,7 +1254,7 @@ require("plugin-config.nvim-tree")
 
 `bufferline` 顾名思义是把 Neovim 的 `buffer` 图形化显示成类似 VSCode 中 标签页的形式，如下动图所示：
 
-![8-2.gif](《Neovim 配置实战：从0到1打造自己的IDE》.assets/9fc23c0875884bcb8c38173b0edba40dtplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![8-2.gif](9fc23c0875884bcb8c38173b0edba40dtplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 常用 VSCode 的一定非常熟悉这个 Tab 页的概念，现在已经是代码编辑器的标配了，一个 Tab 用来表示一个打开的文件，很匹配 Neovim 中 `buffer` 的概念。
 
@@ -1295,6 +1343,16 @@ map("n", "<leader>bc", ":BufferLinePickClose<CR>", opt)
 
 我又将 `bufferline` 提供的我不太常用到的命令，映射为由空格键开头， `<leader>bl` 关闭左侧标签页， `<leader>bh` 关闭右侧标签页， `<leader>bc` 选择要关闭的标签页。
 
+
+
+**补充：**
+
+做个笔记bufferline的快捷键要放到插件快捷键的上边，也就是你return pluginkeys这行代码的上边找个地方放
+
+不然会报错！
+
+
+
 最后一步，在入口文件中引入配置文件。 打开 `init.lua`，增加代码：
 
 ```lua
@@ -1309,7 +1367,7 @@ require("plugin-config.bufferline")
 
 底部状态栏用于显示一些额外信息，比如当前的编辑模式，光标所在的行号，列号。当前文件大小，编码格式，当前 `git` 分支等状态，如下图所示。
 
-![8-1.png](《Neovim 配置实战：从0到1打造自己的IDE》.assets/c1097b4cce304631a5f71fdd4f4f06e5tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![8-1.png](c1097b4cce304631a5f71fdd4f4f06e5tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 我在这里选择了 [lualine.nvim](https://link.juejin.cn/?target=https%3A%2F%2Fgithub.com%2Fnvim-lualine%2Flualine.nvim) 插件。
 
@@ -1486,7 +1544,7 @@ require("plugin-config.lualine")
 
 先看一下使用 `telescope` 模糊查找文件的样子，打开窗口以后有一个输入框，随着内容的输入会实时在结果框中显示搜索结果，使用快捷键在结果框中选择，右侧会实时显示文件预览，非常酷炫。
 
-![telescope.gif](《Neovim 配置实战：从0到1打造自己的IDE》.assets/567f9023338b4a77b6f35716516ec2c6tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![telescope.gif](567f9023338b4a77b6f35716516ec2c6tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 看一下安装方法，打开 `lua/plugins.lua` 文件，新增 `telescope` 相关的内容：
 
@@ -1544,7 +1602,7 @@ npm install -g fd-find
 
 再次运行 `:checkhealth telescope`，如图，依赖都已经安装完成：
 
-![9-1.png](《Neovim 配置实战：从0到1打造自己的IDE》.assets/92f2feaad2c74b19a12bdc2927bd4951tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![9-1.png](92f2feaad2c74b19a12bdc2927bd4951tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 无需理会这里提示的 `nvim-treesitter` 没有找到，我们后边代码高亮章节才会安装。
 
@@ -1552,7 +1610,7 @@ npm install -g fd-find
 
 除此之外，还有一个常用的功能是全局查找，`:Telescope live_grep` 可以打开搜索窗口，输入内容后，结果会实时显示。
 
-![9-2.gif](《Neovim 配置实战：从0到1打造自己的IDE》.assets/7b4be58055014d08980d51509497871dtplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![9-2.gif](7b4be58055014d08980d51509497871dtplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 接下来将这两个常用功能定义为快捷键，打开 `lua/keybindings.lua`，根据你的使用习惯增加键盘映射。
 
@@ -1592,6 +1650,10 @@ pluginKeys.telescopeList = {
   },
 }
 ```
+
+**注意，这个要配置在`pluginKeys`的声明后面，在`return`之前**
+
+
 
 这样在插入模式下按 `Ctrl + j` / `Ctrl +k` 就可以在文件列表中上下切换了，不再需要切回 `Normal` 模式了。
 
@@ -1636,7 +1698,7 @@ Telescope 非常强大，内置了很多的 pickers，比如 `:Telescope buffers
 
 你可以在命令补全里看到这些支持的 pickers。
 
-![9-4.gif](《Neovim 配置实战：从0到1打造自己的IDE》.assets/ea6b3e7dc16d4b6cbc426df12ba36b73tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![9-4.gif](ea6b3e7dc16d4b6cbc426df12ba36b73tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 更多内置 pickers 可以参考 [官网说明](https://link.juejin.cn/?target=https%3A%2F%2Fgithub.com%2Fnvim-telescope%2Ftelescope.nvim%23pickers)。
 
@@ -1660,7 +1722,7 @@ Telescope 支持非常多的第三方扩展，列表见下边链接：
 
 要安装的扩展叫做 [telescope-env.nvim](https://link.juejin.cn/?target=https%3A%2F%2Fgithub.com%2FLinArcX%2Ftelescope-env.nvim) 用于列出系统环境变量，如图：
 
-![9-3.png](《Neovim 配置实战：从0到1打造自己的IDE》.assets/f735982ddd12419eaeda8a8e9fedac62tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![9-3.png](f735982ddd12419eaeda8a8e9fedac62tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 打开 `lua/plugins.lua` 文件，新增 `telescope-env.nvim` 相关的内容：
 
@@ -1686,7 +1748,7 @@ Telescope 就这么多内容了，下一节课是 **基建篇** 的最后一节�
 
 本节课会介绍如何给 Neovim 增加一个自定义启动画面，并列出常用功能，如图所示：
 
-![10-3.png](《Neovim 配置实战：从0到1打造自己的IDE》.assets/70bf0cddda5e47d59c27e59b2164ed5etplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![10-3.png](70bf0cddda5e47d59c27e59b2164ed5etplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 当我们在命令行中输入 `nvim` 不带任何路径并敲击回车的时候，就会打开这个界面，通常我们会在这个界面中配置最常用功能，比如打开最近编辑过的文件，快速打开项目文件夹，快速修改快捷键等。
 
@@ -1764,6 +1826,93 @@ vim.g.dashboard_custom_header = {
 
 `vim.g.dashboard_custom_header` 是最重要的部分，用于自定义顶部显示的 ascii 图片，[官方 wiki](https://link.juejin.cn/?target=https%3A%2F%2Fgithub.com%2Fglepnir%2Fdashboard-nvim%2Fwiki%2FAscii-Header-Text) 上有很多推荐图片。
 
+
+
+注意：`dashboard`插件目前已经使用lua重写，配置文件因而变化了，不要照抄
+
+**更新了，别用上面的了：2022年11月27日22:00:18**
+
+```lua
+
+local status, db = pcall(require, "dashboard")
+if not status then
+  vim.notify("没有找到 dashboard")
+  return
+end
+
+db.custom_footer = {
+  "",
+  "",
+  "https://mindcons.cn     ",
+}
+
+db.custom_center = {
+  {
+    icon = "  ",
+    desc = "Projects                            ",
+    action = "Telescope projects",
+  },
+  {
+    icon = "  ",
+    desc = "Recently files                      ",
+    action = "Telescope oldfiles",
+  },
+  {
+    icon = "  ",
+    desc = "Edit keybindings                    ",
+    action = "edit ~/.config/nvim/lua/keybindings.lua",
+  },
+  {
+    icon = "  ",
+    desc = "Edit Projects                       ",
+    action = "edit ~/.local/share/nvim/project_nvim/project_history",
+  },
+  -- {
+  --   icon = "  ",
+  --   desc = "Edit .bashrc                        ",
+  --   action = "edit ~/.bashrc",
+  -- },
+  -- {
+  --   icon = "  ",
+  --   desc = "Change colorscheme                  ",
+  --   action = "ChangeColorScheme",
+  -- },
+  -- {
+  --   icon = "  ",
+  --   desc = "Edit init.lua                       ",
+  --   action = "edit ~/.config/nvim/init.lua",
+  -- },
+  -- {
+  --   icon = "  ",
+  --   desc = "Find file                           ",
+  --   action = "Telescope find_files",
+  -- },
+  -- {
+  --   icon = "  ",
+  --   desc = "Find text                           ",
+  --   action = "Telescopecope live_grep",
+  -- },
+}
+
+
+db.custom_header = {
+  [[                                                   ]],
+  [[ ███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗]],
+  [[ ████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║]],
+  [[ ██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║]],
+  [[ ██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║]],
+  [[ ██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║]],
+  [[ ╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝]],
+  [[                                                   ]],
+  [[                [ version : 1.0.0 ]                ]],
+}
+
+```
+
+
+
+
+
 比如卖个萌可以设置成宝可梦：
 
 ```lua
@@ -1780,7 +1929,7 @@ vim.g.dashboard_custom_header = {
 }
 ```
 
-![10-2.png](《Neovim 配置实战：从0到1打造自己的IDE》.assets/c7b923da434a4a8889a5c11b6c471a3atplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![10-2.png](c7b923da434a4a8889a5c11b6c471a3atplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 也可以跟我一样使用文字，你可以搜索一下 ascii 图片生成器，生成自己专属图片，我的文字是使用 [patorjk.com](https://link.juejin.cn/?target=http%3A%2F%2Fpatorjk.com%2Fsoftware%2Ftaag%2F%23p%3Ddisplay%26f%3DANSI%20Shadow%26t%3Dneovim) 生成的。进入后输入文字，然后点击左下角的 `Select & Copy` 即可复制到剪贴板。
 
@@ -1885,13 +2034,19 @@ require("plugin-config.project")
 
 重启后 `Telescope projects` 即可生效，当我们命令行中输入 `nvim` 回车后进入启动画面，j、k 切换选项，再次回车即可执行对应命令。
 
-![10-1.gif](《Neovim 配置实战：从0到1打造自己的IDE》.assets/c78f2231dc744f218ad60bcf702910e2tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![10-1.gif](c78f2231dc744f218ad60bcf702910e2tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 但有时候会发现 project 列表并不是我常用的项目列表，列出了很多没用的项目，这时候就需要手动编辑 `project_history` 列表了，但这个列表保存在哪里呢？
 
 运行命令 `:lua print(require("project_nvim.utils.path").historyfile)` 就可以看到 `project_history` 文件的路径了。
 
 我这里显示的是 `~/.local/share/nvim/project_nvim/project_history` 这个文件，我们可以直接手动修改这个文件，仅保存常用的项目。
+
+
+
+
+
+
 
 好了，目前文本编辑器已经差不多了，下一节就进入 **代码篇** 了，我们会专注在代码相关的功能上。
 
@@ -1905,7 +2060,7 @@ require("plugin-config.project")
 
 下图是 `nvim-treesitter` 官方提供代码高亮对比图，左侧为传统的代码高亮模式，右侧为基于 `Tree-sitter` 的代码高亮：
 
-![nvim-treesitter.png](《Neovim 配置实战：从0到1打造自己的IDE》.assets/b9147a820eb84e2fbdab023ecf03d27ftplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![nvim-treesitter.png](b9147a820eb84e2fbdab023ecf03d27ftplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 不同语言的效果截图详见官网 [Gallery](https://link.juejin.cn/?target=https%3A%2F%2Fgithub.com%2Fnvim-treesitter%2Fnvim-treesitter%2Fwiki%2FGallery) 。
 
@@ -1938,7 +2093,7 @@ packer.startup({
 
 同其他插件一样，`:w` 保存后自动安装，如图：
 
-![11-1.gif](《Neovim 配置实战：从0到1打造自己的IDE》.assets/ffb638437139499288d8231417f5e668tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![11-1.gif](ffb638437139499288d8231417f5e668tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 当我们安装完插件后，注意看上图底部的状态栏，默认会自动下载安装一个 `c` 的 `parser` 。等待完成，按 q 退出。如果报网络错误，重新运行 `:PackerSync`。
 
@@ -1948,7 +2103,7 @@ packer.startup({
 
 你可以运行 `:TSInstallInfo` 命令查看 language parsers 列表与安装状态，如下图所示，只有 c 语言是安装好的：
 
-![11-1.png](《Neovim 配置实战：从0到1打造自己的IDE》.assets/6b61350cb44b4ff49a605b8cbcdc4166tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![11-1.png](6b61350cb44b4ff49a605b8cbcdc4166tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 如果我们要安装指定的 `Language parser`，则我们需要调用命令：
 
@@ -1966,7 +2121,7 @@ packer.startup({
 
 进入目录会发现我们刚安装的 `javascript.so` 和 `c.so`，每个文件只有几百 KB 大小。
 
-![11-2.png](《Neovim 配置实战：从0到1打造自己的IDE》.assets/258f0df0ab224a46b8106cb2ab2ffdfbtplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![11-2.png](258f0df0ab224a46b8106cb2ab2ffdfbtplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 如果这个时候运行 `:TSInstallInfo` 则 `javascript` 也会对应打上勾勾。
 
@@ -2026,7 +2181,7 @@ require("plugin-config.nvim-treesitter") -- （新增）
 
 重启后，如果一切正常即可看到代码高亮效果，调用 `:TSBufToggle highlight` 命令可以切换打开关闭代码高亮功能，如图。
 
-![11-3.gif](《Neovim 配置实战：从0到1打造自己的IDE》.assets/b2b1436bb09941eb897ede9256e0c488tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![11-3.gif](b2b1436bb09941eb897ede9256e0c488tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 然而这个代码高亮颜色，和我们之前安装的 `colorscheme` 支持程度有关，不同的主题配色显示会不一样，你可以在 `nvim-treesitter` 的 `wiki` 里查看不同到皮肤的显示效果，网址如下：
 
@@ -2034,7 +2189,7 @@ require("plugin-config.nvim-treesitter") -- （新增）
 
 然而下图演示了很多网友都遇到过的一个经典的 bug ，我本来配置好好的 Neovim 环境，在某次更新插件后，突然也出现了这个 bug，后来发现很多人都遇到了这个情况，如图 ：
 
-![11-2.gif](《Neovim 配置实战：从0到1打造自己的IDE》.assets/c907598933cc4dfea2fc32655987b3b0tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![11-2.gif](c907598933cc4dfea2fc32655987b3b0tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 经我查询发现，这是由于我们安装的某个 `colorscheme` 和 `treesitter` 不兼容导致的。 我之前安装的 `zephy-nvim` 配色原本是兼容的，但在某次的更新后突然出现了不兼容的状况，所以出现了上述bug。
 
@@ -2058,7 +2213,7 @@ require("plugin-config.nvim-treesitter") -- （新增）
 
 见图：
 
-![11-4.gif](《Neovim 配置实战：从0到1打造自己的IDE》.assets/2fab0f9a0abe4385a20735a6b14f4255tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![11-4.gif](2fab0f9a0abe4385a20735a6b14f4255tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 如果你需要这个功能，需要打开 `lua/plugin-config/nvim-treesitter.lua` 文件，在 `highlight` 模块下方，增加如下代码：
 
@@ -2083,7 +2238,7 @@ incremental_selection = {
 
 启用该模块后，可以使用 `=` 操作符对代码缩进，如图：
 
-![11-5.gif](《Neovim 配置实战：从0到1打造自己的IDE》.assets/36c87fe145764f25bf13a2e313176468tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![11-5.gif](36c87fe145764f25bf13a2e313176468tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 在上边的演示中，我是先选中要缩进的代码，然后按 `=` 键，即可对选中代码缩进。
 
@@ -2106,7 +2261,7 @@ incremental_selection = {
 
 代码折叠可以使代码更清晰，更易于阅读，基于 `Tree-sitter` 的代码折叠可以精确的折叠 `{}` 中的内容。演示如下：
 
-![11-6.gif](《Neovim 配置实战：从0到1打造自己的IDE》.assets/d426c6a54d464b3a80bf5982aec20b75tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![11-6.gif](d426c6a54d464b3a80bf5982aec20b75tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 在上边的演示中，我使用了 `zc` 组合键来折叠 `{}` 中的内容，还可以使用 `zo` 组合键来打开对应的折叠。
 
@@ -2125,7 +2280,7 @@ vim.opt.foldlevel = 99
 
 最后，你可以运行 `:TSModuleInfo` 命令来查看你的模块是否开启成功，如图：
 
-![11-3.png](《Neovim 配置实战：从0到1打造自己的IDE》.assets/243d083c59a047b2bb680454e20d2ac6tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![11-3.png](243d083c59a047b2bb680454e20d2ac6tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 `nvim-treesitter` 内置功能大概就这么多，但其 [官方 wiki ](https://link.juejin.cn/?target=https%3A%2F%2Fgithub.com%2Fnvim-treesitter%2Fnvim-treesitter%2Fwiki%2FExtra-modules-and-plugins)中还列出了许多第三方的功能模块和插件，你也可以去了解一下。
 
@@ -2139,7 +2294,7 @@ vim.opt.foldlevel = 99
 
 在 LSP 出现之前，传统的 IDE 都要为其支持的每个语言实现类似的代码补全、文档提示、跳转到定义等功能，不同的 IDE 做了很多重复的工作，并且兼容性也不是很好。 LSP 的出现将编程工具解耦成了 **Language Server** 与 **Language Client** 两部分。定义了编辑器与语言服务器之间交互协议。
 
-![12-1.png](《Neovim 配置实战：从0到1打造自己的IDE》.assets/11556d465ae2488a81ced76c51a36bd0tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![12-1.png](11556d465ae2488a81ced76c51a36bd0tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 Client 专注于显示样式实现， Server 负责提供语言支持，包括常见的自动补全、跳转到定义、查找引用、悬停文档提示等功能。
 
@@ -2165,9 +2320,10 @@ Client 专注于显示样式实现， Server 负责提供语言支持，包括�
 所以我们把这两个插件一并安装起来，打开 `lua/plugins.lua` 添加 `nvim-lspconfig` 和 `nvim-lsp-installer` 组件。
 
 ```lua
-    --------------------- LSP --------------------
-    -- lspconfig
-    use({ "neovim/nvim-lspconfig", "williamboman/nvim-lsp-installer" })
+   --------------------- LSP --------------------
+    use("williamboman/nvim-lsp-installer")
+    -- Lspconfig
+    use({ "neovim/nvim-lspconfig" })
 
 ...略
 ```
@@ -2180,13 +2336,13 @@ Client 专注于显示样式实现， Server 负责提供语言支持，包括�
 
 我们先来看一下最简单的方式，运行 `:LspInstallInfo` 命令，会打开一个图形化界面，如图：
 
-![12-2.png](《Neovim 配置实战：从0到1打造自己的IDE》.assets/1091ea7c9b4a4baf8c48b7e06c179beftplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![12-2.png](1091ea7c9b4a4baf8c48b7e06c179beftplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 看到上图界面表示安装成功了，`Available servers` 中列出了可以安装的 servers，这时你可以使用 `j / k` 移动光标到你要安装的 server，点击键盘 `i` 安装，i 表示 install。
 
 安装完成后会列出该 LSP Server 的版本和安装的目录等信息，过程演示如下：
 
-![12-1.gif](《Neovim 配置实战：从0到1打造自己的IDE》.assets/cf4bb32fa64549d184d5eb98fbcd8e9ctplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![12-1.gif](cf4bb32fa64549d184d5eb98fbcd8e9ctplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 在该界面还有一些其他的快捷键，比如：
 
@@ -2432,11 +2588,11 @@ require("lsp.setup")
 
 - `gd` 跳转到定义，可以跨文件跳转，从 lua.lua 中 `mapLSP` 关键字上点击 `gd`，可以跳转到 keybindings.lua 的方法定义处，如图。
 
-![12-2.gif](《Neovim 配置实战：从0到1打造自己的IDE》.assets/cf8d42e048e649abad87ae3695b7ca94tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![12-2.gif](cf8d42e048e649abad87ae3695b7ca94tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 - 随便敲代码会提示错误。
 
-![12-3.gif](《Neovim 配置实战：从0到1打造自己的IDE》.assets/8a7c8b650b6e45aca2ed5dfd875a9282tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![12-3.gif](8a7c8b650b6e45aca2ed5dfd875a9282tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 注意顶部的标签页也显示了错误图标，这是因为我们之前在 `lua/plugin-config/bufferline.lua` 插件的设置中，有这么一段代码
 
@@ -2457,11 +2613,11 @@ end,
 
 - 修改变量名，用我自定义的快捷键 `<leader>rn` 修改变量名，然后回车。
 
-![12-4.gif](《Neovim 配置实战：从0到1打造自己的IDE》.assets/e4882f8ad7904517949855b836adcf68tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![12-4.gif](e4882f8ad7904517949855b836adcf68tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 - 代码悬停，在关键字上敲击 `gh` (go hover) 显示提示。
 
-![12-5.gif](《Neovim 配置实战：从0到1打造自己的IDE》.assets/0b46efee9ea94cb5836256252181d506tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![12-5.gif](0b46efee9ea94cb5836256252181d506tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 一切都很酷，唯独还没有 **代码自动补全** 功能，因为 Neovim 默认并没有提供自动补全框架，所以我们还需要另外配置，这将是我们下一节课的内容。
 
@@ -2519,7 +2675,7 @@ packer.startup({
 
 像 `hrsh7th/cmp-nvim-lsp` 就是 Neovim 内置 LSP 提供的补全内容，`hrsh7th/cmp-buffer` 补全当前 buffer 的内容， `hrsh7th/cmp-cmdline` 是命令行的补全，`hrsh7th/cmp-path` 则是用来补全路径，如果配置了这个，当输入一个路径的时候会补全路径，如图
 
-![13-1.gif](《Neovim 配置实战：从0到1打造自己的IDE》.assets/1215c8e0d1cc418893b7fc2780393f86tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![13-1.gif](1215c8e0d1cc418893b7fc2780393f86tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 `hrsh7th/vim-vsnip` 就是一个 snippet 引擎，也就是自定义代码段，文档中提到了 4 种，都是支持的
 
@@ -2637,12 +2793,12 @@ end
 - `<A-.>` alt + . 出现补全弹窗
 - `<A-,>` alt + , 取消补全弹窗
 
-![13-2.gif](《Neovim 配置实战：从0到1打造自己的IDE》.assets/d6bcf9c1e1864c19aa354658eecd29d9tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![13-2.gif](d6bcf9c1e1864c19aa354658eecd29d9tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 - `<C-k>` 上一个
 - `<C-j>` 下一个
 
-![13-3.gif](《Neovim 配置实战：从0到1打造自己的IDE》.assets/57104fd6e72c4c7f8e7a52cfac0f48cctplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![13-3.gif](57104fd6e72c4c7f8e7a52cfac0f48cctplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 - `<CR>` 回车确认
 - `<C-u>` 滚动上
@@ -2652,7 +2808,7 @@ end
 
 如果常用自定义代码段的话，就有一个需求是在各个预定义的参数位置快速跳转，不太好形容，看图就懂了：
 
-![13-4.gif](《Neovim 配置实战：从0到1打造自己的IDE》.assets/b19f94ff636746f791b63cbac676ca6ftplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![13-4.gif](b19f94ff636746f791b63cbac676ca6ftplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 `nvim-cmp` 官网的 wiki 中有一个例子，使用 `Tab` 键和 `Shift + Tab` 键兼容跳转，叫做 [Super-Tab like mapping](https://link.juejin.cn/?target=https%3A%2F%2Fgithub.com%2Fhrsh7th%2Fnvim-cmp%2Fwiki%2FExample-mappings%23super-tab-like-mapping)
 
@@ -2748,7 +2904,7 @@ require("lsp.cmp") --  (新增)
 
 当我们敲击了错误代码的时候，左侧会显示该行的状态，如下图：
 
-![14-2.png](《Neovim 配置实战：从0到1打造自己的IDE》.assets/eee31ba7cf8c4e2c874faf73dedb9b8btplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![14-2.png](eee31ba7cf8c4e2c874faf73dedb9b8btplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 红色那行 `E` 表示错误，很好理解， 那 `W` 是什么呢？ 其实 `W` 是 Warn 的缩写，很不直观，我们把它替换成图标。
 
@@ -2787,7 +2943,7 @@ require("lsp.ui") -- 新增
 
 替换完图标后效果如下：
 
-![14-1.png](《Neovim 配置实战：从0到1打造自己的IDE》.assets/7ab8d0cc9bed4984ad44202450d1726dtplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![14-1.png](7ab8d0cc9bed4984ad44202450d1726dtplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 这里加入一个非常重要的小提示，群里的同学问过。当一行代码很长的时候，右侧的提示文字就会显示不全，看不到提示的是什么，这个时候怎么办？ 回顾一下我们之前在 `keybindings.lua` 的 mapLSP 函数定义过这么几个快捷键。
 
@@ -2800,7 +2956,7 @@ require("lsp.ui") -- 新增
 
 这个 `gp` 就是以弹窗的方式显示改行提示，非常实用。
 
-![14-1.gif](《Neovim 配置实战：从0到1打造自己的IDE》.assets/4e9a404e501b4d5bb64ae765cc200c70tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![14-1.gif](4e9a404e501b4d5bb64ae765cc200c70tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 接着我们看一下自动补全的样式。
 
@@ -2808,11 +2964,11 @@ require("lsp.ui") -- 新增
 
 默认情况下，当我们敲入字母的时候，会弹出补全弹窗，左侧列出备选内容，右侧列出备选的变量类型：
 
-![14-2.gif](《Neovim 配置实战：从0到1打造自己的IDE》.assets/2255dea199674bdb84fd21d1ece4ed83tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![14-2.gif](2255dea199674bdb84fd21d1ece4ed83tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 现在右侧是以文字的方式显示变量类型的，变量类型字母长度不同导致不是很美观，如果你喜欢，我们可以让右侧变量类型都以一个图标的方式显示，这样就没有对齐强迫症的问题了，也更节省空间了。
 
-![14-3.gif](《Neovim 配置实战：从0到1打造自己的IDE》.assets/ff6ebaaf12cf4257b1e46c92c2324148tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![14-3.gif](ff6ebaaf12cf4257b1e46c92c2324148tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 当然如果你觉得只有图标不是很明显，也可以图标字母同时显示。
 
@@ -2820,7 +2976,7 @@ require("lsp.ui") -- 新增
 
 最终配置的效果如下：
 
-![14-4.gif](《Neovim 配置实战：从0到1打造自己的IDE》.assets/dd2f71ac067a4608b3559b7b6220f7fbtplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![14-4.gif](dd2f71ac067a4608b3559b7b6220f7fbtplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 打开 `lua/plugins.lua` 新增一个插件： [lspkind-nvim](https://link.juejin.cn/?target=https%3A%2F%2Fgithub.com%2Fonsails%2Flspkind-nvim)。这个插件封装了很多常见的小图标，非常方便，不用我们手动再创建了。
 
@@ -2953,7 +3109,7 @@ cmp.setup({
 
 [indent_blankline.nvim](https://link.juejin.cn/?target=https%3A%2F%2Fgithub.com%2Flukas-reineke%2Findent-blankline.nvim) 是什么线？看一下官网截图就明白了。
 
-![image.png](《Neovim 配置实战：从0到1打造自己的IDE》.assets/711f6de379514183b8e8d39b7b790923tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![image.png](711f6de379514183b8e8d39b7b790923tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 看到那条竖线了吗，它会随着光标的移动提醒我们在哪个上下文中。如果你需要他的话，打开 `plugins.lua`，增加插件：
 
@@ -3130,11 +3286,11 @@ lspsaga.setup { -- defaults ...
 
 lspsaga 厉害之处是，安装后会有一系列新命令来替换原有功能，比如我们在之前看见过这个 rename 的操作。
 
-![12-4.gif](《Neovim 配置实战：从0到1打造自己的IDE》.assets/e4882f8ad7904517949855b836adcf68tplv-k3u1fbpfcp-zoom-in-crop-mark1304000-165085841752924.awebp)
+![12-4.gif](e4882f8ad7904517949855b836adcf68tplv-k3u1fbpfcp-zoom-in-crop-mark1304000-165085841752924.awebp)
 
 对比 `Lspsaga rename` 的效果：
 
-![14-5.gif](《Neovim 配置实战：从0到1打造自己的IDE》.assets/be7fe068042e433384b0172af1d12089tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![14-5.gif](be7fe068042e433384b0172af1d12089tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 你需要做的就是找到之前定义的快捷键，根据需要将原本的功能替换为 Lspsaga 提供的新命令。
 
@@ -3206,7 +3362,7 @@ end
 
 下边演示一下 `gd` `gp` `gh` 的效果，篇幅所限就不过多演示了。
 
-![14-6.gif](《Neovim 配置实战：从0到1打造自己的IDE》.assets/6447fa9aa245443ea820d674fa5cd9e6tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![14-6.gif](6447fa9aa245443ea820d674fa5cd9e6tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 当然，你也可以不替换掉命令，而是增加一条新的命令，因为 Lspsaga 还在开发中目前还不是很稳定，如果你遇到问题，可以还原成原来的命令。
 
@@ -3220,6 +3376,20 @@ end
   mapbuf("n", "<leader>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opt)
 ```
 
+注意：
+
+![image-20221128084851696](image-20221128084851696.png)
+
+需要更改下方法的名称
+
+```lua
+  mapbuf("n", "<leader>f", "<cmd>lua vim.lsp.buf.format({ async = true })<CR>", opt)
+```
+
+
+
+
+
 这是因为我们使用的 Lua Language Server 并没有实现格式化功能。
 
 > 顺便说一下，代码格式化 和 代码缩进 是不同的，在 tree-sitter 章节我们实现的代码缩进只能缩进首字母的位置 如果代码中间出现格式问题，tree-sitter 就无能为力了
@@ -3232,6 +3402,8 @@ end
 先看第一种方法，我们可以安装 [formatter.nvim](https://link.juejin.cn/?target=https%3A%2F%2Fgithub.com%2Fmhartington%2Fformatter.nvim) 插件，Formatter.nvim 插件是很简单易用的格式化插件， 支持很多常见编程语言，例如 JavaScript、Rust、JSON、Bash、Lua、C、Ruby、Python、Golang 等等。
 
 ## 安装 Formatter.nvim
+
+这一步别跳过
 
 打开 `lua/plugins.lua` , 增加代码格式化组件：
 
@@ -3248,9 +3420,15 @@ end
 
 如果不知道也没关系，可以直接到 Formatter [配置文件示例](https://link.juejin.cn/?target=https%3A%2F%2Fgithub.com%2Fmhartington%2Fformatter.nvim%2Fblob%2Fmaster%2FCONFIG.md) 中搜索关键字，比如我 `Ctrl + f` 搜索 `lua` 就搜到了 stylua 的配置方法。
 
-![15-1.png](《Neovim 配置实战：从0到1打造自己的IDE》.assets/c8ec4db29bdf4972b2a5e000c1be6afatplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![15-1.png](c8ec4db29bdf4972b2a5e000c1be6afatplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 于是我们就可以去查一下 StyLua 是什么，以及如何安装 [StyLua](https://link.juejin.cn/?target=https%3A%2F%2Fgithub.com%2FJohnnyMorganz%2FStyLua)。
+
+`Centos`下安装`Stylua`，要先安装`Rust`，再用它的包管理器安装
+
+[Linux 安装 Rust - 墨天轮 (modb.pro)](https://www.modb.pro/db/214854)
+
+
 
 经过调研，我们发现 StyLua 非常简单，有固定语言风格，只提供 6 条配置项，并且可以放在项目根目录的 `.stylua.toml` 中指定。
 
@@ -3361,7 +3539,7 @@ require("lsp.formatter")
 
 重启之后我们可以使用新增的 `:Format` 命令来自动格式化代码了。
 
-![15-2.gif](《Neovim 配置实战：从0到1打造自己的IDE》.assets/21f394596272493fac4cc3561f29d404tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![15-2.gif](21f394596272493fac4cc3561f29d404tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 如果你决定使用这个插件了，那么可以考虑把之前的 `<leader>f` 快捷键配置成 `:Format` 命令就可以了。
 
@@ -3429,9 +3607,10 @@ null_ls.setup({
   },
   -- 保存自动格式化
   on_attach = function(client)
-    if client.resolved_capabilities.document_formatting then
-      vim.cmd("autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()")
-    end
+    vim.cmd([[ command! Format execute 'lua vim.lsp.buf.format({async = true})']])
+    -- if client.resolved_capabilities.document_formatting then
+    --   vim.cmd("autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()")
+    -- end
   end,
 })
 ```
@@ -3457,13 +3636,13 @@ require("lsp.null-ls")
 
 当你重启并成功安装 null-ls.nvim 后，可以运行命令 `:LspInfo` 查看绑定的 Language Server 信息。
 
-![15-3.png](《Neovim 配置实战：从0到1打造自己的IDE》.assets/0f387a5f86924396850a43389108aa4dtplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![15-3.png](0f387a5f86924396850a43389108aa4dtplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 没错，有两个 LSP 了，null-ls 作为通用 LSP，可以在任何 filetypes 中运行。
 
 我们可以运行 `:NullLsInfo` 查看源的激活情况，如图：
 
-![image.png](《Neovim 配置实战：从0到1打造自己的IDE》.assets/8bc58d767fdc4f68a6a9b54171d3357ftplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![image.png](8bc58d767fdc4f68a6a9b54171d3357ftplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 我这里显示 2 个 Active source(s) ，一个是我们刚刚配置的 stylua 源给 formatting 方法使用，还有一个 code_ation 源与本节无关，我们后续章节有机会再说。
 
@@ -3487,7 +3666,7 @@ require("lsp.null-ls")
 
 运行 `:TSInstallInfo` 或者 `:TSModuleInfo` 查看语法安装的情况。
 
-![16-1.png](《Neovim 配置实战：从0到1打造自己的IDE》.assets/1de6d20a6a0e47cb8c6cf39f89000cf6tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![16-1.png](1de6d20a6a0e47cb8c6cf39f89000cf6tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 Treesitter 有一个直接安装语法高亮的命令 `TSInstall：` 把能找到的 **前端相关** 的都装上：
 
@@ -3503,7 +3682,7 @@ Treesitter 有一个直接安装语法高亮的命令 `TSInstall：` 把能找�
 
 先安装 `html` 和 `cssls`， 还记得怎么安装吗？运行 `:LspInstallInfo`，`j` / `k` 移动光标， 选中之后按 `i` 即可安装。大写的 `X` 是卸载。
 
-![16-2.png](《Neovim 配置实战：从0到1打造自己的IDE》.assets/a829d05b58084a528e72770fd3735637tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![16-2.png](a829d05b58084a528e72770fd3735637tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 安装完成后进入 `lua/lsp/setup.lua` 中引入 html 和 css 的配置文件。
 
@@ -3547,15 +3726,15 @@ return {
 
 保存重启后应该就没问题了，我们找一个前端工程(注意目录中要有 package.json )，创建一个 html 文件试试。
 
-![16-3.gif](《Neovim 配置实战：从0到1打造自己的IDE》.assets/347ead4bd3e24f6f9f6be2fc6ac1914ctplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![16-3.gif](347ead4bd3e24f6f9f6be2fc6ac1914ctplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 酷，没问题，试一试代码格式化呢。
 
-![16-4.gif](《Neovim 配置实战：从0到1打造自己的IDE》.assets/052b92c3192644d29a27ba10f630490btplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![16-4.gif](052b92c3192644d29a27ba10f630490btplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 居然出现了选项，可以输入 1 或 2 后回车进行格式化，并且格式化的样子都不同。为什么会这样呢？ 我们可以运行 `:LspInfo` 查看一下。
 
-![16-5.png](《Neovim 配置实战：从0到1打造自己的IDE》.assets/53c419b8841143e9ae00c3b0410d69eatplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![16-5.png](53c419b8841143e9ae00c3b0410d69eatplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 原来我们绑定的两个 LSP ，由于 html server 本身有格式化代码能力，null-ls 又可以使用 prettier 进行格式化 HTML，所以这里出现了选项。
 
@@ -3566,6 +3745,16 @@ return {
 client.resolved_capabilities.document_formatting = false
 client.resolved_capabilities.document_range_formatting = false
 ```
+
+注意，0.8.1版本的neovim用这个方法
+
+```lua
+-- 禁用格式化功能，交给专门插件插件处理    
+client.server_capabilities.documentFormattingProvider = false
+client.server_capabilities.documentRangeFormattingProvider = false
+```
+
+
 
 最终配置如下：
 
@@ -3579,8 +3768,10 @@ return {
       },
       on_attach = function(client, bufnr)
         -- 禁用格式化功能，交给专门插件插件处理
-        client.resolved_capabilities.document_formatting = false
-        client.resolved_capabilities.document_range_formatting = false
+        -- client.resolved_capabilities.document_formatting = false
+        -- client.resolved_capabilities.document_range_formatting = false
+        client.server_capabilities.documentFormattingProvider = false
+        client.server_capabilities.documentRangeFormattingProvider = false
         local function buf_set_keymap(...)
           vim.api.nvim_buf_set_keymap(bufnr, ...)
         end
@@ -3591,6 +3782,86 @@ return {
   end,
 }
 ```
+
+
+
+**注意：**
+
+上面了更新了，可以直接看作者仓库`v2`分支（当前最新），看作者现在用的配置是啥样
+
+以下两个文件只是看一下，暂时不用管
+
+作者是提取了公共配置，新建`lsp/common-config.lua`
+
+```lua
+local M = {}
+
+M.keyAttach = function(bufnr)
+  local function buf_set_keymap(mode, lhs, rhs)
+    vim.keymap.set(mode, lhs, rhs, { noremap = true, silent = true, buffer = bufnr })
+  end
+  -- 绑定快捷键
+  require("keybindings").mapLSP(buf_set_keymap)
+end
+
+-- 禁用格式化功能，交给专门插件插件处理
+M.disableFormat = function(client)
+  if vim.fn.has("nvim-0.8") == 1 then
+    client.server_capabilities.documentFormattingProvider = false
+    client.server_capabilities.documentRangeFormattingProvider = false
+  else
+    client.resolved_capabilities.document_formatting = false
+    client.resolved_capabilities.document_range_formatting = false
+  end
+end
+
+-- M.capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities())
+M.capabilities = require("cmp_nvim_lsp").default_capabilities()
+
+M.flags = {
+  debounce_text_changes = 150,
+}
+
+return M
+```
+
+`config/html.lua`
+
+```lua
+local M = {}
+
+M.keyAttach = function(bufnr)
+  local function buf_set_keymap(mode, lhs, rhs)
+    vim.keymap.set(mode, lhs, rhs, { noremap = true, silent = true, buffer = bufnr })
+  end
+  -- 绑定快捷键
+  require("keybindings").mapLSP(buf_set_keymap)
+end
+
+-- 禁用格式化功能，交给专门插件插件处理
+M.disableFormat = function(client)
+  if vim.fn.has("nvim-0.8") == 1 then
+    client.server_capabilities.documentFormattingProvider = false
+    client.server_capabilities.documentRangeFormattingProvider = false
+  else
+    client.resolved_capabilities.document_formatting = false
+    client.resolved_capabilities.document_range_formatting = false
+  end
+end
+
+-- M.capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities())
+M.capabilities = require("cmp_nvim_lsp").default_capabilities()
+
+M.flags = {
+  debounce_text_changes = 150,
+}
+
+return M
+```
+
+
+
+
 
 同样的方式配置 css ， 创建 `lua/lsp/config/css.lua`。
 
@@ -3615,8 +3886,10 @@ return {
       },
       on_attach = function(client, bufnr)
         -- 禁用格式化功能，交给专门插件插件处理
-        client.resolved_capabilities.document_formatting = false
-        client.resolved_capabilities.document_range_formatting = false
+        --- client.resolved_capabilities.document_formatting = false
+        --- client.resolved_capabilities.document_range_formatting = false
+        client.server_capabilities.documentFormattingProvider = false
+        client.server_capabilities.documentRangeFormattingProvider = false
         local function buf_set_keymap(...)
           vim.api.nvim_buf_set_keymap(bufnr, ...)
         end
@@ -3630,7 +3903,7 @@ return {
 
 创建一个 css 文件测试一下，看看代码补全和格式化效果。
 
-![16-6.gif](《Neovim 配置实战：从0到1打造自己的IDE》.assets/5debd17f29974a748b7c5c5102536addtplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![16-6.gif](5debd17f29974a748b7c5c5102536addtplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 酷，没问题，下边看一下 Emmet 的配置。
 
@@ -3638,7 +3911,7 @@ return {
 
 现在的 HTML 打标签有点不智能，增加 Emmet 支持，Emmet 有一套简单的语法可以快速打出 HTML 结构标签，如下图所示：
 
-![16-7.gif](《Neovim 配置实战：从0到1打造自己的IDE》.assets/f9258b313ac845d28b3f9d12c9741f17tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![16-7.gif](f9258b313ac845d28b3f9d12c9741f17tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 创建 `lua/lsp/config/emmet.lua` 文件如下。
 
@@ -3662,7 +3935,7 @@ local servers = {
 
 别忘了 `:LspInstallInfo` 找到并安装 `emmetls` Language Server。
 
-![16-8.png](《Neovim 配置实战：从0到1打造自己的IDE》.assets/5960cfc5f7084963adb5aa660cfe0ecftplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![16-8.png](5960cfc5f7084963adb5aa660cfe0ecftplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 重启即可之后生效。 接着我们要配置一下 jsonls ，让 Language Server 知道 `package.json`。
 
@@ -3696,8 +3969,10 @@ return {
       },
       on_attach = function(client, _)
         -- 禁用格式化功能，交给专门插件插件处理
-        client.resolved_capabilities.document_formatting = false
-        client.resolved_capabilities.document_range_formatting = false
+        --- client.resolved_capabilities.document_formatting = false
+        --- client.resolved_capabilities.document_range_formatting = false
+        client.server_capabilities.documentFormattingProvider = false
+        client.server_capabilities.documentRangeFormattingProvider = false         
       end,
     })
   end,
@@ -3718,7 +3993,7 @@ local servers = {
 
 重启后生效，新建一个 package.json 试试效果：
 
-![16-9.gif](《Neovim 配置实战：从0到1打造自己的IDE》.assets/26ba566dc89044a6a8ee999b2c3d6ca6tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![16-9.gif](26ba566dc89044a6a8ee999b2c3d6ca6tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 最后安装的是最重要的， TypeScript Language Server。
 
@@ -3744,8 +4019,10 @@ local opts = {
   capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities()),
   on_attach = function(client, bufnr)
     -- 禁用格式化功能，交给专门插件插件处理
-    client.resolved_capabilities.document_formatting = false
-    client.resolved_capabilities.document_range_formatting = false
+    --- client.resolved_capabilities.document_formatting = false
+    --- client.resolved_capabilities.document_range_formatting = false
+    client.server_capabilities.documentFormattingProvider = false
+    client.server_capabilities.documentRangeFormattingProvider = false
     local function buf_set_keymap(...)
       vim.api.nvim_buf_set_keymap(bufnr, ...)
     end
@@ -3819,7 +4096,7 @@ tsserver = require("lsp.config.ts"),
 
 先找个前端项目试一下，我故意引入了很多没用到的东西，然后敲击 gs 即可瞬间整理完毕。
 
-![16-10.gif](《Neovim 配置实战：从0到1打造自己的IDE》.assets/b455f6f96ef3434e9fdc033d85c5d7d9tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![16-10.gif](b455f6f96ef3434e9fdc033d85c5d7d9tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 除了这个还有 `:TSLspRenameFile` 用于改变文件名，同时其他文件中引用该文件的文件名也会被修改。
 
@@ -3916,7 +4193,7 @@ ESLint recommended 规则里有一条叫作 `no-var` 规则，就是不推荐使
 
 所以我们故意用 var 来声明一个变量：
 
-![16-11.png](《Neovim 配置实战：从0到1打造自己的IDE》.assets/98d218fd8651439d98b1106100d39aa3tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![16-11.png](98d218fd8651439d98b1106100d39aa3tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 看到右边的红字了吗，这就是 Diagostics，并且是按照我们上边代码设置的规则显示的：
 
@@ -3926,7 +4203,7 @@ diagnostics_format = "[#{s}] #{m}"
 
 现在我们看看 Code Action 能否自动修复掉，在该行代码上敲击我们之前定义的快捷键 `<leader>ca` 就会调用 Code Action 了，请看动图演示：
 
-![16-12.gif](《Neovim 配置实战：从0到1打造自己的IDE》.assets/0471d897dcd94fdaa2bb0904dbf76127tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
+![16-12.gif](0471d897dcd94fdaa2bb0904dbf76127tplv-k3u1fbpfcp-zoom-in-crop-mark1304000.awebp)
 
 第一次运行 CA 的时候，他会提示我修复 no-var 规则，改成了 let 声明变量，然后他又发现并没有给变量 a 重新赋值过，我再一次运行 CA 的时候，他会提示我这里应该用常量。最后修复完成变成了 `const a = 10`。
 
@@ -3937,3 +4214,917 @@ Okay。全部完成了，本节比较长，如果你没有跟上的话，可以�
 欢迎点赞，或直接 Fork 我的代码，也欢迎留言分享你的配置。
 
 下一节我会尝试配置其他编程语言 ，我了解的语言非常有限，我知道小册读者里有很多隐藏大佬，非常希望你能到 GitHub 上提出 PR 加入你熟悉的语言配置，我会更新在小册中，帮助到更多人，下节见。
+
+# 17.NeoVim Rust开发配置与断点调试
+
+本节我们学习如何配置 Rust 开发环境，并了解在 Neovim 中如何进行断点调试。
+
+先快速安装一下 Rust 编程语言。
+
+## Rust 编程语言安装
+
+首先安装 rust，打开终端输入：
+
+```shell
+$ curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh
+```
+
+这个命令会下载一个脚本并自动开始安装 rustup，按照提示选择全新安装，也许会提示你输入管理员密码，安装成功会出现:
+
+```
+Rust is installed now. Great!
+```
+
+这时可以查看版本号，验证是否安装成功。
+
+```bash
+$ rustc -V
+rustc 1.60.0 (7737e0b5c 2022-04-04)
+
+$ cargo -V
+cargo 1.60.0 (d1fd9fe2c 2022-03-01)
+```
+
+接下来安装 [rust-analyzer](https://link.juejin.cn/?target=https%3A%2F%2Fgithub.com%2Frust-lang%2Frust-analyzer) , rust-analyzer 可以算是社区驱动的 Language Server 实现了。
+
+MacOS 下安装比较简单，运行命令如下：
+
+```
+$ brew install rust-analyzer
+```
+
+其他系统请参考 [官方文档](https://link.juejin.cn/?target=https%3A%2F%2Frust-analyzer.github.io%2Fmanual.html%23installation) 或参考其他教程。
+
+至此 rust 语言环境就准备完成了，可以使用 cargo 创建一个 rust 项目了，打开命令行运行：
+
+```bash
+cargo new hello-rust
+cd hello-rust
+cargo run
+```
+
+如果输出 `Hello, world!` 就表示成功了，可以开始配置 Neovim 的 Rust 语法高亮和代码提示了。
+
+## Rust 语法高亮与代码提示配置
+
+首先第一步安装基于 tree-sitter 的 rust 语法高亮。
+
+运行 `TSInstall rust` 重启 Neovim 后，打开 `main.rs` 文件，应该可以看到语法高亮了。
+
+接着我们配置 LSP，打开 `lua/lsp/setup.lua`，在 servers 变量中增加 rust 的配置文件，注意这里的 key 必须为 `rust_analyzer`，值为配置文件的路径，可以随意改变。
+
+```lua
+local servers = {
+  sumneko_lua = require("lsp.config.lua"), -- lua/lsp/config/lua.lua
+  bashls = require("lsp.config.bash"),
+  pyright = require("lsp.config.pyright"),
+  html = require("lsp.config.html"),
+  cssls = require("lsp.config.css"),
+  emmet_ls = require("lsp.config.emmet"),
+  jsonls = require("lsp.config.json"),
+  tsserver = require("lsp.config.ts"),
+  -- 新增
+  rust_analyzer = require("lsp.config.rust"),
+}
+```
+
+创建对应的 LSP 配置文件 `lua/lsp/config/rust.lua`，配置如下：
+
+```lua
+local opts = {
+  capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities()),
+  flags = {
+    debounce_text_changes = 150,
+  },
+  on_attach = function(client, bufnr)
+    -- 禁用格式化功能，交给专门插件插件处理
+    client.resolved_capabilities.document_formatting = false
+    client.resolved_capabilities.document_range_formatting = false
+    local function buf_set_keymap(...)
+      vim.api.nvim_buf_set_keymap(bufnr, ...)
+    end
+    -- 绑定快捷键
+    require("keybindings").mapLSP(buf_set_keymap)
+  end,
+}
+
+return {
+  on_setup = function(server)
+    -- Initialize the LSP via rust-tools instead
+    require("rust-tools").setup({
+      -- The "server" property provided in rust-tools setup function are the
+      -- settings rust-tools will provide to lspconfig during init.
+      -- We merge the necessary settings from nvim-lsp-installer (server:get_default_options())
+      -- with the user's own settings (opts).
+      server = vim.tbl_deep_extend("force", server:get_default_options(), opts),
+    })
+    server:attach_buffers()
+    -- Only if standalone support is needed
+    require("rust-tools").start_standalone_if_required()
+  end,
+}
+```
+
+这里我们在返回的 on_setup 函数中引入了一个 [rust-tools](https://link.juejin.cn/?target=https%3A%2F%2Fgithub.com%2Fsimrat39%2Frust-tools.nvim) 插件，这个插件是一个 Rust 增强插件，在 LSP 之上增加了更多的命令，有兴趣可以去其主页深入了解。 `vim.tbl_deep_extend` 函数可以合并两个 table，`force` 参数表示如果 key 值相同，则用第二个参数的值。 用在这里表示把默认值和我们的自定义值合并，优先使用我们的自定义 opts 的值。
+
+别忘了在 `lua/plugins.lua` 文件中安装 rust-tools 插件，否则会报错：
+
+```lua
+-- Rust 增强
+use("simrat39/rust-tools.nvim")
+```
+
+保存重启 Neovim 后，打开 main.rs 发现语法提示已经搭建好了。
+
+![17-1.gif](/4de70a3cbd074b61ba545532168c595etplv-k3u1fbpfcp-zoom-in-crop-mark3024000.awebp)
+
+接下来配置代码格式化。
+
+## 代码格式化配置
+
+现在很多项目使用 [rust-lang/rustfmt](https://link.juejin.cn/?target=https%3A%2F%2Fgithub.com%2Frust-lang%2Frustfmt) 来统一 Rust 代码风格。
+
+我们先安装这一工具，打开命令行运行：
+
+```bash
+rustup component add rustfmt
+```
+
+运行 `rustfmt --version` 可显示版本号，表示安装成功。
+
+![17-2.png](/29a4fa72d43c43b1af083b04b2ea0437tplv-k3u1fbpfcp-zoom-in-crop-mark3024000.awebp)
+
+既然是主流工具，那么 null-ls 一定是支持的。
+
+打开 `lua/lsp/null-ls.lua` 文件， 在 sources 里增加 rustfmt 。
+
+```lua
+-- rustfmt
+formatting.rustfmt,
+```
+
+目前完整 `lua/lsp/null-ls.lua` 配置如下：
+
+```lua
+local status, null_ls = pcall(require, "null-ls")
+if not status then
+  vim.notify("没有找到 null-ls")
+  return
+end
+
+local formatting = null_ls.builtins.formatting
+local diagnostics = null_ls.builtins.diagnostics
+local code_actions = null_ls.builtins.code_actions
+
+null_ls.setup({
+  debug = false,
+  sources = {
+    -- Formatting ---------------------
+    --  brew install shfmt
+    formatting.shfmt,
+    -- StyLua
+    formatting.stylua,
+    -- frontend
+    formatting.prettier.with({ -- 比默认少了 markdown
+      filetypes = {
+        "javascript",
+        "javascriptreact",
+        "typescript",
+        "typescriptreact",
+        "vue",
+        "css",
+        "scss",
+        "less",
+        "html",
+        "json",
+        "yaml",
+        "graphql",
+      },
+      prefer_local = "node_modules/.bin",
+    }),
+    -- rustfmt
+    formatting.rustfmt,
+    -- Python
+    -- pip install black
+    -- asdf reshim python
+    formatting.black.with({ extra_args = { "--fast" } }),
+    -----------------------------------------------------
+    -- Ruby
+    -- gem install rubocop
+    formatting.rubocop,
+    -----------------------------------------------------
+    -- Diagnostics  ---------------------
+    diagnostics.eslint.with({
+      prefer_local = "node_modules/.bin",
+    }),
+    -- code actions ---------------------
+    code_actions.gitsigns,
+    code_actions.eslint.with({
+      prefer_local = "node_modules/.bin",
+    }),
+  },
+  -- #{m}: message
+  -- #{s}: source name (defaults to null-ls if not specified)
+  -- #{c}: code (if available)
+  diagnostics_format = "[#{s}] #{m}",
+  on_attach = function(client)
+    vim.cmd([[ command! Format execute 'lua vim.lsp.buf.formatting()']])
+  end,
+})
+```
+
+![17-3.gif](/a3e35fa50f3046cea3a9954ff7350720tplv-k3u1fbpfcp-zoom-in-crop-mark3024000.awebp)
+
+注意到上述的配置中，我参考交流群里群友的讨论，也增加了 Ruby 和 Python 格式化配置。
+
+```lua
+-- Python
+-- pip install black
+-- asdf reshim python
+formatting.black.with({ extra_args = { "--fast" } }),
+-----------------------------------------------------
+-- Ruby
+-- gem install rubocop
+formatting.rubocop,
+```
+
+也欢迎各位大佬到我们 [小册的 GitHub 代码库](https://link.juejin.cn/?target=https%3A%2F%2Fgithub.com%2Fnshen%2Flearn-neovim-lua) 中发PR，持续改进配置。
+
+由此可见，其他语言也应该都是类似的方式配置代码格式化，先用该语言的**包管理器**安装专门的**格式化工具**，然后在 null-ls 里面启用即可。
+
+本节原本打算到此就结束了，但程序开发离不开代码调试，简单的程序可以通过打 log 的方式调试，复杂的程序还是需要用打断点，用逐步运行的方式来调试的。
+
+我一直纠结写不写断点调试相关的东西。因为不得不承认的是，Neovim 中 debug 的体验并不是很好，比如想要调试基于 Node.js 程序的话，最新版本的 VSCode 中内置了 JavaScript Debug Terminal，基本上不用配置就可以直接捕获到断点信息。而用 Neovim 调试的话，还在使用已经被微软抛弃了一年的 [vscode-node-debug2](https://link.juejin.cn/?target=https%3A%2F%2Fgithub.com%2Fmicrosoft%2Fvscode-node-debug2) 库来调试。
+
+而且调试也都是要基于 VSCode 的 DAP (Debug Adapter Protocol) 协议的，所以我还是比较倾向于直接使用 VSCode 来调试程序，但如果你是个爱折腾的人，不妨也可以跟我一起了解一下在 Neovim 中如何调试程序。
+
+## 配置 Debug 断点调试
+
+想要在 Neovim 中打断点来调试应用程序，需要基于 DAP (Debug Adapter Protocol) 协议，这是一个跨平台的调试协议，可以在不同的平台上调试不同的程序。
+
+在 Neovim 中基于 DAP 的插件有两个选择，一个是 [vimspector](https://link.juejin.cn/?target=https%3A%2F%2Fgithub.com%2Fpuremourning%2Fvimspector) ，另一个是 [nvim-dap](https://link.juejin.cn/?target=https%3A%2F%2Fgithub.com%2Fmfussenegger%2Fnvim-dap)。
+
+vimspector 是比较老牌的调试工具，主要为 Vim 8.2 以上的版本开发，同时也兼容 Neovim 0.43 以上的版本。 而 nvim-dap 是一个比较新的调试工具，不支持 Vim，是专门为 Neovim 开发的，使用了很多 Neovim 的 API，我觉得目前还不是很完善，需要搭配几个其他的插件才能很好地使用，而且几个插件都是由不同开发者开发的，其中一个插件更新，有可能会导致其他插件的不兼容，经常需要耗费精力来调整配置。
+
+我们这里先尝试一下 vimspector，打开 `lua/plugins.lua` 文件，添加下面的代码：
+
+```lua
+-- vimspector
+use("puremourning/vimspector")
+```
+
+`:w` 后自动安装，安装完成后，重启 Neovim 后会增加许多 Vimspector 开头的命令， 如果没有 Vimspector 开头的命令， 一般是 python 3 环境的问题，可以尝试运行：
+
+```css
+sudo pip3 install --upgrade pynvim
+```
+
+正常的话会如下动图所示，我们找到 `VimspectorInstall` 命令:
+
+![17-4.gif](/b9e9d262b13148ed947aeb57c279e617tplv-k3u1fbpfcp-zoom-in-crop-mark3024000.awebp)
+
+上图这些就是 vimspector 支持的 debug 端适配器，在 vimspector 里适配器叫做 gadget，由于我们 debug rust 程序，所以应该安装 CodeLLDB 这个 gadget，选中 `VimspectorInstall CodeLLDB` ，回车安装。
+
+这个命令实际上是调用的一段 python 脚本，所以需要 python3 环境支持，如果环境和网络都没有问题的话，等待一段时间如果安装成功会显示：
+
+> Vimspector gadget installation complete!
+
+表示安装成功，但鉴于国内的网络环境，一般不太会那么顺利，所以建议进入到 vimspector 安装目录直接调用 python 脚本进行安装，那里会有更多的报错信息。
+
+vimspector 的安装目录默认在 `~/.local/share/nvim/site/pack/packer/start/vimspector` ，在这个目录里会有一个 `install_gadget.py` 的脚本。
+
+如果你的网络环境比较好的话，可以挂好全局代理，一次全部安装，下次就不用再进这个目录了。
+
+```bash
+./install_gadget.py --all
+```
+
+也可以这样只安装 rust：
+
+```bash
+./install_gadget.py --enable-rust
+```
+
+如果到这里全部成功了的话，就可以开始配置 vimspector 了， 新建一个文件 `lua/dap/vimspector/init.lua`，内容为：
+
+```lua
+require("keybindings").mapVimspector()
+```
+
+vimspector 并不需要配置，只需要定义一些快捷键就可以了，这里创建的配置文件，只有一行代码，就是定义快捷键。
+
+之所以要有这个文件，就是方便**入口文件**引用。
+
+打开 `lua/init.lua` 添加 vimspector 配置文件的引用：
+
+```lua
+require("dap.vimspector") -- lua/dap/vimspector/init.lua
+```
+
+像这样直接引用目录的话，会自动引用目录下的 `init.lua` 文件。
+
+然后打开 `lua/keybindings.lua` 文件，增加 vimspector 快捷键设置：
+
+```lua
+pluginKeys.mapVimspector = function()
+  -- 开始
+  map("n", "<leader>dd", ":call vimspector#Launch()<CR>", opt)
+  -- 结束
+  map("n", "<Leader>de", ":call vimspector#Reset()<CR>", opt)
+  -- 继续
+  map("n", "<Leader>dc", ":call vimspector#Continue()<CR>", opt)
+  -- 设置断点
+  map("n", "<Leader>dt", ":call vimspector#ToggleBreakpoint()<CR>", opt)
+  map("n", "<Leader>dT", ":call vimspector#ClearBreakpoints()<CR>", opt)
+  --  stepOver, stepOut, stepInto
+  map("n", "<leader>dj", "<Plug>VimspectorStepOver", opt)
+  map("n", "<leader>dk", "<Plug>VimspectorStepOut", opt)
+  map("n", "<leader>dl", "<Plug>VimspectorStepInto", opt)
+end
+```
+
+重启 Neovim ，如果幸运没有报错的话，就可以开始 debug 了。
+
+打开我们之前创建的 `hello-rust` 项目，找到 main.rs ，我从 [course.rs](https://link.juejin.cn/?target=https%3A%2F%2Fcourse.rs%2Ffirst-try%2Fhello-world.html) 教程上 copy 了一段 Rust 代码，如下：
+
+```rust
+fn greet_world() {
+    let southern_germany = "Grüß Gott!";
+    let chinese = "世界，你好";
+    let english = "World, hello";
+    let regions = [southern_germany, chinese, english];
+    for region in regions.iter() {
+        println!("{}", &region);
+    }
+}
+
+fn main() {
+    greet_world();
+}
+```
+
+首先我们需要 build 一下这个项目 `cargo build`，接着我们要在项目根目录创建一个 `.vimspector.json` 文件，内容如下
+
+```json
+{
+  "configurations": {
+    "launch": {
+      "adapter": "CodeLLDB",
+      "configuration": {
+        "request": "launch",
+        "program": "${workspaceRoot}/target/debug/hello-rust"
+      },
+      "breakpoints": {
+        "exception": {
+          "cpp_catch": "",
+          "cpp_throw": "",
+          "objc_catch": "",
+          "objc_throw": "",
+          "swift_catch": "",
+          "swift_throw": ""
+        }
+      }
+    }
+  }
+}
+```
+
+这个文件的 program 值指向我们刚才 build 出的 `debug/hello-rust` ，adapter 值是 CodeLLDB， breakpoints 这部分设置是默认的异常抛出处理方法，可以去掉，如果去掉的话每次debug 都会问你抛出异常如何处理。
+
+接下来演示一下如何 debug：
+
+1. `<leader>dt` 创建断点
+2. `<leader>dd` 启动 debug
+3. `<leader>dj` step over
+4. `<leader>de` 结束 debug
+
+![17-5.gif](/3a3e0884eb0a43e49cfbb9ce121864b6tplv-k3u1fbpfcp-zoom-in-crop-mark3024000.awebp)
+
+debug 界面中小黄点是断点，黄色箭头是当前运行到的行，和其他软件的 debug 界面应该差不多。
+
+![17-6.png](/6094e1b46f2e43bb856ffc08906e6616tplv-k3u1fbpfcp-zoom-in-crop-mark3024000.awebp)
+
+这里就不再赘述了，接下来看一下专门为 Neovim 打造的 nvim-dap 怎么样。
+
+## nvim-dap 配置
+
+打开 `lua/plugins.lua` 文件，增加如下内容：
+
+```lua
+use("mfussenegger/nvim-dap")
+use("theHamsta/nvim-dap-virtual-text")
+use("rcarriga/nvim-dap-ui")
+```
+
+`:w` 安装完成后， 创建 `lua/dap/nvim-dap/init.lua` 文件，内容如下：
+
+```lua
+local dap = require("dap")
+local dapui = require("dapui")
+require("nvim-dap-virtual-text").setup({
+  commented = true,
+})
+
+-- 定义各种图标
+
+vim.fn.sign_define("DapBreakpoint", {
+  text = "🛑",
+  texthl = "LspDiagnosticsSignError",
+  linehl = "",
+  numhl = "",
+})
+
+vim.fn.sign_define("DapStopped", {
+  text = "",
+  texthl = "LspDiagnosticsSignInformation",
+  linehl = "DiagnosticUnderlineInfo",
+  numhl = "LspDiagnosticsSignInformation",
+})
+
+vim.fn.sign_define("DapBreakpointRejected", {
+  text = "",
+  texthl = "LspDiagnosticsSignHint",
+  linehl = "",
+  numhl = "",
+})
+
+dapui.setup({
+  icons = { expanded = "▾", collapsed = "▸" },
+  mappings = {
+    -- Use a table to apply multiple mappings
+    expand = { "o", "<CR>", "<2-LeftMouse>" },
+    open = "o",
+    remove = "d",
+    edit = "e",
+    repl = "r",
+    toggle = "t",
+  },
+  sidebar = {
+    -- You can change the order of elements in the sidebar
+    elements = {
+      -- Provide as ID strings or tables with "id" and "size" keys
+      {
+        id = "scopes",
+        size = 0.25, -- Can be float or integer > 1
+      },
+      { id = "breakpoints", size = 0.25 },
+      { id = "stacks", size = 0.25 },
+      { id = "watches", size = 00.25 },
+    },
+    size = 40,
+    position = "left", -- Can be "left", "right", "top", "bottom"
+  },
+  tray = {
+    elements = { "repl" },
+    size = 10,
+    position = "bottom", -- Can be "left", "right", "top", "bottom"
+  },
+  floating = {
+    max_height = nil, -- These can be integers or a float between 0 and 1.
+    max_width = nil, -- Floats will be treated as percentage of your screen.
+    border = "single", -- Border style. Can be "single", "double" or "rounded"
+    mappings = {
+      close = { "q", "<Esc>" },
+    },
+  },
+  windows = { indent = 1 },
+  render = {
+    max_type_length = nil, -- Can be integer or nil.
+  },
+}) -- use default
+dap.listeners.after.event_initialized["dapui_config"] = function()
+  dapui.open()
+end
+dap.listeners.before.event_terminated["dapui_config"] = function()
+  dapui.close()
+end
+dap.listeners.before.event_exited["dapui_config"] = function()
+  dapui.close()
+end
+
+-- 绑定 nvim-dap 快捷键
+require("keybindings").mapDAP()
+```
+
+同时在 **入口文件** init.lua 中注释掉 vimspector，增加 nvim-dap 的引用：
+
+```lua
+-- require("dap.vimspector")
+require("dap.nvim-dap")
+```
+
+因为 rust-tools 正在尝试集成 Dap 调试, 所以接着我们还需要给 rust-tools 传入 Dap adapter 的配置信息。
+
+打开 `lua/lsp/config/rust.lua`，注意看新增一行 dap 的配置：
+
+```lua
+...
+return {
+  on_setup = function(server)
+    require("rust-tools").setup({
+      server = vim.tbl_deep_extend("force", server:get_default_options(), opts),
+      -- ( 新增)
+      dap = require("dap.nvim-dap.rust"),
+    })
+    server:attach_buffers()
+    require("rust-tools").start_standalone_if_required()
+  end,
+}
+```
+
+同时创建 `lua/dap/nvim-dap/rust.lua` 文件，内容如下：
+
+```lua
+-- 注意：这里要修改为你的绝对路径
+local extension_path =
+  "/Users/nn/.local/share/nvim/site/pack/packer/start/vimspector/gadgets/macos/download/CodeLLDB/v1.6.10/root/extension/"
+local codelldb_path = extension_path .. "adapter/codelldb"
+local liblldb_path = extension_path .. "lldb/lib/liblldb.dylib"
+
+return {
+  adapter = require("rust-tools.dap").get_codelldb_adapter(codelldb_path, liblldb_path),
+}
+```
+
+这个文件提供 rust-tools 需要的适配器的路径信息，仔细看一下路径，就是我们上边用 vimspector 安装的 CodeLLDB 的路径，默认在 vimspector 插件目录下， 这个路径非常重要，需要**修改成 CodeLLDB 在你系统中的绝对路径** ，不同操作系统目录也会不同，请实际去目录中查看。
+
+接着我们去设置快捷键，在 `lua/keybindings.lua` 中增加：
+
+```lua
+-- nvim-dap
+pluginKeys.mapDAP = function()
+  -- 开始
+  map("n", "<leader>dd", ":RustDebuggables<CR>", opt)
+  -- 结束 (dapui无法自动关闭可能是bug，手动关闭能想到的一切)
+  map(
+    "n",
+    "<leader>de",
+    ":lua require'dap'.close()<CR>"
+      .. ":lua require'dap'.terminate()<CR>"
+      .. ":lua require'dap.repl'.close()<CR>"
+      .. ":lua require'dapui'.close()<CR>"
+      .. ":lua require('dap').clear_breakpoints()<CR>"
+      .. "<C-w>o<CR>",
+    opt
+  )
+  -- 继续
+  map("n", "<leader>dc", ":lua require'dap'.continue()<CR>", opt)
+  -- 设置断点
+  map("n", "<leader>dt", ":lua require('dap').toggle_breakpoint()<CR>", opt)
+  map("n", "<leader>dT", ":lua require('dap').clear_breakpoints()<CR>", opt)
+  --  stepOver, stepOut, stepInto
+  map("n", "<leader>dj", ":lua require'dap'.step_over()<CR>", opt)
+  map("n", "<leader>dk", ":lua require'dap'.step_out()<CR>", opt)
+  map("n", "<leader>dl", ":lua require'dap'.step_into()<CR>", opt)
+  -- 弹窗
+  map("n", "<leader>dh", ":lua require'dapui'.eval()<CR>", opt)
+end
+```
+
+方便起见，我这里设置的快捷键与 vimspector 的快捷键一模一样，增加了一个 `<leader>dh` 弹窗查看变量值，由于与vimsector 快捷键一样，我们可以用同样的方式测试一下。
+
+1. `<leader>dt` 创建断点 （大红点）
+2. `<leader>dd` 启动 debug
+3. `<leader>dj` step over
+4. `<leader>de` 结束 debug
+
+![17-7.gif](/529e1cb26fa04935965cf8f759f6771dtplv-k3u1fbpfcp-zoom-in-crop-mark3024000.awebp)
+
+Okay，本节就到此结束了，下一节是最后一节了，会对整个小册作个总结，把剩下没有讲到组件做一个简单的介绍，并把网友常问的问题进行一个整理，方便后边的同学参考，谢谢支持。
+
+欢迎到 [小册的 GitHub 代码库](https://link.juejin.cn/?target=https%3A%2F%2Fgithub.com%2Fnshen%2Flearn-neovim-lua) 中发PR，持续改进配置。
+
+
+
+# 18.结语与常见问题解答
+
+首先恭喜你终于完成了此小册的所有配置，如果你坚持读到这里，那么你应该已经了解 Neovim 的配置原理，并且已经有了一个相对可用的开发环境了。
+
+Neovim 是一个不断发展的开发工具，围绕其的插件也在不断更新，但它始终只是一个开发工具，不必神话它，你如果觉得实在麻烦，大可用回 `VSCode`，目前我也是两者都在使用之中。
+
+但如果你骨子里就是一个爱折腾的人，想做那一小撮最靓的极客，那么这里只是你的第一步，你可以更加深入学习 Lua 语言的特性，苦读 Neovim 的 API 文档，寻找并尝试更多的插件，研究开源社区中其他配置版本各种各样的思路，来扩展和更新我们的版本，或者苦练手速，熟记更大量的快捷键，早日成为真正的大师。
+
+在这里先回顾一下本小册的配置思路，我觉得是非常易懂易扩展的。
+
+## 配置回顾
+
+我们将 `init.lua` 作为**入口文件**，这里列出了所有用到的配置文件，如果这里没有列出来，那么一定是还没有生效的。这样当你需要添加或删除一个功能的时候，可以非常方便的这里调整。
+
+由于脚本是从上至下顺序执行的，所以这里的引入顺序很重要。第一个引入的文件是 `basic.lua`，用于重置 Neovim 的**基础配置**，更加符合人类的使用习惯。
+
+接着我们将所有**快捷键**的设置全部都放在 `keybindings.lua` 中，任何快捷键的调整，包含第三方插件的快捷键，都可以在这一个地方统一调整。
+
+在这个文件中，我们先调用 `vim.api.nvim_set_keymap` 设置了**常见的快捷键**。对于不能立刻设置，需要等待**特定时机**设置的快捷键，我们在 return 的 pluginKeys Table 中定义了对应的函数，在指定的时机，任意位置都可以调用`require("keybindings).xxx()` ，这样就可以绑定对应的快捷键了。
+
+接着我们用 `plugins.lua` **管理插件的安装卸载**，并且设置了自动命令，修改并保存此文件会自动安装对应插件。如果未来你需要**添加插件**，第一个应该想到就是到这个文件中添加。
+
+通常每个插件对应一个配置文件，我们将**插件的配置文件**统一放在了 `plugin-config/` 文件夹中， 在这个文件夹里的文件，添加删除是常事，所以我们用 `pcall` 捕获了 `require` 插件错误，这样如果这个配置文件被引用了，但 这个插件并没安装成功，或已经被删除了，也不会让 Neovim 崩溃。
+
+然后我们创建的单独的 `lsp/` 文件夹用于放置 **LSP 相关的的配置**，在 `lsp/setup.lua` 中，我们用 `nvim-lsp-installer` 来管理 Language Server 的安装卸载，手动加载 `lsp/confg/` 子目录的各种语言配置文件来增加不同的编程语言。
+
+在 `lsp/cmp.lua` 中配置了**自动补全**功能，在 `lsp/formatter.lua` 中配置了专门的**代码格式化**插件，之后我们又改成了 `lsp/null-ls.lua` 来代替 LSP 的格式化方法。
+
+最后我们又创建了 `dap/` 文件夹用于保存**断点调试**相关的配置，两个流行的插件分别在 `dap/vimspector/` 中， 和 `dap/nvim-dap/` 文件中，我们将两个工具设置了相同的一套快捷键，建议在 init.lua 中任选一种使用。
+
+
+
+## 还有哪些没有讲到？
+
+Neovim 是一个开放的世界，不断会有新的插件出现，我们不可能把所有的插件都研究一遍，而且大部分插件基本上不需要配置，使用默认的配置就够了。这里介绍一没有说到的插件，并提供配置文件相信你可以自己搞得定。
+
+**nvim-autopairs** 插件可以自动补充后一半的括号，见图：
+
+![18-4.gif](/08c35600af6644d396c05d732c993908tplv-k3u1fbpfcp-zoom-in-crop-mark3024000.awebp)
+
+配置文件 [nvim-autopairs.lua](https://link.juejin.cn/?target=https%3A%2F%2Fgithub.com%2Fnshen%2Flearn-neovim-lua%2Fblob%2Fmain%2Flua%2Fplugin-config%2Fnvim-autopairs.lua)，在入口文件引入即可。
+
+**Comment.nvim** 快速注释代码
+
+![18-5.gif](/074a6ccdba1c4219a41e385b014ef5edtplv-k3u1fbpfcp-zoom-in-crop-mark3024000.awebp)
+
+我在 `keybindings.lua` 定义了 gcc 快捷键作为行注释，gbc 快捷键作为块注释
+
+```lua
+-- 代码注释插件
+-- see ./lua/plugin-config/comment.lua
+pluginKeys.comment = {
+  -- Normal 模式快捷键
+  toggler = {
+    line = "gcc", -- 行注释
+    block = "gbc", -- 块注释
+  },
+  -- Visual 模式
+  opleader = {
+    line = "gc",
+    bock = "gb",
+  },
+}
+```
+
+配置文件 [comment.lua](https://link.juejin.cn/?target=https%3A%2F%2Fgithub.com%2Fnshen%2Flearn-neovim-lua%2Fblob%2Fmain%2Flua%2Fplugin-config%2Fcomment.lua)，在入口文件引入即可。
+
+**surround.nvim**
+
+surround.nvim 插件会增加几个快捷键，我常用的有：
+
+- `ds<char>`
+- `cs<from><to>`
+- `ys{motion}{char}`
+
+![18-6.gif](/d61ed1e201d34834b0576d173d5e9b2dtplv-k3u1fbpfcp-zoom-in-crop-mark3024000.awebp)
+
+配置文件 [surround.lua](https://link.juejin.cn/?target=https%3A%2F%2Fgithub.com%2Fnshen%2Flearn-neovim-lua%2Fblob%2Fmain%2Flua%2Fplugin-config%2Fsurround.lua)，在入口文件引入即可。
+
+### 输入法自动切换
+
+我们希望进入 Normal 模式时自动切换为英文输入法，而进入到 Insert 模式时切换回之前输入时所用的输入法。
+
+我们可以增加一条自动命令：
+
+```lua
+local myAutoGroup = vim.api.nvim_create_augroup("myAutoGroup", { clear = true, })
+local autocmd = vim.api.nvim_create_autocmd
+-- 自动切换输入法
+autocmd("InsertLeave", {
+  group = myAutoGroup,
+  callback = require("utils.im-select").macInsertLeave,
+})
+autocmd("InsertEnter", {
+  group = myAutoGroup,
+  callback = require("utils.im-select").macInsertEnter,
+})
+```
+
+InserLeave 和 InsertEnter 时调用一个 im-select 脚本，这个脚本会自动切换输入法。
+
+注意上述代码是 Mac 系统调用的 macInsertLeave / macInsertEnter , Windows 系统应改为 winInsertLeave / winInsertEnter。
+
+`lua/utils/im-select.lua` 代码如下：
+
+```lua
+local M = {}
+
+M.defaultIM = "com.apple.keylayout.ABC"
+M.currentIM = M.defaultIM
+
+M.macInsertLeave = function()
+  M.currentIM = vim.fn.system({ "im-select" })
+  vim.cmd(":silent :!im-select" .. " " .. M.defaultIM)
+end
+
+M.macInsertEnter = function()
+  if M.currentIM then
+    vim.cmd(":silent :!im-select" .. " " .. M.currentIM)
+  else
+    vim.cmd(":silent :!im-select" .. " " .. M.defaultIM)
+  end
+end
+
+M.windowsInsertLeave = function()
+  vim.cmd(":silent :!~/.config/nvim/im-select.exe 1033")
+end
+
+M.windowsInsertEnter = function()
+  vim.cmd(":silent :!~/.config/nvim/im-select.exe 2052")
+end
+return M
+```
+
+注意这个脚本需要依赖 [im-select](https://link.juejin.cn/?target=https%3A%2F%2Fgithub.com%2Fdaipeihust%2Fim-select)。
+
+mac 系统安装
+
+```bash
+brew tap daipeihust/tap && brew install im-select
+```
+
+Windows 系统下载 [im-select.exe](https://link.juejin.cn/?target=https%3A%2F%2Fgithub.com%2Fdaipeihust%2Fim-select%2Fraw%2Fmaster%2Fim-select-win%2Fout%2Fx86%2Fim-select.exe) 到 nvim 目录下，并且在设置中添加英语语言，具体方法为:
+
+> Windows设置 > 时间和语言 > 语言下，找到首选语言，点 + 号添加语言，选择英语（美国），只需要基本包即可，手写识别、语音识别可以不需要。
+
+完整代码请参考 小册 GitHub 仓库:
+
+- [/lua/utils/im-select.lua](https://link.juejin.cn/?target=https%3A%2F%2Fgithub.com%2Fnshen%2Flearn-neovim-lua%2Fblob%2Fmain%2Flua%2Futils%2Fim-select.lua)
+- [/lua/autocmds.lua](https://link.juejin.cn/?target=https%3A%2F%2Fgithub.com%2Fnshen%2Flearn-neovim-lua%2Fblob%2Fmain%2Flua%2Fautocmds.lua)
+
+## 常见疑难问题解答
+
+我在编写小册的过程中收到了很多反馈，以下问题是问得最多的，我将其整理出来：
+
+### 如何卸载插件?
+
+打开 `lua/plugins.lua` 文件，找到要卸载的插件，注释掉，`:w` 保存文件，被询问是否删除，输入 y 回车即可。
+
+![18-1.gif](/4e3e4bcc62de4a49b1fbeb333a2c9bcctplv-k3u1fbpfcp-zoom-in-crop-mark3024000.awebp)
+
+### 为什么插件明明安装成功了，配置文件却莫名报错找不到插件？
+
+通常是安装插件时遇到网络错误，导致实际上并没有真正的安装成功，参考上一个问题先卸载，再重新安装。
+
+### 插件全部安装失败，如何解决？
+
+插件安装失败通常都是因为国内网络环境的问题，基本上有两种方式解决：
+
+第一种就是挂全局代理，或者在代理软件上复制终端命令到系统相应位置，在 windows wsl2 挂代理有些复杂，可以到这里参考 [我的配置](https://link.juejin.cn/?target=https%3A%2F%2Fgithub.com%2Fnshen%2Flearn-neovim-lua%2Fdiscussions%2F45)。
+
+第二种就是使用镜像站点，取消下边注释中任意一行后保存，重新安装。
+
+```lua
+  -- 自定义源
+    git = {
+      -- default_url_format = "https://hub.fastgit.xyz/%s",
+      -- default_url_format = "https://mirror.ghproxy.com/https://github.com/%s",
+      -- default_url_format = "https://gitcode.net/mirrors/%s",
+      -- default_url_format = "https://gitclone.com/github.com/%s",
+      -- default_url_format = "git@github.com:%s" -- 换用 git 协议
+    },
+```
+
+完整代码参考： [/lua/plugins.lua#L150-L156](https://link.juejin.cn/?target=https%3A%2F%2Fgithub.com%2Fnshen%2Flearn-neovim-lua%2Fblob%2F18fe3947671088bc70a7ef75d6d2ca82c7ac0444%2Flua%2Fplugins.lua%23L150-L156)
+
+### 总有一个插件更新失败
+
+参考上边如何卸载插件，先卸载，再重新安装即可。
+
+### Mac 系统没有 Alt 键，Option 键也不管用，如何设置 Command 快捷键？
+
+在我们的配置中，Mac 系统的 Option 键对应的是 Windows 系统的 Alt 键，如果你的 Option 键没有反应，通常需要设置一下你的终端，将 Option 键设置为 Meta 键。
+
+Item2 设置方式为 `Preference -> Profiles -> Default --> Keys --> Left Option key --> 选中 Esc+`
+
+![18-2.png](/29c2446988a84cad857f4ddd2eb02040tplv-k3u1fbpfcp-zoom-in-crop-mark3024000.awebp)
+
+Alacritty 设置方式参考 [我的配置文件中](https://link.juejin.cn/?target=https%3A%2F%2Fgithub.com%2Fnshen%2Fdotfiles%2Fblob%2Fmain%2F.alacritty.yml) `# Alt Meta key` 的部分
+
+另外 Neovim 中 是无法识别到 Command 键的。
+
+### windows 的 ubuntu 子系统下安装插件报错 `could not find executable "unzip" in path`?
+
+因为缺少压缩解压软件，需要安装 zip unzip。
+
+```bash
+sudo apt-get install zip unzip
+```
+
+### 在 Windows 10 中如何将 Neovim 中的内容复制到系统剪贴板？
+
+我们可以创建一个简单的脚本 `fix-yank.lua` 并在入口文件中引入，如下：
+
+```lua
+vim.cmd([[
+augroup fix_yank
+    autocmd!
+    autocmd TextYankPost * if v:event.operator ==# 'y' | call system('/mnt/c/Windows/System32/clip.exe', @0) | endif
+augroup END
+]])
+```
+
+上述代码意思大概是每次 y 复制后把内容传给 windows 自带的 clip.exe 中，达到复制的目的。
+
+### 在 Windows 10 中如何将系统剪切板中的内容粘贴到 Neovim 中？
+
+可以打开 Terminal，选择 `设置 --> 操作 --> 粘贴` 设置粘贴的快捷键.
+
+![18-3.webp](/34dce465c24747198f0272da519f41b3tplv-k3u1fbpfcp-zoom-in-crop-mark3024000.awebp)
+
+如有更多问题欢迎留言，我会继续更新。
+
+另外记得关注我们 [GitHub 上小册的配套代码](https://link.juejin.cn/?target=https%3A%2F%2Fgithub.com%2Fnshen%2Flearn-neovim-lua) 未来代码还会持续的改进。
+
+关注我的 [掘金个人主页](https://juejin.cn/user/1873223543167326) ，未来我也会在上边写一些 Neovim 相关的文章。
+
+最后再次感谢支持，江湖再见！
+
+# 从 nvim-lsp-installer 升级到 mason.nvim 
+
+[Introducing mason.nvim · Discussion #876 · williamboman/nvim-lsp-installer · GitHub](https://github.com/williamboman/nvim-lsp-installer/discussions/876)
+
+mason.nvim 是 nvim-lsp-installer 的下一代版本，现有的 nvim-lsp-installer 将不再维护，所以我们还是有必要升级一下的，本文将分享一下我的升级过程。
+
+好了开始正文，最近每次我们使用 `:LspInstallInfo` 打开 **nvim-lsp-installer** 的时候都会在最上边看到两行网址。
+
+![image.png](/a7984f06abad4a6ab1c4a469a0423c7ftplv-k3u1fbpfcp-zoom-in-crop-mark4536000.awebp)
+
+在这个[网址中](https://link.juejin.cn?target=https%3A%2F%2Fgithub.com%2Fwilliamboman%2Fnvim-lsp-installer%2Fdiscussions%2F876) 作者介绍了 **mason.nvim** 项目的情况，简单来讲就是未来会用 **mason.nvim** 取代 **nvim-lsp-installer**，并且支持更多的 server 安装，不仅仅是LSP Server 还支持 DAP servers、 linters、formatters 等等超过 150 个包，100+ 种编程语言，并且升级也是非常简单的，下面就开始吧。
+
+1. 第一步卸载所有已经安装的Lsp servers，这是因为 mason.nvim 与 nvim-lsp-installer 的文件结构不兼容。确保卸载以释放磁盘空间。建议跟我上边一样截个图先，记住都装过什么，一会儿还要再装回来。运行`:LspUninstallAll` 命令卸载。
+
+![image.png](/5e1956478b2149dabf21b8c42d4d597atplv-k3u1fbpfcp-zoom-in-crop-mark4536000.awebp)
+
+上图的目录就是之前安装 lsp servers 的目录，y 回车会清空这个目录。
+
+1. 打开 `lua/plugins.lua` 替换 **nvim-lsp-installer** 插件为 **mason.nvim** 和 **mason-lspconfig.nvim**
+
+```lua
+    use({ "williamboman/mason.nvim" })
+    use({ "williamboman/mason-lspconfig.nvim" })
+复制代码
+```
+
+![image.png](/7c2754b162f340b894e7da85603bb1datplv-k3u1fbpfcp-zoom-in-crop-mark4536000.awebp)
+
+保存自动安装，或者运行 `:PackerSync`
+
+1. 找到 `lua/lsp/setup.lua` 删掉最上边的 nvim-lsp-installer 的配置部分
+
+```lua
+----------------------------------------删掉这部分
+require("nvim-lsp-installer").setup({
+  -- 自动安装 Language Servers
+  automatic_installation = true,
+})
+----------------------------------------删掉这部分
+复制代码
+```
+
+修改为
+
+```lua
+-- :h mason-default-settings
+require("mason").setup({
+  ui = {
+    icons = {
+      package_installed = "✓",
+      package_pending = "➜",
+      package_uninstalled = "✗",
+    },
+  },
+})
+
+-- mason-lspconfig uses the `lspconfig` server names in the APIs it exposes - not `mason.nvim` package names
+-- https://github.com/williamboman/mason-lspconfig.nvim/blob/main/doc/server-mapping.md
+require("mason-lspconfig").setup({
+  -- 确保安装，根据需要填写
+  ensure_installed = {
+    "sumneko_lua",
+    "tsserver",
+    "cssls",
+    "emmet_ls",
+    "html",
+    "jsonls",
+  },
+})
+```
+
+保存即可，mason 默认将 lsp 安装到新的位置 `~/.local/share/nvim/mason`
+
+![image.png](/e7be2dac858d4aecad27c7eeedcb826dtplv-k3u1fbpfcp-zoom-in-crop-mark4536000.awebp)
+
+重启！
+
+![image.png](/331ca16e29f14ca8812d94e0fbfd6fddtplv-k3u1fbpfcp-zoom-in-crop-mark4536000.awebp)
+
+输入命令 `:Mason` 哒哒！
+
+![image.png](/029c7c3dde994fb19dd306b7ba8c8947tplv-k3u1fbpfcp-zoom-in-crop-mark4536000.awebp)
+
+和之前用法基本一致，多了 1，2，3，4，5 是上边TAB快捷键，按 `2` 即可切换到 LSP，可以在这里选择需要安装的，按 `i` 进行安装。
+
+本文结束🙏
+
+
+
+作者：nshen
+链接：https://juejin.cn/post/7154005621887631396
+来源：稀土掘金
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。

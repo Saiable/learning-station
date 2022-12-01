@@ -35,7 +35,7 @@ typora-root-url: ./
 
 # `CSS`
 
-## `CSS核心`
+## `CSS核心` 
 
 - `CSS`样式之颜色、文字、文本设置
 
@@ -436,35 +436,23 @@ https://juejin.cn/post/6844903519359598599
 
 ## `ES6`新语法特性剖析
 
-### `let/const`以及`Symbol/Bigint`
+- `let/const`以及`Symbol/Bigint`
 
+- 对象/数据/字符串的解构赋值
 
+- 箭头函数和运算符的基础应用
 
-### 对象/数据/字符串的解构赋值
+- `Promise/async/await`的基础应用
 
+- `Class`类声明的基础应用
 
+- `Set/Map/WeakSet/WeakMap`的基础应用
 
-### 箭头函数和运算符的基础应用
-
-
-
-### `Promise/async/await`的基础应用
-
-
-
-### `Class`类声明的基础应用
-
-
-
-### `Set/Map/WeakSet/WeakMap`的基础应用
-
-
-
-### 其余常用`ES6+`基础知识
+- 其余常用`ES6+`基础知识
 
 ## `DOM/BOM`编程艺术
 
-### `DOM`文档树中常用的属性和方法
+- `DOM`文档树中常用的属性和方法
 
 
 
