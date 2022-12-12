@@ -1018,6 +1018,12 @@ BB = 'green'; // 修改不是堆中信息,不起作用
 
 基础知识没什么好说的，背下来记熟了，脑子里面有东西了，慢慢的自己就能悟透了
 
+#### 对象的自定义属性
+
+可以通过`ojb.property = value`把需要保存的数据，存储在全局对象上，并通过`this`或其他方式获取到（视具体实现）
+
+在写多行表格数据展开显示时，尤其有用
+
 ## 数据类型堆栈底层机制
 
 ```js
@@ -1336,6 +1342,81 @@ console.log(AA)
 
 每一次函数执行的目的，都是把函数体中的代码（先从字符串变为代码）执行 => 形成一个全新的私有内存栈（[JS编译过程，VO，AO ](https://www.jianshu.com/p/edb2be5866eb)）
 
+**`JS`函数运行机制**
+
+首先关于整个生命周期，最重要的是要了解它的编译过程。
+
+1. 发现有代码调用了一个函数
+2. 在执行这个function之前，创建一个执行上下文（execution context），也可以叫执行环境。
+3. 进入创建阶段（VO创建）
+    a. 初始化作用域链（scope chain）
+    b. 创建变量函数（variable object / VO）
+    c. 创建参数对象（arguments object，传进来的参数）,检查上下文，初始化其名字和值，以及建立引用对象的拷贝。
+    d. 扫描上下文中的函数声明
+    e. 为每一个扫描到的函数声明在VO中创建一个属性，命名为函数的名字，指向了存储空间中的对应函数。
+    f. 如果函数名称已经存在了，这个引用指针将被重写为新的这一个。
+    g. 扫描上下文中的变量声明
+    h. 为每一个扫描到的变量声明在VO中创建一个属性，命名为变量的名字，初始化值为undefined。
+    i. 如果变量名在内存中已经存在了，就跳过。
+    j. 决定上下文中this的指向。
+4. 执行阶段（VO => AO）
+    a. 执行/解释上下文中的function，为变量赋值
+    b. 代码按行执行
+
+就我个人理解，他们的相应概念和包含内容如下。
+
+scope ：变量/函数起作用的区域
+ scope chain : 保证对执行环境有权访问的所有变量和函数的有序访问。相当于VO + [scope]
+ 我们可以将作用域定义为一套规则，用来管理引擎如何在当前作用域以及嵌套的子作用域中根据标识符名称进行变量查找，作用域链是这套规则的具体实现。
+
+execution context  = {VO, this, [scope]}
+
+
+
+函数的每次执行，都会形成一个全新的私有栈内存
+
+每个私有栈内存都会有变量存储、值存储对应的内存空间
+
+
+
+**案例解析**
+
+选项卡
+
+```html
+
+<body>
+    <button value="按钮1">按钮1</button>
+    <button value="按钮2">按钮2</button>
+    <button value="按钮3">按钮3</button>
+    <button value="按钮4">按钮4</button>
+    <button value="按钮5">按钮5</button>
+</body>
+<script>
+    var btnList = document.getElementsByTagName('button')
+    for (var i = 0; i < btnList.length; i++) {
+        btnList[i].onclick = function() {
+            console.log(i)
+        }
+    }
+</script>
+
+```
+
+点击的回调函数执行时，每个函数对应保存i都是5，因为for循环已经执行完毕了：给每个`button`对象向，添加点击事件的回调，而当我们真正去点击时，函数开始执行，此时`i`的值是5
+
+可以每次循环时，自定义一个`myIndex`属性，记录每次`i`的值
+
+```js
+    var btnList = document.getElementsByTagName('button')
+    for (var i = 0; i < btnList.length; i++) {
+        btnList[i].myIndex = i
+        btnList[i].onclick = function() {
+            console.log(this.myIndex)
+        }
+    }
+```
+
 ### 函数的arguments
 
 任意数求和：
@@ -1359,9 +1440,11 @@ arguments：函数内置的实参集合
 function sum() {
     console.log(arguments)
     let total = null
-    for (let i = 0; i <arguments.length; i++) {
+    for (let i = 0; i < arguments.length; i++) {
+        // 获取的每一项，都要先转换成数字
         let item = Number(arguments[i])
-        if(isNaN(item)) {
+        // 非有效数字不加
+        if (isNaN(item)) {
             continue
         }
         total += item;
@@ -1371,13 +1454,16 @@ function sum() {
 
 let total = sum(1, 3, '5a')
 console.log(total)
+// arguements.callee指向函数自身，严格模式下禁止使用
 ```
+
+![image-20221212210134110](image-20221212210134110.png)
 
 ### 箭头函数
 
-- 如果函数体只有一行return，可以省略return和大括号，一行搞定
+见`ES6~11`小节
 
-# ES6~11
+# ES6+
 
 [GitHub - lukehoban/es6features: Overview of ECMAScript 6 features](https://github.com/lukehoban/es6features)
 
@@ -1615,13 +1701,59 @@ person.fullName.call(person1);  // 将返回 "Bill Gates"
 
 3.不能使用`arguments`变量
 
+```js
+    // 没有arguments
+    let argFunc = () => {
+        console.log(arguments) // 可以打印，但并没有值
+    }
+    argFunc(1, 2, 3, 4)
+```
+
+并没有获取到实参
+
+![image-20221212214757106](image-20221212214757106.png)
+
 4.箭头函数的简写
 
-```
-1.省略小括号，当形参有且只有一个的时候
+- 参数
 
-2.省略花括号，当代码体只有一条语句的时候，此时return必须省略，而且语句的执行结果就是函数的返回值
-```
+  ```js
+  1.省略小括号，当形参有且只有一个的时候
+  
+  
+  ```
+
+  
+
+- 返回值
+
+  ```js
+  // 省略花括号，当代码体只有一条语句的时候，此时return可以省略，而且语句的执行结果就是函数的返回值
+  
+  // 普通函数
+  function sum(n, m) {
+      return n + m
+  }
+  // 改写成箭头函数
+  let sumA = (n, m) => {
+      return n + m
+  }
+  
+  // 如果函数体中只有一行return，可以省略return和大括号，一行搞定
+  let sumB = (n, m) => n + m
+  
+  // 函数中返回函数（柯里化函数）
+  function fn(n) {
+      return function (m) {
+          return n + m
+      }
+  }
+  
+  // 柯里化函数改写成箭头函数
+  let fn1 = (n) => (m) => n + m
+  ```
+
+  
 
 ### 箭头函数的实践和应用场景
 
@@ -1634,51 +1766,65 @@ person.fullName.call(person1);  // 将返回 "Bill Gates"
 1.形参初始值 具有默认值的参数，一般要靠后（潜规则）
 
 ```js
-function add(a,b,c=10) {
-  return a+b+c;
+// 函数形参默认值
+function add(a, b, c = 10) {
+    return a + b + c;
 }
 let result = add(1, 2)
-console.log(result) //13
+
+let sum = (n = 0, m = 0) => n + m
 ```
 
 2.与解构赋值相结合
 
 ```js
-function connect({host="127.0.0.1",username,password,port}) {
-  console.log(host,username,password,port);
+// 与解构赋值相结合
+function connect({ host = "127.0.0.1", username, password, port }) {
+    console.log(host, username, password, port);
 }
 connect({
-    username:'root',
-    password:'root',
-    port:3306
+    username: 'root',
+    password: 'root',
+    port: 3306
 })
 ```
 
-## `rest`参数
+### `rest`参数
 
-`ES6`引入`rest`参数，用户获取函数的实参，用来代替arguments
+`ES6`引入`rest`参数（剩余运算符），用户获取函数的实参，用来代替arguments
 
 ```js
-//ES5获取实参的方式
-function date() {
-  console.log(arguments);
-}
-date('a','b','c'); // Arguments(3) ['a', 'b', 'c', callee: ƒ, Symbol(Symbol.iterator): ƒ]
+    // ES5获取实参的方式
+    function date() {
+        console.log(arguments);
+    }
+    date('a', 'b', 'c'); // Arguments(3) ['a', 'b', 'c', callee: ƒ, Symbol(Symbol.iterator): ƒ]
 
-//rest参数
-function date02(...args) {
-    console.log(args); // 结果是数组，可以使用数组的一些api，filer some every map等
-}
-date02('d','e','f'); // [ 'd', 'e', 'f' ]
+    // 箭头没有arguments（箭头函数的arguments始终是一个空类数组对象）
+    let argFunc = () => {
+        console.log(arguments) // 可以打印，但并没有值
+    }
+    argFunc(1, 2, 3, 4)
+
+    // rest参数
+    function date02(...args) {
+        console.log(args); // 结果是数组，可以使用数组的一些api，filer some every map等
+    }
+    date02('d', 'e', 'f'); // [ 'd', 'e', 'f' ]
 ```
 
 `rest`参数必须要放到参数的最后
 
 ```js
-function fn(a,b,...args) {
-    console.log(a, b, args)
-}
-fn(1,2,3,4,5); //1 2 [ 3, 4, 5 ]
+    // `rest`参数必须要放到参数的最后
+    function fn(a, b, ...args) {
+        console.log(a, b, args)
+    }
+    fn(1, 2, 3, 4, 5); //1 2 [ 3, 4, 5 ]
+
+    // args参数任意数求和
+    let sumArgs = (...args) => eval(args.join('+'))
+    console.log(`sumArgs: ${sumArgs(1, 2, 3, 4, 5)}`)
 ```
 
 ## 扩展运算符
@@ -4517,7 +4663,7 @@ sayHello('Hardy'); // Hello, Hardy!
 
 > 函数的执行
 
-	
+
 		2.1.创建私有上下文
 			- 进栈：函数一旦执行，就会创建一个全新的私有上下文（函数上下文）
 				- 函数的每次执行，都是重新形成一个私有的上下文，和之前产生的上下文没有必然的联系
@@ -4690,6 +4836,12 @@ let定义变量
 箭头函数
 
 ## 堆栈内存及函数底层处理机制
+
+链接：https://www.jianshu.com/p/edb2be5866eb
+
+
+
+
 
 # JS运行机制
 

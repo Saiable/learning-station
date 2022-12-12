@@ -3361,6 +3361,65 @@ data() {
 
 对于数组数据，也可以通过`Vue.set()`或`vm.$set()`来设置响应式
 
+如果是数组
+
+```vue
+optionsAllCounter: {
+        color: ["#3398DB"],
+        tooltip: {
+          trigger: "axis",
+          axisPointer: {
+            // 坐标轴指示器，坐标轴触发有效
+            type: "shadow", // 默认为直线，可选为：'line' | 'shadow'
+          },
+        },
+        grid: {
+          left: "3%",
+          right: "4%",
+          bottom: "3%",
+          containLabel: true,
+        },
+        xAxis: [
+          {
+            type: "category",
+            // data: [
+            //   "Mon",
+
+            // ],
+            axisTick: {
+              alignWithLabel: true,
+            },
+          },
+        ],
+        yAxis: [
+          {
+            type: "value",
+            axisLabel: {
+              formatter: "{value} 条",
+              //   align: "center",
+            },
+          },
+        ],
+        series: [
+          {
+            name: "数量",
+            type: "bar",
+            barWidth: "60%",
+            // data: [
+            //   10, 
+            // ],
+          },
+        ],
+      },
+    };
+
+// ...
+this.$set(this.optionsAllCounter.xAxis[0], 'data', xAxisData)
+this.$set(this.optionsAllCounter.series[0], 'data', seriesData)
+```
+
+
+
 ### 1.15.5.小结：`Vue`监视数据
 
 - `vue`会监视`data`中所有层次的数据
@@ -5161,6 +5220,73 @@ console.log(this.$refs.title)
     - `data`
     - `method`，子组件调用传过来方法时，如果传入了参数，父组件也是可以收到的
 
+当有`props`配置项时，`data`配置项里的值获取不到
+
+```vue
+export default {
+  name: "PageCard",
+  props: {
+    iconfontL: {
+      type: String,
+    },
+    iconfontR: {
+      type: String
+    },
+    name: {
+      type: String,
+      required: true,
+    },
+    showloading: {
+      type: Boolean,
+      default: true,
+    },
+    height: {
+      type: Number | String,
+    }
+  },
+  data() {
+    return {
+      display: 'none',
+      styleContextHeight: {
+        height: this.height + 'px'
+      },
+      styleContextShow: {
+        display: this.display
+      }
+    }
+  }
+};
+</script>
+```
+
+![image-20221207101544611](image-20221207101544611.png)
+
+怀疑是因为把data配置项写在了`props`配置项下面，把`data`配置项在上面，`props`配置项在下面，还是不行
+
+试了下写在内联样式里，没抽取出来
+
+```vue
+    <!-- <div class="content" :style="[styleContextHeight, styleContextShow]"> -->
+    <div
+      class="content"
+      :style="{ height: this.height + 'px', display: this.dataDisplay }"
+    >
+```
+
+只要数据更新，模板就会触发渲染，这样是肯定可以的
+
+写成数组对象不行的原因，可能和Vue整个的流程有关
+
+
+
+其他拓展
+
+- vue中props传值给data时-props有值但data却是空的问题
+  - https://www.codeleading.com/article/39372486645/
+
+- 解决vue组件props传值,对象获取不到的问题
+  - https://blog.csdn.net/pink_cz/article/details/126328341
+
 ## 3.8.`mixin`配置
 
 ### 3.8.1.`mixin`基本使用
@@ -6516,12 +6642,61 @@ localStorage.clear()
   </script>
   ```
 
+  注意：
+
+  - 在子组件标签上，不应该写括号带形参，父组件直接在`methods`配置项里，就可以拿到参数
+
+  - 如果写了`@myMethod="demo(val)"`反而会报错，这里传递的是父级标签上下文的变量。虽然这种写法不会传递子组件数据，但可以触发子组件的事件回调
+
+  - 应用场景：
+  
+    ```vue
+    // 子组件
+        selectChange(val) {
+          // console.log(this.dataSelectValue);
+          this.$emit("selectGetValue", val);
+          this.$emit("selectChange");
+          //   this.getCounterByDays(val);
+        },
+            
+    // 父组件
+    <el-table-column type="expand" width="55">
+                    <template slot-scope="props">
+                      <!-- <span>{{ props.row}}</span> -->
+                      <div class="loading" v-show="!singleBarX.length"></div>
+                      <div class="expand-container">
+                        <SelectCard
+                          class="select-card"
+                          @selectGetValue="selectGetValue"
+                          @selectChange="selectChange(props.row)"
+                        />
+                        <div
+                          class="expand-chart"
+                          style="width: 100%; height: 300px"
+                          :ref="props.row.job_id"
+                          v-show="singleBarX.length"
+                        ></div>
+                      </div>
+                    </template>
+                  </el-table-column>
+    
+    
+        selectGetValue(val) {
+          console.log(val);
+        },
+        selectChange(valParenet) {
+          console.log(valParenet)
+        },
+    ```
+  
+    子组件发射了两个同时触发的事件，`selectGetValue`获取到的是子组件传过来的值，`selectChange`传递了使用了另一个作用域插槽的值
+  
   `MyStudent`
-
+  
   子组件中通过组件实例对象上的`$emit`向外传递自定义事件，同时也可以传递参数
-
+  
   父组件在接受定义回调时，可以定义参数接受子组件的传值
-
+  
   ```vue
   <template>
     <div>
@@ -6545,7 +6720,7 @@ localStorage.clear()
       }
   </script>
   ```
-
+  
   
 
 另外一种写法：
@@ -7180,7 +7355,7 @@ animate__faster	500ms
     }
     ```
 
-    填写该配置项后，`vue-cli`会生成一个8080的服务器，并且开发的`public`目录，对应着该服务器的资源目录，`ajax`的请求路径，要修改成代理服务的
+    填写该配置项后，`vue-cli`会生成一个8080的服务器，并且开发的`public`目录，对应着该服务器的资源目录，`ajax`的**请求路径，要修改成代理服务的**
 
     优点：
 
@@ -7224,7 +7399,21 @@ animate__faster	500ms
 
     - 配置略微繁琐，请求资源时必须加前缀
 
+- `baseUrl`要修改成`vue-cli`生成的8080（默认）的ip，不能写成目标接口ip，或者直接置空也行
 
+- 如果接口是通过本地隧道转发的，8080在后台接口服务器上启动，代理才会通，如果是在另一台机器上的开发环境，代理不会生效
+
+  - vue-cli只会帮你从`localhost:8080`去访问配置完隧道后的`localhost:7989`（配置完隧道的接口地址），虽然浏览器访问没问题，这是因为`WindTerm`监听了端口，帮你做了转发
+
+    ![image-20221205165534097](image-20221205165534097.png)
+
+  - 而在代码里，相当于是本机的8080直接去请求本机的9878，这个动作`WindTerm`是不会在代码里给你监听的
+
+    ![image-20221205170101371](image-20221205170101371.png)
+
+  - 同样的配置，如果前台代码放在接口服务器上，代理请求是没问题的
+
+    ![image-20221205170211489](image-20221205170211489.png)
 
 ## 4.2.带有网络请求的案例
 
@@ -8453,6 +8642,8 @@ export default {
 
 ## 6.2.基本路由
 
+
+
 - 引入`vue-router`，并配置路径和组件的映射关系
 
   `router/index.js`
@@ -8701,6 +8892,8 @@ export default router
     <router-link to="/about/message">message</router-link>
     <router-view></router-view> <!-- 子路由由再写一个router-veiw -->
 ```
+
+嵌套路由默认激活子路由的第一个路由
 
 
 
@@ -9879,6 +10072,8 @@ module.exports = {
 
 ```
 
+> 还会报es2015相关的错误，新的配置见《ElementUI 》这里不重复更新了
+
 ### 使用
 
 #### 全量引入使用
@@ -9910,12 +10105,9 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-
-
-import { Button, Row } from 'element-ui'; // 注意引入的时候，是没有`el`的，然后第一个字母大写
-
 Vue.config.productionTip = false
 
+import { Button, Row } from 'element-ui'; // 注意引入的时候，是没有`el`的，然后第一个字母大写
 Vue.component(Button.name, Button);  // 第一个参数，就是自定义的一个名称
 Vue.component(Row.name, Row);
 // 那么样式怎么把控呢？

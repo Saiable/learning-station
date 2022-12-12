@@ -72,6 +72,49 @@ npm install babel-plugin-component -D
 }
 ```
 
+如果没有`.babelrc`，应该有`babel.config.js`
+
+原来的内容
+
+```js
+module.exports = {
+  presets: [
+    '@vue/cli-plugin-babel/preset'
+  ]
+}
+```
+
+修改如下：
+
+```js
+module.exports = {
+  presets: [
+    '@vue/cli-plugin-babel/preset',
+    ["es2015", { "modules": false }]
+  ],
+  plugins: [ // 这里是js文件，去掉key的引号
+    [
+      "component",
+      {
+        "libraryName": "element-ui",
+        "styleLibraryName": "theme-chalk"
+      }
+    ]
+  ]
+}
+
+```
+
+然后这个配置在后面运行时会报错： `Cannot find module 'babel-preset-es2015'`
+
+```bash
+npm install babel-preset-es2015 -D
+```
+
+然后将 `babel.config.js` 的 `es2015` 修改成 `@babel/preset-env`，修改过后重新启动就可以了
+
+
+
 接下来，如果你只希望引入部分组件，比如 Button 和 Select，那么需要在 main.js 中写入以下内容：
 
 ```javascript
@@ -79,12 +122,16 @@ import Vue from 'vue';
 import { Button, Select } from 'element-ui';
 import App from './App.vue';
 
-Vue.component(Button.name, Button);
-Vue.component(Select.name, Select);
+// Vue.component(Button.name, Button);
+// Vue.component(Select.name, Select);
+
 /* 或写为
  * Vue.use(Button)
  * Vue.use(Select)
  */
+
+// 支持链式调用
+Vue.use(Button).use(Select);
 
 new Vue({
   el: '#app',
@@ -102,6 +149,32 @@ Message({
     type: 'warning'
 })
 ```
+
+用到的每一个标签，你都要去引入，不是看你用了什么组件，而是看你用了什么标签
+
+部分标签的引入方式不是通过 `use` 而是直接在 `Vue` 的原型上绑定，比如说 `Message`
+
+```js
+Vue.use(Loading.directive);
+
+Vue.prototype.$loading = Loading.service;
+Vue.prototype.$msgbox = MessageBox;
+Vue.prototype.$alert = MessageBox.alert;
+Vue.prototype.$confirm = MessageBox.confirm;
+Vue.prototype.$prompt = MessageBox.prompt;
+Vue.prototype.$notify = Notification;
+Vue.prototype.$message = Message;
+```
+
+这里官方文档也有说明，具体就是要仔细看
+
+还有就是这种绑定在原型上的就不要去在写一次 `use` 不然可能会造成无缘无故的 `bug`
+
+
+
+更彻底的按需引入：
+
+- https://juejin.cn/post/6882914432801112077
 
 ## 使用解析
 
@@ -690,6 +763,189 @@ Col Attributes
 
 ##### 解析
 
+### `Form >>`
+
+### `Input` 输入框
+
+通过鼠标或键盘输入字符
+
+> Input 为受控组件，它**总会显示 Vue 绑定值**。
+>
+> 通常情况下，应当处理 `input` 事件，并更新组件的绑定值（或使用`v-model`）。否则，输入框内显示的值将不会改变。
+>
+> 不支持 `v-model` 修饰符。
+
+#### 基础用法
+
+```vue
+<el-input v-model="input" placeholder="请输入内容"></el-input>
+
+<script>
+export default {
+  data() {
+    return {
+      input: ''
+    }
+  }
+}
+</script>
+```
+
+#### 可清空
+
+> 使用`clearable`属性即可得到一个可清空的输入框
+
+```vue
+<el-input
+  placeholder="请输入内容"
+  v-model="input"
+  clearable>
+</el-input>
+
+<script>
+  export default {
+    data() {
+      return {
+        input: ''
+      }
+    }
+  }
+</script>
+```
+
+#### 尺寸
+
+> 可通过 `size` 属性指定输入框的尺寸，除了默认的大小外，还提供了 medium、small 和 mini 三种尺寸。
+
+![image-20221209133334578](image-20221209133334578.png)
+
+```vue
+<div class="demo-input-size">
+  <el-input
+    placeholder="请输入内容"
+    suffix-icon="el-icon-date"
+    v-model="input1">
+  </el-input>
+  <el-input
+    size="medium"
+    placeholder="请输入内容"
+    suffix-icon="el-icon-date"
+    v-model="input2">
+  </el-input>
+  <el-input
+    size="small"
+    placeholder="请输入内容"
+    suffix-icon="el-icon-date"
+    v-model="input3">
+  </el-input>
+  <el-input
+    size="mini"
+    placeholder="请输入内容"
+    suffix-icon="el-icon-date"
+    v-model="input4">
+  </el-input>
+</div>
+
+<script>
+export default {
+  data() {
+    return {
+      input1: '',
+      input2: '',
+      input3: '',
+      input4: ''
+    }
+  }
+}
+</script>
+```
+
+
+
+
+
+### `Select` 选择器
+
+当选项过多时，使用下拉菜单展示并选择内容。
+
+#### 基础用法
+
+适用广泛的基础单选
+
+![image-20221206154957022](image-20221206154957022.png)
+
+> `v-model`的值为当前被选中的`el-option`的 value 属性值
+
+```vue
+<template>
+  <el-select v-model="value" placeholder="请选择">
+    <el-option
+      v-for="item in options"
+      :key="item.value"
+      :label="item.label"
+      :value="item.value">
+    </el-option>
+  </el-select>
+</template>
+
+<script>
+  export default {
+    data() {
+      return {
+        options: [{
+          value: '选项1',
+          label: '黄金糕'
+        }, {
+          value: '选项2',
+          label: '双皮奶'
+        }, {
+          value: '选项3',
+          label: '蚵仔煎'
+        }, {
+          value: '选项4',
+          label: '龙须面'
+        }, {
+          value: '选项5',
+          label: '北京烤鸭'
+        }],
+        value: ''
+      }
+    }
+  }
+</script>
+```
+
+事件
+
+- `change`，选中值发生变化时触发，参数为目前选中的值
+
+  ```vue
+  <el-select
+             v-model="selectValue"
+             placeholder="7 days"
+             @change="selectChange"
+             >
+      <el-option
+                 v-for="item in selectOptions"
+                 :key="item.value"
+                 :label="item.label"
+                 :value="item.value"
+                 >
+      </el-option>
+  </el-select>
+              
+              
+              
+  // ...
+  selectChange(val) {
+  	console.log(val);
+  },
+  ```
+
+  
+
+
+
 ### `Form`表单
 
 由输入框、选择器、单选框、多选框等控件组成，用以收集、校验、提交数据
@@ -1080,7 +1336,118 @@ Form-Item Methods
 </el-table>
 ```
 
-#### 多选
+#### 固定列
+
+
+
+#### 固定列和表头
+
+
+
+#### 流体高度
+
+当数据量动态变化时，可以为 Table 设置一个最大高度。
+
+> 通过设置`max-height`属性为 Table 指定最大高度。此时若表格所需的高度大于最大高度，则会显示一个滚动条。
+
+#### 多级表头
+
+
+
+#### 自定义列模板
+
+自定义列的显示内容，可组合其他组件使用。
+
+![image-20221207165933143](image-20221207165933143.png)
+
+通过 `Scoped slot` 可以获取到 row, column, $index 和 store（table 内部的状态管理）的数据，用法参考 demo。
+
+```vue
+<template>
+  <el-table
+    :data="tableData"
+    style="width: 100%">
+    <el-table-column
+      label="日期"
+      width="180">
+      <template slot-scope="scope">
+        <i class="el-icon-time"></i>
+        <span style="margin-left: 10px">{{ scope.row.date }}</span>
+      </template>
+    </el-table-column>
+    <el-table-column
+      label="姓名"
+      width="180">
+      <template slot-scope="scope">
+        <el-popover trigger="hover" placement="top">
+          <p>姓名: {{ scope.row.name }}</p>
+          <p>住址: {{ scope.row.address }}</p>
+          <div slot="reference" class="name-wrapper">
+            <el-tag size="medium">{{ scope.row.name }}</el-tag>
+          </div>
+        </el-popover>
+      </template>
+    </el-table-column>
+    <el-table-column label="操作">
+      <template slot-scope="scope">
+        <el-button
+          size="mini"
+          @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+        <el-button
+          size="mini"
+          type="danger"
+          @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+      </template>
+    </el-table-column>
+  </el-table>
+</template>
+
+<script>
+  export default {
+    data() {
+      return {
+        tableData: [{
+          date: '2016-05-02',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄'
+        }, {
+          date: '2016-05-04',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1517 弄'
+        }, {
+          date: '2016-05-01',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1519 弄'
+        }, {
+          date: '2016-05-03',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1516 弄'
+        }]
+      }
+    },
+    methods: {
+      handleEdit(index, row) {
+        console.log(index, row);
+      },
+      handleDelete(index, row) {
+        console.log(index, row);
+      }
+    }
+  }
+</script>
+```
+
+#### 展开行
+
+当行内容过多并且不想显示横向滚动条时，可以使用 Table 展开行功能。
+
+![image-20221207171523016](image-20221207171523016.png)
+
+### 单选
+
+
+
+### 多选
 
 选择多行数据时使用 Checkbox。
 
@@ -1802,6 +2169,8 @@ Dialog 组件的内容可以是任意的，甚至可以是表格或表单，下�
   > Dialog 的内容是懒渲染的，即在第一次被打开之前，传入的默认 slot 不会被渲染到 DOM 上。因此，如果需要执行 DOM 操作，或通过 `ref` 获取相应组件，请在 `open` 事件回调中进行。
 
   > 如果 `visible` 属性绑定的变量位于 Vuex 的 store 内，那么 `.sync` 不会正常工作。此时需要去除 `.sync` 修饰符，同时监听 Dialog 的 `open` 和 `close` 事件，在事件回调中执行 Vuex 中对应的 mutation 更新 `visible` 属性绑定的变量的值。
+
+
 
 ## 源码分析
 

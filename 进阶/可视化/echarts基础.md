@@ -488,75 +488,75 @@ myChart.setOption(option);
   数据堆叠，同个类目轴上系列配置相同的`stack`值后 后一个系列的值会在前一个系列的值上相加。
 
 ~~~javascript
-option = {
-    // color设置我们线条的颜色 注意后面是个数组
-    color: ['pink', 'red', 'green', 'skyblue'],
-    // 设置图表的标题
-    title: {
-        text: '折线图堆叠123'
-    },
-    // 图表的提示框组件 
-    tooltip: {
-        // 触发方式
-        trigger: 'axis'
-    },
-    // 图例组件
-    legend: {
-       // series里面有了 name值则 legend里面的data可以删掉
-    },
-    // 网格配置  grid可以控制线形图 柱状图 图表大小
-    grid: {
-        left: '3%',
-        right: '4%',
-        bottom: '3%',
-        // 是否显示刻度标签 如果是true 就显示 否则反之
-        containLabel: true
-    },
-    // 工具箱组件  可以另存为图片等功能
-    toolbox: {
-        feature: {
-            saveAsImage: {}
-        }
-    },
-    // 设置x轴的相关配置
-    xAxis: {
-        type: 'category',
-        // 是否让我们的线条和坐标轴有缝隙
-        boundaryGap: false,
-        data: ['星期一', '周二', '周三', '周四', '周五', '周六', '周日']
-    },
-     // 设置y轴的相关配置
-    yAxis: {
-        type: 'value'
-    },
-    // 系列图表配置 它决定着显示那种类型的图表
-    series: [
-        {
-            name: '邮件营销',
-            type: 'line',
-           
-            data: [120, 132, 101, 134, 90, 230, 210]
+    option = {
+        // color设置我们线条的颜色 注意后面是个数组
+        color: ['pink', 'red', 'green', 'skyblue'],
+        // 设置图表的标题
+        title: {
+            text: '折线图堆叠123'
         },
-        {
-            name: '联盟广告',
-            type: 'line',
+        // 图表的提示框组件 
+        tooltip: {
+            // 触发方式
+            trigger: 'axis'
+        },
+        // 图例组件
+        legend: {
+           // series里面有了 name值则 legend里面的data可以删掉
+        },
+        // 网格配置  grid可以控制线形图 柱状图 图表大小
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            // 是否显示刻度标签 如果是true 就显示 否则反之
+            containLabel: true
+        },
+        // 工具箱组件  可以另存为图片等功能
+        toolbox: {
+            feature: {
+                saveAsImage: {}
+            }
+        },
+        // 设置x轴的相关配置
+        xAxis: {
+            type: 'category',
+            // 是否让我们的线条和坐标轴有缝隙
+            boundaryGap: false,
+            data: ['星期一', '周二', '周三', '周四', '周五', '周六', '周日']
+        },
+         // 设置y轴的相关配置
+        yAxis: {
+            type: 'value'
+        },
+        // 系列图表配置 它决定着显示那种类型的图表
+        series: [
+            {
+                name: '邮件营销',
+                type: 'line',
 
-            data: [220, 182, 191, 234, 290, 330, 310]
-        },
-        {
-            name: '视频广告',
-            type: 'line',
-          
-            data: [150, 232, 201, 154, 190, 330, 410]
-        },
-        {
-            name: '直接访问',
-            type: 'line',
-          
-            data: [320, 332, 301, 334, 390, 330, 320]
-        }
-    ]
-};
+                data: [120, 132, 101, 134, 90, 230, 210]
+            },
+            {
+                name: '联盟广告',
+                type: 'line',
+
+                data: [220, 182, 191, 234, 290, 330, 310]
+            },
+            {
+                name: '视频广告',
+                type: 'line',
+
+                data: [150, 232, 201, 154, 190, 330, 410]
+            },
+            {
+                name: '直接访问',
+                type: 'line',
+
+                data: [320, 332, 301, 334, 390, 330, 320]
+            }
+        ]
+    };
 
 ~~~
 
@@ -1706,5 +1706,72 @@ window.addEventListener("resize", function() {
 
 
 
+# `Echarts`进阶
 
+- 如何在Echarts渲染完成后再执行其他代码（如何等待回调函数执行完成后再进行其他操作）
 
+  举个例子，echarts有finished事件，那么在setOption之后，如果渲染结束就会触发该事件，但是假如渲染时间很长，在setOption之后，我们有些紧随之后的代码需要在finished事件之后执行，此时应该怎么做？如何知道finished事件被触发了？我希望有一个类似于其他语言线程wait thread的东西。
+
+  直接上代码吧，Promise的合理使用可以让我们在finished执行后，接着执行我们的业务代码：
+
+  ```js
+      let promise = new Promise((resolve, reject) => {
+          var myChart = echarts.init(document.getElementById('chartContainer'));
+          myChart.on('finished', () => {
+              resolve(myChart.getDataURL({ type: 'png' })); 
+          });
+          var option = {};
+          myChart.setOption(option);
+      });
+      var base64 = '';
+      await promise.then((res) => { base64 = res; });
+  ```
+
+  
+
+- echart如果是在子组件的插槽中渲染，子组件建议使用两个`v-show`，不要使用`v-if-else`
+
+  ```js
+        <div class="loading" v-if="showloading"></div>
+  
+        <template v-else>
+          <slot name="text" class="text"></slot>
+          <slot name="chart" class="chart"></slot>
+        </template>
+  
+  
+    mounted() {
+      this.$nextTick(() => {
+        this.$emit("mounted");
+      });
+      // debugger
+    },
+        
+        
+        // 父组件
+    childMounted() {
+        console.log("child Mounted");
+        console.log(this.showLoading);
+        debugger
+        // let myChart = this.$echarts.init(this.$refs.chartA);
+        // // console.log(myChart)
+        // myChart.setOption(this.optionsAllCounter);
+      },
+  ```
+
+  上面希望子组件渲染好了之后，通知父组件去实例化echarts，但事实上，v-else对应的区域，还没渲染出来，仍是loading区域
+
+  如果知道父组件什么时候把值传给子组件的props，并且知道子组件什么时候会基于接收到的值进行渲染就好了
+
+  直接使用两个相反条件的`v-show`即可
+
+  ```js
+        <div class="loading" v-show="showloading"></div>
+  
+        <template v-show="!showloading">
+          <slot name="text" class="text"></slot>
+          <slot name="chart" class="chart"></slot>
+        </template>
+  ```
+
+  小结：和`echarts`挂载的`dom`有关的，不要用`v-if-else`

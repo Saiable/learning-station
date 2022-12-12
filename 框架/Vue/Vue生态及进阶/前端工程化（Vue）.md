@@ -750,6 +750,7 @@ export default [ // 权限管理，要和后台一一对应
 #### `elementUI`
 
 - `vue2`项目
+- 见《`vue2`基本使用》
 
 #### `elementPlus`
 

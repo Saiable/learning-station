@@ -5128,3 +5128,46 @@ require("mason-lspconfig").setup({
 链接：https://juejin.cn/post/7154005621887631396
 来源：稀土掘金
 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+
+
+# 新增
+
+## 快捷键
+
+### 保存文件
+
+```lua
+
+-- ...
+-- ...
+
+map('n', '<C-s>', ':w<CR>', opt)
+map('i', '<C-s>', '<ESC>:w<CR>a', opt)
+```
+
+进入终端模式
+
+保存当前打开过的所有buffer，下次再进来时都打开
+
+
+
+鼠标框选
+
+### null-ls.lua
+
+vue文件的格式化
+
+```lua
+-- 保存自动格式化
+    on_attach = function(client)
+        -- vim.cmd([[ command! Format execute 'lua vim.lsp.buf.format({ async = true })']])
+        --if client.resolved_capabilities.document_formatting then
+        if client.server_capabilities.documentFormattingProvider then
+            vim.cmd('autocmd BufWritePre <buffer> lua vim.lsp.buf.format({async = true})')
+        end
+    end,
+```
+
+
+
