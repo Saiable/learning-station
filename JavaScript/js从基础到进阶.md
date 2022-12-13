@@ -357,6 +357,8 @@ markdown格式，使用typora免费版
 
 变量本身是没有意义的，**有意义的是变量对应的那个值**
 
+ECMAScript 变量是松散类型的，意思是变量可以用于保存任何类型的数据。每个变量只不过是一个用于保存任意值的命名占位符。有 3 个关键字可以声明变量：var、const 和 let。其中，var 在ECMAScript 的所有版本中都可以使用，而 const 和 let 只能在 ECMAScript 6 及更晚的版本中使用。
+
 ```js
 // ES3
 var a = 12
@@ -383,6 +385,89 @@ import B from './B.js'
 let n = Symbol(100)
 
 ```
+
+#### `var`
+
+```js
+// 初始化，默认值为undefined
+var message;
+```
+
+**声明作用域**：使用 var 操作符定义的变量会成为包含它的函数的局部变量。比如，使用 var在一个函数内部定义一个变量，就意味着该变量将在函数退出时被销毁：
+
+```js
+function test() { 
+ var message = "hi"; // 局部变量
+} 
+test(); 
+console.log(message); // 出错！
+```
+
+不过，在函数内定义变量时省略 var 操作符，可以创建一个全局变量：
+
+```js
+function test() { 
+ message = "hi"; // 全局变量
+} 
+test(); 
+console.log(message); // "hi"
+```
+
+虽然可以通过省略 var 操作符定义全局变量，但不推荐这么做。在局部作用域中定义的全局变量很难维护，也会造成困惑。
+
+**var 声明提升**
+
+使用 var 时，下面的代码不会报错。这是因为使用这个关键字声明的变量会自动提升到函数作用域顶部：
+
+```js
+function foo() { 
+ console.log(age); 
+ var age = 26; 
+} 
+foo(); // undefined
+```
+
+之所以不会报错，是因为 ECMAScript 运行时把它看成等价于如下代码：
+
+```js
+function foo() { 
+ var age; 
+ console.log(age); 
+ age = 26; 
+} 
+foo(); // undefined
+```
+
+这就是所谓的“提升”（hoist），也就是把所有变量声明都拉到函数作用域的顶部。此外，反复多次
+
+使用 var 声明同一个变量也没有问题：
+
+```js
+function foo() { 
+ var age = 16; 
+ var age = 26; 
+ var age = 36; 
+ console.log(age); 
+} 
+foo(); // 36
+```
+
+
+
+#### `let`
+
+
+
+#### `const`
+
+
+
+小结：
+
+- 不使用`var`
+  - 限制自己只使用 let 和 const，有助于提升代码质量，因为变量有了明确的作用域、声明位置，以及不变的值。
+- `const`优先、`let`次之
+  - 使用 const 声明可以让浏览器运行时强制保持变量不变，也可以让静态代码分析工具提前发现不合法的赋值操作。因此，很多开发者认为应该优先使用 const 来声明变量，只在提前知道未来会有修改时，再使用 let。这样可以让开发者更有信心地推断某些变量的值永远不会变，同时也能迅速发现因意外赋值导致的非预期行为。
 
 ### 命名规范
 
@@ -445,7 +530,7 @@ let n = Symbol(100)
   console.log(isNaN(NaN)) // true
   ```
 
-  - NaN和任何值(包括自己)都不相等: NaN!=NaN，所以我们不能用相等的方式判断是否是有效数字
+  - NaN和任何值(包括自己)都不相等: `NaN!=NaN`，所以我们不能用相等的方式判断是否是有效数字
   - isNaN：检测一个值是否为非有效数字，如果不是有效数字返回TRUE，反之是有效数字返回FALSE
   - 在使用isNaN进行检测的时候，首先会验证检测的值是否为数字类型，如果不是，**先基于Number()**这个方法，把值转换为数字类型，然后再检测
 
@@ -465,10 +550,13 @@ let n = Symbol(100)
     console.log(Number('12.5')) // 12.5
     console.log(Number('12.5px')) // NaN
     console.log(Number('12.4.5')) // NaN
+    console.log(Number(011)) // 11
     console.log(Number('')) // 0
     ```
 
   - 把布尔转换成数字
+
+    true 转换为 1，false 转换为 0
 
     ```js
     console.log(Number(true)) // 1
@@ -478,6 +566,8 @@ let n = Symbol(100)
     ```
 
   - null和undefined转为数字
+
+    null返回 0，undefined返回 NaN
 
     ```js
     console.log(Number(null)) // 0
@@ -4482,7 +4572,7 @@ sayHello('Hardy'); // Hello, Hardy!
 
 ## 变量提升，函数提升、浏览器解析变量的机制
 
- 	
+
 
 ## JS预解析
 
