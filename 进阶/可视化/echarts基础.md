@@ -2,11 +2,11 @@
 typora-root-url: echarts基础
 ---
 
-## 可视化面板介绍
+# 可视化面板介绍
 
 ​	应对现在数据可视化的趋势，越来越多企业需要在很多场景(营销数据，生产数据，用户数据)下使用，可视化图表来展示体现数据，让数据更加直观，数据特点更加突出。
 
-### 01-使用技术
+## 01-使用技术
 
 完成该项目需要具备以下知识：
 
@@ -19,7 +19,7 @@ typora-root-url: echarts基础
 
 
 
-### 02- 案例适配方案
+## 02- 案例适配方案
 
 - 设计稿是1920px  
 
@@ -32,12 +32,12 @@ typora-root-url: echarts基础
      但是别忘记重启vscode软件保证生效
 
 
-### 03-基础设置
+## 03-基础设置
 
 - body 设置背景图 ，缩放为 100%  ， 行高1.15
 - css初始化
 
-### 04-header 布局
+## 04-header 布局
 - 高度为100px
 - 背景图，在容器内显示
 - 缩放比例为 100%
@@ -89,7 +89,7 @@ header {
 }
 ~~~
 
-### 05-mainbox  主体模块
+## 05-mainbox  主体模块
   - 需要一个上左右的10px 的内边距
 
 
@@ -110,7 +110,7 @@ css样式：
 }
 ```
 
-### 06-公共面板模块 panel 
+## 06-公共面板模块 panel 
   - 高度为 310px
   - 1像素的 1px solid rgba(25, 186, 139, 0.17)  边框
   - 有line.jpg 背景图片
@@ -178,7 +178,7 @@ css样式：
 
 
 
-### 07-柱形图 bar 模块(布局)
+## 07-柱形图 bar 模块(布局)
 
   - 标题模块  h2    高度为 48px   文字颜色为白色  文字大小为  20px  
 
@@ -202,7 +202,7 @@ css样式：
   }
 ~~~
 
-### 08-中间布局
+## 08-中间布局
 
 - 上面是no 数字模块
 - 下面是map 地图模块
@@ -389,7 +389,7 @@ css样式：
 
 
 
-### 09-Echarts-介绍
+## 09-Echarts-介绍
 
 常见的数据可视化库：
 
@@ -411,7 +411,7 @@ css样式：
 
 官网地址：<https://www.echartsjs.com/zh/index.html>
 
-### 10-Echarts-体验
+## 10-Echarts-体验
 
 官方教程：[五分钟上手ECharts](https://www.echartsjs.com/zh/tutorial.html#5 分钟上手 ECharts)
 
@@ -456,7 +456,7 @@ var option = {
 myChart.setOption(option);
 ```
 
-### 11-Echarts-基础配置
+## 11-Echarts-基础配置
 
 ![image-20221202072451549](image-20221202072451549.png)
 
@@ -560,7 +560,7 @@ myChart.setOption(option);
 
 ~~~
 
-### 12- 柱状图图表（两大步骤）
+## 12- 柱状图图表（两大步骤）
 
 - 官网找到类似实例， 适当分析，并且引入到HTML页面中
 - 根据需求定制图表
@@ -721,7 +721,7 @@ myChart.setOption(option);
   });
 ~~~
 
-### 13-柱状图2定制
+## 13-柱状图2定制
 
 - 官网找到类似实例， 适当分析，并且引入到HTML页面中
 - 根据需求定制图表
@@ -998,7 +998,7 @@ data:[702, 350, 610, 793, 664],
 })();
 
 ~~~
-### 14-折线图1 人员变化模块制作
+## 14-折线图1 人员变化模块制作
 
 - 官网找到类似实例， 适当分析，并且引入到HTML页面中
 - 根据需求定制图表
@@ -1285,7 +1285,7 @@ xAxis: {
 })();
 ~~~
 
-### 15-折线图2 播放量模块制作
+## 15-折线图2 播放量模块制作
 
 - 官网找到类似实例， 适当分析，并且引入到HTML页面中
 - 根据需求定制图表
@@ -1465,7 +1465,7 @@ data: [ "01","02","03","04","05","06","07","08","09","10","11","12","13","14","1
 
 ~~~
 
-### 16-饼形图 1年龄分布模块制作
+## 16-饼形图 1年龄分布模块制作
 
 - 官网找到类似实例， 适当分析，并且引入到HTML页面中
 - 根据需求定制图表
@@ -1548,7 +1548,7 @@ color: [
   });
 ~~~
 
-### 17-饼形图2 地区分布模块制作（南丁格尔玫瑰图）
+## 17-饼形图2 地区分布模块制作（南丁格尔玫瑰图）
 
 - 官网找到类似实例， 适当分析，并且引入到HTML页面中
 - 根据需求定制图表
@@ -1639,7 +1639,7 @@ window.addEventListener("resize", function() {
 
 
 
-### 18-Echarts-社区介绍
+## 18-Echarts-社区介绍
 
 > [社区](https://gallery.echartsjs.com/explore.html#sort=rank~timeframe=all~author=all)就是一些，活跃的echart使用者，交流和贡献定制好的图表的地方。
 
@@ -1647,7 +1647,7 @@ window.addEventListener("resize", function() {
 
 - 在这里可以找到一些基于echart的高度定制好的图表，相当于基于jquery开发的插件，这里是基于echarts开发的第三方的图表。
 
-### 19-Echarts-map使用（扩展）
+## 19-Echarts-map使用（扩展）
 
 参考社区的例子：https://gallery.echartsjs.com/editor.html?c=x0-ExSkZDM  (模拟飞机航线)
 
@@ -1688,7 +1688,7 @@ window.addEventListener("resize", function() {
 
 总结：这例子是扩展案例，大家以后可以多看看社区里面的案例。
 
-### 20- 最后约束缩放
+## 20- 最后约束缩放
 
 ~~~css
 /* 约束屏幕尺寸 */
@@ -1706,7 +1706,7 @@ window.addEventListener("resize", function() {
 
 
 
-# `Echarts`进阶
+# `Echarts`细节
 
 - 如何在Echarts渲染完成后再执行其他代码（如何等待回调函数执行完成后再进行其他操作）
 
@@ -1775,3 +1775,71 @@ window.addEventListener("resize", function() {
   ```
 
   小结：和`echarts`挂载的`dom`有关的，不要用`v-if-else`
+
+
+
+## 柱状图数据量过多，支持左右滑动
+
+https://blog.csdn.net/Dnn01/article/details/109182101
+
+https://blog.csdn.net/qq_34295211/article/details/106815928
+
+如果设置了x轴倾斜，那么dataZoom和x轴是堆叠的，要设置一定的间距
+
+grid可以调整x，y轴的字与Zoom控件之间的间隔，可以动态传入
+
+```js
+        grid: { // 控制图的大小，调整下面这些值就可以，
+            x: 100,
+            x2: 40,
+            y2: 130// y2可以控制 X轴跟Zoom控件之间的间隔，避免以为倾斜后造成 label重叠到zoom上
+        },
+```
+
+## dataZoom
+
+https://blog.csdn.net/qq_44774831/article/details/116430740
+
+## 折线图大数据量的legend优化
+
+https://blog.csdn.net/qq_37618154/article/details/109102176
+
+JS字符串每隔几位插入数据：https://blog.csdn.net/YM123456999/article/details/113498574
+
+```js
+
+let res = [];
+//这里的i++,换成了i=i+8,循环开始
+let arr = this.demoLineOptions.legend.data;
+for (let i = 0; i < arr.length; i = i + 8) {
+    //当判断i+8是否小于总数组的长度时，成立了就从（i,i+8）开始截取保存到res数组中，其实就是截取数组的前8个对象
+    if (i + 8 < arr.length) {
+        res.push(arr.slice(i, i + 8));
+    } else {
+        //这里长度不足8的对象也保存在res数组中，截取i的长度
+        res.push(arr.slice(i));
+    }
+}
+res.forEach(function (item) {
+    //八条对象的数组在后面添加你要添加的内容
+    return item.length === 8
+        ? item.push("")
+    : item;
+});
+//这里定义一个空数组，并用apply指向这个空数组，concat将多个数组合并成一个数组
+let result = [].concat.apply([], res);
+
+console.log(result);
+```
+
+## 数据量差异过大
+
+https://blog.csdn.net/qq_41853674/article/details/119104032
+
+[解决echarts柱形图数值差距大，极小值渲染问题](https://www.codenong.com/cs110525551/)
+
+[echarts y轴数据相差过大导致小数据显示不全，怎么解决？](https://www.h5w3.com/20811.html)
+
+## 其他问题
+
+[各种小细节](http://t.zoukankan.com/moutudou-p-11011247.html)

@@ -218,6 +218,14 @@ created dist/vue.js in 304ms
 [2022-06-30 17:36:35] waiting for changes...
 ```
 
+可能会提示你修改`package.json`
+
+新增字段：
+
+```
+  "type": "module"
+```
+
 根目录下会生成之前配置的目录及文件夹
 
 ```bash
@@ -268,7 +276,7 @@ created dist/vue.js in 304ms
 </html>
 ```
 
-全局上多了一个`Vue`的对象，升上的属性就是我们导出的，效果如下：
+全局上多了一个`Vue`的对象，身上的属性就是我们导出的，效果如下：
 
 ![image-20220630185136069](image-20220630185136069.png)
 

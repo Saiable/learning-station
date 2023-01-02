@@ -21,13 +21,13 @@ typora-root-url: js从基础到进阶
   - `H5C3`去官网看：[Tutorials and Courses - W3C](https://www.w3.org/2002/03/tutorials.html)
 - 1995年，网景工程师`Brendan Eich`花 了10天时间设计了`JavaScript`语言, 1996年微软发布了`JScript` (和`JS`有一些差异)，同时拉开了`Navigator和Internet Explorer` 浏览器大战的序幕(到2002年`IE`完胜，占据全世界96%的市场份额)。
   - 后期浏览器兼容性问题的起源
-- 为了让各大浏览器统一编程规范，1997年6月`ECMA` (欧洲计算机制造联合会)以`JavaScr ipt`语言为基础制定了`ECMAScript`标准规范`ECMA-262`，从此浏览器厂商都是按照这个规范来开发自己的浏览器产品。
+- 为了让各大浏览器统一编程规范，1997年6月`ECMA` (欧洲计算机制造联合会)以`JavaScript`语言为基础制定了`ECMAScript`标准规范`ECMA-262`，从此浏览器厂商都是按照这个规范来开发自己的浏览器产品。
 - 1999年12月`ES3`发布，到2011年6月`ES5`发 布(2007年 的`ES4`夭折:改动太大)，`ES3`占据了10年历程， 也是`JS`语言的基础。2015年6月`ES6`发布 (但是由于之后规定每年发布一个新的版本，所以后改名`ES2015`: `let、 const、 Arrow function、 Class、 Module、Promise、Iterator、 Generator、 Set、 Map、 async、 Symbol、 Proxy`.... )，2016年6月对2015版本增强的2016版本发布，此后相继有`ES2017`、`ES2018`...
 - 同样`HTML`也在2014年10月发布了第五代版本，2011年`CSS`也发布了第三代版本，此时前端基础的技术栈就稳固下来。
 
 ### `web2.0`时代：动态网页的崛起
 
-1995年之前，`JS`只用来做一些简单的`DOM`修改，`WEB` 页面都是静态的(显示静态文本和图片)，为了让`WEB`页面更具备活力(例如:动态展示数据)，1995年`PHP`诞生， 1996年`JSP`诞生，1996 年`ASP`诞生，2002年`ASP. NET`诞生...这些服务器端页面技术实现了`WEB`页面的动态化，从此`WEB2.0`时代到来。
+1995年之前，`JS`只用来做一些简单的`DOM`修改，`WEB` 页面都是静态的(显示静态文本和图片)，为了让`WEB`页面更具备活力(例如:动态展示数据)，1995年`PHP`诞生， 1996年`JSP`诞生，1996 年`ASP`诞生，2002年`ASP.NET`诞生...这些服务器端页面技术实现了`WEB`页面的动态化，从此`WEB2.0`时代到来。
 
 
 
@@ -56,6 +56,8 @@ typora-root-url: js从基础到进阶
     - 后台开发的任务量过大(网页制作任务量少) ，代码过于臃肿，两种角色很难实现同时任务开发
 
 ### `AJAX`时代
+
+> 详见《Ajax&Axios》
 
 [ `AJAX`时代: 前后端分离的雏形，异步渲染大显神通]
 
@@ -452,9 +454,291 @@ function foo() {
 foo(); // 36
 ```
 
-
-
 #### `let`
+
+let 跟 var 的作用差不多，但有着非常重要的区别。最明显的区别是，let 声明的范围是块作用域，而 var 声明的范围是函数作用域。
+
+```js
+ // var关键字没有块级作用域，只有函数作用域
+  if (true) {
+    var name = "Matt";
+    debugger;
+    console.log(name); // Matt
+    
+  }
+  console.log(name); // Matt，在方括号外面仍可以访问
+```
+
+![image-20221216092309932](image-20221216092309932.png)
+
+```js
+  if (true) {
+    let age = 26;
+    debugger;
+    console.log(age); // 26
+  }
+  // console.log(age); // Uncaught ReferenceError: age is not defined
+
+```
+
+`age`之所以不能在if块外部被引用,看下图就知道了
+
+- let声明在变量在在Block里，额外开辟了一块堆内存
+- 而if块外部只能访问Local和Global
+
+![image-20221215192214871](image-20221215192214871.png)
+
+执行上下文中，一直的作用域对象有
+
+- Block
+  - `let`可创建
+- `Local`
+- `Global`
+
+![image-20221215192510220](image-20221215192510220.png)
+
+let 不允许同一个块作用域中出现冗余声明。
+
+```js
+  let repeat;
+  // let repeat; // Uncaught SyntaxError: Identifier 'repeat' has already been declared
+```
+
+
+
+##### 暂时性死区
+
+let 与 var 的另一个重要的区别，就是 let 声明的变量不会在作用域中被提升。
+
+```js
+// name 会被提升
+console.log(name); // undefined 
+var name = 'Matt';
+```
+
+相当于
+
+```js
+// name 会被提升
+var name;
+console.log(name); // undefined 
+name = 'Matt';
+```
+
+从《你不知道的JavaScript》中，可以知道JS代码执行前存在编译阶段，而var关键字声明的标识符，会在代码执行前，被先处理一下，定义到作用域上。
+
+所谓的变量提升，是js代码存在编译阶段做了一些处理的表现形式
+
+```js
+// age 不会被提升
+console.log(age); // ReferenceError：age 没有定义
+let age = 26;
+```
+
+《JS高程第4版中文版》：在解析代码时，JavaScript 引擎也会注意出现在块后面的 let 声明，只不过在此之前不能以任何方式来引用未声明的变量。在 let 声明之前的执行瞬间被称为“暂时性死区”（temporal dead zone），在此阶段引用任何后面才声明的变量都会抛出ReferenceError。
+
+When parsing the code, JavaScript engines will still be aware of the let declarations that appear later in a block, but these variables will be unable to be referenced in any way before the actual declaration occurs. The segment of execution that occurs before the declaration is referred to as the “temporal dead zone,” and any attempted references to these variables will throw a ReferenceError.
+
+
+
+简单理解就是JS引擎在编译的时候，对let关键字不做处理，编译完代码执行的时候，作用域里没有age这个变量，自然是报`age没有定义`
+
+上面的理解正确吗？我们调试下不同情况的声明
+
+> 新建index.html，js代码通过scirpt标签写在html内部
+
+- 情况一，使用`var`声明关键字并赋值，注意：断点是在前面
+
+  ```html
+      <script>
+        debugger;
+        var age2 = 13;
+      </script>
+  ```
+
+  执行到断点时：`Scope`是空的，`age2`已经经过编译被挂到`Global`上了，默认值为`undefined`，符合之前的认知
+
+  ![image-20221216100722267](image-20221216100722267.png)
+
+  断点继续往下走，是赋值操作，值变为13；`Scope`无新增作用域
+
+- 情况二，使用`let`关键字声明并赋值
+
+  ```html
+      <script>
+        debugger;
+        let age = 60;
+        // var age2 = 13;
+      </script>
+  ```
+
+  执行到断点时：新增了`Script`作用域，里面有一个属性age，值为`undefined`
+
+  ![image-20221216102233760](image-20221216102233760.png)
+
+  断点继续往下走：`Script`中的age值变成了60，`Global`无新增属性（age没被挂载到`Global`上）
+
+- 情况三，在函数里面使用`var`关键字
+
+  ```html
+      <script>
+        function test() {
+          debugger;
+          var age2 = 13;
+        }
+        test()
+      </script>
+  ```
+
+  执行到断点时：在test函数执行栈中，对应的函数作用域里，发生了同情况一一样的事情，只不过对于此时的`age2`而言，它是挂载到当前执行栈的`Local`上的
+
+  ![image-20221216105651340](image-20221216105651340.png)
+
+- 情况四：在函数里面使用`let`关键字
+
+  ```html
+      <script>
+  
+        function test() {
+          debugger;
+          let age = 60;
+          // var age2 = 13;
+        }
+        test()
+      </script>
+  ```
+
+  执行到断点时，情况好像和var一样，断点继续往下走，值变为`60`
+
+  ![image-20221216103256948](image-20221216103256948.png)
+
+- 区别呢？？区别在于我们在非函数的方括号中使用的时候
+
+  - var
+
+    ```html
+        <script>
+          if (true) {
+            debugger;
+            // var age = 60;
+            var age2 = 13;
+            console.log(age);
+          }
+        </script>
+    ```
+
+    ![image-20221216104655000](image-20221216104655000.png)
+
+  - let
+
+    ```html
+        <script>
+          if (true) {
+            debugger;
+            let age = 60;
+            // var age2 = 13;
+            console.log(age);
+          }
+        </script>
+    ```
+
+    ![image-20221216104748889](image-20221216104748889.png)
+
+    可以看到，`let`关键字如果被声明在了非函数的语句块中，编译器会新建个`Block`作用域，把对应的变量放在里面
+
+**var和let比较**
+
+- var关键字定义的变量，存储在作用`Scope`对象中的`Global`对象或`Local`变量对象中（距离最近的父级作用域），并且会被编译器先挂载；而`let`也是这样，但额外一点是，如果`let`被声明在了非函数语句块中，编译器在对应的当前`Scope`上新开启一个`Block`对象用来存储变量。
+- 对于`var`，变量提升其实就是编译器会把对应的标识符，挂载到最近的父级作用域上（对应情况一和情况三），并且非函数语句块没有作用域；而对于`let`是不会有挂载最近的父级作用域上这个操作的，并且`let`遇到非函数语句块时，反而会新增一个`Block`作用域
+- 作用域是分块的，已知的作用域有
+  - `Scope`
+    - `Global`
+      - 全局作用域，一般写代码的最外层，js代码执行时产生
+    - `Local`
+      - 函数执行，入栈时产生
+      - 直接访问不到`Global`，但是函数里有一个`this`属性，指向`Global`
+      - 非函数语句块里的同一个执行栈中，`Local`变量对象在方括号内外都是可以访问的，表现为`var`没有块级作用域（对应上文的if的例子）；
+    - `Block`
+      - 执行`let`关键字在非函数语句块中声明变量时产生
+    - `Script`
+      - `html`中引入`script`时产生
+    - ......
+
+
+
+再来看看对于暂时性死区的理解
+
+> 简单理解就是JS引擎在编译的时候，对let关键字不做处理（不会向var关键字那样，把变量挂载到最近的父级作用域上），编译完代码执行的时候，当前作用域对象里没有age这个变量，自然是报`age没有定义`
+
+对应情况一
+
+![image-20221216100722267](image-20221216100722267.png)
+
+```js
+      debugger; // 编译阶段结束，age2已经被挂载到最近的父级作用域Global上，值默认为undefined
+      console.log(age2) // undefined
+      var age2 = 13;
+```
+
+对应情况二
+
+![image-20221216102233760](image-20221216102233760.png)
+
+```js
+      debugger;
+ // 虽然编译阶段age仍像var那样被提升了，但注意，人家var是被提到了距离最近的父级作用域上`Global`
+// 但是let声明的关键字是提升到了`Script`作用域里，与`Global`作用域平级
+// console.log(age)语句，查找age时，是在Global的作用域链里查找的，自然是找不到的
+      console.log(age) // Uncaught ReferenceError: Cannot access 'age' before initialization
+	
+      let age = 60;
+```
+
+对应情况三
+
+```js
+      function test() {
+        debugger;
+        console.log(age2) // undefined
+
+        var age2 = 13;
+      }
+      test()
+```
+
+![image-20221216113306051](image-20221216113306051.png)
+
+对应情况四
+
+```js
+      function test() {
+        debugger;
+        console.log(age) // Uncaught ReferenceError: Cannot access 'age' before initialization
+
+        let age = 60;
+      }
+      test()
+```
+
+![image-20221216113533900](image-20221216113533900.png)
+
+这里可能会问了，情况二访问不到，是因为变量放在了`Script`作用域里，但这里`Local`作用域里，命名就有age，为啥还会访问不到呢？
+
+应该这样说，是可以访问的，但js引擎检测到你要访问的变量，是通过`let`关键字声明的，强制不让你访问，给你报个错`Cannot access 'age' before initialization`，这就是所谓的暂时性死区
+
+那么js引擎咋知道这个变量时`let`关键字声明的呢？因为代码执行前先执行了编译阶段呀
+
+
+
+
+
+##### 全局声明
+
+
+
+
+
+
 
 
 
@@ -519,6 +803,8 @@ foo(); // 36
 #### 数字number
 
 - 常规数字
+
+- 
 
 - NaN：not a number，不是一个数，但它属于数字类型
 

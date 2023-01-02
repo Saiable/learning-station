@@ -1443,6 +1443,36 @@ Form-Item Methods
 
 ![image-20221207171523016](image-20221207171523016.png)
 
+
+
+#### Table Attributes
+
+| 参数                   | 说明                                                         | 类型                                                  | 可选值                | 默认值 |
+| :--------------------- | :----------------------------------------------------------- | :---------------------------------------------------- | :-------------------- | :----- |
+| data                   | 显示的数据                                                   | array                                                 | —                     | —      |
+| height                 | Table 的高度，默认为自动高度。如果 height 为 number 类型，单位 px；如果 height 为 string 类型，则这个高度会设置为 Table 的 style.height 的值，Table 的高度会受控于外部样式。 | string/number                                         | —                     | —      |
+| max-height             | Table 的最大高度。合法的值为数字或者单位为 px 的高度。       | string/number                                         | —                     | —      |
+| stripe                 | 是否为斑马纹 table                                           | boolean                                               | —                     | false  |
+| border                 | 是否带有纵向边框                                             | boolean                                               | —                     | false  |
+| size                   | Table 的尺寸                                                 | string                                                | medium / small / mini | —      |
+| fit                    | 列的宽度是否自撑开                                           | boolean                                               | —                     | true   |
+| show-header            | 是否显示表头                                                 | boolean                                               | —                     | true   |
+| current-row-key        | 当前行的 key，只写属性                                       | String,Number                                         | —                     | —      |
+| row-class-name         | 行的 className 的回调方法，也可以使用字符串为所有行设置一个固定的 className。 | Function({row, rowIndex})/String                      | —                     | —      |
+| row-style              | 行的 style 的回调方法，也可以使用一个固定的 Object 为所有行设置一样的 Style。 | Function({row, rowIndex})/Object                      | —                     | —      |
+| cell-class-name        | 单元格的 className 的回调方法，也可以使用字符串为所有单元格设置一个固定的 className。 | Function({row, column, rowIndex, columnIndex})/String | —                     | —      |
+| cell-style             | 单元格的 style 的回调方法，也可以使用一个固定的 Object 为所有单元格设置一样的 Style。 | Function({row, column, rowIndex, columnIndex})/Object | —                     | —      |
+| header-row-class-name  | 表头行的 className 的回调方法，也可以使用字符串为所有表头行设置一个固定的 className。 | Function({row, rowIndex})/String                      | —                     | —      |
+| header-row-style       | 表头行的 style 的回调方法，也可以使用一个固定的 Object 为所有表头行设置一样的 Style。 | Function({row, rowIndex})/Object                      | —                     | —      |
+| header-cell-class-name | 表头单元格的 className 的回调方法，也可以使用字符串为所有表头单元格设置一个固定的 className。 | Function({row, column, rowIndex, columnIndex})/String | —                     | —      |
+| header-cell-style      | 表头单元格的 style 的回调方法，也可以使用一个固定的 Object 为所有表头单元格设置一样的 Style。 | Function({row, column, rowIndex, columnIndex})/Object | —                     | —      |
+
+#### 拓展
+
+##### 表格数据横向显示
+
+https://www.jb51.net/article/257473.htm
+
 ### 单选
 
 

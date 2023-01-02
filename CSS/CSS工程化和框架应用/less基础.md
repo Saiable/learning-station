@@ -61,7 +61,9 @@ typora-root-url: less基础
     <script src="css/less.min.js"></script>
 ```
 
+### vscode插件
 
+可以在vscode中，安装less插件
 
 ## 基本使用
 
@@ -174,36 +176,242 @@ typora-root-url: less基础
       }
   ```
 
+- 媒体查询
+
+  ```less
+  // 定义变量为一个字符串
+  @min-1024: ~"(min-width: 1024px)";
+  
+  .element {
+  
+      // 在媒体查询处使用该变量
+      @media @min-1024 {
+          color: skyblue;
+      }
+  }
+  ```
+
+### `less`中的混合
+
+混合就是将一系列属性，从一个规则集中引入到另一个规则集的方法
+
+#### 普通混合
+
+可以直接写类名
+
+`.sp-comm`也会被编译
+
+```less
+.sp-comm {
+    background: url("../images/comm-spr.png") no-repeat;
+    background-size: 393px 200px;
+}
+//更多按钮箭头处理
+.comm-more-arrow {
+    display: inline-block;
+    margin-left: 5px;
+    width: 15px;
+    height: 15px;
+    .sp-comm; // 这里直接写类名即可
+    background-position: -213px -126px;
+
+}
+```
+
+#### 带参数的混合
+
+
+
+```less
+.sp-comm(@w, @h) {
+    background: url("../images/comm-spr.png") no-repeat;
+    background-size: @w @h;
+}
+
+//更多按钮箭头处理
+.comm-more-arrow {
+    display: inline-block;
+    margin-left: 5px;
+    width: 15px;
+    height: 15px;
+    background-position: -213px -126px;
+
+    .common1 {
+        .sp-comm(100px, 200px);
+    }
+
+    .common2 {
+        .sp-comm(200px, 300px)
+    }
+}
+```
+
+#### 带参数并且有默认值的混合
+
+```less
+.sp-comm(@w:10px, @h:20px) {
+    background: url("../images/comm-spr.png") no-repeat;
+    background-size: @w @h;
+}
+```
+
+#### 命名参数
+
+```less
+.sp-comm(@w:10px, @h:20px) {
+    background: url("../images/comm-spr.png") no-repeat;
+    background-size: @w @h;
+}
+
+
+.common1 {
+    .sp-comm(@w:100px); // 指定实参
+}
+```
+
+#### 匹配模式
+
+画三角形
+
+`index.less`
+
+```less
+@import url('./triangle.less');
+
+#wrap{
+    .arrow {
+        .triangle(red, 40px);
+    }
+}
+```
+
+`triangle.less`
+
+```less
+.triangle(@color, @width) {
+    width: 0px;
+    height: 0px;
+    border-width: @width;
+    border-style: dashed solid dashed dashed;
+    border-color: transparent @color transparent transparent;
+    overflow: hidden;
+}
+
+```
+
+如果还想抽离箭头的指向，如果还是加参数，就有点拉了，
+
+可以用匹配模式
+
+```less
+.triangle(Bottom, @color, @width) {
+    width: 0px;
+    height: 0px;
+    border-width: @width;
+    border-style: solid dashed dashed dashed;
+    border-color: @color transparent transparent transparent;
+    overflow: hidden;
+}
+
+.triangle(Left, @color, @width) {
+    width: 0px;
+    height: 0px;
+    border-width: @width;
+    border-style: dashed solid dashed dashed;
+    border-color: transparent @color transparent transparent;
+    overflow: hidden;
+}
+
+.triangle(Top, @color, @width) {
+    width: 0px;
+    height: 0px;
+    border-width: @width;
+    border-style: dashed dashed solid dashed;
+    border-color: transparent transparent @color transparent;
+    overflow: hidden;
+}
+
+.triangle(Right, @color, @width) {
+    width: 0px;
+    height: 0px;
+    border-width: @width;
+    border-style: dashed dashed dashed solid;
+    border-color: transparent transparent transparent @color;
+    overflow: hidden;
+}
+```
+
+可以进一步抽离公共样式
+
+定义一个同名混合，使用`@_`来实现默认调用
+
+除了`@_`参数，其它参数要对应上
+
+```less
+.triangle(@_, @color, @width) {
+    width: 0px;
+    height: 0px;
+    overflow: hidden;
+}
+
+.triangle(Bottom, @color, @width) {
+    border-width: @width;
+    border-style: solid dashed dashed dashed;
+    border-color: @color transparent transparent transparent;
+}
+
+.triangle(Left, @color, @width) {
+    border-width: @width;
+    border-style: dashed solid dashed dashed;
+    border-color: transparent @color transparent transparent;
+}
+
+.triangle(Top, @color, @width) {
+    border-width: @width;
+    border-style: dashed dashed solid dashed;
+    border-color: transparent transparent @color transparent;
+}
+
+.triangle(Right, @color, @width) {
+    border-width: @width;
+    border-style: dashed dashed dashed solid;
+    border-color: transparent transparent transparent @color;
+}
+```
+
+使用
+
+```less
+    .arrow {
+        .triangle(Top, red, 40px);
+    }
+```
+
+
+
+#### `arguments`变量
+
+
+
+### `less`运算
+
+在`less`中可以进行加减乘除的运算
 
 ## 使用技巧
 
-- 可以直接写类名
 
-  ```less
-  .sp-comm {
-      background: url("../images/comm-spr.png") no-repeat;
-      background-size: 393px 200px;
-  }
-  //更多按钮箭头处理
-  .comm-more-arrow {
-      display: inline-block;
-      margin-left: 5px;
-      width: 15px;
-      height: 15px;
-      .sp-comm; // 这里直接写类名即可
-      background-position: -213px -126px;
-      &.move {
-          animation: commMoreArrowMove 3s infinite;
-      }
-  }
-  
-  ```
 
 - `&`符号加类名，就相当于并集选择器
 
   ```less
   .comm-more-arrow {
       &.move{
+          
+      }
+  }
+  
+  .comm-more-arrow {
+      &:hover{
           
       }
   }
@@ -216,7 +424,6 @@ typora-root-url: less基础
       
   }
   ```
-
 
 # rem适配
 

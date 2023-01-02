@@ -1740,6 +1740,93 @@ Object.entries(directives).forEach(([id, define]) => {
 
 ## 函数封装
 
+`utils/request.js`
+
+```js
+import axios from "axios";
+import Vue from "vue";
+// import { Message } from 'element-ui'
+// console.log(Vue.prototype.$baseURL); // 验证是否已经把属性挂载在了Vue的原型上
+
+export function request(config) {
+  //console.log('request中的router', router)
+  const instance = axios.create({
+    // baseURL: `http://${Config.ip}:${Config.port}`,
+    baseURL: Vue.prototype.$baseURL,
+    // timeout: `${Config.timeout}`
+  });
+
+  instance.interceptors.request.use(
+    (config) => {
+      config.headers["Content-Type"] = "application/json";
+      // config.headers['Authorization'] = 'Bearer ' + localStorage.getItem('Authorization')
+      // console.log(config)
+      return config;
+    },
+    (err) => {
+      console.log(err);
+      Promise.reject(error);
+    }
+  );
+
+  instance.interceptors.response.use(
+    (res) => {
+      return res.data;
+    },
+    (err) => {
+      if (err.response) {
+        switch (err.response.status) {
+          case 401:
+            break;
+          default:
+            break;
+        }
+      }
+      console.log(err);
+      Promise.reject(error);
+    }
+  );
+
+  return instance(config);
+}
+
+```
+
+`api/target.js`
+
+```js
+import { request } from "@/utils/request";
+
+// get请求
+export function getAllSpider() {
+  return request({
+    url: "/spider/all",
+  });
+}
+
+// get请求携带parmas参数或query参数
+export function getCounterByDays(nums) {
+  return request({
+    url: `/counter/all/days/${nums}`,
+    // params: {
+    //     query: params
+    // }
+  });
+}
+
+// post请求
+export function addSpider(data) {
+  return request({
+    method: "post",
+    url: "/spider/add",
+    data,
+  });
+}
+
+
+
+```
+
 
 
 ## 类封装
@@ -1981,7 +2068,81 @@ export const fetchSliders = () => axios.get('/api/slider')
 
   之前我们在全局的请求拦截器中，加了`cancelToken`，相当于`xhr.abort()`
 
-  
+
+## 抽离baseURL
+
+https://www.cnblogs.com/jdWu-d/p/12687396.html
+
+在public目录下，新建一个文件，我命名为serverConfig.json，具体如图所示，里面配了一个baseURL。
+
+```json
+{
+  "baseURL": "http://127.0.0.1:8080"
+}
+
+```
+
+新建初始化方法`utils/init.js`
+
+```js
+import axios from "axios";
+import Vue from "vue";
+
+export async function getServerConfig() {
+  return await new Promise((resolve, reject) => {
+    axios
+      .get("./serverConfig.json")
+      .then((res) => {
+        console.log("读取外部化配置文件>>>>>>>>");
+        console.log(res.data); // 是否成功读取需要的配置项
+        for (let key in res.data) {
+          console.log(key);
+          Vue.prototype["$" + key] = res.data[key];
+        }
+        console.log(Vue.prototype.$baseURL); // 验证是否已经把属性挂载在了Vue的原型上
+        resolve();
+      })
+      .catch((error) => {
+        console.log(error);
+        reject();
+      });
+  });
+}
+
+```
+
+然后，在main.js里面定义一个读取这个文件的方法，在初始化的时候读取这个文件。
+
+```js
+import {getServerConfig} from "@/utils/init.js";
+
+new Vue({
+  router,
+  store,
+  render: (h) => h(App),
+  created() {
+    getServerConfig()
+  }
+}).$mount("#app");
+
+```
+
+如果封装了`axios`，在封装的`js`文件中,读取配置
+
+```js
+import 'Vue' from 'vue';
+
+
+// ...
+const instance = axios.create({
+    baseURL: Vue.prototype.$baseURL,
+    // timeout: `${Config.timeout}`
+  });
+```
+
+
+
+
 
 # 持久化最佳实践
 
