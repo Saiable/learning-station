@@ -19,6 +19,8 @@ https://tzy1997.com/articles/hexo1610/
 
 # 环境准备
 
+[Butterfly 安裝文檔(一) 快速開始 | Butterfly](https://butterfly.js.org/posts/21cfbf15/#安裝)
+
 
 
 # 项目结构搭建

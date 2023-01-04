@@ -4,11 +4,13 @@ date: 2022-8-9 07:28:42
 cover: false
 ---
 
+[Bootstrap中文网 (bootcss.com)](https://www.bootcss.com/)
 
+版本：[Versions · Bootstrap v5.3 (getbootstrap.cn)](https://www.getbootstrap.cn/docs/versions/)
 
 # Bootstrap基础
 
-### box-sizing: border-box;[¶](#box-sizing-border-box)
+### box-sizing: border-box;
 
 为了避免内边距影响盒子大小，计算盒子尺寸的方式被设置为了border-box;
 
@@ -18,7 +20,7 @@ cover: false
 }
 ```
 
-### 流体容器 .container-fluid[¶](#container-fluid)
+### 流体容器 .container-fluid
 
 流体容器，width：auto;加padding会向里缩，不会撑开盒子（盒子模型的公式）
 
@@ -234,4 +236,18 @@ offset.col-xs-offset-12{right:12/12}.col-xs-offset-11{right:11/12}.......col-xs-
 ### 响应式工具[¶](#_4)
 
 ca  
+
+
+
+# V3
+
+[起步 · Bootstrap v3 中文文档 | Bootstrap 中文网 (bootcss.com)](https://v3.bootcss.com/getting-started/)
+
+[Bootstrap3从由Less编写转成由Sass编写是出于哪些考虑？ - 知乎 (zhihu.com)](https://www.zhihu.com/question/24741026/answer/63362486)
+
+# V4
+
+[下载 Bootstrap · Bootstrap v4 中文文档 v4.6 | Bootstrap 中文网 (bootcss.com)](https://v4.bootcss.com/docs/getting-started/download/)
+
+# V5
 

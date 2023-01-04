@@ -1,5 +1,10 @@
 ---
 typora-root-url: echarts基础
+date: 2022-12-9 09:03:02
+cover: false
+tags:
+- 可视化
+categories: 可视化
 ---
 
 # 可视化面板介绍
