@@ -209,7 +209,7 @@ DOM性能优化(重排和重绘的优化)、DOM事件
 
 #### 第三阶段: AJAX和HTTP
 
-技术要点: ajax原理、ajax异 步解决方案(promise)、axios; (包括自己封装promise版ajax库)、fetch及封装处理、jquery中 的ajax操作和库的封装等
+技术要点: ajax原理、ajax异步解决方案(promise)、axios; (包括自己封装promise版ajax库)、fetch及封装处理、jquery中的ajax操作和库的封装等
 
 跨域解决方案及实现原理: jsonp、 cors、 webpack proxy (scoket.io)、document. domain、window. name+ iframe、postMessage 等
 
@@ -230,7 +230,7 @@ HTTP报文(常用的响应请求头实战应用技巧)、HTTP (TCP) 传输流程
 
 vue全家桶: vue (MWVM实 现的原理以及一些语法实现的原理)、vue- router (HASH路由实现的原理)、vuex (掌握原理)、axios、 vue-cli (需要能够修改脚手架的webpack配置项)、iview/vux/vue element等常用框架的使用等
 
-react全家桶: create-react-app (能够修改webpack的配置项)、react (掌握虚拟DOM渲染原理，掌握DOM-DIFF原理，掌握INDEX索引对比机制，掌握MVC实现的原理)、react-dom/react-nat ive、 react-router、 react-redux/dva/mobx (掌握原理， 自己可以基于原生JS写一套类似的插件、发现里面的一些不足点)、antd (最好可以自己封装一些基础的组件)等
+react全家桶: create-react-app (能够修改webpack的配置项)、react (掌握虚拟DOM渲染原理，掌握DOM-DIFF原理，掌握INDEX索引对比机制，掌握MVC实现的原理)、react-dom/react-native、 react-router、 react-redux/dva/mobx (掌握原理， 自己可以基于原生JS写一套类似的插件、发现里面的一些不足点)、antd (最好可以自己封装一些基础的组件)等
 
 书籍：
 

@@ -1,5 +1,8 @@
 ---
+title: 'brat安装步骤及注意事项'
+cover: false
 typora-root-url: brat安装步骤
+
 ---
 
 [TOC]

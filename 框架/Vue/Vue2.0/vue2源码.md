@@ -7,7 +7,7 @@ tags:
   - 源码
 categories:
   - Vue
-typora-root-url: vue2源码
+typora-root-url: Vue2源码
 ---
 
 [TOC]

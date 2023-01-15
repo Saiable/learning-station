@@ -1439,7 +1439,7 @@ Docker挂载主机目录访问如果出现`cannot open directory .: Permission d
 
 如果是CentOS7安全模块会比之前系统版本加强，不安全的会先禁止，目录挂载的情况被默认为不安全的行为，
 
-在SELinux里面挂载目录被禁止掉了额，如果要开启，我们一般使用`--privileged=true`命令，扩大容器的权限解决挂载目录没有权限的问题，也即使用该参数，container内的root拥有真正的root权限，否则，container内的root只是外部的一个普通用户权限。
+在SELinux里面挂载目录被禁止掉了，如果要开启，我们一般使用`--privileged=true`命令，扩大容器的权限解决挂载目录没有权限的问题，也即使用该参数，container内的root拥有真正的root权限，否则，container内的root只是外部的一个普通用户权限。
 
 ## 回顾下上一讲的知识点，参数V
 
@@ -1473,7 +1473,7 @@ docker run -d -p 5000:5000 -v /data/registry/:/tmp/registry --privileged=true re
 
 能干嘛
 
-- 将运用与运行的环境打包镜像，run后形成容器实例运行 ，但是我们对数据的要求希望是持久化的
+- 将应用与运行的环境打包镜像，run后形成容器实例运行 ，但是我们对数据的要求希望是持久化的
 
 - Docker容器产生的数据，如果不备份，那么当容器实例删除后，容器内的数据自然也就没有了。
 

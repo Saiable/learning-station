@@ -2220,7 +2220,67 @@ Dialog 组件的内容可以是任意的，甚至可以是表格或表单，下�
 
 ## 安装
 
-## Vue3中使用ElementPlus
+[安装 | Element Plus (element-plus.org)](https://cn.element-plus.org/zh-CN/guide/installation.html#使用包管理器)
+
+`npm install element-plus --save`
+
+### 按需导入
+
+首先你需要安装`unplugin-vue-components` 和 `unplugin-auto-import`这两款插件
+
+```bash
+npm install -D unplugin-vue-components unplugin-auto-import
+```
+
+`webpack`
+
+```js
+// webpack.config.js
+const AutoImport = require('unplugin-auto-import/webpack')
+const Components = require('unplugin-vue-components/webpack')
+const { ElementPlusResolver } = require('unplugin-vue-components/resolvers')
+
+module.exports = {
+  // ...
+  plugins: [
+    AutoImport({
+      resolvers: [ElementPlusResolver()],
+    }),
+    Components({
+      resolvers: [ElementPlusResolver()],
+    }),
+  ],
+}
+```
+
+`vue-cli`要先写个`configureWebpack`字段才行
+
+```js
+const { defineConfig } = require('@vue/cli-service')
+const AutoImport = require('unplugin-auto-import/webpack')
+const Components = require('unplugin-vue-components/webpack')
+const { ElementPlusResolver } = require('unplugin-vue-components/resolvers')
+module.exports = defineConfig({
+  transpileDependencies: true,
+  lintOnSave: false,
+  configureWebpack: {
+    plugins: [
+      AutoImport({
+        resolvers: [ElementPlusResolver()],
+      }),
+      Components({
+        resolvers: [ElementPlusResolver()],
+      }),
+    ],
+  }
+
+})
+
+```
+
+插件会自己根据实际使用的组件，自动导入
+
+直接使用即可
 
 ## 使用解析
 

@@ -1,12 +1,11 @@
 ---
 title: 'web基础及进阶路线'
-date: 2022/8/9 09:03:02
+date: 2022-08-09 09:03:02
 cover: false
 sticky: 99
 tags:
 - 学习路线
 categories: 学习路线
-typora-root-url: ./
 ---
 
 
