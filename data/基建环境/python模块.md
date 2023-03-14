@@ -159,3 +159,59 @@ pip install xlrd==1.2.0
 ## CSV
 
 https://www.cnblogs.com/junpengwang/p/10803339.html
+
+
+
+## pdf
+
+> su rhino
+>
+> conda activate zkq_py36
+>
+> python ...
+
+```python
+from pdf2image import convert_from_path
+import tempfile
+import numpy as np
+import os
+from PIL import Image
+from paddleocr import PaddleOCR, draw_ocr
+ocr=PaddleOCR(use_angle_cls=True, lang='ch')
+
+
+
+def pdf2img(filename,outputDir=None):
+    print('filename=', filename)
+
+    with tempfile.TemporaryDirectory() as path:
+        images = convert_from_path(filename)
+    return images
+
+
+def pdfs2img(pdf_dir, save_dir):
+    for rt, folders, files in os.walk(pdf_dir):
+        for f in files:
+            if not f.endswith("pdf"):
+                continue
+            pdf_path = os.path.join(rt, f)
+            try:
+                images = pdf2img(filename=pdf_path)
+            except Exception as e:
+                print(f"f:{pdf_path},error_msg:{e}")
+                continue
+            for index, img in enumerate(images):
+                img.save(save_dir + f"{f.strip('.pdf')}_{index}.png")
+    print("Compeleted.")
+
+
+if __name__ == "__main__":
+    # pdf_dir = "/data/data01/ztp/苏粮/data/"
+    pdf_dir = "/data/data02/wj/PythonWorkspace/YuHuaPdfScan/code/ocr/data/stamp/I/"
+    # save_dir = "/data/data02/wj/PythonWorkspace/YuHuaPdfScan/code/ocr/src/suliang_pdf2imgs/"
+    save_dir = "/data/data02/wj/PythonWorkspace/YuHuaPdfScan/code/ocr/data/stamp/res/I/"
+    pdfs2img(pdf_dir=pdf_dir, save_dir=save_dir)
+
+
+```
+

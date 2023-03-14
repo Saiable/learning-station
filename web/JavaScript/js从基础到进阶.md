@@ -1972,7 +1972,7 @@ console.log(reg1.test('2023mindcons')); // false
 
 // 两个都不加，字符串中包含符合规则的内容即可
 let reg2 = /\d+/;
-// 两个都加，字符串只能是和规则一致的内容
+// 两个都加，字符串只能是和规则一致的内容（如下：只能是数字）
 let reg3 = /^\d+$/;
 // 验证手机号（11位，第一个数字是1）
 let reg4 = /^1\d{10}$/;
@@ -2049,10 +2049,12 @@ console.log(reg2.test("8")); // true
 console.log(reg2.test("18")); // false
 let reg4 = /^[10-29]$/; // 不是10-29，代表1或者0-2或者9
 let reg5 = /^[(10-29)]$/; // 括号在[]中没有分组的含义
-let reg5 = /^[\(10-29\)]$/; // \在[]中转义(还是(自身
+let reg5 = /^[\(10-29\)]$/; // \在[]中转义(还是(自身))
 ```
 
 #### 元字符及其含义完整列表
+
+自查
 
 ### 常用正则表达式
 
@@ -2171,16 +2173,245 @@ console.log(res)
 
 ### 两种创建正则方式的区别
 
+构造函数中传递的是字符串，需要转义`\`
+
 ```js
 let reg = /\d+/g;
-reg = new RegExp("", "g")
+
+reg = new RegExp("\\d+", "g") // 构造函数创建，传递两个字符串参数：元字符 修饰符
+```
+
+正则表达式中的部分内容，是变量存储的值（变量存的值是正则的一部分）
+
+```js
+let type = "sai";
+reg = /^@"+type+"@$/; // 这种方式不行，/之间代表的都是元字符
+console.log(reg.test("@sai@")) // false
+console.log(reg.test('@"""typeeeee"@')) // true
+
+// 如果正则中，要包含某个变量的值，则不能使用字面量的形式创建
+// 使用构造函数拼接，因为参数是字符串
+reg = new RegExp("^@"+type+"@$")
+console.log(reg.test("@sai@")) // true
+```
+
+### 正则捕获
+
+#### 实现正则捕获的方法
+
+- 正则`RegExp.prototype`上的方法
+  - `exec`
+  - `test`
+- 字符串`String.prototype`上的方法
+  - `replace`
+  - `match`
+  - `splite`
+  - ...
+
+#### 前提
+
+当前正则要和字符串匹配，如果不匹配，结果是null
+
+```js
+let str = "sai2019mind2020cons2021";
+
+let reg = /^\d+$/;
+
+// 实现正则捕获的前提：当前正则要和字符串匹配，如果不匹配，结果是null
+console.log(reg.test(str)) // false
+console.log(reg.exec(str)) // null
+```
+
+#### `exec`捕获结果
+
+1.捕获的结果是`null`或者一个数组
+
+第一项：本次捕获到的内容
+
+其余项：对应小分组本次单独捕获的内容
+
+`index`：当前捕获内容在字符串中的起始索引
+
+`input`：原始字符串
+
+```js
+let str = "sai2019mind2020cons2021";
+
+// 捕获所有数字
+let reg = /\d+/;
+
+console.log(reg.exec(str)) 
+```
+
+```json
+[
+  '2019',
+  index: 3,
+  input: 'sai2019mind2020cons2021',
+  groups: undefined
+]
+```
+
+2.每执行一次`exec`，只能捕获到一个符合正则规则的。但是默认情况下，无论执行多少次，获取的结果永远是匹配到的第一个，其余的获取不到
+
+```js
+let str = "sai2019mind2020cons2021";
+
+// 捕获所有数字
+let reg = /\d+/;
+
+console.log(reg.exec(str)) ;
+console.log(reg.exec(str)) ;
+console.log(reg.exec(str)) ; // 结果都是一样的
+```
+
+上述特点称为：正则捕获的懒惰性
+
+原因：下一小节
+
+#### `exec`捕获原理（懒惰性）
+
+`lastIndex`：
+
+当前正则下一次匹配的起始索引位置，默认为0，表示匹配捕获是从索引为零的位置开始找
+
+第一次匹配完成，`lastIndex`没有改变，所以下一次`exec`依然是从字符串最开始找，找到的永远是第一个匹配到的
+
+`exec`捕获懒惰性的原因：默认情况下`lastIndex`的值不会修改（其他的捕获方法也是一样的），这是正则捕获本身的机制
+
+```js
+let str = "sai2019mind2020cons2021";
+let reg = /\d+/;
+
+console.log(reg.lastIndex) // 0
+```
+
+直接手动修改是不行的`reg.lastIndex = 7`
+
+```js
+let str = "sai2019mind2020cons2021";
+let reg = /\d+/g; // 加一个g的修饰符，正则处理机制内容会自己修改lastIndex
+
+console.log(reg.lastIndex); // 0
+console.log(reg.exec(str)); // ["2019"...]
+console.log(reg.lastIndex); // 7
+console.log(reg.exec(str)); // ["2020"...]
+console.log(reg.lastIndex); // 15
+console.log(reg.exec(str)); // ["2021"...]
+console.log(reg.lastIndex); // 23
+console.log(reg.exec(str)); // null // 当全部捕获后，再次捕获的结果是null，lastIndex值回归到0
+console.log(reg.lastIndex); // 0
+console.log(reg.exec(str)); // ["2019"...] 
+```
+
+写法注意：
+
+条件判断中的`test`，会先改了一次`lastIndex`
+
+```js
+let str = "sai2019mind2020cons2021";
+let reg =/\d+/g;
+if(reg.test(str)) {
+    console.log(reg.lastIndex); // 7
+    console.log(reg.exec(str)); // ["2020"...]
+}
+```
+
+解决办法：
+
+```js
+// 单独拿一份
+let str = "sai2019mind2020cons2021";
+let reg =/\d+/g;
+let reg_cond =/\d+/g;
+if(reg_cond.test(str)) {
+    console.log(reg.lastIndex); // 0
+    console.log(reg.exec(str)); // ["2019"...]
+}
+```
+
+#### `exec`方法封装
+
+编写一个方法`execAll`，执行一次捕获所有的匹配结果
+
+```js
+~function () {
+  function execAll(str = "") {
+    // 确保正则是加了g
+    if(!this.global) return this.exec(str); // 没有加g，只捕获一次
+    // this: RegExp的实例
+    let arr = [], // arr存储捕获的所有内容
+      res = this.exec(str); // res存储每次捕获的内容
+
+    while (res) {
+      // 把每次捕获的内容存在arr中
+      arr.push(res[0]);
+      // 只要捕获的内容不为null，就继续捕获下去
+      res = this.exec(str);
+    }
+    return arr.length === 0 ? null : arr;
+
+  }
+  RegExp.prototype.execAll = execAll;
+}()
+
+let reg = /\d+/g; // 浏览器控制台打印一下reg，如果加了g，则global属性为true
+let str = "sai2019mind2020cons2021";
+console.log(reg.execAll(str)) // [ '2019', '2020', '2021' ]
+```
+
+字符串方法中，`match`方法可以实现执行一次捕获所有匹配结果（效果同上，如果不加`g`，只返回一个捕获结果，若没有匹配到，则返回`null`）
+
+上述方法其实就是`mathc`的原理
+
+```js
+let reg = /\d+/g;
+console.log("sai2019mind2020cons2021".match(reg)) // [ '2019', '2020', '2021' ]
+```
+
+#### 分组捕获和分组引用
+
+
+
+
+
+```js
+let reg = /^(\d{6})(\d{4})(\d{2})(\d{2})\d{2}(\d)(\d|X)$/;
+res = reg.exec("130828199012040617")
+console.log(res)
+// 捕获结果是一个数组，包含每个小分组单独获取的内容
+
+/**
+ * [
+  '130828199012040617',
+  '130828', // 省市县
+  '1990', // 年
+  '12', // 月
+  '04', // 日
+  '1', // 性别
+  '7', 
+  index: 0,
+  input: '130828199012040617',
+  groups: undefined
+]
+ */
 ```
 
 
 
 
 
+
+
 ### 应用场景
+
+
+
+
+
+
+
+
 
 # ES6+
 

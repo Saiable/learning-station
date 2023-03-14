@@ -8,7 +8,7 @@ categories: '设计模式'
 typora-root-url: JS设计模式
 ---
 
-[TOC]
+
 
 
 
@@ -273,4 +273,18 @@ function Subject(name) {
 ![image-20221219103331023](image-20221219103331023.png)
 
 订阅者（Subscriber）把自己想订阅的事件注册（Subscribe）到调度中心（Topic）（向调度中心申请），当发布者（Publisher）发布该事件（Public Topic）到调度中心，也就是该事件触发时，由调度中心统一调度（Fire Event）订阅者注册到调度中心的处理代码
+
+
+
+
+
+# 工厂函数
+
+https://www.jianshu.com/p/9ce26a5044e6
+
+
+
+
+
+
 

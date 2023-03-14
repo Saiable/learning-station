@@ -1,12 +1,14 @@
 ---
 title: 'docker基础与进阶'
-date: 2022-07-08 07:15:24
+date: 2023-02-21 07:15:24
 cover: false
 tags:
 - docker
 categories: 'docker'
 typora-root-url: docker基础
 ---
+
+来源：https://www.bilibili.com/video/BV1gr4y1U7CY
 
 # Docker简介
 
@@ -260,9 +262,9 @@ Docker 是一个 C/S 模式的架构，后端是一个松耦合架构，众多�
 
 7.`LibContainer`是一项独立容器管理包，`Network Driver`以及`Exec Driver`都是通过`LibContainer`来实现具体对容器的操作
 
-![image-20221202103521720](image-20221202103521720.png)
+![image-20230222174553134](image-20230222174553134.png)
 
-![image-20221202104404624](image-20221202104404624.png)
+![image-20230222174637828](image-20230222174637828.png)
 
 为什么Docker会比VM虚拟机快
 
@@ -611,7 +613,9 @@ https://promotion.aliyun.com/ntms/act/kubernetes.html
 - -P: 随机端口映射，大写P
 - -p: 指定端口映射，小写p
 
+- --rm：容器退出时就能够自动清理容器内部的文件系统。
 
+  运行带有`--rm`标志的容器对于那些只用于很短时间而仅用于完成某事的容器是有好处的，例如，在容器内编译应用程序，或者只是测试它可以工作的事物，然后您就会知道它是一个短暂的容器，告诉您的Docker守护程序，一旦运行完毕，请清除与其相关的所有内容并节省磁盘空间。
 
 使用镜像centos:latest以交互模式启动一个容器,在容器内执行/bin/bash命令。
 
@@ -1240,6 +1244,91 @@ docker commit -m="提交的描述信息" -a="作者" 容器ID 要创建的目标
 
   ![image-20221203114523128](image-20221203114523128.png)
 
+- 将镜像打包成本地文件
+
+  ```bash
+  # 指令：docker save 镜像id > 文件名.tar
+  docker save 172825a55619 > ./watch_ocr.tar# watch_ocr.tar为打包的文件
+  ```
+
+- 在另一台主机加载本地文件到镜像
+
+  ```bash
+  # 指令：docker load < 文件名.tar
+  docker load < watch_ocr.tar		  # watch_ocr.tar 为文件名称
+  ```
+
+- 镜像重命名
+
+  ![img](2022081910544660.png)
+
+  执行完上述语句后，查看本地镜像，会看到新加载的镜像名字和标签都是none，利用该镜像的id对名字和标签重新命名即可：
+
+  ```bash
+  docker tag 172825a55619 watch_ocr:1.2
+  ```
+
+  ![2022081910544661.png](2022081910544661.png)
+
+- 创建容器
+
+  ```bash
+  docker run -it --name watch_ocr_contain 172825a55619 /bin/bash
+  ```
+
+- docker批量导出导入本地镜像
+
+  - 导出脚本
+
+    ```bash
+    #!/bin/bash
+     
+     
+    # 获取到 "image:tag" 格式的镜像名
+    IMG_NAME=`docker images | grep -v TAG | awk '{print $1":"$2}'`
+    # echo $IMG_NAME | awk '{gsub(/ /,"\n",$0)} {print $0}'
+     
+    # 如果原本镜像名中存在 "/" 是需要去掉的
+     
+    # 定义镜像存放目录
+    DIR="/data/docker/image_tar"
+    if [ ! -d "$DIR" ]; then
+      echo -e "\033[34m${DIR}\033[0m 不存在"
+      mkdir -p "$DIR"
+      echo -e "\033[34m${DIR}\033[0m 已创建"
+    else
+      echo -e "\033[34m${DIR}\033[0m 已存在"
+    fi
+    echo ""
+    for IMAGE in $IMG_NAME
+    do
+      echo -e "正在保存 \033[33m${IMAGE}\033[0m"
+      SAVE_NAME=`echo $IMAGE | awk -F: '{print $1"_"$2}' | sed 's/\//_/g'`
+      docker save $IMAGE -o ${DIR}/${SAVE_NAME}.tar
+      echo -e "已保存到 \033[34m${DIR}/\033[31m${SAVE_NAME}.tar\033[0m"
+      echo ""
+    done
+    ```
+
+  - 导入脚本
+
+    ```bash
+    #!/bin/bash
+     
+    # 在此处填写镜像文件的保存目录
+    IMAGE_DIR="/data/docker/image_tar"
+     
+    for IMAGE in `ls $IMAGE_DIR`
+    do
+      echo -e "正在导入镜像 \033[33m$IMAGE\033[0m"
+      docker load -i ${IMAGE_DIR}/${IMAGE}
+      echo -e "已成功导入镜像 \033[33m$IMAGE\033[0m"
+      echo ""
+    done
+    ```
+
+    
+
 ## 小总结
 
 Docker中的镜像分层，支持通过扩展现有镜像，创建新的镜像。类似Java继承于一个Base基础类，自己再按需扩展。
@@ -1247,13 +1336,13 @@ Docker中的镜像分层，支持通过扩展现有镜像，创建新的镜像�
 
 ![image-20221203153504212](image-20221203153504212.png)
 
-# 本地镜像发布到阿里云
+## 本地镜像发布到阿里云
 
-## 本地镜像发布到阿里云流程
+### 本地镜像发布到阿里云流程
 
 ![image-20221203153745123](image-20221203153745123.png)
 
-## 镜像的生成方法
+### 镜像的生成方法
 
 ```bash
 # 基于当前容器创建一个新的镜像，新功能增强 
@@ -1321,7 +1410,7 @@ OPTIONS说明：
 
 后面的DockerFile章节，是第2种方法
 
-# 本地镜像发布到私有库
+## 本地镜像发布到私有库
 
 1.官方Docker Hub地址：https://hub.docker.com/，中国大陆访问太慢了且准备被阿里云取代的趋势，不太主流。
 
@@ -1423,9 +1512,6 @@ Docker Registry是官方提供的工具，可以用于构建私有镜像仓库
      
     ```
     
-    
-
-
 
 # `Docker`容器数据卷
 
@@ -2018,6 +2104,235 @@ cd /data/labelstudio
 docker run -it -p 8083:8080 -v `pwd`/mydata:/label-studio/data heartexlabs/label-studio:latest
 ```
 
+## 安装`vnc`（废弃）
+
+[(11条消息) 用docker启动ubuntu的桌面环境_菜鸟怕怕的博客-CSDN博客_docker ubuntu桌面](https://blog.csdn.net/u014062332/article/details/95333615)
+
+拉取镜像：
+
+```bash
+docker pull dorowu/ubuntu-desktop-lxde-vnc
+```
+
+运行容器：
+
+```bash
+docker run -p 6080:80 -p 5900:5900 -e RESOLUTION=1920x1080 -e VNC_PASSWORD=VNC登录的密码 -v /dev/shm:/dev/shm dorowu/ubuntu-desktop-lxde-vnc
+```
+
+更新源：https://blog.csdn.net/qq_41296187/article/details/123723093
+
+```bash
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt-get install aptitude
+
+sudo aptitude install xxxxx
+```
+
+安装vscode：https://blog.csdn.net/qq_50840738/article/details/126060563
+
+
+
+安装中文包（未成功）：
+
+https://www.lijiejie.com/ubuntu-vps-config-lxde-vnc/
+
+https://www.bbsmax.com/A/GBJr7y7q50/
+
+
+
+## 安装vnc2
+
+基于新建dockerfile配置sudo，具体参考《Docker-Ubuntu环境搭建playwright环境》
+
+```bash
+### https://hub.docker.com/r/kasmweb/ubuntu-focal-desktop
+### docker build -t zzh/ubuntu-focal-desktop:1.12.0 .
+### 启动镜像的命令：sudo docker run  -it --name=zzh_ubuntu-focal-desktop --shm-size=512m -p 26901:6901 -e VNC_PW=password zzh/ubuntu-focal-desktop:1.12.0
+### 访问地址： https://IP_OF_SERVER:6901
+### User : kasm_user
+### Password: password
+
+FROM kasmweb/ubuntu-focal-desktop:1.12.0
+
+USER root
+RUN sed -i "s/archive.ubuntu.com/mirrors.aliyun.com/g" /etc/apt/sources.list 
+
+RUN apt-get update \
+    && apt-get install -y sudo \
+    && echo 'kasm-user ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers \
+    && rm -rf /var/lib/apt/list/*
+
+USER 1000
+```
+
+重新打包成镜像
+
+```bash
+sudo docker run  -it --name=ubuntu-focal-desktop-origin --shm-size=512m -p 8086:6901  -p 8087:9878 -p 8088:9879 -p 29880:9880 -e VNC_PW=password -v /data/data01/hh/ubuntu-focal-desktop:/app kasmweb/ubuntu-focal-desktop:1.12.0
+```
+
+- vscode中无法新建文件
+
+  - 更改挂载目录的用户和用户组，可以用portainer看下status中进程是哪个用户的
+
+- 安装edge：https://blog.csdn.net/weixin_49689323/article/details/124253429
+
+  - 官网下载deb文件，进入到文件目录
+
+    ```sh
+    sudo dpkg -i 下载的文件名.deb
+    sudo apt-get install -f
+    
+    补充：
+    sudo dpkg -r package # 删除包  -r: remove
+    此方法的默认安装目录为:  /opt
+    ```
+
+    这时候在**应用程序>Internet**中就可以可以发现我们的**Edge**了
+
+  - 但此时无法打开，需要修改
+
+    ```bash
+    vim /usr/bin/microsoft-edge
+    
+    # 在最后一行 添加两个参数
+    exec -a "$0" "$HERE/msedge" "$@"  --user-data-dir --no-sandbox
+    ```
+
+    ![image-20230228192237151](image-20230228192237151.png)
+
+- 更新默认浏览器，以便vscode登录
+
+  ubuntu软件安装在哪里/安装位置：https://blog.csdn.net/universe_R/article/details/122113798
+
+  ```bash
+  # 添加sudoers PATH https://blog.csdn.net/hello_1995/article/details/109222650 
+  # 或者直接进入已配置号的secure_path，如/usr/bin中，执行
+  sudo apt install firefox
+  
+  # 若安装失败，需要更新下
+  sudo apt-get update
+  
+  # 或者可以选择已安装的edge浏览器，在/opt目录下 
+  ```
+
+- 宿主机配置访问github，https://blog.csdn.net/qq_51368339/article/details/127889467
+
+  ```bash
+  # 使用ssh -v命令，打出详细日志。
+  ssh -vT git@github.com
+  # 可能就是单纯的慢
+  ```
+
+- 安装中文输入法
+
+  [ubuntu language support 点击没反应](https://blog.csdn.net/qq_40660130/article/details/120775817)
+
+  首先查看是否安装了中文语言包
+
+  ```bash
+  locale -a
+  ```
+
+  查看是否有：`zh_CN.utf8`
+  如果没有，首先需要安装中文语言包，输入以下命令：
+
+  ```bash
+  sudo apt-get install language-pack-zh-hans
+  
+  ```
+
+  然后添加中文支持
+
+  ```bash
+  sudo locale-gen zh_CN.UTF-8
+  
+  ```
+
+  修改locale文件配置
+
+  ```bash
+  sudo vim /etc/default/locale
+  ```
+
+  ```bash
+  LANG="zh_CN.UTF-8"
+  LANGUAGE="zh_CN:zh:en_US:en"
+  LC_NUMERIC="zh_CN.UTF-8"
+  LC_TIME="zh_CN.UTF-8"
+  LC_MONETARY="zh_CN.UTF-8"
+  LC_PAPER="zh_CN.UTF-8"
+  LC_IDENTIFICATION="zh_CN.UTF-8"
+  LC_NAME="zh_CN.UTF-8"
+  LC_ADDRESS="zh_CN.UTF-8"
+  LC_TELEPHONE="zh_CN.UTF-8"
+  LC_MEASUREMENT="zh_CN.UTF-8"
+  LC_ALL=zh_CN.UTF-8
+  ```
+
+  重启容器
+
+  [ WSL2 Ubuntu20.04 打开language support闪退解决办法](https://blog.csdn.net/manong_1/article/details/128323888)
+
+  想要打开language support设置汉语，结果一直闪退
+
+  ![在这里插入图片描述](7b71cfa313b8403dbaed8c68c49bf80e.png)
+
+  Ubuntu 22.04 同时安装ibus和fcitx会冲突，导致系统卡死。但是操作完上述步骤后，会自动安装fcitx，所以需要先卸载fcitx：
+
+  ```bash
+  sudot apt-get remove fcitx*
+  
+  sudo apt-get purge fcitx*
+  
+  sudo apt-get autoremove
+  
+  ```
+
+  安装
+
+  ```bash
+  sudo apt-get install dbus
+  
+  sudo /etc/init.d/dbus start
+  
+  sudo apt install ibus-libpinyin
+  
+  ```
+
+  **之后**在`settings——>IBus Preferences——>Input Method——>选择中文智能拼音`
+
+  ![在这里插入图片描述](2ae1bc7efbe447509a8f14eba8694570.png)
+
+  若出现如下提示
+
+  ![image-20230302092051312](image-20230302092051312.png)
+
+  按要求修改即可
+
+- 问题：IBus不能自动启动
+  解决方法：
+  点击菜单`System >> Preferences >> Startup Applications`
+  如果通过这种方式找不到，则直接在控制台运行：`gnome-session-properties`
+  点击后会出现startup application窗口：
+  Click the button: Add
+
+  ```
+  Name: IBus daemon
+  Command: /usr/bin/ibus-daemon -d
+  Comment: start IBus daemon when Gnome starts
+  ```
+
+  
+
+- 安装wps
+
+  
+
+
+
 # `Docker`复杂安装详说
 
 ## 安装mysql主从复制
@@ -2189,29 +2504,1338 @@ show slave status \G;
 
 大厂面试题第4季-分布式存储案例真题
 
+cluster(集群)模式-docker版 哈希槽分区进行亿级数据存储
 
+- 面试题
+
+  1~2亿条数据需要缓存，请问如何设计这个存储案例
+
+- 回答
+
+  单机单台100%不可能，肯定是分布式存储，用redis如何落地？
+
+上述问题阿里P6~P7工程案例和场景设计类必考题目， 一般业界有3种解决方案
+
+
+
+### 哈希取余分区
+
+![image-20230222101151726](image-20230222101151726.png)
+
+2亿条记录就是2亿个k,v，我们单机不行必须要分布式多机，假设有3台机器构成一个集群，用户每次读写操作都是根据公式：
+
+hash(key) % N个机器台数，计算出哈希值，用来决定数据映射到哪一个节点上。
+
+**优点**：
+
+简单粗暴，直接有效，只需要预估好数据规划好节点，例如3台、8台、10台，就能保证一段时间的数据支撑。使用Hash算法让固定的一部分请求落到同一台服务器上，这样每台服务器固定处理一部分请求（并维护这些请求的信息），起到负载均衡+分而治之的作用。
+
+**缺点**：
+
+原来规划好的节点，进行扩容或者缩容就比较麻烦了额，不管扩缩，每次数据变动导致节点有变动，映射关系需要重新进行计算，在服务器个数固定不变时没有问题，如果需要弹性扩容或故障停机的情况下，原来的取模公式就会发生变化：Hash(key)/3会变成Hash(key) /?。此时地址经过取余运算的结果将发生很大变化，根据公式获取的服务器也会变得不可控。
+
+某个redis机器宕机了，由于台数数量变化，会导致hash取余全部数据重新洗牌。
+
+
+
+### 一致性哈希算法分区
+
+一致性Hash算法背景：一致性哈希算法在1997年由麻省理工学院中提出的，设计目标是为了解决**分布式缓存数据变动和映射问题，某个机器宕机了，分母数量改变了，自然取余数不OK了。**
+
+能干嘛：提出一致性Hash解决方案。 目的是当服务器个数发生变动时， 尽量减少影响客户端到服务器的映射关系
+
+
+
+算法构建一致性哈希环
+
+一致性哈希环
+
+一致性哈希算法必然有个hash函数并按照算法产生hash值，这个算法的所有可能哈希值会构成一个全量集，这个集合可以成为一个hash空间[0,2^32-1]，这个是一个线性空间，但是在算法中，我们通过适当的逻辑控制将它首尾相连(0 = 2^32),这样让它逻辑上形成了一个环形空间。
+
+它也是按照使用取模的方法，前面笔记介绍的节点取模法是对节点（服务器）的数量进行取模。而一致性Hash算法是对2^32取模，简单来说，一致性Hash算法将整个哈希值空间组织成一个虚拟的圆环，如假设某哈希函数H的值空间为0-2^32-1（即哈希值是一个32位无符号整型），整个哈希环如下图：整个空间按顺时针方向组织，圆环的正上方的点代表0，0点右侧的第一个点代表1，以此类推，2、3、4、……直到2^32-1，也就是说0点左侧的第一个点代表2^32-1， 0和2^32-1在零点中方向重合，我们把这个由2^32个点组成的圆环称为Hash环。
+
+![image-20230222102401843](image-20230222102401843.png)
+
+服务器IP节点映射
+
+节点映射
+
+ 将集群中各个IP节点映射到环上的某一个位置。
+
+将各个服务器使用Hash进行一个哈希，具体可以选择服务器的IP或主机名作为关键字进行哈希，这样每台机器就能确定其在哈希环上的位置。假如4个节点NodeA、B、C、D，经过IP地址的哈希函数计算(hash(ip))，使用IP地址哈希后在环空间的位置如下：
+
+![image-20230222102521821](image-20230222102521821.png)
+
+key落到服务器的落键规则
+
+当我们需要存储一个kv键值对时，首先计算key的hash值，hash(key)，将这个key使用相同的函数Hash计算出哈希值并确定此数据在环上的位置，**从此位置沿环顺时针行走**，第一台遇到的服务器就是其应该定位到的服务器，并将该键值对存储在该节点上。
+
+如我们有Object A、Object B、Object C、Object D四个数据对象，经过哈希计算后，在环空间上的位置如下：根据一致性Hash算法，数据A会被定为到Node A上，B被定为到Node B上，C被定为到Node C上，D被定为到Node D上。
+
+![image-20230222102643831](image-20230222102643831.png)
+
+**优点**
+
+一致性哈希算法的**容错性**
+
+容错性
+
+假设Node C宕机，可以看到此时对象A、B、D不会受到影响，只有C对象被重定位到Node D。一般的，在一致性Hash算法中，如果一台服务器不可用，则受影响的数据仅仅是此服务器到其环空间中前一台服务器（即沿着逆时针方向行走遇到的第一台服务器）之间数据，其它不会受到影响。简单说，就是C挂了，受到影响的只是B、C之间的数据，并且这些数据会转移到D进行存储。
+
+![image-20230222102807097](image-20230222102807097.png)
+
+一致性哈希算法的**扩展性**
+
+扩展性
+
+数据量增加了，需要增加一台节点NodeX，X的位置在A和B之间，那收到影响的也就是A到X之间的数据，重新把A到X的数据录入到X上即可，
+
+不会导致hash取余全部数据重新洗牌。
+
+![image-20230222102839637](image-20230222102839637.png)
+
+**缺点**
+
+一致性哈希算法的数据倾斜问题
+
+Hash环的数据倾斜问题
+
+一致性Hash算法在服务**节点太少**时，容易因为节点分布不均匀而造成数据倾斜（被缓存的对象大部分集中缓存在某一台服务器上）问题
+
+例如系统中只有两台服务器：
+
+![image-20230222103240873](image-20230222103240873.png)
+
+**小总结**
+
+为了在节点数目发生改变时尽可能少的迁移数据
+
+将所有的存储节点排列在收尾相接的Hash环上，每个key在计算Hash后会顺时针找到临近的存储节点存放。
+
+而当有节点加入或退出时仅影响该节点在Hash环上顺时针相邻的后续节点。 
+
+优点
+
+加入和删除节点只影响哈希环中顺时针方向的相邻的节点，对其他节点无影响。
+
+缺点 
+
+数据的分布和节点的位置有关，因为这些节点不是均匀的分布在哈希环上的，所以数据在进行存储时达不到均匀分布的效果。
+
+
+
+### 哈希槽分区
+
+**为什么出现**：解决一致性哈希算法的数据倾斜问题
+
+哈希槽实质就是一个数组，数组[0,2^14 -1]形成hash slot空间。
+
+
+
+**能干什么**：解决均匀分配的问题，在数据和节点之间又加入了一层，把这层称为哈希槽（slot），用于管理数据和节点之间的关系，现在就相当于节点上放的是槽，槽里放的是数据。
+
+![image-20230222103538878](image-20230222103538878.png)
+
+槽解决的是粒度问题，相当于把粒度变大了，这样便于数据移动。
+
+哈希解决的是映射问题，使用key的哈希值来计算所在的槽，便于数据分配。
+
+
+
+**多少个hash槽**：一个集群只能有16384个槽，编号0-16383（0-2^14-1）。这些槽会分配给集群中的所有主节点，分配策略没有要求。可以指定哪些编号的槽分配给哪个主节点。集群会记录节点和槽的对应关系。解决了节点和槽的关系后，接下来就需要对key求哈希值，然后对16384取余，余数是几key就落入对应的槽里。slot = CRC16(key) % 16384。以槽为单位移动数据，因为槽的数目是固定的，处理起来比较容易，这样数据移动问题就解决了。
+
+
+
+哈希槽计算
+
+Redis 集群中内置了 16384 个哈希槽，redis 会根据节点数量大致均等的将哈希槽映射到不同的节点。当需要在 Redis 集群中放置一个 key-value时，redis 先对 key 使用 crc16 算法算出一个结果，然后把结果对 16384 求余数，这样每个 key 都会对应一个编号在 0-16383 之间的哈希槽，也就是映射到某个节点上。如下代码，key之A 、B在Node2， key之C落在Node3上
+
+![image-20230222103747768](image-20230222103747768.png)
+
+![image-20230222103759159](image-20230222103759159.png)
+
+### 3主3从redis集群搭建
+
+关闭防火墙+启动docker后台服务
+
+```
+systemctl start docker
+```
+
+新建6个docker容器redis实例
+
+```bash
+docker run -d --name redis-node-1 --net host --privileged=true -v /data/redis/share/redis-node-1:/data redis:6.0.8 --cluster-enabled yes --appendonly yes --port 6381
+ 
+docker run -d --name redis-node-2 --net host --privileged=true -v /data/redis/share/redis-node-2:/data redis:6.0.8 --cluster-enabled yes --appendonly yes --port 6382
+ 
+docker run -d --name redis-node-3 --net host --privileged=true -v /data/redis/share/redis-node-3:/data redis:6.0.8 --cluster-enabled yes --appendonly yes --port 6383
+ 
+docker run -d --name redis-node-4 --net host --privileged=true -v /data/redis/share/redis-node-4:/data redis:6.0.8 --cluster-enabled yes --appendonly yes --port 6384
+ 
+docker run -d --name redis-node-5 --net host --privileged=true -v /data/redis/share/redis-node-5:/data redis:6.0.8 --cluster-enabled yes --appendonly yes --port 6385
+ 
+docker run -d --name redis-node-6 --net host --privileged=true -v /data/redis/share/redis-node-6:/data redis:6.0.8 --cluster-enabled yes --appendonly yes --port 6386
+```
+
+参数解释
+
+```
+docker run
+创建并运行docker容器实例
+
+--name redis-node-6
+容器名字
+
+--net host
+使用宿主机的IP和端口，默认
+
+--privileged=true
+获取宿主机root用户权限
+
+-v /data/redis/share/redis-node-6:/data
+容器卷，宿主机地址:docker内部地址
+
+redis:6.0.8
+redis镜像和版本号
+
+--cluster-enabled yes
+开启redis集群
+
+--appendonly yes
+开启持久化
+
+--port 6386
+redis端口号
+```
+
+进入容器redis-node-1并为6台机器构建集群关系
+
+进入容器
+
+```bash
+docker exec -it redis-node-1 /bin/bash
+```
+
+构建主从关系
+
+注意，进入docker容器后才能执行一下命令，且注意自己的真实IP地址
+
+```bash
+redis-cli --cluster create 192.168.111.147:6381 192.168.111.147:6382 192.168.111.147:6383 192.168.111.147:6384 192.168.111.147:6385 192.168.111.147:6386 --cluster-replicas 1
+```
+
+参数解释
+
+```
+--cluster-replicas 1 表示为每个master创建一个slave节点
+```
+
+![image-20230222141815584](image-20230222141815584.png)
+
+![image-20230222141652168](image-20230222141652168.png)
+
+![image-20230222141826705](image-20230222141826705.png)
+
+一切OK的话，3主3从搞定
+
+链接进入6381作为切入点，查看集群状态
+
+链接进入6381作为切入点，查看节点状态
+
+![image-20230222142253071](image-20230222142253071.png)
+
+![image-20230222142601848](image-20230222142601848.png)
+
+### 数据读写存储
+
+启动6机构成的集群并通过exec进入
+
+对6381新增两个key
+
+防止路由失效加参数-c并新增两个key
+
+![image-20230222143754833](image-20230222143754833.png)
+
+集群环境，加入参数-c，优化路由
+
+![image-20230222143935764](image-20230222143935764.png)
+
+### 查看集群信息
+
+```bash
+redis-cli --cluster check 192.168.111.147:6381
+```
+
+![image-20230222144414260](image-20230222144414260.png)
+
+### 容错切换迁移
+
+主6381和从机切换，先停止主机6381
+6381主机停了，对应的真实从机上位
+6381作为1号主机分配的从机以实际情况为准，具体是几号机器就是几号
+再次查看集群信息
+
+![image-20230222145518421](image-20230222145518421.png)
+
+6381宕机了，6385上位成为了新的master。
+
+每次案例下面挂的从机以实际情况为准，具体是几号机器就是几号
+
+
+
+还原之前的3主3从
+
+先启6381
+
+```bash
+docker start redis-node-1
+```
+
+![image-20230222150107424](image-20230222150107424.png)
+
+redis-node-1启动后，不会变成master
+
+
+
+### 主从扩容案例
+
+新建6387、6388两个节点+新建后启动+查看是否8节点
+
+```bash
+docker run -d --name redis-node-7 --net host --privileged=true -v /data/redis/share/redis-node-7:/data redis:6.0.8 --cluster-enabled yes --appendonly yes --port 6387
+
+docker run -d --name redis-node-8 --net host --privileged=true -v /data/redis/share/redis-node-8:/data redis:6.0.8 --cluster-enabled yes --appendonly yes --port 6388
+
+docker ps
+```
+
+进入6387容器实例内部
+
+```bash
+docker exec -it redis-node-7 /bin/bash
+```
+
+将新增的6387节点(空槽号)作为master节点加入原集群
+
+```bash
+redis-cli --cluster add-node 自己实际IP地址:6387 自己实际IP地址:6381
+
+6387 就是将要作为master新增节点
+
+6381 就是原来集群节点里面的领路人，相当于6387拜拜6381的码头从而找到组织加入集群
+```
+
+![image-20230222150819980](image-20230222150819980.png)
+
+![image-20230222150846256](image-20230222150846256.png)
+
+检查集群情况第1次
+
+```bash
+redis-cli --cluster check 真实ip地址:6381
+```
+
+![image-20230222151016577](image-20230222151016577.png)
+
+重新分派槽号
+
+```bash
+命令:redis-cli --cluster reshard IP地址:端口号
+
+redis-cli --cluster reshard 192.168.111.147:6381
+```
+
+![image-20230222151327617](image-20230222151327617.png)
+
+
+
+![image-20230222151405413](image-20230222151405413.png)
+
+检查集群情况第2次
+
+```bash
+redis-cli --cluster check 真实ip地址:6381
+```
+
+![image-20230222151605365](image-20230222151605365.png)
+
+槽号分派说明
+
+为什么6387是3个新的区间，以前的还是连续？
+
+重新分配成本太高，所以前3家各自匀出来一部分，从6381/6382/6383三个旧节点分别匀出1364个坑位给新节点6387
+
+![image-20230222151637168](image-20230222151637168.png)
+
+为主节点6387分配从节点6388
+
+```bash
+命令：redis-cli --cluster add-node ip:新slave端口 ip:新master端口 --cluster-slave --cluster-master-id 新主机节点ID
+ 
+redis-cli --cluster add-node 192.168.111.147:6388 192.168.111.147:6387 --cluster-slave --cluster-master-id e4781f644d4a4e4d4b4d107157b9ba8144631451-------这个是6387的编号，按照自己实际情况
+```
+
+![image-20230222151717708](image-20230222151717708.png)
+
+检查集群情况第3次
+
+```bash
+redis-cli --cluster check 192.168.111.147:6382
+```
+
+![image-20230222151756856](image-20230222151756856.png)
+
+![image-20230222151804498](image-20230222151804498.png)
+
+### 主从缩容案例
+
+6387和6388下线
+
+
+
+检查集群情况1获得6388的节点ID
+
+```bash
+redis-cli --cluster check 192.168.111.147:6382
+```
+
+![image-20230222152356564](image-20230222152356564.png)
+
+将6388删除 从集群中将4号从节点6388删除
+
+```bash
+命令：redis-cli --cluster del-node ip:从机端口 从机6388节点ID
+ 
+redis-cli --cluster del-node 192.168.111.147:6388 5d149074b7e57b802287d1797a874ed7a1a284a8
+```
+
+![image-20230222152507876](image-20230222152507876.png)
+
+检查一下发现，6388被删除了，只剩下7台机器了。
+
+```bash
+redis-cli --cluster check 192.168.111.147:6382
+```
+
+![image-20230222152603117](image-20230222152603117.png)
+
+将6387的槽号清空，重新分配，本例将清出来的槽号都给6381
+
+```bash
+redis-cli --cluster reshard 192.168.111.147:6381
+```
+
+![image-20230222152823738](image-20230222152823738.png)
+
+![image-20230222152837071](image-20230222152837071.png)
+
+检查集群情况第二次
+
+```bash
+redis-cli --cluster check 192.168.111.147:6381
+ 
+4096个槽位都指给6381，它变成了8192个槽位，相当于全部都给6381了，不然要输入3次，一锅端
+```
+
+![image-20230222153047950](image-20230222153047950.png)
+
+将6387删除
+
+```bash
+命令：redis-cli --cluster del-node ip:端口 6387节点ID
+ 
+redis-cli --cluster del-node 192.168.111.147:6387 e4781f644d4a4e4d4b4d107157b9ba8144631451
+```
+
+![image-20230222153350496](image-20230222153350496.png)
+
+检查集群情况第三次
+
+```bash
+redis-cli --cluster check 192.168.111.147:6381
+```
+
+![image-20230222153420448](/image-20230222153420448.png)
 
 # `DockerFile`解析
 
+## 是什么
+
+Dockerfile是用来构建Docker镜像的文本文件，是由**一条条**构建镜像所需的指令和参数构成的脚本。
+
+![image-20230222153532295](image-20230222153532295.png)
+
+https://docs.docker.com/engine/reference/builder/
+
+构建三步骤
+
+- 编写Dockerfile文件
+- `docker build`命令构建镜像
+- `docker run`依镜像运行容器实例
+
+## DockerFile构建过程解析
+
+Dockerfile内容基础知识
+
+1：每条保留字指令都必须为大写字母且后面要跟随至少一个参数
+
+2：指令按照从上到下，顺序执行
+
+3：#表示注释
+
+4：每条指令都会创建一个新的镜像层并对镜像进行提交
 
 
-# `Docker`微服务实践
+
+Docker执行Dockerfile的大致流程
+
+（1）docker从基础镜像运行一个容器
+
+（2）执行一条指令并对容器作出修改
+
+（3）执行类似docker commit的操作提交一个新的镜像层
+
+（4）docker再基于刚提交的镜像运行一个新容器
+
+（5）执行dockerfile中的下一条指令直到所有指令都执行完成
 
 
+
+小总结
+
+从应用软件的角度来看，Dockerfile、Docker镜像与Docker容器分别代表软件的三个不同阶段，
+
+*  Dockerfile是软件的原材料
+*  Docker镜像是软件的交付品
+*  Docker容器则可以认为是软件镜像的运行态，也即依照镜像运行的容器实例
+  Dockerfile面向开发，Docker镜像成为交付标准，Docker容器则涉及部署与运维，三者缺一不可，合力充当Docker体系的基石。
+
+![image-20230222160912490](image-20230222160912490.png)
+
+1 Dockerfile，需要定义一个Dockerfile，Dockerfile定义了进程需要的一切东西。Dockerfile涉及的内容包括执行代码或者是文件、环境变量、依赖包、运行时环境、动态链接库、操作系统的发行版、服务进程和内核进程(当应用进程需要和系统服务和内核进程打交道，这时需要考虑如何设计namespace的权限控制)等等;
+
+2 Docker镜像，在用Dockerfile定义一个文件之后，docker build时会产生一个Docker镜像，当运行 Docker镜像时会真正开始提供服务;
+
+3 Docker容器，容器是直接提供服务的。
+
+## DockerFile常用保留字指令
+
+- 参考tomcat8的dockerfile入门
+
+  https://github.com/docker-library/tomcat
+
+- FROM
+
+  基础镜像，当前新镜像是基于哪个镜像的，指定一个已经存在的镜像作为模板，第一条必须是from
+
+- MAINTAINER
+
+  镜像维护者的姓名和邮箱地址
+
+- RUN
+
+  容器构建时需要运行的命令
+
+  两种格式
+
+  - shell格式
+
+    ![image-20230222161149757](image-20230222161149757.png)
+
+    ```bash
+    RUN yum -y install vim
+    ```
+
+  - exec格式
+
+    ![image-20230222162024964](image-20230222162024964.png)
+
+  RUN是在 docker build时运行
+
+- EXPOSE
+
+  当前容器对外暴露出的端口
+
+- WORKDIR
+
+  指定在创建容器后，终端默认登陆的进来工作目录，一个落脚点
+
+- USER
+
+  指定该镜像以什么样的用户去执行，如果都不指定，默认是root
+
+- ENV
+
+  用来在构建镜像过程中设置环境变量
+
+  `ENV MY_PATH /usr/mytest`
+
+  这个环境变量可以在后续的任何RUN指令中使用，这就如同在命令前面指定了环境变量前缀一样；
+
+  也可以在其它指令中直接使用这些环境变量，
+
+  比如：`WORKDIR $MY_PATH`
+
+- ADD
+
+  将宿主机目录下的文件拷贝进镜像且会自动处理URL和解压tar压缩包
+
+- COPY
+
+  类似ADD，拷贝文件和目录到镜像中。 将从构建上下文目录中 <源路径> 的文件/目录复制到新的一层的镜像内的 <目标路径> 位置
+
+  ```
+  COPY src dest
+  
+  COPY ["src", "dest"]
+  ```
+
+  `<src源路径>`：源文件或者源目录
+
+  `<dest目标路径>`：容器内的指定路径，该路径不用事先建好，路径不存在的话，会自动创建。
+
+- VOLUME
+
+  容器数据卷，用于数据保存和持久化工作
+
+- CMD
+  指定容器启动后的要干的事情
+
+  ![image-20230222163447354](/image-20230222163447354.png)
+
+  注意
+
+  Dockerfile 中可以有多个 CMD 指令，但只有最后一个生效，CMD 会被 `docker run` 之后的参数替换
+
+  参考官网Tomcat的dockerfile演示讲解
+
+  ![image-20230222163239331](image-20230222163239331.png)
+
+  演示自己的覆盖操作，覆盖了启动命令
+
+  ![image-20230222170406526](image-20230222170406526.png)
+
+  它和前面RUN命令的区别
+
+  CMD是在docker run 时运行。
+
+  RUN是在 docker build时运行。
+
+- ENTRYPOINT
+
+  也是用来指定一个容器启动时要运行的命令
+
+  类似于 CMD 指令，但是ENTRYPOINT不会被docker run后面的命令覆盖， 而且这些命令行参数会被当作参数送给 ENTRYPOINT 指
+
+  令指定的程序
+
+  命令格式和案例说明
+
+  ![image-20230222170952503](image-20230222170952503.png)
+
+  ENTRYPOINT可以和CMD一起用，一般是变参才会使用 CMD ，这里的 CMD 等于是在给 ENTRYPOINT 传参。
+
+  当指定了ENTRYPOINT后，CMD的含义就发生了变化，不再是直接运行其命令而是将CMD的内容作为参数传递给ENTRYPOINT指令，他两个组合会变成`<ENTRYPOINT> "<CMD>"`
+
+  案例如下：假设已通过 Dockerfile 构建了 nginx:test 镜像：
+
+  ![image-20230222171105673](image-20230222171105673.png)
+
+  | 是否传参         | 按照dockerfile编写执行           | 传参运行                                       |
+  | ---------------- | -------------------------------- | ---------------------------------------------- |
+  | Docker命令       | `docker run nginx:test`          | `docker run nginx:test -c /etc/nginx/new.conf` |
+  | 衍生出的实际命令 | `nginx -c /etc/nginx/nginx.conf` | `nginx -c /etc/nginx/new.conf`                 |
+
+  优点：在执行docker run的时候可以指定 ENTRYPOINT 运行所需的参数。
+
+  注意：如果 Dockerfile 中如果存在多个 ENTRYPOINT 指令，仅最后一个生效。
+
+## 案例
+
+### 要求
+
+Centos7镜像具备`vim+ifconfig+jdk8`
+
+JDK的下载镜像地址，官网下载地址：
+
+https://www.oracle.com/java/technologies/downloads/#java8
+
+https://mirrors.yangxingzhen.com/jdk/
+
+### 编写
+
+准备编写Dockerfile文件（大写）
+
+```
+FROM centos
+MAINTAINER zzyy<zzyybs@126.com>
+ 
+ENV MYPATH /usr/local
+WORKDIR $MYPATH
+ 
+#安装vim编辑器
+RUN yum -y install vim
+
+#安装ifconfig命令查看网络IP
+RUN yum -y install net-tools
+
+#安装java8及lib库
+RUN yum -y install glibc.i686
+RUN mkdir /usr/local/java
+
+#ADD 是相对路径jar,把jdk-8u171-linux-x64.tar.gz添加到容器中,安装包必须要和Dockerfile文件在同一位置
+ADD jdk-8u171-linux-x64.tar.gz /usr/local/java/
+
+#配置java环境变量
+ENV JAVA_HOME /usr/local/java/jdk1.8.0_171
+ENV JRE_HOME $JAVA_HOME/jre
+ENV CLASSPATH $JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar:$JRE_HOME/lib:$CLASSPATH
+ENV PATH $JAVA_HOME/bin:$PATH
+ 
+EXPOSE 80
+ 
+CMD echo $MYPATH
+CMD echo "success--------------ok"
+CMD /bin/bash
+```
+
+
+
+### 构建
+
+```bash
+docker build -t 新镜像名字:TAG .
+
+docker build -t centosjava8:1.5 .
+```
+
+![image-20230222172737674](image-20230222172737674.png)
+
+注意，上面TAG后面有个空格，有个点
+
+### 运行
+
+```bash
+docker run -it 新镜像名字:TAG
+
+docker run -it centosjava8:1.5 /bin/bash
+```
+
+![image-20230222173253387](image-20230222173253387.png)
+
+再体会下UnionFS（联合文件系统）
+
+Union文件系统（UnionFS）是一种分层、轻量级并且高性能的文件系统，它支持对文件系统的修改作为一次提交来一层层的叠加，同时
+
+可以将不同目录挂载到同一个虚拟文件系统下(unite several directories into a single virtual filesystem)。Union 文件系统是 Docker 镜
+
+像的基础。镜像可以通过分层来进行继承，基于基础镜像（没有父镜像），可以制作各种具体的应用镜像。
+
+## 虚悬镜像
+
+仓库名、标签都是`<none>`的镜像，俗称dangling image
+
+Dockerfile
+
+```bash
+from ubuntu
+CMD echo 'action is success'
+```
+
+构建
+
+```bash
+docker build .
+```
+
+![image-20230222173709301](image-20230222173709301.png)
+
+查看
+
+```bash
+docker image ls -f dangling=true
+```
+
+删除
+
+虚悬镜像已经失去存在价值，可以删除
+
+```bash
+docker image prune
+```
+
+## `Docker`微服务实践
+
+略
 
 # `Docker`网络
 
+先去回顾下`Docker`平台架构图
+
+## 是什么
+
+**docker不启动，默认网络情况**
+
+![image-20230223094726014](image-20230223094726014.png)
+
+- `ens33`
+
+- `lo`
+
+- `virbr0`
+
+  在CentOS7的安装过程中如果有选择相关虚拟化的的服务安装系统后，启动网卡时会发现有一个以网桥连接的私网地址的virbr0网卡
+
+  (virbr0网卡：它还有一个固定的默认IP地址192.168.122.1)，是做虚拟机网桥的使用的，其作用是为连接其上的虚机网卡提供 NAT访
+
+  问外网的功能。
+
+  我们之前学习Linux安装，勾选安装系统的时候附带了libvirt服务才会生成的一个东西，如果不需要可以直接将libvirtd服务卸载，
+
+  ```bash
+  yum remove libvirt-libs.x86_64
+  ```
+
+**docker启动后，网络情况**
+
+会产生一个名为`docker0`的虚拟网桥
+
+![image-20230223094958339](image-20230223094958339.png)
+
+**查看docker网络模式命令**
+
+默认创建3大网络模式
+
+![image-20230223095026123](image-20230223095026123.png)
+
+## 常用基本命令
+
+- All命令
+
+  ```bash
+  docker network --help
+  ```
+
+- 查看网络
+
+  ```bash
+  docker network ls
+  ```
+
+- 查看网络源数据
+
+  ```bash
+  docker network inspect  XXX网络名字
+  ```
+
+- 删除网络
+
+  ```bash
+  docker network rm XXX网络名字
+  ```
+
+- 案例
+
+  ![image-20230223095238512](image-20230223095238512.png)
+
+## 能干嘛
+
+容器间的互联和通信以及端口映射
+
+容器IP变动时候可以通过服务名直接网络通信而不受到影响
+
+## 网络模式
+
+### 总体介绍
+
+![image-20230223095655998](image-20230223095655998.png)
+
+```bash
+bridge模式：使用--network  bridge指定，默认使用docker0
+
+host模式：使用--network host指定
+
+none模式：使用--network none指定
+
+container模式：使用--network container:NAME或者容器ID指定
+```
+
+### 容器实例内默认网络IP生产规则
+
+说明
+
+1 先启动两个ubuntu容器实例
+
+![image-20230223100032730](image-20230223100032730.png)
+
+2 docker inspect 容器ID or 容器名字
+
+![image-20230223100755882](/image-20230223100755882.png)
+
+3 关闭u2实例，新建u3，查看ip变化
+
+![image-20230223100823717](image-20230223100823717.png)
+
+结论
+
+docker容器内部的ip是有可能会发生改变的
 
 
 
+### bridge
+
+Docker 服务默认会创建一个 `docker0` 网桥（其上有一个` docker0` 内部接口），该[桥接网络](https://www.cnblogs.com/anyamaze/articles/16934489.html)的名称为`docker0`，它在内核层连通了其他的
+
+物理或虚拟网卡，这就将所有容器和本地主机都放到同一个物理网络。`Docker` 默认指定了 `docker0` 接口 的 IP 地址和子网掩码，让主机
+
+和容器之间可以通过网桥相互通信。
+
+查看 bridge 网络的详细信息，并通过 grep 获取名称项
+
+```bash
+docker network inspect bridge | grep name
+```
+
+![image-20230223101049609](image-20230223101049609.png)
+
+```bash
+ifconfig
+```
+
+![image-20230223104601068](image-20230223104601068.png)
+
+
+
+- Docker使用Linux桥接，在宿主机虚拟一个Docker容器网桥(docker0)，Docker启动一个容器时会根据Docker网桥的网段分配给容器
+
+  一个IP地址，称为Container-IP，同时Docker网桥是每个容器的默认网关。因为在同一宿主机内的容器都接入同一个网桥，这样容器
+
+  之间就能够通过容器的Container-IP直接通信。
+
+- docker run 的时候，没有指定network的话默认使用的网桥模式就是bridge，使用的就是docker0。在宿主机ifconfig,就可以看到
+
+  docker0和自己create的network(后面讲)eth0，eth1，eth2……代表网卡一，网卡二，网卡三……，lo代表127.0.0.1，即localhost，
+
+  inet addr用来表示网卡的IP地址
+
+- 网桥docker0创建一对对等虚拟设备接口一个叫veth，另一个叫eth0，成对匹配。
+
+  - 整个宿主机的网桥模式都是docker0，类似一个交换机有一堆接口，每个接口叫veth，在本地主机和容器内分别创建一个虚拟接
+
+    口，并让他们彼此联通（这样一对接口叫veth pair）；
+
+  - 每个容器实例内部也有一块网卡，每个接口叫eth0；
+
+  - docker0上面的每个veth匹配某个容器实例内部的eth0，两两配对，一一匹配。
+
+- 通过上述，将宿主机上的所有容器都连接到这个内部网络上，两个容器在同一个网络下,会从这个网关下各自拿到分配的ip，此时两个
+
+  容器的网络是互通的。
+
+![image-20230223105647499](image-20230223105647499.png)
+
+
+
+```bash
+docker run -d -p 8081:8080   --name tomcat81 billygoo/tomcat8-jdk8
+docker run -d -p 8082:8080   --name tomcat82 billygoo/tomcat8-jdk8
+```
+
+两两匹配验证
+
+![image-20230223110521707](image-20230223110521707.png)
+
+### host
+
+直接使用宿主机的 IP 地址与外界进行通信，不再需要额外进行NAT 转换。
+
+容器将不会获得一个独立的Network Namespace， 而是和宿主机共用一个Network Namespace。容器将不会虚拟出自己的网卡而是使用宿主机的IP和端口。
+
+![image-20230223110057112](image-20230223110057112.png)
+
+```bash
+docker run -d -p 8083:8080 --network host --name tomcat83 billygoo/tomcat8-jdk8
+```
+
+![image-20230223110718339](image-20230223110718339.png)
+
+问题：docker启动时总是遇见标题中的警告
+
+原因：docker启动时指定--network=host或-net=host，如果还指定了-p映射端口，那这个时候就会有此警告，
+
+并且通过-p设置的参数将不会起到任何作用，端口号会以主机端口号为主，重复时则递增。
+
+解决：解决的办法就是使用docker的其他网络模式，例如--network=bridge，这样就可以解决问题，或者直接无视
+
+```bash
+docker run -d --network host --name tomcat83 billygoo/tomcat8-jdk8
+```
+
+无之前的配对显示了，看容器实例内部
+
+![image-20230223111015985](image-20230223111015985.png)
+
+没有设置-p的端口映射了，如何访问启动的tomcat83？？
+
+`http://宿主机IP:8080/`
+
+在CentOS里面用默认的火狐浏览器访问容器内的tomcat83看到访问成功，因为此时容器的IP借用主机的，
+
+所以容器共享宿主机网络IP，这样的好处是外部主机与容器可以直接通信。
+
+### none
+
+在none模式下，并不为Docker容器进行任何网络配置。 
+
+也就是说，这个Docker容器没有网卡、IP、路由等信息，只有一个lo
+
+需要我们自己为Docker容器添加网卡、配置IP等。
+
+禁用网络功能，只有lo标识(就是127.0.0.1表示本地回环)
+
+```bash
+docker run -d -p 8084:8080 --network none --name tomcat84 billygoo/tomcat8-jdk8
+```
+
+进入容器内部查看
+
+![image-20230223111701437](image-20230223111701437.png)
+
+在容器外部查看
+
+![image-20230223111734270](image-20230223111734270.png)
+
+### container
+
+container⽹络模式 
+
+新建的容器和已经存在的一个容器共享一个网络ip配置而不是和宿主机共享。新创建的容器不会创建自己的网卡，配置自己的IP，而是和一个指定的容器共享IP、端口范围等。同样，两个容器除了网络方面，其他的如文件系统、进程列表等还是隔离的。
+
+![image-20230223111928999](image-20230223111928999.png)
+
+```bash
+docker run -d -p 8085:8080 --name tomcat85 billygoo/tomcat8-jdk8
+docker run -d -p 8086:8080 --network container:tomcat85 --name tomcat86 billygoo/tomcat8-jdk8
+```
+
+![image-20230223112439395](image-20230223112439395.png)
+
+相当于tomcat86和tomcat85公用同一个ip同一个端口，导致端口冲突。本案例用tomcat演示不合适。。。演示坑
+
+换一个镜像给大家演示
+
+Alpine操作系统是一个面向安全的轻型 Linux发行版
+
+Alpine Linux 是一款独立的、非商业的通用 Linux 发行版，专为追求安全性、简单性和资源效率的用户而设计。 可能很多人没听说过这个 Linux 发行版本，但是经常用 Docker 的朋友可能都用过，因为他小，简单，安全而著称，所以作为基础镜像是非常好的一个选择，可谓是麻雀虽小但五脏俱全，镜像非常小巧，不到 6M的大小，所以特别适合容器打包。
+
+```bash
+docker run -it --name alpine1  alpine /bin/sh
+docker run -it --network container:alpine1 --name alpine2  alpine /bin/sh
+```
+
+运行结果，验证共用搭桥
+
+![image-20230223112750215](image-20230223112750215.png)
+
+假如此时关闭alpine1，再看看alpine2
+
+![image-20230223112900653](image-20230223112900653.png)
+
+`15: eth0@if16: `消失了。关闭alpine1，再看看alpine2
+
+![image-20230223112935994](image-20230223112935994.png)
+
+### 自定义网络
+
+```bash
+docker run -d -p 8081:8080   --name tomcat81 billygoo/tomcat8-jdk8
+docker run -d -p 8082:8080   --name tomcat82 billygoo/tomcat8-jdk8
+```
+
+上述成功启动并用docker exec进入各自容器实例内部
+
+按照IP地址ping是OK的
+
+![image-20230223114108700](image-20230223114108700.png)
+
+![image-20230223114125860](image-20230223114125860.png)
+
+
+
+按照服务名ping结果???
+
+![image-20230223114146530](image-20230223114146530.png)
+
+
+
+自定义桥接网络，自定义网络默认使用的是桥接网络bridge
+
+新建自定义网络
+
+![image-20230223114233323](image-20230223114233323.png)
+
+新建容器加入上一步新建的自定义网络
+
+```bash
+docker run -d -p 8081:8080 --network zzyy_network  --name tomcat81 billygoo/tomcat8-jdk8
+docker run -d -p 8082:8080 --network zzyy_network  --name tomcat82 billygoo/tomcat8-jdk8
+```
+
+互相ping测试
+
+![image-20230223114322388](image-20230223114322388.png)
+
+![image-20230223114340521](image-20230223114340521.png)
+
+
+
+自定义网络本身就维护好了主机名和ip的对应关系（ip和域名都能通）
 
 # `Docker-compose`容器编排
+
+## 是什么
+
+Compose 是 Docker 公司推出的一个工具软件，可以管理多个 Docker 容器组成一个应用。你需要定义一个 YAML 格式的配置文件
+
+docker-compose.yml，写好多个容器之间的调用关系。然后，只要一个命令，就能同时启动/关闭这些容器
+
+Docker-Compose是Docker官方的开源项目， 负责实现对Docker容器集群的快速编排。
+
+## 能干嘛
+
+docker建议我们每一个容器中只运行一个服务,因为docker容器本身占用资源极少,所以最好是将每个服务单独的分割开来但是这样我们又
+
+面临了一个问题？
+
+如果我需要同时部署好多个服务,难道要每个服务单独写Dockerfile然后在构建镜像,构建容器,这样累都累死了,所以docker官方给我们提供
+
+了docker-compose多服务部署的工具
+
+
+
+例如要实现一个Web微服务项目，除了Web服务容器本身，往往还需要再加上后端的数据库mysql服务容器，redis服务器，注册中心
+
+eureka，甚至还包括负载均衡容器等等。。。。。。
+
+
+
+Compose允许用户通过一个单独的docker-compose.yml模板文件（YAML 格式）来定义一组相关联的应用容器为一个项目
+
+（project）。
+
+可以很容易地用一个配置文件定义一个多容器的应用，然后使用一条指令安装这个应用的所有依赖，完成构建。Docker-Compose 解决
+
+了容器与容器之间如何管理编排的问题。
+
+## 去哪下
+
+官网：https://docs.docker.com/compose/compose-file/compose-file-v3/
+
+官网下载：https://docs.docker.com/compose/install/
+
+安装步骤(建议使用新版本)
+
+```bash
+curl -SL https://github.com/docker/compose/releases/download/v2.16.0/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
+
+chmod +x /usr/local/bin/docker-compose
+
+docker-compose --version
+```
+
+If the command `docker-compose` fails after installation, check your path. You can also create a symbolic link to `/usr/bin` or any other directory in your path. For example:
+
+```bash
+sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+```
+
+
+
+卸载步骤
+
+![image-20230223134735256](image-20230223134735256.png)
+
+## Compose核心概念
+
+- 一文件
+
+  - `docker-compose.yml`
+
+- 两要素
+
+  - 服务（service）
+
+    一个个应用容器实例，比如订单微服务、库存微服务、mysql容器、nginx容器或者redis容器
+
+  - 工程（project）
+
+    由一组关联的应用容器组成的一个完整业务单元，在 `docker-compose.yml` 文件中定义。
+
+## Compose使用的三个步骤
+
+编写Dockerfile定义各个微服务应用并构建出对应的镜像文件
+
+使用 docker-compose.yml 定义一个完整业务单元，安排好整体应用中的各个容器服务。
+
+最后，执行docker-compose up命令 来启动并运行整个应用程序，完成一键部署上线
+
+## Compose常用命令
+
+```bash
+docker-compose -h                           # 查看帮助
+docker-compose up                           # 启动所有docker-compose服务
+docker-compose up -d                        # 启动所有docker-compose服务并后台运行
+docker-compose down                         # 停止并删除容器、网络、卷、镜像。
+docker-compose exec  yml里面的服务id                 # 进入容器实例内部  docker-compose exec docker-compose.yml文件中写的服务id /bin/bash
+docker-compose ps                      # 展示当前docker-compose编排过的运行的所有容器
+docker-compose top                     # 展示当前docker-compose编排过的容器进程
+ 
+docker-compose logs  yml里面的服务id     # 查看容器输出日志
+docker-compose config     # 检查配置
+docker-compose config -q  # 检查配置，有问题才有输出
+docker-compose restart   # 重启服务
+docker-compose start     # 启动服务
+docker-compose stop      # 停止服务
+```
+
+## 案例
+
+### 不用Compose
+
+单独的mysql容器实例
+
+新建mysql容器实例
+
+```bash
+docker run -p 3306:3306 --name mysql57 --privileged=true -v /zzyyuse/mysql/conf:/etc/mysql/conf.d -v /zzyyuse/mysql/logs:/logs -v /zzyyuse/mysql/data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=123456 -d mysql:5.7
+```
+
+进入mysql容器实例并新建库db2021+新建表t_user
+
+```bash
+docker exec -it mysql57 /bin/bash
+mysql -uroot -p
+create database db2021;
+use db2021;
+CREATE TABLE `t_user` (
+  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `username` VARCHAR(50) NOT NULL DEFAULT '' COMMENT '用户名',
+  `password` VARCHAR(50) NOT NULL DEFAULT '' COMMENT '密码',
+  `sex` TINYINT(4) NOT NULL DEFAULT '0' COMMENT '性别 0=女 1=男 ',
+  `deleted` TINYINT(4) UNSIGNED NOT NULL DEFAULT '0' COMMENT '删除标志，默认0不删除，1删除',
+  `update_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='用户表';
+```
+
+
+
+单独的redis容器实例
+
+```bash
+docker run  -p 6379:6379 --name redis608 --privileged=true -v /app/redis/redis.conf:/etc/redis/redis.conf -v /app/redis/data:/data -d redis:6.0.8 redis-server /etc/redis/redis.conf
+```
+
+
+
+容器实例依次顺序启动成功
+
+有哪些问题?
+
+先后顺序要求固定，先mysql+redis才能微服务访问成功
+
+多个run命令......
+
+容器间的启停或宕机，有可能导致IP地址对应的容器实例变化，映射出错， 要么生产IP写死(可以但是不推荐)，要么通过服务调用
+
+### 使用Compose
+
+服务编排，一套带走，安排
+
+编写docker-compose.yml文件
+
+```yaml
+version: "3"
+ 
+services:
+  microService:
+    image: zzyy_docker:1.6
+    container_name: ms01
+    ports:
+      - "6001:6001"
+    volumes:
+      - /app/microService:/data
+    networks: 
+      - atguigu_net 
+    depends_on: 
+      - redis
+      - mysql
+ 
+  redis:
+    image: redis:6.0.8
+    ports:
+      - "6379:6379"
+    volumes:
+      - /app/redis/redis.conf:/etc/redis/redis.conf
+      - /app/redis/data:/data
+    networks: 
+      - atguigu_net
+    command: redis-server /etc/redis/redis.conf
+ 
+  mysql:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: '123456'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'no'
+      MYSQL_DATABASE: 'db2021'
+      MYSQL_USER: 'zzyy'
+      MYSQL_PASSWORD: 'zzyy123'
+    ports:
+       - "3306:3306"
+    volumes:
+       - /app/mysql/db:/var/lib/mysql
+       - /app/mysql/conf/my.cnf:/etc/my.cnf
+       - /app/mysql/init:/docker-entrypoint-initdb.d
+    networks:
+      - atguigu_net
+    command: --default-authentication-plugin=mysql_native_password #解决外部无法访问
+ 
+networks: 
+   atguigu_net: 
+```
+
+如果没指定容器名，会自己加上路径前缀及索引后缀
+
+执行 `docker-compose up` 或者 执行 `docker-compose up -d`
+
+进入mysql容器实例并新建库db2021+新建表t_user
+
+```bash
+docker exec -it 容器实例id /bin/bash
+mysql -uroot -p
+create database db2021;
+use db2021;
+CREATE TABLE `t_user` (
+  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `username` VARCHAR(50) NOT NULL DEFAULT '' COMMENT '用户名',
+  `password` VARCHAR(50) NOT NULL DEFAULT '' COMMENT '密码',
+  `sex` TINYINT(4) NOT NULL DEFAULT '0' COMMENT '性别 0=女 1=男 ',
+  `deleted` TINYINT(4) UNSIGNED NOT NULL DEFAULT '0' COMMENT '删除标志，默认0不删除，1删除',
+  `update_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='用户表';
+```
+
+
 
 
 
 # `Docker`轻量级可视化工具`Portainer`
 
-Portainer 是一款轻量级的应用，它提供了图形化界面，用于方便地管理Docker环境，包括单机环境和集群环境。
+Portainer 是一款轻量级的应用，它提供了图形化界面，用于方便地管理Docker环境，包括单机环境和集群环境（建议k8s）。
 
 官网
 
@@ -2234,13 +3858,197 @@ Portainer 是一款轻量级的应用，它提供了图形化界面，用于方�
 
   ![image-20221204174843511](image-20221204174843511.png)
 
-- 
+
 
 # `Docker`容器监控之`CAdvisor + InfluxDB + Granfana`
+
+## 原生命令
+
+![image-20230224085414009](image-20230224085414009.png)
+
+`docker stats`命令的结果
+
+![image-20230224085450597](image-20230224085450597.png)
+
+问题
+
+通过`docker stats`命令可以很方便的看到当前宿主机上所有容器的CPU,内存以及网络流量等数据，一般小公司够用了。
+
+但是，`docker stats`统计结果只能是当前宿主机的全部容器，数据资料是实时的，没有地方存储、没有健康指标过线预警等功能
+
+## 容器监控3剑客
+
+`CAdvisor`监控收集+`InfluxDB`存储数据+`Granfana`展示图表
+
+![image-20230224085736630](image-20230224085736630.png)
+
+### CAdvisor
+
+![image-20230224085844395](image-20230224085844395.png)
+
+### InfluxDB
+
+![image-20230224090007097](image-20230224090007097.png)
+
+### Granfana
+
+![image-20230224090055946](image-20230224090055946.png)
+
+## compose容器编排
+
+- 新建目录
+
+- 新建3件套组合的 `docker-compose.yml`
+
+  ```yaml
+  version: '3.1'
+   
+  volumes:
+    grafana_data: {}
+   
+  services:
+   influxdb:
+    image: tutum/influxdb:0.9
+    restart: always
+    environment:
+      - PRE_CREATE_DB=cadvisor
+    ports:
+      - "8083:8083"
+      - "8086:8086"
+    volumes:
+      - ./data/influxdb:/data
+   
+   cadvisor:
+    image: google/cadvisor
+    links:
+      - influxdb:influxsrv
+    command: -storage_driver=influxdb -storage_driver_db=cadvisor -storage_driver_host=influxsrv:8086
+    restart: always
+    ports:
+      - "8080:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+   
+   grafana:
+    user: "104"
+    image: grafana/grafana
+    user: "104"
+    restart: always
+    links:
+      - influxdb:influxsrv
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    environment:
+      - HTTP_USER=admin
+      - HTTP_PASS=admin
+      - INFLUXDB_HOST=influxsrv
+      - INFLUXDB_PORT=8086
+      - INFLUXDB_NAME=cadvisor
+      - INFLUXDB_USER=root
+      - INFLUXDB_PASS=root
+  ```
+
+  
 
 
 
 # 总结
+
+# 问题解决
+
+## Docker /var/lib/docker/overlay2占用过大问题
+
+背景：`df -h`发现的
+
+[(11条消息) Docker /var/lib/docker/overlay2占用过大问题解决_overlay2过大_Amx Just Run的博客-CSDN博客](https://blog.csdn.net/weixin_39080216/article/details/123921353)
+
+选择方案二：更换RootDir的分区
+
+停止docker服务
+
+```bash
+systemctl stop docker
+
+# 若失败：Warning: Stopping docker.service, but it can still be activated by: docker.socket
+systemctl stop docker.socket
+
+# 后续启动弄
+systemctl start docker.socket
+systemctl start docker
+
+```
+
+创建新的RootDir目录
+
+由于目前home分区最大6.6T，所以暂定放在home目录下（根据实际情况选择）
+
+```bash
+mkdir -p /home/docker-rootdir/
+```
+
+同步数据（需要等一段事件），设置为后台运行：https://www.jianshu.com/p/e19d3af28edf
+
+```bash
+# cp命令或者mv命令也可以，rsync更安全
+rsync -avz /var/lib/docker/ /data/data02/docker-rootdir
+
+# 拷贝数据成功
+sent 9,175,353,829 bytes  received 7,639,191 bytes  7,355,220.68 bytes/sec
+total size is 22,701,214,458  speedup is 2.47
+```
+
+配置Docker的root_dir
+
+修改`etc/docker/daemon.json`,添加如下内容，记得加逗号
+
+```bash
+"graph": "/data/data02/docker-rootdir"
+```
+
+此处还有好多种方式，比如`dokcer.service`启动命令添加启动项等等，但是个人觉得使用配置文件的方式更安全，也方面其他运维人员可以方面的看到配置。
+
+更新配置,重启docker
+
+重新加载配置
+
+```bash
+systemctl daemon-reload
+```
+
+重启docker
+
+```bash
+systemctl restart docker
+
+systemctl start docker.socket
+```
+
+查看是否配置成功
+
+```bash
+docker info | grep "Root Dir"
+```
+
+如果显示的已经是更换后的目录则说明切换成功。 
+
+```bash
+ Docker Root Dir: /data/data02/docker-rootdir
+```
+
+测试 ，查看镜像是否完整，容器是否能够正常启动. 启动后`df -h`查看
+
+```bash
+Filesystem                 Size  Used Avail Use% Mounted on
+
+overlay                    1.9T   93G  1.8T   5% /data/data02/docker-rootdir/overlay2/3e9586b57561be3a58f1188d9ce44f8498951cf1e49623aedd3828accecd6edb/merged
+```
+
+
 
 
 

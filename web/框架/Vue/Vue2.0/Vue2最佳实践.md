@@ -94,7 +94,7 @@ source ~/.bashrc
 nvm ls
 ```
 
-安装指定版本`nodejs`
+安装指定版本`nodejs`，可以去官网看一下最新的[Node.js (nodejs.org)](https://nodejs.org/en/)
 
 ```bash
 nvm install 16.14.0
@@ -117,6 +117,18 @@ nvm use 14.17.3
 ```bash
 nvm use iojs-v3.2.0
 ```
+
+### ubuntu环境安装nvm
+
+[ubuntu安装nvm管理node (baidu.com)](https://baijiahao.baidu.com/s?id=1742284884399786791&wfr=spider&for=pc)
+
+[(11条消息) Ubuntu 安装 nvm_hey laosha的博客-CSDN博客](https://blog.csdn.net/geol200709/article/details/82117103)
+
+[(11条消息) ubuntu系统添加环境变量3种方法_ubuntu添加环境变量_prz0590的博客-CSDN博客](https://blog.csdn.net/qq_34125713/article/details/128643525)
+
+[ubuntu－设置系统环境变量 - 简书 (jianshu.com)](https://www.jianshu.com/p/12fbfa8c7489)
+
+最后改`~/.bashrc`，使用前需要到目录下手动`. nvm.sh`运行下（已经配了环境变量，估计是杀掉了），只能在一个she
 
 ## `Vue/cli`脚手架
 
