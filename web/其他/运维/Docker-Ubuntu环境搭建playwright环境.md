@@ -1,6 +1,6 @@
 ---
 title: 'Docker-Ubuntu环境搭建playwright环境'
-date: 2023-11-13 14:15:24
+date: 2023-01-13 14:15:24
 cover: false
 tags:
 - docker
@@ -430,3 +430,4 @@ sudo chmod -R 777 /app
 
 
 ![image-20230118165412017](image-20230118165412017.png)
+

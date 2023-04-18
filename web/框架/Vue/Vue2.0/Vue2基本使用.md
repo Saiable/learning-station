@@ -7415,6 +7415,8 @@ animate__faster	500ms
 
     ![image-20221205170211489](image-20221205170211489.png)
 
+> vite中配置：[开发服务器选项 | Vite 官方中文文档 (vitejs.dev)](https://cn.vitejs.dev/config/server-options.html#server-proxy)
+
 ## 4.2.带有网络请求的案例
 
 `github`搜索用户案例

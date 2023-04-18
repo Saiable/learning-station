@@ -2924,7 +2924,19 @@ PPS: 在常规仅包含数字的版本号之外，semver 还允许在 `MAJOR.MIN
 |      |      |      |      |
 |      |      |      |      |
 
+### 更新
 
+#### 别名
+
+https://blog.csdn.net/qq_39221436/article/details/124684168
+
+在 8.x 版本，npm install 在之前 add、i 的基础上增加了 9 个别名，它们是：
+
+```bash
+in, ins, inst, insta, instal, isnt, isnta, isntal, isntall
+```
+
+妈耶，各种能想到的不能想到的拼写错误都在里面，这位贡献者，一定是个有故事的同学。
 
 ## yarn
 

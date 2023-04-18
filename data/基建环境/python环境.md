@@ -10,5 +10,13 @@ typora-root-url: python环境
 
 
 
+pip镜像
+
+```bash
+pip3 install numpy -i https://pypi.tuna.tsinghua.edu.cn/simple
+```
+
+
+
 
 

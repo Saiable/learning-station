@@ -2329,6 +2329,26 @@ sudo docker run  -it --name=ubuntu-focal-desktop-origin --shm-size=512m -p 8086:
 
 - 安装wps
 
+- 修改文件最大监测数
+
+  https://blog.csdn.net/lxyoucan/article/details/116736501
+
+  https://blog.csdn.net/weixin_42375768/article/details/118637237
+
+  在宿主机中配置，不是在容器内
+
+  ```bash
+  sudo vim /etc/sysctl.conf
+  # 在底部添加一行
+  
+  fs.inotify.max_user_watches=524288
+  
+  # 保存退出然后执行
+  sudo sysctl -p
+  
+  
+  ```
+
   
 
 
@@ -4050,15 +4070,65 @@ overlay                    1.9T   93G  1.8T   5% /data/data02/docker-rootdir/ove
 
 
 
+## 修改容器映射信息
+
+https://blog.csdn.net/qq_23934063/article/details/122316058
+
+https://www.cnblogs.com/poloyy/p/13993832.html
+
+暂停 Docker 服务
+
+```bash
+systemctl stop docker
+或者
+systemctl stop docker.socket
+```
+
+进入 Docker 容器配置文件目录下
+
+```bash
+cd /var/lib/docker/containers/ls
+```
+
+![image-20230323162600968](image-20230323162600968.png)
+
+> 注意，如果之前更改了docker的rootdir，则进入自定的rootdir
+
+进入某个容器的配置文件目录下
+
+容器ID 就是文件夹名称，可通过 docker ps -aq 来查看，不过这是缩写，对照起来看就行
+
+```bash
+cd c614b6db4aed0c8d0c742baa09ff4e2c24761703586460b68633d7b66e62c633ls
+```
+
+![image-20230323162701168](image-20230323162701168.png)
+
+修改 config.v2.json
+
+```bash
+vim config.v2.json
+```
+
+![image-20230323162736649](image-20230323162736649.png)
+
+- 输入 / ，搜索映射的目录（webapps）
+- 也可以找到 MountPoints 
+- 若需要重新指定**主机上**的映射目录，则改**绿圈**的两个地方
+- 若需要重新指定**容器上**的映射目录，则改**蓝圈**的两个地方
+
+MountPoints 节点
+
+其实是一个 json 结构的数据，下图
+
+![image-20230323162854773](image-20230323162854773.png)
+
+重新启动 Docker 服务
 
 
 
+注意
 
-
-
-
-
-
-
-
-
+- 如果想修改 Docker 容器随着 Docker 服务启动而自启动，可看：https://www.cnblogs.com/poloyy/p/13985567.html
+- 如果想修改 Docker 的映射端口，可看：https://www.cnblogs.com/poloyy/p/13940554.html
+- 改 hostconfig.json 并不会成功哦
