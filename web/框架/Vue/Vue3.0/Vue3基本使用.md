@@ -944,6 +944,42 @@ set(a, b, c) {
   
   ```
 
+计算属性返回的时是ref对象，如果要转换成reactive对象，参考如下：
+
+```js
+import { computed, ref } from 'vue';
+
+const myRef = ref({ count: 0 });
+
+const myComputed = computed(() => {
+  return myRef;
+});
+
+
+```
+
+`ref`转换成`reactive`
+
+```js
+import { reactive, toRefs } from 'vue';
+
+const myReactiveData = reactive(toRefs(myComputed.value));
+console.log(myReactiveData.count); // Reactive: This will be reactive, no need to use .value.
+```
+
+子组件接受父组件传值后，如果自己想存一份并设置为响应式，可以使用如下代码：
+
+```js
+const props = defineProps(["item", "index"])
+// 深拷贝一份
+const localItem = computed(() => {
+  return JSON.parse(JSON.stringify(props.item))
+})
+// 将ref转换为reactive
+const reactiveLocalItem = reactive(localItem.value)
+```
+
+
 
 #### 8.3.7.2.`watch`函数
 
@@ -1694,10 +1730,617 @@ toRefs函数的作用是将响应式对象中的所有属性转换为单独的�
     </script>
     ```
 
-- 移除过滤器（`filter`）
+- 移除过滤器（`filter`）state.regisstate.registerState.passportterState.passport
 
   - 过滤器虽然看起来很方便，但它需要一个自定义语法，打破大括号内表达式“只是JavaScript”的假设，这不仅有学习成本，而且有实现成本
   - 建议用方法调用或计算属性去替换过滤器
 
 - 其他
+
+
+
+# vue3中路由
+
+```vue
+import { useRouter } from 'vue-router'
+ 
+setup(){
+    const $router = useRouter();
+    function turnToLogin(){
+        //对象$router.push()可以向history对象添加新纪录
+        $router.push('/login');
+    }
+    return {
+        turnToLogin
+    }
+}
+```
+
+# vue3中的父子组件
+
+## 父传子
+
+[和Vue3和解的Day11--父子组件通信 - 掘金 (juejin.cn)](https://juejin.cn/post/7198806651561623608)
+
+子组件通过props接收父组件传递的参数，props接受参数也有两种写法: **数组**或者**对象**
+
+### 子组件中定义`props`接收props传参
+
+#### options api中的写法
+
+```vue
+<template>
+  <div>
+    <h2>{{ title }}</h2>
+    <h2>{{ info }}</h2>
+  </div>
+</template>
+
+<script>
+  export default {
+    props: ["title", "info"]
+  }
+</script>
+
+```
+
+通过隐式定义规定类型
+
+```vue
+  props: {
+    title: "",
+    info: {}
+  }
+```
+
+通过type类型规定类型
+
+```vue
+  props: {
+    title: {
+      type: String,
+      default: "默认值"
+    },
+    info: {
+      type: Object,
+      default: {}
+    }
+  }
+
+```
+
+props校验参数可传
+
+```vue
+      propsA: {
+        validator(value) {
+          return ['success', 'error'].includes(value)
+        }
+      },
+
+```
+
+当`type`为`Obejct | Array`的时候。`default`参数最好是写成工厂函数。
+
+- 如果是对象类型，当子组件重复被使用，对象变量指向的都是同一个内存地址，当父组件更改变量的时候，其他调用的父组件也会跟着改变。
+- 如果是函数类型，变量是`return`出去的，每次调用都会重新拷贝一个新的变量，调用的父组件之间不会相互影响。
+
+```js
+      propB: {
+          type: Function,
+          default() {
+              return 'Default function'
+          }
+      }
+
+```
+
+#### setup函数中的写法
+
+如果是**setup函数**的形式，props 必须以 `props` 选项的方式声明，props 对象会作为 `setup()` 函数的第一个参数被传入
+
+```vue
+<script>
+export default {
+  props: ['title', "info"],
+  setup(props) {
+    console.log(props);
+  }
+}
+</script>
+
+```
+
+#### setup语法糖中的写法
+
+```vue
+<script setup>
+
+const props = defineProps(["title", "info"])
+
+console.log(props);
+
+</script>
+
+```
+
+
+
+### 父组件定义数据传输props参数
+
+```vue
+<son :title="title" :info="info"></son>
+        
+ // data中定义
+ title: "Father标题",
+ info: { name: "小白" }
+```
+
+传递对象
+
+```vue
+<son :title="title" :info="info"></son>
+
+  data() {
+    return {
+      title: "Father标题",
+      info:{
+        name: "小白"
+      }
+    }
+  },
+
+```
+
+
+
+
+
+
+
+```js
+<script setup>
+
+const props = defineProps(["title", "info"])
+
+console.log(props);
+
+</script>
+
+```
+
+
+
+### 父组件传输非props参数
+
+当我们向一个组件传递某个属性，该属性并没有定义对应的`props`或者`$emit`时，就会被称之为**非props的Attribute**，常见的包括`class`、`id`、等等。
+
+[和Vue3和解的Day12--父子组件通信 - 掘金 (juejin.cn)](https://juejin.cn/post/7199086162991988794)
+
+父组件在子组件调用时，定义了`class`类
+
+```vue
+<son class="box" :title="title"></son>
+```
+
+如果子组件只有一个节点，则会自动绑定
+
+```vue
+<template>
+    <h2>{{ title }}</h2>
+</template>
+
+```
+
+其最终渲染的结构如下：
+
+![image-20230803153517721](image-20230803153517721.png)
+
+如果子组件有多个节点的时候，父组件不能再自动绑定attribute，需要我们手动绑定
+
+父组件
+
+```vue
+<son class="box" set="set" :title="title" :message="message"></son>
+```
+
+子组件`title`变量上绑定`attribute`，此时父组件传递的所有选择器都会绑定到`title`这个变量的节点上
+
+```vue
+<template>
+    <h2 v-bind="$attrs">{{ title }}</h2>
+    <h2>{{ message }}</h2>
+</template>
+
+```
+
+当我不想要继承根节点的时候，可以使用`inheritAttrs: false`设置，可以从`$attrs`中获取所有的`attribute`
+
+手动绑定的attribute，即使在设置了不继承之后，依旧会被绑定在指定位置，这个属性对手动绑定的不生效。
+
+```vue
+<template>
+    <h2>{{ title }}</h2>
+</template>
+
+<script>
+export default {
+  inheritAttrs: false,
+  props: ['title', "message"],
+}
+</script>
+
+```
+
+## 子传父
+
+首先明确一点，子组件不能直接给父组件传参，需要我们在子组件上绑定一个方法，在**选项式中通过`$emit`方法给父组件传递一个方法，在父组件中通过调用这个方法实现参数传递**
+
+### options api中的写法
+
+子组件
+
+```vue
+<template>
+    <h2>{{ counter }}</h2>
+    <button @click="addCounter">+1</button>
+</template>
+
+<script>
+export default {
+  props: ["counter"],
+  methods: {
+    addCounter() {
+      this.$emit("increment")
+    }
+  }
+}
+</script>
+
+```
+
+父组件
+
+```vue
+<template>
+  <div>
+    <son :counter="counter" @increment="increment"></son>
+  </div>
+</template>
+
+<script>
+import Son from './Son.vue';
+export default {
+  data() {
+    return {
+      counter: 10
+    }
+  },
+  components: { Son },
+  methods: {
+    increment() {
+      this.counter++
+    }
+  }
+}
+</script>
+
+```
+
+上例是最基本的子组件中的方法，在父组件引用子组件之后可以触发方法。子组件中的交互，需要修改数据，但数据来自父组件，怎么处理？
+
+- 一种是如上，通过$emit在子组件身上提交一个方法，然后父组件中触发这个方法并调用该方法的回调，该回调中修改了父组件中的数据（同时该数据也被传递给了子组件，即可实现子组件变更props数据）
+- 第二种是通过定义`data`额外接受一次`props`，子组件基于`data`渲染
+
+
+
+子组件向父组件传递方法时，那么如何传递我们想要传递的参数呢？
+
+子组件
+
+```vue
+
+<template>
+  <button @click="transmit">传递参数的类型</button>
+</template>
+
+<script>
+export default {
+  methods: {
+    transmit() {
+      this.$emit("transmit", 10)
+      this.$emit("transmit", "字符串")
+      this.$emit("transmit", [1, 2])
+      this.$emit("transmit", { name: "小白" })
+    }
+  }
+}
+</script>
+
+```
+
+父组件
+
+```vue
+<template>
+  <div>
+    <son @transmit="transmit"></son>
+  </div>
+</template>
+
+<script>
+import Son from './Son.vue';
+export default {
+  components: { Son },
+  methods: {
+    transmit(params) {
+      console.log(params);
+    }
+  }
+}
+</script>
+
+```
+
+通过$emit传递的四个方法，都成功将参数传递过去了，并且四个参数类型都不相同。
+
+后面的传参并不会覆盖前面传递的参数，但是并不建议这样做
+
+![image-20230803154738838](image-20230803154738838.png)
+
+### setup函数中的写法
+
+ `setup`接收的第一个参数是 `props` **setup 接收的第二个参数就是context, context是一个对象，里面包含了emit**, 我们就是利用这个参数进行子组件向父组件传参
+
+子组件
+
+```vue
+<template>
+  <h2>{{ counter }}</h2>
+  <button @click="addCouter">+1</button>
+</template>
+
+<script>
+export default {
+
+  props: ["counter"],
+  emits: ['addCouter'],
+  setup(props, context) {
+    const addCouter = () => {
+      context.emit('addCouter')
+    }
+
+    return {
+      addCouter
+    }
+  }
+}
+</script>
+
+```
+
+父组件
+
+```vue
+<template>
+  <div>
+    <son :counter="counter" @addCouter="addCouter"></son>
+  </div>
+</template>
+
+<script>
+import { ref } from 'vue';
+import Son from './Son.vue';
+export default {
+  components: { Son },
+  setup() {
+    const counter = ref(10)
+    const addCouter = () => {
+      counter.value++
+    }
+
+    return {
+      counter,
+      addCouter
+    }
+  }
+}
+</script>
+
+```
+
+这里要注意的一点就是在vue3的组合式中需要我们额外将需要传递的方法定义在emits数组中。上面也说过context是一个对象，我们也可以采用解构的写法来写emit传参
+
+在方法中传递方法和参数的时候，直接emit()即可。
+
+```vue
+<script>
+export default {
+  props: ["counter"],
+  emits: ['addCouter'],
+  setup(props, { emit }) {
+    const addCouter = () => {
+      emit('addCouter')
+    }
+
+    return {
+      addCouter
+    }
+  }
+}
+</script>
+
+```
+
+传参方式和上述一致
+
+### setup语法糖中的写法
+
+在父组件中引用调用子组件的方法和变量和之前是没有变化的，但是子组件会有引入新的官方提供的新方法
+
+子组件
+
+```vue
+<template>
+  <h2>{{ counter }}</h2>
+  <button @click="addCouterClick">+1</button>
+</template>
+
+<script setup>
+
+// const props = defineProps(["counter"])
+const props = defineProps({
+  counter: Number
+})
+
+const emits = defineEmits(["addCounter"])
+
+const addCouterClick = () => {
+  emits("addCounter")
+}
+
+</script>
+
+```
+
+## 祖孙组件通信
+
+[和Vue3和解的Day15--非父子组件通信 - 掘金 (juejin.cn)](https://juejin.cn/post/7200366809424396346)
+
+为什么需要非父子组件传参，我们可以想象一下，我们有5个组件是逐级引用的，那么我们需要props沿着组件引用定义传参，那么此刻的场面会相当混乱，也不利于我们后期维护代码。
+
+官方提供了`provide`和`inject`来帮助我们**解决多层props嵌套**的问题。一个父组件相对于其所有的后代组件，会作为**依赖提供者**。任何后代的组件树，无论层级有多深，都可以**注入**由父组件提供给整条链路的依赖。
+
+比如下面这张图，我们想要给DeepChild传递参数就可以使用`provide`和`inject`这两个方法
+
+![image-20230803160613774](image-20230803160613774.png)
+
+### 基本使用
+
+先说一个组件的引用结构：App.vue -> Home.vue -> HomeContent.vue
+
+**组合式中的provide需要引入才能使用**
+
+> `provide(/* 注入名 */ 'message', /* 值 */ 'hello!')`
+
+`App.vue`
+
+```vue
+<template>
+  <div>
+    <home></home>
+</div>
+</template>
+
+<script setup>
+import Home from './Home.vue';
+import { ref, provide } from 'vue';
+
+const name = ref("小白")
+provide("name", name)
+</script>
+
+```
+
+`HomeContent.vue`
+
+```vue
+<template>
+  <div>
+    <h2>{{ name }}</h2>
+</div>
+</template>
+
+<script setup>
+
+import { inject } from 'vue';
+const name = inject("name")
+
+
+</script>
+
+```
+
+此时我们数据会正常显示，以下说一些补充知识点。
+
+**注入默认值**
+
+```vue
+const name = inject("name" , "默认值")
+```
+
+ **提供方改变数据**
+
+`App.vue`
+
+```vue
+<template>
+  <div>
+    <home></home>
+    <button @click="changeClick">点击切换</button>
+</div>
+</template>
+
+<script setup>
+import Home from './Home.vue';
+import { ref, provide } from 'vue';
+
+const name = ref("小白")
+provide("name", name)
+
+const changeClick = () => name.value = "小刚"
+
+</script>
+
+```
+
+**provide传递一个对象**
+
+`App.vue`
+
+```js
+const name = ref("小白")
+const age = ref(18)
+provide("user", {
+  name,
+  age
+})
+
+```
+
+`HomeContent.vue`
+
+```vue
+    <h2>{{ user.name }}</h2>
+    <h2>{{ user.age }}</h2>
+
+<script setup>
+
+import { inject } from 'vue';
+const user = inject("user")
+
+
+```
+
+也可以解构后使用
+
+```js
+const {name, age} = inject('user')
+```
+
+### 底层原理
+
+[和Vue3和解的Day18--非父子组件通信 - 掘金 (juejin.cn)](https://juejin.cn/post/7201314551576264765)
+
+`provide` 和 `inject` 的实现原理其实是利用了 Vue3 中新的响应式系统和依赖注入机制。
+
+首先，当一个组件使用 `provide` 来提供数据时，Vue3 会将这些数据包装成一个 reactive 对象，同时将它们添加到当前组件的 provide 实例属性中。这样，子孙组件就可以通过 `inject` 来访问这些数据了。
+
+具体来说，当一个组件使用 `provide` 来提供数据时，Vue3 会将这些数据存储在组件实例的 `_provided` 属性中，同时将 `_provided` 属性添加到当前组件的依赖项（deps）中。这样，当数据发生变化时，所有依赖它的子孙组件都会被通知更新。
+
+另外，当一个组件使用 `inject` 来注入数据时，Vue3 会在组件实例的 `setup` 钩子中创建一个 `inject` 函数，该函数会在当前组件的依赖项中添加 `_provided` 属性，并返回其对应的值。这样，子孙组件就可以在模板或组件逻辑中通过 `this.xxx` 访问这些数据了。
+
+需要注意的是，由于 `provide` 和 `inject` 是基于 Vue3 的响应式系统和依赖注入机制实现的，因此它们仅在 Vue3 中有效，而在 Vue2 或其它框架中并不适用。
+
+
 

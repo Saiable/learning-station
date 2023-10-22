@@ -2403,6 +2403,17 @@ const textarea2 = ref('')
 
 
 
+# 使用注意点
+
+## 样式穿透
+
+```vue
+// 新写法(vue3)
+:deep(.el-form-item__label) {
+    color:red
+}
+```
+
 
 
 

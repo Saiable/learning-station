@@ -878,7 +878,14 @@ redis 前后台启动演示
                   "/sys/firmware"
               ],
               "ReadonlyPaths": [
-                  "/proc/bus",
+                  "/proc/bus",docker run -d \
+  	-p 15432:15432 \
+  	-v /data/data01/hh/desktop/software/postgresql/data:/data/postgres/pgdata \
+  	--name pgsql \
+          -e POSTGRES_PASSWORD=123456 \
+  	postgres
+  
+  
                   "/proc/fs",
                   "/proc/irq",
                   "/proc/sys",
@@ -887,7 +894,14 @@ redis 前后台启动演示
           },
           "GraphDriver": {
               "Data": {
-                  "LowerDir": "/var/lib/docker/overlay2/f0dd8d56846af6f1e9e903e1bb2ad527f78bf9966b52c1b6ba77fbabecc4899e-init/diff:/var/lib/docker/overlay2/c70822f2ac680e33dc4081970b5df5a9f355d29d0d510547569c0b27c45418f9/diff:/var/lib/docker/overlay2/59ed6759fd2016b86a531e3f903d270242c064f7dce1a07abcef6e8132ebb2f7/diff:/var/lib/docker/overlay2/c2deb9acfb98c8e4fe4f658d6449aa9dfa13af154c915364f8d4a550b6a6f2fe/diff:/var/lib/docker/overlay2/fbb54e593e420265a153f51e39882bc066092c63342cbebd1f3ef22ea2c59e8f/diff:/var/lib/docker/overlay2/9860676cd7d185d3ea3472a7b1d5d03776659149cb5725875bc4a98651a75e5c/diff:/var/lib/docker/overlay2/002472f7da6df42c266b40d5bf3b36280b8c35c0e39c40d63618b5a48f3e632c/diff",
+                  "LowerDir": "/var/lib/docker/overlay2/f0dd8d56846af6f1e9e903e1bb2ad527f78bf9966b52c1b6ba77fbabecc4899e-init/diff:/var/lib/docker/overlay2/c70822f2ac680e33dcdocker run -d \
+  	-p 15432:15432 \
+  	-v /data/data01/hh/desktop/software/postgresql/data:/data/postgres/pgdata \
+  	--name pgsql \
+          -e POSTGRES_PASSWORD=123456 \
+  	postgres
+  
+  4081970b5df5a9f355d29d0d510547569c0b27c45418f9/diff:/var/lib/docker/overlay2/59ed6759fd2016b86a531e3f903d270242c064f7dce1a07abcef6e8132ebb2f7/diff:/var/lib/docker/overlay2/c2deb9acfb98c8e4fe4f658d6449aa9dfa13af154c915364f8d4a550b6a6f2fe/diff:/var/lib/docker/overlay2/fbb54e593e420265a153f51e39882bc066092c63342cbebd1f3ef22ea2c59e8f/diff:/var/lib/docker/overlay2/9860676cd7d185d3ea3472a7b1d5d03776659149cb5725875bc4a98651a75e5c/diff:/var/lib/docker/overlay2/002472f7da6df42c266b40d5bf3b36280b8c35c0e39c40d63618b5a48f3e632c/diff",
                   "MergedDir": "/var/lib/docker/overlay2/f0dd8d56846af6f1e9e903e1bb2ad527f78bf9966b52c1b6ba77fbabecc4899e/merged",
                   "UpperDir": "/var/lib/docker/overlay2/f0dd8d56846af6f1e9e903e1bb2ad527f78bf9966b52c1b6ba77fbabecc4899e/diff",
                   "WorkDir": "/var/lib/docker/overlay2/f0dd8d56846af6f1e9e903e1bb2ad527f78bf9966b52c1b6ba77fbabecc4899e/work"
@@ -982,7 +996,7 @@ redis 前后台启动演示
   ]
   
   ```
-
+  
   
 
 ### 进入容器
@@ -2276,6 +2290,13 @@ sudo docker run  -it --name=ubuntu-focal-desktop-origin --shm-size=512m -p 8086:
 
   [ WSL2 Ubuntu20.04 打开language support闪退解决办法](https://blog.csdn.net/manong_1/article/details/128323888)
 
+  ```shell
+  sudo apt-get install dbus
+  sudo /etc/init.d/dbus start
+  ```
+
+  
+
   想要打开language support设置汉语，结果一直闪退
 
   ![在这里插入图片描述](7b71cfa313b8403dbaed8c68c49bf80e.png)
@@ -2298,7 +2319,7 @@ sudo docker run  -it --name=ubuntu-focal-desktop-origin --shm-size=512m -p 8086:
   
   sudo /etc/init.d/dbus start
   
-  sudo apt install ibus-libpinyin
+  sudo apt install ibus-libpinyin 
   
   ```
 
@@ -2325,8 +2346,12 @@ sudo docker run  -it --name=ubuntu-focal-desktop-origin --shm-size=512m -p 8086:
   Comment: start IBus daemon when Gnome starts
   ```
 
+- 如果点击一个地方并输入时，ibus的框框没有消失，可以再装一下
   
-
+  ```shell
+  sudo apt-get install ibus-pinyin
+  ```
+  
 - 安装wps
 
 - 修改文件最大监测数
@@ -2349,7 +2374,431 @@ sudo docker run  -it --name=ubuntu-focal-desktop-origin --shm-size=512m -p 8086:
   
   ```
 
-  
+
+## 安装postgres
+
+注意最好指定版本号，不能拉取最新的镜像，否则用`navicat`链接，可能会报`datlastsysoid`字段不存在，因为的确新版本的psql删除了这个字段
+https://blog.csdn.net/weixin_44127299/article/details/127883966
+
+```bash
+docker pull postgres:12.3
+```
+
+如果-v 宿主机目录，之前是已经创建过了的，要把目录删掉
+另外，容器内的端口，就设置为默认的5432，不要自己改
+
+下面的唯一要改的就是自己的主机的路径
+
+```
+docker run -it --name postgres01 --restart always -e TZ='Asia/Shanghai' -e POSTGRES_PASSWORD='postgres' -e ALLOW_IP_PANGE=0.0.0.0/0 -p 15432:5432 -v /data/data01/hh/software/postgres/data:/var/lib/postgresql/data -d postgres:12.3
+```
+
+上述命令执行完之后，如果没有公网端口，配置本地隧道后，用`navicat`测试，直接是通的
+
+注意，如果宿主机路径是在`ubuntu-docker`管理下，并且误操作修改了用户用户组，再次连接时，会报错。虽然说重启下容器就可以了，但最好还是把宿主机放在一个单独的路径下。
+
+![image-20230530151905663](image-20230530151905663.png)
+
+下面内容可以跳过
+
+> 把容器内文件复制出来，修改pg_hba.conf
+>
+> ```bash
+> docker cp 867b74c8c53f:/var/lib/postgresql/data/pg_hba.conf /data/data01/hh/desktop/software/
+> docker cp /data/data01/hh/desktop/software/pg_hba.conf  867b74c8c53f:/var/lib/postgresql/data/
+> 
+> docker cp 867b74c8c53f:/var/lib/postgresql/data/postgresql.conf /data/data01/hh/desktop/software/
+> ```
+
+
+
+在导入`sql`数据时，要手动建库名和模式名，库名可以自定义，模式名和给定的`sql`文件中，保持一致即可
+
+![image-20230530152529636](image-20230530152529636.png)
+
+## 安装不同版本的`chrome`
+
+
+
+## 安装`centos`
+
+```bash
+docker run -itd -p 17094:22 -p 17095:8080 -p 17096:17096 --privileged --name centos7_server_2 centos:7 /usr/sbin/init
+
+
+```
+
+[《docker安装nginx、安装tomcat、安装Centos7、容器导入导出、镜像上传到仓库》](https://www.jb51.cc/docker/1039837.html)
+
+## `安装ubuntu`
+
+### 开启容器
+
+1. 安装Docker：确保您的CentOS系统已安装Docker。您可以按照Docker官方文档提供的说明进行安装。
+
+2. 拉取Ubuntu 18镜像：使用以下命令从Docker Hub上拉取Ubuntu 18的镜像：
+
+   ```bash
+   
+   docker pull ubuntu:18.04
+   ```
+
+3. 创建并启动Ubuntu容器：运行以下命令创建一个新的Ubuntu容器并启动它，
+
+   ```bash
+   docker run -it -v /data/data03/ubuntu-server:/app -p 28015:28015/udp -p 28016:28016/tcp --name ubuntu-server ubuntu:18.04 /bin/bash
+   ```
+
+   这将创建一个名为`my_ubuntu`的容器，将本地主机的`/data/data03/ubuntu-server`目录映射到容器内的`/app`目录，并将主机的UDP端口28015映射到容器的UDP端口28015，TCP端口28016映射到容器的TCP端口28016。
+
+4. 进入Ubuntu容器：容器启动后，使用以下命令进入Ubuntu容器：
+
+   ```bash
+   docker exec -it ubuntu-server /bin/bash
+   ```
+
+5. 现在，您可以在Ubuntu容器中进行任何必要的配置或安装其他软件。
+
+### 更新源
+
+
+在已经安装了Ubuntu 18的Docker容器中，您可以按照以下步骤来更新软件源：
+
+1. 进入Ubuntu容器：首先，确保您已经进入正在运行的Ubuntu容器的交互式Shell。如果您尚未进入容器，请使用以下命令进入容器：
+
+   ```bash
+   docker exec -it my_ubuntu /bin/bash
+   ```
+
+2. 执行源更新：在Ubuntu容器内，使用以下命令更新软件源：
+
+   ```bash
+   apt-get update
+   ```
+
+   这将从Ubuntu的软件源服务器上获取最新的软件包列表。
+
+3. 执行软件包升级：完成软件源更新后，您可以执行以下命令升级已安装的软件包：
+
+   ```bash
+   apt-get upgrade
+   ```
+
+   这将升级容器内的所有已安装软件包到最新可用版本。
+
+4. （**可选**）清理不需要的软件包：您可以使用以下命令删除已升级软件包后不再需要的依赖关系和文件：
+
+   ```bash
+   apt-get autoremove
+   ```
+
+   这将自动删除不再需要的软件包和相关文件
+
+### 安装常见的软件
+
+```bash
+# 安装vim编辑器
+apt-get install vim
+# 安装sudo
+apt-get install sudo
+```
+
+### 配置githbub正常访问
+
+首先我们编辑`/etc/hosts`文件：
+
+```
+sudo vi /etc/hosts
+```
+
+复制
+
+然后把原始文件中的与`github.com`相关的内容先删除，再将如下内容放到文件的末尾：
+
+```
+140.82.114.25                 alive.github.com
+140.82.112.25                 live.github.com
+185.199.108.154               github.githubassets.com
+140.82.112.22                 central.github.com
+185.199.108.133               desktop.githubusercontent.com
+185.199.108.153               assets-cdn.github.com
+185.199.108.133               camo.githubusercontent.com
+185.199.108.133               github.map.fastly.net
+199.232.69.194                github.global.ssl.fastly.net
+140.82.112.4                  gist.github.com
+185.199.108.153               github.io
+140.82.114.4                  github.com
+192.0.66.2                    github.blog
+140.82.112.6                  api.github.com
+185.199.108.133               raw.githubusercontent.com
+185.199.108.133               user-images.githubusercontent.com
+185.199.108.133               favicons.githubusercontent.com
+185.199.108.133               avatars5.githubusercontent.com
+185.199.108.133               avatars4.githubusercontent.com
+185.199.108.133               avatars3.githubusercontent.com
+185.199.108.133               avatars2.githubusercontent.com
+185.199.108.133               avatars1.githubusercontent.com
+185.199.108.133               avatars0.githubusercontent.com
+185.199.108.133               avatars.githubusercontent.com
+140.82.112.10                 codeload.github.com
+52.217.223.17                 github-cloud.s3.amazonaws.com
+52.217.199.41                 github-com.s3.amazonaws.com
+52.217.93.164                 github-production-release-asset-2e65be.s3.amazonaws.com
+52.217.174.129                github-production-user-asset-6210df.s3.amazonaws.com
+52.217.129.153                github-production-repository-file-5c1aeb.s3.amazonaws.com
+185.199.108.153               githubstatus.com
+64.71.144.202                 github.community
+23.100.27.125                 github.dev
+185.199.108.133               media.githubusercontent.com
+```
+
+复制
+
+修改完成后`esc+:wq`退出，然后安装一个nscd：
+
+```
+$ sudo apt install nscd
+正在读取软件包列表... 完成
+正在分析软件包的依赖关系树       
+正在读取状态信息... 完成       
+下列软件包是自动安装的并且现在不需要了：
+  libfwupdplugin1 libice6:i386 libsm6:i386 libxt6:i386 linux-headers-5.14.0-1048-oem
+  linux-image-5.14.0-1048-oem linux-modules-5.14.0-1048-oem
+  linux-oem-5.14-headers-5.14.0-1048
+使用'sudo apt autoremove'来卸载它(它们)。
+下列【新】软件包将被安装：
+  nscd
+升级了 0 个软件包，新安装了 1 个软件包，要卸载 0 个软件包，有 151 个软件包未被升级。
+需要下载 74.5 kB 的归档。
+解压缩后会消耗 463 kB 的额外空间。
+获取:1 https://mirrors.tuna.tsinghua.edu.cn/ubuntu focal-updates/universe amd64 nscd amd64 2.31-0ubuntu9.9 [74.5 kB]
+已下载 74.5 kB，耗时 1秒 (83.4 kB/s)
+正在选中未选择的软件包 nscd。
+(正在读取数据库 ... 系统当前共安装有 480631 个文件和目录。)
+准备解压 .../nscd_2.31-0ubuntu9.9_amd64.deb  ...
+正在解压 nscd (2.31-0ubuntu9.9) ...
+正在设置 nscd (2.31-0ubuntu9.9) ...
+Created symlink /etc/systemd/system/multi-user.target.wants/nscd.service → /lib/systemd/system
+/nscd.service.
+正在处理用于 man-db (2.9.1-1) 的触发器 ...
+正在处理用于 systemd (245.4-4ubuntu3.17) 的触发器 ...
+```
+
+复制
+
+最后再重启一下nscd服务即可：
+
+```
+$ sudo /etc/init.d/nscd restart
+Restarting nscd (via systemctl): nscd.service.
+```
+
+复制
+
+这样一波操作之后，Github就可以快速访问了
+
+**总结概要**
+
+在国内一些局域网下访问github.com可能会存在一些问题，甚至可能直接就无法访问。但是我们可以通过对指定的[域名](https://cloud.tencent.com/act/pro/domain-sales?from=20065&from_column=20065)配置一个ip地址，这样在解析的时候就会自动跳转到我们手动选取的那个可访问的节点上。虽然该方法下还是偶尔有可能出现无法访问的情况，但是总体来说还是很大程度上的改善了github.com的访问体验。
+
+### 新建用户并配置`sudoers`
+
+1. 进入Ubuntu容器：首先，请确保您已经进入正在运行的Ubuntu容器的交互式Shell。如果您尚未进入容器，请使用以下命令进入容器：
+
+   ```bash
+   docker exec -it my_ubuntu /bin/bash
+   ```
+
+2. 创建rustserver用户：在Ubuntu容器内，使用以下命令创建一个名为rustserver的用户：
+
+   ```bash
+   adduser rustserver
+   ```
+
+   您将会被提示设置rustserver用户的密码和其他相关信息。
+
+   输入密码后，含`[]`的可以直接空格
+
+   ![image-20230708104050272](image-20230708104050272.png)
+
+3. 赋予sudoers权限：要赋予rustserver用户sudoers权限，您可以执行以下步骤：
+
+   a. 安装sudo软件包（如果尚未安装）：
+
+   ```bash
+   apt-get install sudo
+   ```
+
+   b. 编辑sudoers文件以允许rustserver用户具有sudo权限：
+
+   ```bash
+   visudo
+   ```
+
+   这将打开一个文本编辑器，显示sudoers文件的内容。
+
+   c. 在文件中找到以下行：
+
+   ```bash
+   root    ALL=(ALL:ALL) ALL
+   ```
+
+   d. 在该行下方添加以下内容，以授权rustserver用户具有sudo权限：
+
+   ```bash
+   rustserver    ALL=(ALL:ALL) ALL
+   ```
+
+   ![image-20230708104253883](image-20230708104253883.png)
+
+   e. `Esc :wq`保存并关闭文件。
+
+### 安装`lgsm`
+
+详细请参考官网：https://linuxgsm.com/servers/rustserver/
+
+视频教程：https://www.bilibili.com/video/BV1VU4y1W7sn/
+
+**依赖安装：**
+
+`Ubuntu < 20.04`
+
+```bash
+sudo dpkg --add-architecture i386; sudo apt update; sudo apt install curl wget file tar bzip2 gzip unzip bsdmainutils python3 util-linux ca-certificates binutils bc jq tmux netcat lib32gcc1 lib32stdc++6 libsdl2-2.0-0:i386 steamcmd lib32z1
+```
+
+安装过程中，需要`tab`选中或者`enter`选中同意条款
+
+**切换到`rustserver`用户操作**
+
+备注：已配置`sudoers`权限，避免上述依赖安装不全，可自行安装
+
+```bash
+# 切换到rustserver用户
+su - rustserver
+
+# 下载linuxgsm.sh，
+wget -O linuxgsm.sh https://linuxgsm.sh
+# 如果一直的等待响应，可以`Ctrl+C`取消，然后重试几次
+# 如果下载失败，可以用浏览器器手动下载：。若在docker容器，可以使用docker cp命令从宿主机中拷贝至容器内，并更改用户和用户组为rustserver
+```
+
+![image-20230708105813952](image-20230708105813952.png)
+
+```bash
+# 赋予可执行权限，并执行安装lgsm
+chmod +x linuxgsm.sh && bash linuxgsm.sh rustserver
+```
+
+安装好`lgsm`后，再安装`rustserver`
+
+```bash
+./rustserver install
+```
+
+这一步需要去`github`上拉取资源，由于国内网络原因，如果失败了，多试几次：
+
+![image-20230708110856950](image-20230708110856950.png)
+
+如果的确缺少依赖的话，使用`rustserver`安装，会提示输入下密码
+
+成功界面：
+
+![image-20230708135600355](image-20230708135600355.png)
+
+最后一个协议，可以不用同意
+
+![image-20230708140339610](image-20230708140339610.png)
+
+先不着急，根据自己的实际情况，配置下服务器参数文件：
+
+![image-20230708141057676](image-20230708141057676.png)
+
+```bash
+vim /home/rustserver/serverfiles/server/rustserver/cfg/server.cfg
+```
+
+```bash
+# 可以修改服务器描述，头图，介绍网址
+
+#  A text description of your server. For a new line add:  \n
+server.description "The command-line tool for quick, simple deployment and management of Linux dedicated game servers."
+
+# A URL to the image which shows up on the server details screen (dimensions are 512x256).
+server.headerimage "https://git.io/JYdmK"
+
+# The URL to your servers website.
+server.url "https://linuxgsm.com/"
+```
+
+再进入`lsgm`的配置文件夹：
+
+![image-20230708141657743](image-20230708141657743.png)
+
+```bash
+cd /home/rustserver/lgsm/config-lgsm/rustserver
+```
+
+查看配置文件，里面是没有内容的
+
+![image-20230708141809881](image-20230708141809881.png)
+
+将模板文件内容写入
+
+```bash
+cp _default.cfg rustserver.cfg 
+```
+
+然后可以修改下内容：
+
+```bash
+#### Game Server Settings ####
+
+## Predefined Parameters | https://docs.linuxgsm.com/configuration/start-parameters
+ip="0.0.0.0"
+port="28015"
+rconport="28016"
+appport="28082"
+queryport="28017"
+rconpassword="CHANGE_ME"
+rconweb="1" # Value is: 1 for the Facepunch web panel, Rustadmin desktop and Rustadmin Online; 0 for RCON tools like Rusty.
+servername="Rust"
+gamemode="vanilla"           # Values: vanilla, softcore ( Doc: https://wiki.facepunch.com/rust/server-gamemodes )
+serverlevel="Procedural Map" # Values: Procedural Map, Barren, HapisIsland, SavasIsland
+customlevelurl=""            # Custom level url. +server.levelurl \"${customlevelurl}\"
+seed=""                      # range: 1-2147483647, used to reproduce a procedural map.
+salt=""                      # range: unknown, used to recover a known setting from an existing map.
+maxplayers="50"
+worldsize="3000"   # default: 3000, range: 1000-6000, map size in meters.
+saveinterval="300" # Auto-save in seconds.
+tickrate="30"      # default: 30, range: 15-100.
+```
+
+可以修改下`rconpassword`
+
+保存退出后，`cd`直接返回根目录
+
+### 安装`oxide`插件
+
+```bash
+cd /home/rustserver
+
+# 安装oxide插件
+./rustserver mods-install
+
+# 输入rustoxide，回车
+
+```
+
+![image-20230708144620720](image-20230708144620720.png)
+
+
+
+等待下载完毕，就可以启动服务器了
+
+```bash
+.rustserver start
+```
 
 
 
@@ -3391,7 +3840,7 @@ container模式：使用--network container:NAME或者容器ID指定
 
 2 docker inspect 容器ID or 容器名字
 
-![image-20230223100755882](/image-20230223100755882.png)
+![image-20230223100755882](image-20230223100755882.png)
 
 3 关闭u2实例，新建u3，查看ip变化
 
@@ -3405,9 +3854,7 @@ docker容器内部的ip是有可能会发生改变的
 
 ### bridge
 
-Docker 服务默认会创建一个 `docker0` 网桥（其上有一个` docker0` 内部接口），该[桥接网络](https://www.cnblogs.com/anyamaze/articles/16934489.html)的名称为`docker0`，它在内核层连通了其他的
-
-物理或虚拟网卡，这就将所有容器和本地主机都放到同一个物理网络。`Docker` 默认指定了 `docker0` 接口 的 IP 地址和子网掩码，让主机
+Docker 服务默认会创建一个 `docker0` 网桥（其上有一个` docker0` 内部接口），该[桥接网络](https://www.cnblogs.com/anyamaze/articles/16934489.html)的名称为`docker0`，它在内核层连通了其他的物理或虚拟网卡，这就将所有容器和本地主机都放到同一个物理网络。`Docker` 默认指定了 `docker0` 接口 的 IP 地址和子网掩码，让主机
 
 和容器之间可以通过网桥相互通信。
 
@@ -3611,6 +4058,94 @@ docker run -d -p 8082:8080 --network zzyy_network  --name tomcat82 billygoo/tomc
 
 
 自定义网络本身就维护好了主机名和ip的对应关系（ip和域名都能通）
+
+
+
+### 如何将两个已经运行的容器服务，实现网络互通
+
+要实现两个已经运行的容器服务之间的网络互通，可以通过以下方法进行配置：
+
+1. 创建共享网络：首先，创建一个共享的Docker网络，以便两个容器可以连接到同一个网络。如果你已经有一个共享网络，可以跳过此步骤。在宿主机上执行以下命令：
+
+```bash
+docker network create mynetwork
+```
+
+1. 连接容器到共享网络：将两个已经运行的容器连接到共享网络。使用以下命令分别连接每个容器，将容器名和共享网络名称替换为实际的值：
+
+```bash
+docker network connect mynetwork container1
+docker network connect mynetwork container2
+```
+
+这将把两个容器连接到同一个共享网络。
+
+1. 测试网络互通：现在，两个容器已经连接到共享网络，你可以在它们之间进行网络互通测试。你可以使用容器名称或IP地址来访问容器的服务。例如，在容器1中可以使用容器2的名称或IP地址访问容器2的服务，反之亦然。
+
+请注意，确保容器的服务端口在容器之间是可访问的，例如在运行容器时使用 `-p` 参数将容器的端口映射到宿主机的端口上。
+
+通过上述步骤，你可以将两个已经运行的容器服务实现网络互通。这样，它们可以相互通信和访问对方的服务。
+
+
+
+实操：
+
+以下一个是`ubuntu`容器，一个是`postgres`服务
+
+![image-20230714154035545](image-20230714154035545.png)
+
+配置后在`ubuntu`容器中访问`postgres`服务：
+
+```bash
+psql -h 705b31330448 -U postgres -d data_tag
+```
+
+![image-20230714154141821](image-20230714154141821.png)
+
+### ubuntu容器访问宿主机中另一个容器的postgers服务
+
+要在Ubuntu容器中访问宿主机中的另一个容器的PostgreSQL服务，可以按照以下步骤进行配置：
+
+1. 创建Docker网络：首先，在宿主机上创建一个Docker网络，以便容器之间可以相互通信。执行以下命令：
+
+```bash
+docker network create mynetwork
+```
+
+1. 运行PostgreSQL容器：在宿主机上运行PostgreSQL容器，并将其连接到刚创建的Docker网络。使用适当的PostgreSQL容器映像和配置，运行以下命令：
+
+```bash
+docker run -d --name postgres-container --network=mynetwork -e POSTGRES_PASSWORD=your_password postgres:latest
+```
+
+这将创建一个名为"postgres-container"的PostgreSQL容器，并将其连接到"mynetwork"网络中。
+
+1. 运行Ubuntu容器：现在，在宿主机上运行另一个Ubuntu容器，并连接到同一Docker网络。使用适当的Ubuntu容器映像和配置，运行以下命令：
+
+```bash
+docker run -it --name ubuntu-container --network=mynetwork ubuntu:latest
+```
+
+1. 在Ubuntu容器中安装PostgreSQL客户端：在Ubuntu容器中，安装PostgreSQL客户端，以便与PostgreSQL服务器进行通信。在Ubuntu容器中执行以下命令：
+
+```bash
+apt-get update
+apt-get install postgresql-client -y
+```
+
+1. 连接到PostgreSQL容器：在Ubuntu容器中，使用PostgreSQL客户端连接到PostgreSQL容器。执行以下命令，并替换`postgres-container`、`your_password` 和 `database_name` 为实际的值：
+
+```bash
+psql -h postgres-container -U postgres -d database_name
+```
+
+然后，输入PostgreSQL的密码进行连接。
+
+现在，你可以在Ubuntu容器中访问宿主机中的PostgreSQL容器的服务了。你可以执行SQL查询、管理数据库等操作。
+
+请注意，这里的示例假设你正在使用默认的PostgreSQL容器映像和配置。根据实际情况，你可能需要根据你的PostgreSQL容器设置进行适当的修改，例如指定自定义的数据库名称、用户名和密码等。
+
+另外，确保在安全性方面采取适当的措施，例如设置强密码和限制访问权限，以保护PostgreSQL服务器免受未经授权的访问。
 
 # `Docker-compose`容器编排
 

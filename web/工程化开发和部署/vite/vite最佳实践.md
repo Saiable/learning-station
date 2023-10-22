@@ -19,6 +19,8 @@ typora-root-url: vite最佳实践
 
 [使用Vite快速创建vue3项目](https://blog.csdn.net/z1093541823/article/details/124348035)
 
+官网：https://cn.vitejs.dev/guide/
+
 在想要的目录执行
 
 ```
@@ -485,13 +487,119 @@ export default defineConfig({
 
 
 
+# 更改打包文件夹名称
+
+```js
+export default defineConfig({
+  build: {
+    outDir: 'tagdata-vis',//想要把dist修改成什么名字在这边改
+    assetsDir:'tagdata-vis-assets'//想要把static或assets修改成什么名字在这边改
+  }
+})
+```
 
 
 
+# 配置跨域
 
+https://blog.csdn.net/qq_42761482/article/details/126115019
 
+`vite.config.js`
 
+里面的字段嵌套格式，和`webpack`中的有些不一样
 
+**步骤一 vite.config.ts/js配置**
+
+添加配置项：
+
+```js
+  // 本地运行配置，及反向代理配置
+  server: {
+    cors: true, // 默认启用并允许任何源
+    open: true, // 在服务器启动时自动在浏览器中打开应用程序
+    //反向代理配置，注意rewrite写法，开始没看文档在这里踩了坑
+    proxy: { // 本地开发环境通过代理实现跨域，生产环境使用 nginx 转发
+      '/api': {
+        target: 'http://localhost/3000', // 通过代理接口访问实际地址。这里是实际访问的地址。vue会通过代理服务器来代理请求
+        changeOrigin: true,
+        ws: true, // 允许websocket代理
+        rewrite: (path) => path.replace(/^\/api/, '') // 将api替换为空
+      }
+    }
+  }
+```
+
+**步骤二 axios在封装**
+
+https://blog.csdn.net/qq_52014705/article/details/130161061
+
+我们将服务器信息单独抽离了出来，方便部署时调整
+
+`serverConfig.js`
+
+这里填写的时启动开发环境的实际端口号
+
+```js
+export default {
+    "baseURL": "http://localhost:5173"
+}
+```
+
+跨域配置
+
+`vite.cofig.js`
+
+```js
+  server: {
+    cors: true, // 默认启用并允许任何源
+    open: true, // 在服务器启动时自动在浏览器中打开应用程序
+    //反向代理配置，注意rewrite写法，开始没看文档在这里踩了坑
+    proxy: { // 本地开发环境通过代理实现跨域，生产环境使用 nginx 转发
+      '/dataTask': {
+        target: 'http://127.0.0.1:8000/', // 通过代理接口访问实际地址。这里是实际访问的地址。vue会通过代理服务器来代理请求
+        changeOrigin: true,
+        ws: true, // 允许websocket代理
+        // rewrite: (path) => path.replace(/^\/api/, '') // 将api替换为空
+      }
+    }
+  },
+```
+
+实际请求`home.js`
+
+```js
+// 获取项目列表
+export function getProjectList() {
+    return request({
+        url: '/dataTask/project/list/' // 最后的横杠看实际法的请求具体情况，看加或者不加
+    })
+}
+```
+
+开启代理后，前台请求的路径，将会被本地开发服务器转发到目标`target`服务器上
+
+没有填写`rewrite`字段，因为和自身的后台服务有关，上述配置的含义：前台访问`http://lcoalhost:5713/dataTask/project/list`时，实际上访问的是`http:127.0.0.1:8000/dataTask/project/list`
+
+`django`后台路由映射如下：
+
+项目路由：
+
+```python
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('dataTask/', include('dataTask.urls'))
+]
+```
+
+`app`路由：
+
+```python
+urlpatterns = [
+    path("index/", views.index, name="index"),
+    path("project/list/", views.project_list, name="project_list"),
+    path("project/add/", views.project_add, name="project_add"),
+]
+```
 
 
 

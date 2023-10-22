@@ -128,7 +128,13 @@ nvm use iojs-v3.2.0
 
 [ubuntu－设置系统环境变量 - 简书 (jianshu.com)](https://www.jianshu.com/p/12fbfa8c7489)
 
-最后改`~/.bashrc`，使用前需要到目录下手动`. nvm.sh`运行下（已经配了环境变量，估计是杀掉了），只能在一个she
+最后改`~/.bashrc`，使用前需要到目录下手动`. nvm.sh`运行下（已经配了环境变量，估计是杀掉了），只能在一个shell
+
+如果nvm ls报权限问题，参看：[使用NVM安装节点v4.1 - 权限被拒绝 - VoidCC](http://cn.voidcc.com/question/p-vqtdysom-bnt.html)
+
+或者关掉shell重新开一个即可
+
+
 
 ## `Vue/cli`脚手架
 
