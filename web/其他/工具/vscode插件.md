@@ -82,3 +82,11 @@ code --install-extension hediet.vscode-drawio-1.0.3.vsix
 
 # 快捷键
 
+# 设置图片保存位置
+https://www.cnblogs.com/qinweijie/p/17656330.html
+```bash
+**/*.md
+${documentBaseName}/${fileName}
+```
+
+![Alt text](vscode%E6%8F%92%E4%BB%B6/image-2.png)
