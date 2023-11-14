@@ -1,4 +1,10 @@
-[TOC]
+---
+title: 'linux基础'
+date: 2022-8-9 09:03:02
+cover: false
+---
+
+
 
 # 常见命令
 

@@ -1,3 +1,11 @@
+---
+title: 'python操作Redis'
+date: 2022-8-9 09:03:02
+cover: false
+---
+
+
+
 ## 7.python操作Redis
 
 ### 7.1.远程连接redis注意事项：

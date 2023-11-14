@@ -1,3 +1,11 @@
+---
+title: 'python_with关键字'
+date: 2022-8-9 09:03:02
+cover: false
+---
+
+
+
 ## 1. 上下文管理器概念
 
 Context Manager指的是python在执行一段代码前后，做的一些预处理和后处理，使得代码块运行处于一个小的环境（surrounding），出了这个小环境之后，资源释放，环境中的各种配置也失效。
