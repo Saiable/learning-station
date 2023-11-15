@@ -487,3 +487,54 @@ Password: password
 overlay                    1.8T  165G  1.6T  10% /data/data13/docker/overlay2/baadc53348c38771fa7a35525b580c4e29328b0c78961a5b9731b902a1fb6e94/merged
 ```
 登录成功后，点击左边设置，打开`IME input mode`，允许共享输入法，这样就不用在`ubuntu`里面装输入法了
+
+备注：下面的软件安装后，重新构建新的镜像了
+## 安装edge浏览器
+在unbuntu内，使用默认浏览器，打开链接：https://www.microsoft.com/zh-cn/edge, 会下载`.deb`文件
+下载成功后，开始安装
+```bash
+sudo dpkg -i 下载的文件名.deb
+sudo apt-get install -f
+
+补充：
+sudo dpkg -r package # 删除包  -r: remove
+此方法的默认安装目录为:  /opt
+```
+这时候在应用程序>Internet中就可以可以发现我们的Edge了，但是打不开
+需要修改启动参数
+```bash
+sudo vim /usr/bin/microsoft-edge
+
+# 在最后一行 添加两个参数
+exec -a "$0" "$HERE/msedge" "$@" --user-data-dir --no-sandbox
+```
+## 安装wps
+参考：https://blog.csdn.net/weixin_45063703/article/details/117536136
+官网链接：https://www.wps.cn/product/wpslinux
+操作同上，安装后可能会提示字体问题，可忽略
+
+## 安装typora
+参考：https://zahui.fan/posts/64b52e0d/
+下载`Typora_Linux_0.11.18_amd64.deb`,
+操作同上。
+注意点：
+参考：https://blog.csdn.net/weixin_45338404/article/details/102873132
+前言：root下chrom安装完后需要设置，没想到有些软件和chrom一样也要加入`--no-standbox`
+
+问题描述及关键字：root 下 安装完 typora 双击后没有反应 终端中输入 sudo typora 报错信息为
+```bash
+[3127:1102/153515.772182:FATAL:atom_main_delegate.cc(210)] Running as root without --no-sandbox is not supported. See https://crbug.com/638180.
+```
+小记：查过外网，各种装了卸载反复测试没有结果
+试过 chomd 4755 但是没起作用
+
+解决方案：
+1,找到 `usr/share/application` 文件里的 typora 文件或图标 我这里是 typora.desktop 显示的是可编辑文件不是图标
+2,右键属性 用文本编辑器打开
+3,找到 Exec=typora %U 这一行
+4,修改成 Exec=typora %U --no-sandbox
+5,保存退出
+
+至此可以打开，关掉自动更新（不过ubuntu的版本没有自动更新按钮)
+## 安装node、python等
+各种开发环境自行安装
