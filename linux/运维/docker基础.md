@@ -1311,6 +1311,8 @@ docker commit -m="提交的描述信息" -a="作者" 容器ID 要创建的目标
   docker rmi old-tag
   ```
   这将删除旧的标签，但由于新标签和旧标签引用相同的镜像ID，实际的镜像不会被删除。
+  `old-tag`就是`仓库名:标签`
+  
   如果你确实想删除整个镜像，你可以使用docker rmi并提供镜像ID，如下所示：
   ```bash
   docker rmi old-image-id
