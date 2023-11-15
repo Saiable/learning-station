@@ -4,7 +4,7 @@ date: 2023-01-13 14:15:24
 cover: false
 tags:
 - docker
-typora-root-url: Docker-Ubuntu环境搭建playwright环境
+typora-root-url: Docker-Ubuntu环境搭建
 ---
 
 `author:zzh`
@@ -472,3 +472,18 @@ REPOSITORY       TAG       IMAGE ID       CREATED         SIZE
 ubuntu-desktop   1.12.0    fc203ef9489f   10 months ago   8.86GB
 postgres         12.3      b03968f50f0e   3 years ago     313MB
 ```
+设置密码，基于镜像创建容器：
+为保证后期文档中，路径的一致性，容器内的路径，和宿主机路径一致
+```bash
+sudo docker run  -it --name=ubuntu-desktop --shm-size=1g -p 26901:6901 -e VNC_PW=password -v /data/data13/hh/desktop:/data/data13/hh/desktop ubuntu-desktop:1.12.0
+```
+配置隧道后，访问地址：`https://IP_OF_SERVER:26901` # 注意是`https`
+```bash
+User : kasm_user
+Password: password
+```
+运行后查看磁盘占用
+```bash
+overlay                    1.8T  165G  1.6T  10% /data/data13/docker/overlay2/baadc53348c38771fa7a35525b580c4e29328b0c78961a5b9731b902a1fb6e94/merged
+```
+登录成功后，点击左边设置，打开`IME input mode`，允许共享输入法，这样就不用在`ubuntu`里面装输入法了
