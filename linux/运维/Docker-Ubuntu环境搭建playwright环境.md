@@ -1,5 +1,5 @@
 ---
-title: 'Docker-Ubuntu环境搭建playwright环境'
+title: 'Docker-Ubuntu环境搭建开发'
 date: 2023-01-13 14:15:24
 cover: false
 tags:
@@ -437,7 +437,8 @@ sudo chmod -R 777 /app
 
 ![image-20231014085133858](image-20231014085133858.png)
 
-# 镜像云仓库
+# 二次部署
+## 镜像云仓库
 > docker那一篇文章，已经将平时用到的镜像，推送到了云仓库，如果使用·docker load -i image.tar`宝座，直接拉取云镜像即可
 ```bash
 docker login --username=173****5732 registry.cn-hangzhou.aliyuncs.com
@@ -451,3 +452,13 @@ Your password will be stored unencrypted in /root/.docker/config.json
 docker pull registry.cn-hangzhou.aliyuncs.com/mindcons/ubuntu-focal-desktop:1.12.0
 ```
 注意不能加应用层协议头`https`，同时必须要指定版本号
+```bash
+[root@localhost software]# docker images
+REPOSITORY                                                        TAG       IMAGE ID       CREATED         SIZE
+registry.cn-hangzhou.aliyuncs.com/mindcons/ubuntu-focal-desktop   1.12.0    fc203ef9489f   10 months ago   8.86GB
+postgres                                                          12.3      b03968f50f0e   3 years ago     313MB
+```
+利用该镜像的id进行重命名：
+```bash
+
+```
