@@ -448,6 +448,6 @@ Your password will be stored unencrypted in /root/.docker/config.json
 ```
 拉取镜像
 ```bash
-docker pull registry.cn-hangzhou.aliyuncs.com/mindcons/ubuntu-focal-desktop
+docker pull registry.cn-hangzhou.aliyuncs.com/mindcons/ubuntu-focal-desktop:1.12.0
 ```
-注意不能加应用层协议头`https`
+注意不能加应用层协议头`https`，同时必须要指定版本号
