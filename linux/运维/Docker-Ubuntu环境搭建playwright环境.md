@@ -460,5 +460,15 @@ postgres                                                          12.3      b039
 ```
 利用该镜像的id进行重命名：
 ```bash
-
+docker tag fc203ef9489f ubuntu-desktop:1.12.0
+```
+将旧的引用移除
+```bash
+docker rmi registry.cn-hangzhou.aliyuncs.com/mindcons/ubuntu-focal-desktop:1.12.0
+```
+查看目前的镜像
+```bash
+REPOSITORY       TAG       IMAGE ID       CREATED         SIZE
+ubuntu-desktop   1.12.0    fc203ef9489f   10 months ago   8.86GB
+postgres         12.3      b03968f50f0e   3 years ago     313MB
 ```
