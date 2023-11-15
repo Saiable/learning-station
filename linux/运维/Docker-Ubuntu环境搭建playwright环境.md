@@ -437,3 +437,17 @@ sudo chmod -R 777 /app
 
 ![image-20231014085133858](image-20231014085133858.png)
 
+# 镜像云仓库
+> docker那一篇文章，已经将平时用到的镜像，推送到了云仓库，如果使用·docker load -i image.tar`宝座，直接拉取云镜像即可
+```bash
+docker login --username=173****5732 registry.cn-hangzhou.aliyuncs.com
+```
+使用的时`root`账户，登录成功后，提示：
+```
+Your password will be stored unencrypted in /root/.docker/config.json
+```
+拉取镜像
+```bash
+docker pull registry.cn-hangzhou.aliyuncs.com/mindcons/ubuntu-focal-desktop
+```
+注意不能加应用层协议头`https`
