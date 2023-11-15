@@ -538,3 +538,6 @@ exec -a "$0" "$HERE/msedge" "$@" --user-data-dir --no-sandbox
 至此可以打开，关掉自动更新（不过ubuntu的版本没有自动更新按钮)
 ## 安装node、python等
 各种开发环境自行安装
+## 其他问题
+vscode中登录账号，默认浏览器无法打开，报错：`fail to execute default web browser`
+解决办法：点击`application -> settings -> settings manager` ，找到`preferred applications`，将默认浏览器选择为`microsoft-edge`
