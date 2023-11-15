@@ -455,7 +455,20 @@ https://promotion.aliyun.com/ntms/act/kubernetes.html
   sudo systemctl restart docker
   ```
 
-  
+就是进到`/etc/docker`目录，更改下后台的配置文件
+还可以配置`data-root`，设置overlay的目录，如
+```json
+{
+  "data-root": "/data/data13/docker"
+}
+```
+注意，先看下配置文件里有没有东西，不要给覆盖了，如果有内容，新增一个`json`字段即可，如：
+```json
+{
+  "data-root": "/data/data13/docker",
+  "registry-mirrors": ["https://ydav5e1h.mirror.aliyuncs.com"]
+}
+```
 
 
 
