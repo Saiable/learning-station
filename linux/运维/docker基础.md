@@ -2433,7 +2433,7 @@ docker run -it --name postgres01 --restart always -e TZ='Asia/Shanghai' -e POSTG
 注意，如果宿主机路径是在`ubuntu-docker`管理下，并且误操作修改了用户用户组，再次连接时，会报错。虽然说重启下容器就可以了，但最好还是把宿主机放在一个单独的路径下。
 
 ![image-20230530151905663](image-20230530151905663.png)
-
+如果安装的postgres需要和其他容器通信，参照下面`docker`网络的部分，需要先创建网络，然后启动时，添加额外参数
 下面内容可以跳过
 
 > 把容器内文件复制出来，修改pg_hba.conf
