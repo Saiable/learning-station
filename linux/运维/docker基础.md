@@ -1259,7 +1259,7 @@ docker commit -m="提交的描述信息" -a="作者" 容器ID 要创建的目标
   ![image-20221203114523128](image-20221203114523128.png)
 
 - 将镜像打包成本地文件
-
+  
   ```bash
   # 指令：docker save 镜像id > 文件名.tar
   docker save 172825a55619 > ./watch_ocr.tar# watch_ocr.tar为打包的文件
@@ -1271,7 +1271,14 @@ docker commit -m="提交的描述信息" -a="作者" 容器ID 要创建的目标
   # 指令：docker load < 文件名.tar
   docker load < watch_ocr.tar		  # watch_ocr.tar 为文件名称
   ```
-
+  注意：
+  用如下**两个命令**就行，上述两个命令在不同的操作系统中会有问题
+  ```bash
+  # 保存镜像
+  docker save [镜像id] -o image.tar
+  # 加载镜像
+  docker load -i image.tar
+  ```
 - 镜像重命名
 
   ![img](2022081910544660.png)
@@ -4667,3 +4674,32 @@ MountPoints 节点
 - 如果想修改 Docker 容器随着 Docker 服务启动而自启动，可看：https://www.cnblogs.com/poloyy/p/13985567.html
 - 如果想修改 Docker 的映射端口，可看：https://www.cnblogs.com/poloyy/p/13940554.html
 - 改 hostconfig.json 并不会成功哦
+
+## 加载本地镜像文件报错
+> 背景：服务器被人搞崩了，重装系统后，使用`docker load < image.tar`报错
+
+参考：https://blog.csdn.net/qq_32737755/article/details/127747443
+由于我的内网服务器不可连接外网，所以需要在能连接外网的机器上将镜像导出来再上传到内网服务器中，以供内网服务器使用。
+所以就用到了docker save命令，我根据网上查到的命令，将镜像导出到本地:
+
+`docker save [镜像id] > image.tar`
+然后上传到内网服务器中，使用docker load命令加载镜像：
+
+`docker load < image.tar`
+结果出现如下报错：
+
+`Error response from daemon: Untar exit status 1 archive/tar: invalid tar header`
+
+查询了半天在stackoverflow中发现了原因：不同的操作系统中运行这些命令会产生错误。而我运行docker save命令时，用的是Windows PowerShell，内网服务器是Linux，所以导致这个报错。
+
+解决方案：
+
+用如下**两个命令**就行了
+```bash
+docker save [镜像id] -o image.tar
+docker load -i image.tar
+```
+运行docker load后，加载的镜像是没有名称和标签的
+可以使用 docker tag [镜像id] [name]:[tag] 命令给它们重命名
+
+
