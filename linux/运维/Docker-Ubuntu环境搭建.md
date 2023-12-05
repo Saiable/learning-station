@@ -517,6 +517,7 @@ exec -a "$0" "$HERE/msedge" "$@" --user-data-dir --no-sandbox
 参考：https://zahui.fan/posts/64b52e0d/
 下载`Typora_Linux_0.11.18_amd64.deb`,
 操作同上。
+
 注意点：
 参考：https://blog.csdn.net/weixin_45338404/article/details/102873132
 前言：root下chrom安装完后需要设置，没想到有些软件和chrom一样也要加入`--no-standbox`
@@ -529,11 +530,14 @@ exec -a "$0" "$HERE/msedge" "$@" --user-data-dir --no-sandbox
 试过 chomd 4755 但是没起作用
 
 解决方案：
+
+```bash
 1,找到 `usr/share/application` 文件里的 typora 文件或图标 我这里是 typora.desktop 显示的是可编辑文件不是图标
 2,右键属性 用文本编辑器打开
 3,找到 Exec=typora %U 这一行
 4,修改成 Exec=typora %U --no-sandbox
 5,保存退出
+```
 
 至此可以打开，关掉自动更新（不过ubuntu的版本没有自动更新按钮)
 ## 安装node、python等

@@ -345,7 +345,7 @@ DATABASES = {
         "NAME": "data_tag.", # 数据库名称
         "USER": "postgres",
         "PASSWORD": "mypassword",
-        "HOST": "705b31330448", # postgres容器id
+        "HOST": "fe66bb995f5d", # postgres容器id
         "PORT": "5432",
         'OPTIONS': {
             'options': '-c search_path=your_schema_name', # 模式名

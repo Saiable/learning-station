@@ -2399,7 +2399,18 @@ const textarea2 = ref('')
 
 
 
+### 弹窗
 
+[Message 消息提示 ](https://cn.element-plus.org/zh-CN/component/message.html#分组消息合并)
+
+`el-message`
+
+```js
+  ElMessage({
+    message: 'this is a message.',
+    type: 'success',
+  })
+```
 
 
 

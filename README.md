@@ -88,13 +88,7 @@ categories: 学习方式
 
 工具类的api先有一个基本了解即可，不要在一开始就想着全部系统的学习，用到哪儿学到哪儿
 
-# 生产力工具
 
-b站视频ai字幕：https://github.com/the1812/Bilibili-Evolved
-
-playwright测试网页可访问性
-
-多项目文件自动记录更新内容
 
 
 
