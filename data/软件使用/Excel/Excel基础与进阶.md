@@ -1,5 +1,5 @@
 ---
-typora-root-url: Excel基础与进阶
+typora-root-url: 数据分析基础与进阶
 ---
 
 # 引言
@@ -22,15 +22,9 @@ typora-root-url: Excel基础与进阶
 - 需要价值和意义
 - 需要协作
 
-# 认识Excel
+# 数据软件
 
-## 能做什么
-
-
-
-## 菜单栏
-
-
+## Excel
 
 ### 单元格内容
 
@@ -253,7 +247,7 @@ typora-root-url: Excel基础与进阶
   - 保存当前文件：`Ctrl + S`
   - 另存为：`F12`
 
-## 常见设置
+### 常见设置
 
 - 功能区自定义
 - 
