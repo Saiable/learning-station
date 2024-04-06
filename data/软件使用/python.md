@@ -4555,8 +4555,10 @@ ary = np.array([1, 2, 3, 4, 5, 6])
 print(ary, type(ary)) # [1 2 3 4 5 6] <class 'numpy.ndarray'>
 
 # 维度 
+print(ary.ndim) # 1
+# 形状
 print(ary.shape) # (6,)
-ary.shape = (2, 3) # 维度改为2行3列
+ary.shape = (2, 3) # 形状改为2行3列
 print(ary, ary.shape) 
 # [[1 2 3]
 #  [4 5 6]] (2, 3)
@@ -4682,7 +4684,7 @@ ndarray 对象由计算机内存的连续一维部分组成，并结合索引模
   print(a) # [0 1 2 3 4]
   
   b = np.arange(0, 10, 2)
-  print(b) # [0 2 4 6 8]
+  print(b) # [0 2 4 6 8] 
   ```
 
 - np.zeros(数组元素个数， dtype='类型')
@@ -4774,7 +4776,7 @@ ndarray 对象由计算机内存的连续一维部分组成，并结合索引模
   # [1. 2. 3. 4. 5. 6. 7. 8.] float32
   ```
 
-- 数组元素的个数：np.ndaary.size
+- 数组元素的个数：np.ndarray.size
 
   ```python
   import numpy as np
