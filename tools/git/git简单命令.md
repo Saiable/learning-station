@@ -1,7 +1,10 @@
 ---
-title: 'git'
-date: 2022/7/8 07:15:24
+title: 'git简单命令'
+date: 2022-7-8 07:15:24
 cover: false
+tags:
+- git
+categories: git
 ---
 
 

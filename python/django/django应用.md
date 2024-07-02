@@ -401,7 +401,7 @@ age = models.IntegerField(default=0)
    class MyModel(models.Model):
        field1 = models.CharField(max_length=100)
        field2 = models.IntegerField()
-
+   
        class Meta:
            db_table = 'my_custom_table_name'
    ```
@@ -444,7 +444,7 @@ age = models.IntegerField(default=0)
        id = models.AutoField(primary_key=True)
        name = models.CharField(max_length=100)
        # 其他字段和属性
-
+   
        class Meta:
            auto_created = True
    ```
@@ -552,7 +552,7 @@ case_id = data.get('case_id')
 
   ```python
   # 看项目需要是否提供，逻辑同新增数据
-
+  
   ```
 
 #### 查询数据
@@ -570,7 +570,7 @@ case_id = data.get('case_id')
 
   ```python
   data_list = Project.objects.filter(name='test') # 即使是一条记录，得到的也是QeurySet对象
-
+  
   # 如果明确就知道了，只有一条记录，可以使用first()
   data = Project.objects.filter(id='4').first()
   print(data) # Project object (4)
@@ -582,9 +582,9 @@ case_id = data.get('case_id')
 
   ```python
   from django.urls import path
-
+  
   from . import views
-
+  
   urlpatterns = [
       path("index/", views.index, name="index"),
       path("project/list/", views.project_list, name="project_list")
@@ -599,7 +599,7 @@ case_id = data.get('case_id')
   from django.core.serializers.json import DjangoJSONEncoder
   from .models import Project
   import json
-
+  
   def project_list(request):
       # 对应的app下新建templates目录
       projects = Project.objects.all()
@@ -613,7 +613,7 @@ case_id = data.get('case_id')
               'poject_id': project.project_id,
           }
           project_list.append(project_dict)
-
+  
       # 构造json响应字符串
       response = {
           'code': 200,
@@ -621,7 +621,7 @@ case_id = data.get('case_id')
           'message': '查询成功'
       }
       return JsonResponse(response, safe=False, json_dumps_params={'ensure_ascii': False}) # 返回json数据，允许返回中文
-
+  
   ```
 
 #### 更新数据
@@ -631,46 +631,46 @@ case_id = data.get('case_id')
   ````python
   # 将表中所有记录的description字段，设置为test
   Project.objects.all(description='test')
-
+  
   # 增加筛选条件，更新指定条件的数据
   Project.objects.filter(id=5).update(description='update')
-
+  
   ````
   或者：
 
   ```python
   from django.shortcuts import get_object_or_404
-
+  
   def update_project(request):
       if request.method == 'POST':
           project_id = '0001'  # 假设要修改的项目的 project_id 是 0001
           name = request.POST.get('name')  # 从请求中获取要更新的 name 值
           timestamp = request.POST.get('timestamp')  # 从请求中获取要更新的 timestamp 值
           description = request.POST.get('description')  # 从请求中获取要更新的 description 值
-
+  
           # 查找具有 project_id 为 0001 的项目对象
           project = get_object_or_404(Project, project_id=project_id)
-
+  
           # 更新项目对象的其他字段
           project.name = name
           project.timestamp = timestamp
           project.description = description
-
+  
           # 保存更新后的项目对象到数据库
           project.save()
-
+  
           # 返回更新成功的响应
           response = {
               'code': 200,
               'message': '项目信息更新成功'
           }
           return JsonResponse(response)
-
+  
       # 返回请求方法错误的响应
       response = {
           'code': 405,
           'message': '只支持 POST 请求'
       }
       return JsonResponse(response, status=405)
-
+  
   ```

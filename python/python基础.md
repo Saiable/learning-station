@@ -5,7 +5,7 @@ cover: false
 tags:
 - python
 categories: python
-typora-root-url: python
+typora-root-url: python基础
 ---
 
 # 环境搭建
